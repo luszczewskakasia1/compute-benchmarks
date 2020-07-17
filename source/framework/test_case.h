@@ -16,6 +16,8 @@ struct TestCaseInterface {
 struct TestCaseArguments {
     virtual bool parseArgument(const std::string &key, const std::string &value) { return true; }
     virtual bool validateArguments() { return true; }
+
+    int iterations = 1;
 };
 
 template <typename Arguments>
@@ -24,10 +26,10 @@ class TestCase : public TestCaseInterface {
 
   public:
     TestCase() = default;
-    TestCase(Api api, Arguments arguments, int iterations)
+    TestCase(Api api, Arguments arguments)
         : api(api),
-          arguments(arguments),
-          iterations(iterations) {}
+          arguments(arguments) {
+    }
 
     bool runFromCommandLine(int argc, char **argv) override {
         if (!parseArguments(argc, argv)) {
@@ -38,11 +40,11 @@ class TestCase : public TestCaseInterface {
     }
 
     void run() {
-        Statistics statistics{iterations};
+        Statistics statistics{arguments.iterations};
         if (api == Api::OpenCL) {
-            runOcl(arguments, statistics, iterations);
+            runOcl(arguments, statistics);
         } else {
-            runL0(arguments, statistics, iterations);
+            runL0(arguments, statistics);
         }
         assert(statistics.isFull());
         statistics.printStatistics(getTestCaseName() + getTestCaseConfig(arguments));
@@ -88,17 +90,17 @@ class TestCase : public TestCaseInterface {
         }
 
         if (key == "--iterations") {
-            iterations = std::atoi(value.c_str());
+            arguments.iterations = std::atoi(value.c_str());
         }
 
         return true;
     }
 
     virtual std::string getTestCaseConfig(const Arguments &arguments) = 0;
-    virtual void runOcl(const Arguments &arguments, Statistics &statistics, int iterations) = 0;
-    virtual void runL0(const Arguments &arguments, Statistics &statistics, int iterations) {
+    virtual void runOcl(const Arguments &arguments, Statistics &statistics) = 0;
+    virtual void runL0(const Arguments &arguments, Statistics &statistics) {
         // Dummy Implementation
-        for (int i = 0; i < iterations; i++) {
+        for (int i = 0; i < arguments.iterations; i++) {
             statistics.pushValue(-1);
         }
     };
@@ -106,5 +108,4 @@ class TestCase : public TestCaseInterface {
   private:
     Api api = Api::OpenCL;
     Arguments arguments = {};
-    int iterations = 10;
 };

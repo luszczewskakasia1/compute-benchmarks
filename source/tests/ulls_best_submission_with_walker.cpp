@@ -4,7 +4,10 @@ class UllsBestSubmissionWithWalkerTest : public ::testing::TestWithParam<Api> {
 };
 
 TEST_P(UllsBestSubmissionWithWalkerTest, Test) {
-    UllsBestSubmissionWithWalker test{GetParam(), {}, 10};
+    UllsBestSubmissionWithWalkerArguments args{};
+    args.iterations = 10;
+
+    UllsBestSubmissionWithWalker test{GetParam(), args};
     test.run();
 }
 

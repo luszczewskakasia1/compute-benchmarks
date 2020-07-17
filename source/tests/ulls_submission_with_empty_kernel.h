@@ -46,7 +46,7 @@ class UllsSubmissionWithEmptyKernel : public TestCase<UllsSubmissionWithEmptyKer
         return result.str();
     }
 
-    void runOcl(const UllsSubmissionWithEmptyKernelArguments &arguments, Statistics &statistics, int iterations) override {
+    void runOcl(const UllsSubmissionWithEmptyKernelArguments &arguments, Statistics &statistics) override {
         // Setup
         Opencl opencl;
         Timer timer;
@@ -71,7 +71,7 @@ class UllsSubmissionWithEmptyKernel : public TestCase<UllsSubmissionWithEmptyKer
         ASSERT_EQ(CL_SUCCESS, retVal);
 
         // Benchmark
-        for (int i = 0; i < iterations; i++) {
+        for (int i = 0; i < arguments.iterations; i++) {
             // Enqueue empty kernel and measure it
             timer.measureStart();
             clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr);

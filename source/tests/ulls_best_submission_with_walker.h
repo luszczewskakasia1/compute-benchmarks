@@ -24,7 +24,7 @@ class UllsBestSubmissionWithWalker : public TestCase<UllsBestSubmissionWithWalke
         return "()";
     }
 
-    void runOcl(const UllsBestSubmissionWithWalkerArguments &arguments, Statistics &statistics, int iterations) override {
+    void runOcl(const UllsBestSubmissionWithWalkerArguments &arguments, Statistics &statistics) override {
         // Setup
         Opencl opencl;
         Timer timer;
@@ -53,7 +53,7 @@ class UllsBestSubmissionWithWalker : public TestCase<UllsBestSubmissionWithWalke
         retVal = clSetKernelArgSVMPointer(kernel, 0, hostMemory);
         size_t gws = 1;
 
-        for (int i = 0; i < iterations; i++) {
+        for (int i = 0; i < arguments.iterations; i++) {
             // Reset value
             *hostMemory = 0;
 
