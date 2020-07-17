@@ -1,3 +1,4 @@
+#include "framework/statistics.h"
 #include "tests/test_map.h"
 
 #include <gtest/gtest.h>
@@ -13,6 +14,7 @@ int executeSingleTest(const std::string &testName, int argc, char **argv) {
     }
 
     TestCaseInterface *testCase = it->second.get();
+    Statistics::printStatisticsHeader();
     if (!testCase->runFromCommandLine(argc, argv)) {
         std::cerr << "Error parsing command line\n";
         return 1;
@@ -23,8 +25,8 @@ int executeSingleTest(const std::string &testName, int argc, char **argv) {
 int executeAllTests(int argc, char **argv) {
     std::cout << "executeAllTests\n";
     ::testing::InitGoogleTest(&argc, argv);
+    Statistics::printStatisticsHeader();
     return RUN_ALL_TESTS();
-    return 0;
 }
 
 int printHelp() {
@@ -41,7 +43,11 @@ int printHelp() {
                  "Available test cases along are listed below:"
                  "\n";
     for (const auto &entry : getTestMap()) {
-        std::cout << entry.second->getHelp() << "\n";
+        std::cout
+            << entry.second->getTestCaseName()
+            << " - "
+            << entry.second->getHelp()
+            << "\n";
     }
     return 0;
 }

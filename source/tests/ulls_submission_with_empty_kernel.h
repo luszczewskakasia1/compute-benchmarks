@@ -30,13 +30,23 @@ class UllsSubmissionWithEmptyKernel : public TestCase<UllsSubmissionWithEmptyKer
     using TestCase<UllsSubmissionWithEmptyKernelArguments>::TestCase;
 
     std::string getHelp() override {
-        return "UllsSubmissionWithEmptyKernel - enqueues empty kernel to measure walker spawn time. Parameters:\n"
+        return "enqueues empty kernel to measure walker spawn time. Parameters:\n"
                "\t--workgroupCount=X\n"
                "\t--workgroupSize=X\n"
                "\n";
     };
 
-    void runOcl(const UllsSubmissionWithEmptyKernelArguments &arguments, int iterations) override {
+    std::string getTestCaseName() override {
+        return "UllsSubmissionWithEmptyKernel";
+    }
+
+    std::string getTestCaseConfig(const UllsSubmissionWithEmptyKernelArguments &arguments) override {
+        std::ostringstream result;
+        result << "(" << arguments.workgroupCount << "," << arguments.workgroupSize << ")";
+        return result.str();
+    }
+
+    void runOcl(const UllsSubmissionWithEmptyKernelArguments &arguments, Statistics &statistics, int iterations) override {
         // Setup
         Opencl opencl;
         Timer timer;
@@ -68,10 +78,8 @@ class UllsSubmissionWithEmptyKernel : public TestCase<UllsSubmissionWithEmptyKer
             clFinish(opencl.commandQueue);
             timer.messureEnd();
             ASSERT_EQ(CL_SUCCESS, retVal);
-
-            std::cout << timer.Get() << "   ";
+            statistics.pushValue(timer.Get());
         }
-        std::cout << std::endl;
 
         // Cleanup
         ASSERT_EQ(CL_SUCCESS, clReleaseKernel(kernel));

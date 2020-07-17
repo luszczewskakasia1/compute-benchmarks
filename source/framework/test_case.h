@@ -1,13 +1,16 @@
 #pragma once
 
-#include "api.h"
+#include "framework/api.h"
+#include "framework/statistics.h"
 
+#include <cassert>
 #include <string>
 #include <type_traits>
 
 struct TestCaseInterface {
     virtual bool runFromCommandLine(int argc, char **argv) = 0;
     virtual std::string getHelp() = 0;
+    virtual std::string getTestCaseName() = 0;
 };
 
 struct TestCaseArguments {
@@ -35,11 +38,14 @@ class TestCase : public TestCaseInterface {
     }
 
     void run() {
+        Statistics statistics{iterations};
         if (api == Api::OpenCL) {
-            runOcl(arguments, iterations);
+            runOcl(arguments, statistics, iterations);
         } else {
-            runL0(arguments, iterations);
+            runL0(arguments, statistics, iterations);
         }
+        assert(statistics.isFull());
+        statistics.printStatistics(getTestCaseName() + getTestCaseConfig(arguments));
     }
 
   protected:
@@ -88,8 +94,14 @@ class TestCase : public TestCaseInterface {
         return true;
     }
 
-    virtual void runOcl(const Arguments &arguments, int iterations) = 0;
-    virtual void runL0(const Arguments &arguments, int iterations){};
+    virtual std::string getTestCaseConfig(const Arguments &arguments) = 0;
+    virtual void runOcl(const Arguments &arguments, Statistics &statistics, int iterations) = 0;
+    virtual void runL0(const Arguments &arguments, Statistics &statistics, int iterations) {
+        // Dummy Implementation
+        for (int i = 0; i < iterations; i++) {
+            statistics.pushValue(-1);
+        }
+    };
 
   private:
     Api api = Api::OpenCL;
