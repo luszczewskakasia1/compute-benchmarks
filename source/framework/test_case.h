@@ -7,6 +7,7 @@
 
 struct TestCaseInterface {
     virtual bool runFromCommandLine(int argc, char **argv) = 0;
+    virtual std::string getHelp() = 0;
 };
 
 struct TestCaseArguments {

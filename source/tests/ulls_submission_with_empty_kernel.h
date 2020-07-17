@@ -29,6 +29,13 @@ class UllsSubmissionWithEmptyKernel : public TestCase<UllsSubmissionWithEmptyKer
   public:
     using TestCase<UllsSubmissionWithEmptyKernelArguments>::TestCase;
 
+    std::string getHelp() override {
+        return "UllsSubmissionWithEmptyKernel - enqueues empty kernel to measure walker spawn time. Parameters:\n"
+               "\t--workgroupCount=X\n"
+               "\t--workgroupSize=X\n"
+               "\n";
+    };
+
     void runOcl(const UllsSubmissionWithEmptyKernelArguments &arguments, int iterations) override {
         // Setup
         Opencl opencl;

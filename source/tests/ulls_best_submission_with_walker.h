@@ -12,6 +12,10 @@ class UllsBestSubmissionWithWalker : public TestCase<UllsBestSubmissionWithWalke
   public:
     using TestCase<UllsBestSubmissionWithWalkerArguments>::TestCase;
 
+    std::string getHelp() override {
+        return "UllsBestSubmissionWithWalker - enqueues kernel which updates system memory location and waits for the update in busy loop\n";
+    }
+
     void runOcl(const UllsBestSubmissionWithWalkerArguments &arguments, int iterations) override {
         // Setup
         Opencl opencl;
