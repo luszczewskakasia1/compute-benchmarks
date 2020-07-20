@@ -1,3 +1,4 @@
+#include "framework/gtest_event_listener.h"
 #include "framework/statistics.h"
 #include "tests/test_map.h"
 
@@ -25,6 +26,11 @@ int executeSingleTest(const std::string &testName, int argc, char **argv) {
 int executeAllTests(int argc, char **argv) {
     std::cout << "executeAllTests\n";
     ::testing::InitGoogleTest(&argc, argv);
+
+    auto &listeners = ::testing::UnitTest::GetInstance()->listeners();
+    delete listeners.Release(listeners.default_result_printer());
+    listeners.Append(new CustomEventListener());
+
     Statistics::printStatisticsHeader();
     return RUN_ALL_TESTS();
 }
