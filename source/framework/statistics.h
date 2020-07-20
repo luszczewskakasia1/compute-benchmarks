@@ -9,6 +9,7 @@ class Statistics {
 
     explicit Statistics(int maxSamplesCount);
     void pushValue(Value value);
+    bool isEmpty();
     bool isFull();
 
     Value min();

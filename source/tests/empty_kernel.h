@@ -52,7 +52,7 @@ class EmptyKernel : public TestCase<EmptyKernelArguments> {
         return "EmptyKernel";
     }
 
-    void runOcl(const EmptyKernelArguments &arguments, Statistics &statistics) override {
+    bool runOcl(const EmptyKernelArguments &arguments, Statistics &statistics) override {
         // Setup
         Opencl opencl;
         Timer timer;
@@ -64,32 +64,33 @@ class EmptyKernel : public TestCase<EmptyKernelArguments> {
         const char *source = "__kernel void empty() {}";
         const auto sourceLength = strlen(source);
         cl_program program = clCreateProgramWithSource(opencl.context, 1, &source, &sourceLength, &retVal);
-        ASSERT_EQ(CL_SUCCESS, retVal);
+        ASSERT_CL_SUCCESS(retVal);
         retVal = clBuildProgram(program, 1, &opencl.device, nullptr, nullptr, nullptr);
-        ASSERT_EQ(CL_SUCCESS, retVal);
+        ASSERT_CL_SUCCESS(retVal);
         cl_kernel kernel = clCreateKernel(program, "empty", &retVal);
-        ASSERT_EQ(CL_SUCCESS, retVal);
+        ASSERT_CL_SUCCESS(retVal);
 
         // Warmup, kernel
         size_t warmupOffset = 8;
-        clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, &warmupOffset, &gws, &lws, 0, nullptr, nullptr);
-        clFinish(opencl.commandQueue);
-        ASSERT_EQ(CL_SUCCESS, retVal);
+        retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, &warmupOffset, &gws, &lws, 0, nullptr, nullptr);
+        retVal |= clFinish(opencl.commandQueue);
+        ASSERT_CL_SUCCESS(retVal);
 
         // Benchmark
         for (int i = 0; i < arguments.iterations; i++) {
             // Enqueue empty kernel and measure it
             timer.measureStart();
-            clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr);
-            clFinish(opencl.commandQueue);
+            retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr);
+            retVal |= clFinish(opencl.commandQueue);
             timer.messureEnd();
-            ASSERT_EQ(CL_SUCCESS, retVal);
+            ASSERT_CL_SUCCESS(retVal);
             statistics.pushValue(timer.Get());
         }
 
         // Cleanup
-        ASSERT_EQ(CL_SUCCESS, clReleaseKernel(kernel));
-        ASSERT_EQ(CL_SUCCESS, clReleaseProgram(program));
+        ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
+        ASSERT_CL_SUCCESS(clReleaseProgram(program));
+        return true;
     }
 };
 

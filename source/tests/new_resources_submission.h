@@ -45,7 +45,7 @@ class NewResourcesSubmission : public TestCase<NewResourcesSubmissionArguments> 
         return "NewResourcesSubmission";
     }
 
-    void runOcl(const NewResourcesSubmissionArguments &arguments, Statistics &statistics) override {
+    bool runOcl(const NewResourcesSubmissionArguments &arguments, Statistics &statistics) override {
         // Setup
         Opencl opencl;
         Timer timer;
@@ -57,11 +57,11 @@ class NewResourcesSubmission : public TestCase<NewResourcesSubmissionArguments> 
                              "}";
         const auto sourceLength = strlen(source);
         cl_program program = clCreateProgramWithSource(opencl.context, 1, &source, &sourceLength, &retVal);
-        ASSERT_EQ(CL_SUCCESS, retVal);
+        ASSERT_CL_SUCCESS(retVal);
         retVal = clBuildProgram(program, 1, &opencl.device, nullptr, nullptr, nullptr);
-        ASSERT_EQ(CL_SUCCESS, retVal);
+        ASSERT_CL_SUCCESS(retVal);
         cl_kernel kernel = clCreateKernel(program, "write", &retVal);
-        ASSERT_EQ(CL_SUCCESS, retVal);
+        ASSERT_CL_SUCCESS(retVal);
 
         // Warmup kernel
         const size_t gws = 1;
@@ -71,30 +71,31 @@ class NewResourcesSubmission : public TestCase<NewResourcesSubmissionArguments> 
         retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, nullptr);
         retVal |= clFinish(opencl.commandQueue);
         retVal |= clReleaseMemObject(buffer);
-        ASSERT_EQ(CL_SUCCESS, retVal);
+        ASSERT_CL_SUCCESS(retVal);
 
         // Benchmark
         for (int i = 0; i < arguments.iterations; i++) {
             cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, sizeInBytes, nullptr, &retVal);
             retVal |= clSetKernelArg(kernel, 0, sizeof(buffer), &buffer);
-            ASSERT_EQ(CL_SUCCESS, retVal);
+            ASSERT_CL_SUCCESS(retVal);
 
             timer.measureStart();
             retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, nullptr);
             retVal |= clFlush(opencl.commandQueue);
             timer.messureEnd();
-            ASSERT_EQ(CL_SUCCESS, retVal);
+            ASSERT_CL_SUCCESS(retVal);
 
             retVal |= clFinish(opencl.commandQueue);
             retVal |= clReleaseMemObject(buffer);
-            ASSERT_EQ(CL_SUCCESS, retVal);
+            ASSERT_CL_SUCCESS(retVal);
 
             statistics.pushValue(timer.Get());
         }
 
         // Cleanup
-        ASSERT_EQ(CL_SUCCESS, clReleaseKernel(kernel));
-        ASSERT_EQ(CL_SUCCESS, clReleaseProgram(program));
+        ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
+        ASSERT_CL_SUCCESS(clReleaseProgram(program));
+        return true;
     }
 };
 

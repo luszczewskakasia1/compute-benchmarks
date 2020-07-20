@@ -1,10 +1,20 @@
 #pragma once
 
-#include "framework/error.h"
-
 #define CL_TARGET_OPENCL_VERSION 220
 #include <CL/cl.h>
+#include <gtest/gtest.h>
 #include <iostream>
+
+#define ASSERT_CL_SUCCESS(retVal)      \
+    if (retVal != CL_SUCCESS) {        \
+        EXPECT_EQ(CL_SUCCESS, retVal); \
+        return true;                   \
+    }
+
+#define EXPECT_CL_SUCCESS(retVal)      \
+    if (retVal != CL_SUCCESS) {        \
+        EXPECT_EQ(CL_SUCCESS, retVal); \
+    }
 
 using cl_mem_properties_intel = cl_bitfield;
 

@@ -45,10 +45,15 @@ class TestCase : public TestCaseInterface {
     void run() {
         // Run test
         Statistics statistics{arguments.iterations};
+        bool testWasRun = false;
         if (api == Api::OpenCL) {
-            runOcl(arguments, statistics);
+            testWasRun = runOcl(arguments, statistics);
         } else {
-            runL0(arguments, statistics);
+            testWasRun = runL0(arguments, statistics);
+        }
+        if (!testWasRun) {
+            assert(statistics.isEmpty());
+            return;
         }
         assert(statistics.isFull());
 
@@ -110,13 +115,8 @@ class TestCase : public TestCaseInterface {
         return true;
     }
 
-    virtual void runOcl(const Arguments &arguments, Statistics &statistics) = 0;
-    virtual void runL0(const Arguments &arguments, Statistics &statistics) {
-        // Dummy Implementation
-        for (int i = 0; i < arguments.iterations; i++) {
-            statistics.pushValue(-1);
-        }
-    };
+    virtual bool runOcl(const Arguments &arguments, Statistics &statistics) { return false; }
+    virtual bool runL0(const Arguments &arguments, Statistics &statistics) { return false; };
 
   private:
     Api api = Api::OpenCL;

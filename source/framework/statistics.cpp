@@ -17,6 +17,10 @@ void Statistics::pushValue(Value value) {
     samples[samplesCount++] = value;
 }
 
+bool Statistics::isEmpty() {
+    return samplesCount == 0;
+}
+
 bool Statistics::isFull() {
     return samplesCount == maxSamplesCount;
 }
