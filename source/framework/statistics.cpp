@@ -57,7 +57,7 @@ Statistics::Value Statistics::standardDeviation() {
     return static_cast<Value>(std::sqrtl(static_cast<long double>(stdDev)));
 }
 
-constexpr static int columnWidths[] = {40, 15, 15, 15, 15, 15};
+constexpr static int columnWidths[] = {50, 15, 15, 15, 15, 15};
 
 void Statistics::printStatisticsHeader() {
     int column = 0;

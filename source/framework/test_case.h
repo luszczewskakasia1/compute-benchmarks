@@ -43,6 +43,7 @@ class TestCase : public TestCaseInterface {
     }
 
     void run() {
+        // Run test
         Statistics statistics{arguments.iterations};
         if (api == Api::OpenCL) {
             runOcl(arguments, statistics);
@@ -50,7 +51,12 @@ class TestCase : public TestCaseInterface {
             runL0(arguments, statistics);
         }
         assert(statistics.isFull());
-        const auto testCaseNameWithConfig = getTestCaseName() + "(" + arguments.getCurrentConfig() + ")";
+
+        // Output performance results
+        const auto apiString = std::string{api == Api::OpenCL ? "api=ocl" : "api=l0"};
+        const auto currentConfig = arguments.getCurrentConfig();
+        const auto configWithApi = currentConfig.size() == 0 ? apiString : apiString + "," + currentConfig;
+        const auto testCaseNameWithConfig = getTestCaseName() + "(" + configWithApi + ")";
         statistics.printStatistics(testCaseNameWithConfig);
     }
 
