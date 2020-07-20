@@ -11,6 +11,16 @@ namespace UllsTest {
 struct NewResourcesSubmissionArguments : TestCaseArguments {
     size_t sizeMB;
 
+    std::string getHelp() override {
+        return "\t--sizeMB=X\n";
+    }
+
+    std::string getCurrentConfig() override {
+        std::ostringstream result;
+        result << "sizeMB=" << sizeMB << "";
+        return result.str();
+    }
+
     bool parseArgument(const std::string &key, const std::string &value) override {
         if (key == "--sizeMB") {
             sizeMB = std::atoi(value.c_str());
@@ -28,19 +38,11 @@ class NewResourcesSubmission : public TestCase<NewResourcesSubmissionArguments> 
     using TestCase<NewResourcesSubmissionArguments>::TestCase;
 
     std::string getHelp() override {
-        return "enqueues kernel with a new resource to measure resource preparation time. Parameters:\n"
-               "\t--sizeMB=X\n"
-               "\n";
+        return "enqueues kernel with a new resource to measure resource preparation time.";
     };
 
     std::string getTestCaseName() override {
         return "NewResourcesSubmission";
-    }
-
-    std::string getTestCaseConfig(const NewResourcesSubmissionArguments &arguments) override {
-        std::ostringstream result;
-        result << "(sizeMB=" << arguments.sizeMB << ")";
-        return result.str();
     }
 
     void runOcl(const NewResourcesSubmissionArguments &arguments, Statistics &statistics) override {

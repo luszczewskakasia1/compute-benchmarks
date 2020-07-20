@@ -36,24 +36,31 @@ int executeAllTests(int argc, char **argv) {
 }
 
 int printHelp() {
-    std::cout << "ulls_benchmark.exe works in two modes.\n"
+    std::cout << "UllsBenchmark is a set of tests aimed at measuring Ultra Low Latency Submission (ULLS) performance impact. "
+                 "It works in two modes described below. Example invocations:\n"
+                 "\t.\\ulls_benchmark.exe\n"
+                 "\t.\\ulls_benchmark.exe --gtest_filter=*NewResourcesSubmission*\n"
+                 "\t.\\ulls_benchmark.exe --test=EmptyKernel --workgroupSize=64 --workgroupCount=30\n"
+                 "\t.\\ulls_benchmark.exe --test=EmptyKernel --api=ocl --workgroupSize=64 --workgroupCount=30\n"
+                 "\n"
+                 "Fist mode is the default and it runs all available benchmarks in many predefined configurations. Underlying test engine "
+                 "is googletest, so standard googletest arguments like --gtest_filter can be used, if necessary."
                  "\n\n"
-                 "Default mode runs all available benchmarks in many predefined configurations. Underlying test engine is googletest, "
-                 "so standard googletest arguments like --gtest_filter can be used, if necessary."
-                 "\n\n"
-                 "User can also specify one specific test case with custom parameter values. Running benchmarks in this fashion requires "
+                 "Second mode runs one specific benchmark with custom parameter values. Running benchmarks in this fashion requires "
                  "using --test argument, followed by benchmark-specific parameters. Compute API (ocl or levelzero) can be selected with "
-                 "the --api parameter. Example invocation:\n"
-                 "\t.\\ulls_benchmark --test=UllsSubmissionWithEmptyKernel --api=ocl --workgroupSize=64 --workgroupCount=30"
+                 "the --api parameter."
                  "\n\n"
-                 "Available test cases along are listed below:"
+                 "Available test cases:"
                  "\n";
     for (const auto &entry : getTestMap()) {
-        std::cout
-            << entry.second->getTestCaseName()
-            << " - "
-            << entry.second->getHelp()
-            << "\n";
+        TestCaseInterface &testCase = *entry.second.get();
+        std::cout << testCase.getTestCaseName() << " - " << testCase.getHelp();
+        const auto helpParameters = testCase.getHelpParameters();
+        if (helpParameters.size() != 0) {
+            std::cout << " Parameters:\n"
+                      << helpParameters;
+        }
+        std::cout << '\n';
     }
     return 0;
 }

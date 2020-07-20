@@ -22,10 +22,6 @@ class BestWalkerSubmission : public TestCase<BestWalkerSubmissionArguments> {
         return "BestWalkerSubmission";
     }
 
-    std::string getTestCaseConfig(const BestWalkerSubmissionArguments &arguments) override {
-        return "()";
-    }
-
     void runOcl(const BestWalkerSubmissionArguments &arguments, Statistics &statistics) override {
         // Setup
         Opencl opencl;

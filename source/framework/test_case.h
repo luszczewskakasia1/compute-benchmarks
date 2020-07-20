@@ -10,12 +10,15 @@
 struct TestCaseInterface {
     virtual bool runFromCommandLine(int argc, char **argv) = 0;
     virtual std::string getHelp() = 0;
+    virtual std::string getHelpParameters() = 0;
     virtual std::string getTestCaseName() = 0;
 };
 
 struct TestCaseArguments {
     virtual bool parseArgument(const std::string &key, const std::string &value) { return true; }
     virtual bool validateArguments() { return true; }
+    virtual std::string getHelp() { return ""; }
+    virtual std::string getCurrentConfig() { return ""; }
 
     int iterations = 1;
 };
@@ -47,7 +50,12 @@ class TestCase : public TestCaseInterface {
             runL0(arguments, statistics);
         }
         assert(statistics.isFull());
-        statistics.printStatistics(getTestCaseName() + getTestCaseConfig(arguments));
+        const auto testCaseNameWithConfig = getTestCaseName() + "(" + arguments.getCurrentConfig() + ")";
+        statistics.printStatistics(testCaseNameWithConfig);
+    }
+
+    std::string getHelpParameters() override {
+        return arguments.getHelp();
     }
 
   protected:
@@ -96,7 +104,6 @@ class TestCase : public TestCaseInterface {
         return true;
     }
 
-    virtual std::string getTestCaseConfig(const Arguments &arguments) = 0;
     virtual void runOcl(const Arguments &arguments, Statistics &statistics) = 0;
     virtual void runL0(const Arguments &arguments, Statistics &statistics) {
         // Dummy Implementation
