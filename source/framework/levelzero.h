@@ -1,0 +1,46 @@
+#pragma once
+
+#include <gtest/gtest.h>
+#include <level_zero/ze_api.h>
+
+#define ASSERT_ZE_RESULT_SUCCESS(retVal)      \
+    if (retVal != ZE_RESULT_SUCCESS) {        \
+        EXPECT_EQ(ZE_RESULT_SUCCESS, retVal); \
+        return true;                          \
+    }
+
+#define EXPECT_ZE_RESULT_SUCCESS(retVal)      \
+    if (retVal != ZE_RESULT_SUCCESS) {        \
+        EXPECT_EQ(ZE_RESULT_SUCCESS, retVal); \
+    }
+
+struct LevelZero {
+    LevelZero() {
+        EXPECT_ZE_RESULT_SUCCESS(zeInit(ZE_INIT_FLAG_NONE));
+
+        uint32_t driverCount = 0;
+        EXPECT_ZE_RESULT_SUCCESS(zeDriverGet(&driverCount, nullptr));
+        EXPECT_LT(0u, driverCount);
+        driverCount = 1;
+        EXPECT_ZE_RESULT_SUCCESS(zeDriverGet(&driverCount, &driver));
+
+        uint32_t deviceCount = 0;
+        EXPECT_ZE_RESULT_SUCCESS(zeDeviceGet(driver, &deviceCount, nullptr));
+        EXPECT_LT(0u, deviceCount);
+        deviceCount = 1;
+        EXPECT_ZE_RESULT_SUCCESS(zeDeviceGet(driver, &deviceCount, &device));
+
+        ze_command_queue_desc_t commandQueueDesc = {ZE_COMMAND_QUEUE_DESC_VERSION_CURRENT};
+        commandQueueDesc.ordinal = 0;
+        commandQueueDesc.mode = ZE_COMMAND_QUEUE_MODE_ASYNCHRONOUS;
+        EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueCreate(device, &commandQueueDesc, &commandQueue));
+    }
+
+    ~LevelZero() {
+        EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueDestroy(commandQueue));
+    }
+
+    ze_driver_handle_t driver;
+    ze_device_handle_t device;
+    ze_command_queue_handle_t commandQueue;
+};
