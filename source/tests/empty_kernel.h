@@ -6,7 +6,9 @@
 
 #include <gtest/gtest.h>
 
-struct UllsSubmissionWithEmptyKernelArguments : TestCaseArguments {
+namespace UllsTest {
+
+struct EmptyKernelArguments : TestCaseArguments {
     size_t workgroupCount;
     size_t workgroupSize;
 
@@ -25,9 +27,9 @@ struct UllsSubmissionWithEmptyKernelArguments : TestCaseArguments {
     }
 };
 
-class UllsSubmissionWithEmptyKernel : public TestCase<UllsSubmissionWithEmptyKernelArguments> {
+class EmptyKernel : public TestCase<EmptyKernelArguments> {
   public:
-    using TestCase<UllsSubmissionWithEmptyKernelArguments>::TestCase;
+    using TestCase<EmptyKernelArguments>::TestCase;
 
     std::string getHelp() override {
         return "enqueues empty kernel to measure walker spawn time. Parameters:\n"
@@ -37,16 +39,18 @@ class UllsSubmissionWithEmptyKernel : public TestCase<UllsSubmissionWithEmptyKer
     };
 
     std::string getTestCaseName() override {
-        return "UllsSubmissionWithEmptyKernel";
+        return "EmptyKernel";
     }
 
-    std::string getTestCaseConfig(const UllsSubmissionWithEmptyKernelArguments &arguments) override {
+    std::string getTestCaseConfig(const EmptyKernelArguments &arguments) override {
+        const auto gws = arguments.workgroupCount * arguments.workgroupSize;
+        const auto lws = arguments.workgroupSize;
         std::ostringstream result;
-        result << "(" << arguments.workgroupCount << "," << arguments.workgroupSize << ")";
+        result << "(gws=" << gws << ",lws=" << lws << ")";
         return result.str();
     }
 
-    void runOcl(const UllsSubmissionWithEmptyKernelArguments &arguments, Statistics &statistics) override {
+    void runOcl(const EmptyKernelArguments &arguments, Statistics &statistics) override {
         // Setup
         Opencl opencl;
         Timer timer;
@@ -86,3 +90,5 @@ class UllsSubmissionWithEmptyKernel : public TestCase<UllsSubmissionWithEmptyKer
         ASSERT_EQ(CL_SUCCESS, clReleaseProgram(program));
     }
 };
+
+} // namespace UllsTest

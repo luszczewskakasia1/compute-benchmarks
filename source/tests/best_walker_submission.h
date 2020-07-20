@@ -6,25 +6,27 @@
 
 #include <gtest/gtest.h>
 
-struct UllsBestSubmissionWithWalkerArguments : TestCaseArguments {};
+namespace UllsTest {
 
-class UllsBestSubmissionWithWalker : public TestCase<UllsBestSubmissionWithWalkerArguments> {
+struct BestWalkerSubmissionArguments : TestCaseArguments {};
+
+class BestWalkerSubmission : public TestCase<BestWalkerSubmissionArguments> {
   public:
-    using TestCase<UllsBestSubmissionWithWalkerArguments>::TestCase;
+    using TestCase<BestWalkerSubmissionArguments>::TestCase;
 
     std::string getHelp() override {
         return "enqueues kernel which updates system memory location and waits for the update in busy loop\n";
     }
 
     std::string getTestCaseName() override {
-        return "UllsBestSubmissionWithWalker";
+        return "BestWalkerSubmission";
     }
 
-    std::string getTestCaseConfig(const UllsBestSubmissionWithWalkerArguments &arguments) override {
+    std::string getTestCaseConfig(const BestWalkerSubmissionArguments &arguments) override {
         return "()";
     }
 
-    void runOcl(const UllsBestSubmissionWithWalkerArguments &arguments, Statistics &statistics) override {
+    void runOcl(const BestWalkerSubmissionArguments &arguments, Statistics &statistics) override {
         // Setup
         Opencl opencl;
         Timer timer;
@@ -81,3 +83,5 @@ class UllsBestSubmissionWithWalker : public TestCase<UllsBestSubmissionWithWalke
         ASSERT_EQ(CL_SUCCESS, clReleaseProgram(program));
     }
 };
+
+} // namespace UllsTest
