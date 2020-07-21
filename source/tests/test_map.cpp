@@ -4,6 +4,7 @@
 #include "tests/best_walker_submission.h"
 #include "tests/empty_kernel.h"
 #include "tests/new_resources_submission.h"
+#include "tests/round_trip_submission.h"
 
 TestMap getTestMap() {
     TestMap testMap;
@@ -12,6 +13,7 @@ TestMap getTestMap() {
     TEST_CASE(BestSubmission)
     TEST_CASE(EmptyKernel)
     TEST_CASE(NewResourcesSubmission)
+    TEST_CASE(RoundTripSubmission)
 #undef TEST_CASE
     return testMap;
 }
