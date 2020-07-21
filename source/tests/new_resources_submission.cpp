@@ -6,7 +6,7 @@ class NewResourcesSubmissionTest : public ::testing::TestWithParam<std::tuple<Ap
 TEST_P(NewResourcesSubmissionTest, Test) {
     UllsTest::NewResourcesSubmissionArguments args;
     args.api = std::get<0>(GetParam());
-    args.iterations = 10;
+    args.iterations = ::gtestIterations;
     args.sizeMB = std::get<1>(GetParam());
 
     UllsTest::NewResourcesSubmission test{args};

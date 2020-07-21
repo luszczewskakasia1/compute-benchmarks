@@ -1,5 +1,6 @@
 #include "framework/gtest_event_listener.h"
 #include "framework/statistics.h"
+#include "framework/string_utils.h"
 #include "tests/test_map.h"
 
 #include <gtest/gtest.h>
@@ -23,14 +24,28 @@ int executeSingleTest(const std::string &testName, int argc, char **argv) {
     return 0;
 }
 
+int gtestIterations = 10;
 int executeAllTests(int argc, char **argv) {
-    std::cout << "executeAllTests\n";
-    ::testing::InitGoogleTest(&argc, argv);
+    for (int i = 1; i < argc; i++) {
+        const auto argument = std::string{argv[i]};
+        std::string key, value;
+        if (!parseArgumentToKeyValue(argument, key, value)) {
+            continue;
+        }
 
+        if (key == "--iterations") {
+            gtestIterations = std::atoi(value.c_str());
+        }
+    }
+    std::cout << "Running " << gtestIterations << " iterations of each benchmark\n" << std::endl;
+    if (gtestIterations == 0) {
+        return 0;
+    }
+
+    ::testing::InitGoogleTest(&argc, argv);
     auto &listeners = ::testing::UnitTest::GetInstance()->listeners();
     delete listeners.Release(listeners.default_result_printer());
     listeners.Append(new CustomEventListener());
-
     Statistics::printStatisticsHeader();
     return RUN_ALL_TESTS();
 }

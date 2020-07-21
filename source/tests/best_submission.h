@@ -64,6 +64,7 @@ class BestSubmission : public TestCase<BestSubmissionArguments> {
             ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &currentCommandList, nullptr));
             while (*((uint64_t *)buffer) != currentValueToWrite) {
             }
+
             timer.messureEnd();
             statistics.pushValue(timer.Get());
 

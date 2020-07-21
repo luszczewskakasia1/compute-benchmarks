@@ -2,10 +2,13 @@
 
 #include "framework/api.h"
 #include "framework/statistics.h"
+#include "framework/string_utils.h"
 
 #include <cassert>
 #include <string>
 #include <type_traits>
+
+extern int gtestIterations;
 
 struct TestCaseInterface {
     virtual bool runFromCommandLine(int argc, char **argv) = 0;
@@ -78,13 +81,10 @@ class TestCase : public TestCaseInterface {
     bool parseArguments(int argc, char **argv) {
         for (int i = 2; i < argc; i++) {
             const auto argument = std::string{argv[i]};
-            size_t index = argument.find('=');
-            if (argument.find('=', index + 1) != std::string::npos) {
+            std::string key, value;
+            if (!parseArgumentToKeyValue(argument, key, value)) {
                 return false;
             }
-
-            const auto key = argument.substr(0, index);
-            const auto value = argument.substr(index + 1);
 
             if (!parseArgumentBase(key, value)) {
                 return false;
