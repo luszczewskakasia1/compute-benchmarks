@@ -5,11 +5,12 @@ class EmptyKernelSubmissionTest : public ::testing::TestWithParam<std::tuple<Api
 
 TEST_P(EmptyKernelSubmissionTest, Test) {
     UllsTest::EmptyKernelArguments args;
+    args.api = std::get<0>(GetParam());
     args.iterations = 10;
     args.workgroupCount = std::get<1>(GetParam());
     args.workgroupSize = std::get<2>(GetParam());
 
-    UllsTest::EmptyKernel test{std::get<Api>(GetParam()), args};
+    UllsTest::EmptyKernel test{args};
     test.run();
 }
 

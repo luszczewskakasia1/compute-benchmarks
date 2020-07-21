@@ -20,6 +20,7 @@ struct TestCaseArguments {
     virtual std::string getHelp() { return ""; }
     virtual std::string getCurrentConfig() { return ""; }
 
+    Api api = Api::Default;
     int iterations = 1;
 };
 
@@ -29,9 +30,7 @@ class TestCase : public TestCaseInterface {
 
   public:
     TestCase() = default;
-    TestCase(Api api, Arguments arguments)
-        : api(api),
-          arguments(arguments) {
+    TestCase(Arguments arguments) : arguments(arguments) {
     }
 
     bool runFromCommandLine(int argc, char **argv) override {
@@ -46,10 +45,16 @@ class TestCase : public TestCaseInterface {
         // Run test
         Statistics statistics{arguments.iterations};
         bool testWasRun = false;
-        if (api == Api::OpenCL) {
+        switch (arguments.api) {
+        case Api::OpenCL:
             testWasRun = runOcl(arguments, statistics);
-        } else {
+            break;
+        case Api::L0:
             testWasRun = runL0(arguments, statistics);
+            break;
+        default:
+            std::cerr << "WARNING: unknown API selected. Test was skipped.\n";
+            break;
         }
         if (!testWasRun) {
             assert(statistics.isEmpty());
@@ -58,7 +63,7 @@ class TestCase : public TestCaseInterface {
         assert(statistics.isFull());
 
         // Output performance results
-        const auto apiString = std::string{api == Api::OpenCL ? "api=ocl" : "api=l0"};
+        const auto apiString = std::string{arguments.api == Api::OpenCL ? "api=ocl" : "api=l0"};
         const auto currentConfig = arguments.getCurrentConfig();
         const auto configWithApi = currentConfig.size() == 0 ? apiString : apiString + "," + currentConfig;
         const auto testCaseNameWithConfig = getTestCaseName() + "(" + configWithApi + ")";
@@ -100,9 +105,9 @@ class TestCase : public TestCaseInterface {
     bool parseArgumentBase(const std::string &key, const std::string &value) {
         if (key == "--api") {
             if (value == "opencl" || value == "ocl") {
-                api = Api::OpenCL;
+                arguments.api = Api::OpenCL;
             } else if (value == "l0" || value == "levelzero") {
-                api = Api::L0;
+                arguments.api = Api::L0;
             } else {
                 return false;
             }
@@ -119,6 +124,5 @@ class TestCase : public TestCaseInterface {
     virtual bool runL0(const Arguments &arguments, Statistics &statistics) { return false; };
 
   private:
-    Api api = Api::OpenCL;
     Arguments arguments = {};
 };

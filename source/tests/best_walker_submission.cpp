@@ -5,9 +5,10 @@ class BestWalkerSubmissionTest : public ::testing::TestWithParam<Api> {
 
 TEST_P(BestWalkerSubmissionTest, Test) {
     UllsTest::BestWalkerSubmissionArguments args{};
+    args.api = GetParam();
     args.iterations = 10;
 
-    UllsTest::BestWalkerSubmission test{GetParam(), args};
+    UllsTest::BestWalkerSubmission test{args};
     test.run();
 }
 
