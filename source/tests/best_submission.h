@@ -16,7 +16,7 @@ class BestSubmission : public TestCase<BestSubmissionArguments> {
     using TestCase<BestSubmissionArguments>::TestCase;
 
     std::string getHelp() override {
-        return "TODO\n";
+        return "enqueues a system memory write without kernel and measure when update when became visible on the CPUs\n";
     }
 
     std::string getTestCaseName() override {
@@ -67,7 +67,8 @@ class BestSubmission : public TestCase<BestSubmissionArguments> {
             timer.messureEnd();
             statistics.pushValue(timer.Get());
 
-            currentValueToWrite &= 1;
+            ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
+            currentValueToWrite ^= 1;
         }
 
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
