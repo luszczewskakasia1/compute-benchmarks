@@ -49,16 +49,18 @@ Statistics::Value Statistics::median() {
     }
 }
 
-Statistics::Value Statistics::standardDeviation() {
+double Statistics::standardDeviation() {
     const Value mean = this->mean();
-    Value stdDev = 0;
+    Value diffSum = 0;
     for (int i = 0; i < samplesCount; i++) {
         const auto difference = samples[i] - mean;
-        stdDev = difference * difference;
+        diffSum = difference * difference;
     }
+    double stdDev = static_cast<double>(diffSum);
     stdDev /= samplesCount;
-
-    return static_cast<Value>(std::sqrt(static_cast<double>(stdDev)));
+    stdDev = std::sqrt(static_cast<double>(stdDev));
+    stdDev /= mean;
+    return stdDev;
 }
 
 constexpr static int columnWidths[] = {50, 15, 15, 15, 15, 15};
@@ -68,7 +70,7 @@ void Statistics::printStatisticsHeader() {
     std::cout << std::setw(columnWidths[column++]) << "TestCase";
     std::cout << std::setw(columnWidths[column++]) << "Mean [ns]";
     std::cout << std::setw(columnWidths[column++]) << "Median [ns]";
-    std::cout << std::setw(columnWidths[column++]) << "StdDev [ns]";
+    std::cout << std::setw(columnWidths[column++]) << "StdDev";
     std::cout << std::setw(columnWidths[column++]) << "Min [ns]";
     std::cout << std::setw(columnWidths[column++]) << "Max [ns]";
     std::cout << std::endl;
@@ -79,7 +81,7 @@ void Statistics::printStatistics(const std::string &testCaseName) {
     std::cout << std::setw(columnWidths[column++]) << testCaseName;
     std::cout << std::setw(columnWidths[column++]) << mean();
     std::cout << std::setw(columnWidths[column++]) << median();
-    std::cout << std::setw(columnWidths[column++]) << standardDeviation();
+    std::cout << std::setw(columnWidths[column++] - 1) << std::fixed << std::setprecision(2) << 100 * standardDeviation() << "%";
     std::cout << std::setw(columnWidths[column++]) << min();
     std::cout << std::setw(columnWidths[column++]) << max();
     std::cout << std::endl;

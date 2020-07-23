@@ -11,8 +11,8 @@ struct EmptyKernelArguments : TestCaseArguments {
     size_t workgroupSize;
 
     std::string getHelp() override {
-        return "\t--workgroupCount=X\n"
-               "\t--workgroupSize=X\n";
+        return "\t\t--workgroupCount=X\n"
+               "\t\t--workgroupSize=X\n";
     }
 
     std::string getCurrentConfig() override {

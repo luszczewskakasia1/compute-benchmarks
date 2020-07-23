@@ -10,7 +10,7 @@ struct NewResourcesSubmissionArguments : TestCaseArguments {
     size_t size;
 
     std::string getHelp() override {
-        return "\t--size=X\n";
+        return "\t\t--size=X\n";
     }
 
     std::string getCurrentConfig() override {

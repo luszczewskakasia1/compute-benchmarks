@@ -53,7 +53,7 @@ static bool run(const BestWalkerSubmissionArguments &arguments, Statistics &stat
 
         while (*hostMemory != 1) {
         }
-        timer.messureEnd();
+        timer.measureEnd();
         statistics.pushValue(timer.Get());
     }
 
