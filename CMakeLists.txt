@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.13.0)
 project(ULLS_Benchmark)
 set(PREDEFINED_TARGETS_FOLDER "CustomTargets")
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # Gtest
 set(gtest_force_shared_crt off)

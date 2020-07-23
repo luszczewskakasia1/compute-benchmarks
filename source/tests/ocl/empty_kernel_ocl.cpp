@@ -48,5 +48,5 @@ static bool run(const EmptyKernelArguments &arguments, Statistics &statistics) {
     return true;
 }
 
-RegisterTestCase<EmptyKernel> registerTestCase(run, Api::OpenCL);
+static RegisterTestCase<EmptyKernel> registerTestCase(run, Api::OpenCL);
 } // namespace UllsTest

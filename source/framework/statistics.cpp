@@ -58,7 +58,7 @@ Statistics::Value Statistics::standardDeviation() {
     }
     stdDev /= samplesCount;
 
-    return static_cast<Value>(std::sqrtl(static_cast<long double>(stdDev)));
+    return static_cast<Value>(std::sqrt(static_cast<double>(stdDev)));
 }
 
 constexpr static int columnWidths[] = {50, 15, 15, 15, 15, 15};

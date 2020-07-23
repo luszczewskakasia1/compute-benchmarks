@@ -2,6 +2,7 @@
 
 #define CL_TARGET_OPENCL_VERSION 220
 #include <CL/cl.h>
+#include <exception>
 #include <gtest/gtest.h>
 #include <iostream>
 
@@ -34,7 +35,7 @@ struct Opencl {
         cl_uint numPlatforms;
         EXPECT_CL_SUCCESS(clGetPlatformIDs(0, nullptr, &numPlatforms));
         if (numPlatforms == 0) {
-            throw std::exception("No OpenCL platforms found!");
+            throw std::exception();
         }
 
         EXPECT_CL_SUCCESS(clGetPlatformIDs(1, &platform, nullptr));

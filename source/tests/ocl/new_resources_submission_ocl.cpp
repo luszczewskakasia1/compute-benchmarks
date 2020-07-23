@@ -60,5 +60,5 @@ static bool run(const NewResourcesSubmissionArguments &arguments, Statistics &st
     return true;
 }
 
-RegisterTestCase<NewResourcesSubmission> registerTestCase(run, Api::OpenCL);
+static RegisterTestCase<NewResourcesSubmission> registerTestCase(run, Api::OpenCL);
 } // namespace UllsTest

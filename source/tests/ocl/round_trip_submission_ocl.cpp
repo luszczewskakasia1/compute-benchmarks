@@ -56,5 +56,5 @@ static bool run(const RoundTripSubmissionArguments &arguments, Statistics &stati
     return true;
 }
 
-RegisterTestCase<RoundTripSubmission> registerTestCase(run, Api::OpenCL);
+static RegisterTestCase<RoundTripSubmission> registerTestCase(run, Api::OpenCL);
 } // namespace UllsTest
