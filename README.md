@@ -5,6 +5,14 @@ A set of benchmarks created to help measuring performance impact of Ultra Low La
 Ulls Benchmark is currently not released in binary form.
 
 ## Building
+Internally UllsBenchmark uses googletest, which is reference as a git submodule and has to be cloned separately. Cloning command is performed by CMake, but Intel employees may have to properly set up proxy. If building hangs on cloning googletest, run
+```
+git config --global http.proxy http://proxy-chain.intel.com:911
+git config --global https.proxy http://proxy-chain.intel.com:912
+export http_proxy="http://proxy-chain.intel.com:911"
+export https_proxy="htts://proxy-chain.intel.com:912"
+```
+
 By default UllsBenchmark enables both OpenCL and LevelZero benchmarks. They can be disabled with commandline arguments to CMake. Example OpenCL-only build invocation:
 ```
     cmake .. -DTEST_L0=OFF -DTEST_OCL=ON
