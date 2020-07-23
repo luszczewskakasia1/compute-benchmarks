@@ -37,7 +37,7 @@ static bool run(const EmptyKernelArguments &arguments, Statistics &statistics) {
         timer.measureStart();
         retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr);
         retVal |= clFinish(opencl.commandQueue);
-        timer.messureEnd();
+        timer.measureEnd();
         ASSERT_CL_SUCCESS(retVal);
         statistics.pushValue(timer.Get());
     }

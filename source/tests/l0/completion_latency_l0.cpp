@@ -49,7 +49,7 @@ static bool run(const CompletionLatencyArguments &arguments, Statistics &statist
         }
         timer.measureStart();
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
-        timer.messureEnd();
+        timer.measureEnd();
         statistics.pushValue(timer.Get());
 
         currentValueToWrite ^= 1;

@@ -49,7 +49,7 @@ static bool run(const BestSubmissionArguments &arguments, Statistics &statistics
         while (*((uint64_t *)buffer) != currentValueToWrite) {
         }
 
-        timer.messureEnd();
+        timer.measureEnd();
         statistics.pushValue(timer.Get());
 
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));

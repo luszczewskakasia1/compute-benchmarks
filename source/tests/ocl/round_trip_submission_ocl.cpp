@@ -43,7 +43,7 @@ static bool run(const RoundTripSubmissionArguments &arguments, Statistics &stati
         timer.measureStart();
         retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, nullptr);
         retVal |= clFinish(opencl.commandQueue);
-        timer.messureEnd();
+        timer.measureEnd();
 
         ASSERT_CL_SUCCESS(retVal);
         statistics.pushValue(timer.Get());

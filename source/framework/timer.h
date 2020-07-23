@@ -8,7 +8,7 @@ class Timer {
             std::chrono::high_resolution_clock::now();
     }
 
-    inline void messureEnd() {
+    inline void measureEnd() {
         *((std::chrono::high_resolution_clock::time_point *)&m_endTime) =
             std::chrono::high_resolution_clock::now();
     }
