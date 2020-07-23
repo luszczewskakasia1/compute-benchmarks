@@ -1,0 +1,29 @@
+Running 10 iterations of each benchmark
+
+                                          TestCase      Mean [ns]    Median [ns]         StdDev       Min [ns]       Max [ns]
+                     BestWalkerSubmission(api=ocl)         546978         548605          0.83%         521001         561317
+                  EmptyKernel(api=ocl,gws=1,lws=1)         547406         548590          1.05%         531784         565502
+                EmptyKernel(api=ocl,gws=16,lws=16)         547216         548796          0.58%         520801         557303
+                EmptyKernel(api=ocl,gws=32,lws=32)         545052         544016          1.59%         513208         572415
+              EmptyKernel(api=ocl,gws=256,lws=256)         543902         546991          1.34%         516576         566930
+                EmptyKernel(api=ocl,gws=100,lws=1)         547834         550090          0.85%         527224         562493
+              EmptyKernel(api=ocl,gws=1600,lws=16)         550916         553793          0.45%         533144         558818
+              EmptyKernel(api=ocl,gws=3200,lws=32)         546093         548251          1.07%         517548         564514
+            EmptyKernel(api=ocl,gws=25600,lws=256)         541137         545649          0.68%         504967         552740
+               EmptyKernel(api=ocl,gws=1000,lws=1)         546771         548438          0.72%         524372         559296
+             EmptyKernel(api=ocl,gws=16000,lws=16)         549306         549686          0.54%         534594         558683
+             EmptyKernel(api=ocl,gws=32000,lws=32)         544747         547102          0.99%         514049         561798
+           EmptyKernel(api=ocl,gws=256000,lws=256)         552821         552182          0.59%         543146         563126
+              EmptyKernel(api=ocl,gws=10000,lws=1)         553448         555349          0.42%         534923         560739
+            EmptyKernel(api=ocl,gws=160000,lws=16)         552886         556527          1.43%         523309         577967
+            EmptyKernel(api=ocl,gws=320000,lws=32)         552130         555888          0.85%         527540         566945
+          EmptyKernel(api=ocl,gws=2560000,lws=256)         594774         596920          0.64%         571442         606725
+            NewResourcesSubmission(api=ocl,size=1)         300872         304069          0.92%         285220         309631
+        NewResourcesSubmission(api=ocl,size=65536)         298829         300005          0.66%         291517         305039
+       NewResourcesSubmission(api=ocl,size=524288)         304949         303735          0.93%         301207         313951
+      NewResourcesSubmission(api=ocl,size=1048576)         311848         303207          9.08%         289224         401426
+     NewResourcesSubmission(api=ocl,size=16777216)         500544         418684         12.86%         382029         704148
+     NewResourcesSubmission(api=ocl,size=67108864)         787752         788704          0.38%         776067         797262
+    NewResourcesSubmission(api=ocl,size=268435456)        1777641        1772700          0.53%        1764059        1807485
+   NewResourcesSubmission(api=ocl,size=1073741824)        6125321        6103106          1.13%        6093023        6344771
+                      RoundTripSubmission(api=ocl)         553358         555111          0.64%         529480         564512
