@@ -66,11 +66,11 @@ constexpr static int columnWidths[] = {50, 15, 15, 15, 15, 15};
 void Statistics::printStatisticsHeader() {
     int column = 0;
     std::cout << std::setw(columnWidths[column++]) << "TestCase";
-    std::cout << std::setw(columnWidths[column++]) << "Mean";
-    std::cout << std::setw(columnWidths[column++]) << "Median";
-    std::cout << std::setw(columnWidths[column++]) << "StdDev";
-    std::cout << std::setw(columnWidths[column++]) << "Min";
-    std::cout << std::setw(columnWidths[column++]) << "Max";
+    std::cout << std::setw(columnWidths[column++]) << "Mean [ns]";
+    std::cout << std::setw(columnWidths[column++]) << "Median [ns]";
+    std::cout << std::setw(columnWidths[column++]) << "StdDev [ns]";
+    std::cout << std::setw(columnWidths[column++]) << "Min [ns]";
+    std::cout << std::setw(columnWidths[column++]) << "Max [ns]";
     std::cout << std::endl;
 }
 
