@@ -5,8 +5,6 @@ A set of benchmarks created to help measuring performance impact of Ultra Low La
 Ulls Benchmark is currently not released in binary form.
 
 ## Building
-To generate build files (VS solution, makefiles, etc.) run a build script suited for your OS (build.bat for Windows, build.sh for Linux). Beside running CMake it will also run the git command, which will download project's dependencies from external repositories.
-
 By default UllsBenchmark enables both OpenCL and LevelZero benchmarks. They can be disabled with commandline arguments to CMake. Example OpenCL-only build invocation:
 ```
     cmake .. -DTEST_L0=OFF -DTEST_OCL=ON
