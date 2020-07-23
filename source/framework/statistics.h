@@ -16,7 +16,7 @@ class Statistics {
     Value max();
     Value mean();
     Value median();
-    Value standardDeviation();
+    double standardDeviation();
 
     static void printStatisticsHeader();
     void printStatistics(const std::string &testCaseName);
