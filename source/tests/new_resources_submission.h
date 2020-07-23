@@ -7,27 +7,27 @@
 namespace UllsTest {
 
 struct NewResourcesSubmissionArguments : TestCaseArguments {
-    size_t sizeMB;
+    size_t size;
 
     std::string getHelp() override {
-        return "\t--sizeMB=X\n";
+        return "\t--size=X\n";
     }
 
     std::string getCurrentConfig() override {
         std::ostringstream result;
-        result << "sizeMB=" << sizeMB << "";
+        result << "size=" << size << "";
         return result.str();
     }
 
     bool parseArgument(const std::string &key, const std::string &value) override {
-        if (key == "--sizeMB") {
-            sizeMB = std::atoi(value.c_str());
+        if (key == "--size") {
+            size = std::atoi(value.c_str());
         }
         return true;
     }
 
     bool validateArguments() override {
-        return sizeMB != 0;
+        return size != 0;
     }
 };
 

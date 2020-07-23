@@ -27,11 +27,15 @@ static bool run(const NewResourcesSubmissionArguments &arguments, Statistics &st
 
     // Warmup kernel
     const size_t gws = 1;
-    const size_t sizeInBytes = arguments.sizeMB * 1024 * 1024;
+    const size_t sizeInBytes = arguments.size;
     cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, sizeInBytes, nullptr, &retVal);
+    ASSERT_CL_SUCCESS(retVal);
     retVal |= clSetKernelArg(kernel, 0, sizeof(buffer), &buffer);
+    ASSERT_CL_SUCCESS(retVal);
     retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, nullptr);
+    ASSERT_CL_SUCCESS(retVal);
     retVal |= clFinish(opencl.commandQueue);
+    ASSERT_CL_SUCCESS(retVal);
     retVal |= clReleaseMemObject(buffer);
     ASSERT_CL_SUCCESS(retVal);
 
