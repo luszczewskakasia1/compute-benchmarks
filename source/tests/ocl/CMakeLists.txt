@@ -1,3 +1,10 @@
+option(TEST_OCL "Enable OpenCL benchmarks" ON)
+if(NOT TEST_OCL)
+    message(STATUS "Skipping OpenCL tests")
+    return()
+endif()
+message(STATUS "Including OpenCL tests")
+
 find_package(OpenCL QUIET)
 if(NOT ${OpenCL_FOUND})
     set(ADDITIONAL_PATH "${CMAKE_SOURCE_DIR}/opencl-sdk")

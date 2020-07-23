@@ -1,3 +1,10 @@
+option(TEST_L0 "Enable LevelZero benchmarks" ON)
+if(NOT TEST_L0)
+    message(STATUS "Skipping LevelZero tests")
+    return()
+endif()
+message(STATUS "Including LevelZero tests")
+
 find_package(LevelZero QUIET)
 if(NOT ${LevelZero_FOUND})
     set(ADDITIONAL_PATH "${CMAKE_SOURCE_DIR}/level-zero-sdk")

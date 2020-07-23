@@ -7,7 +7,12 @@ Ulls Benchmark is currently not released in binary form.
 ## Building
 To generate build files (VS solution, makefiles, etc.) run a build script suited for your OS (build.bat for Windows, build.sh for Linux). Beside running CMake it will also run the git command, which will download project's dependencies from external repositories.
 
-UllsBenchmark requires both OpenCL and LevelZero to be built. If those libraries are properly installed in your system, CMake should find them and build without problems. In case of failure there's also a fallback path, put the required SDKs in root directory like so:
+By default UllsBenchmark enables both OpenCL and LevelZero benchmarks. They can be disabled with commandline arguments to CMake. Example OpenCL-only build invocation:
+```
+    cmake .. -DTEST_L0=OFF -DTEST_OCL=ON
+```
+
+UllsBenchmark requires SDK for the APIs used. If the libraries are properly installed in your system, CMake should find them and build without problems. In case of failure or inability to install the libraries, there's also a fallback path, put the required SDKs in root directory like so:
 ```
 +-- build
 +-- level-zero-sdk
