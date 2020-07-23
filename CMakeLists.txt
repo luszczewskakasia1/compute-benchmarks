@@ -5,8 +5,8 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # Gtest
-set(gtest_force_shared_crt off)
-set(BUILD_GMOCK off)
+set(gtest_force_shared_crt OFF CACHE BOOL "")
+set(BUILD_GMOCK OFF CACHE BOOL "")
 add_subdirectory(third_party/googletest)
 
 # Benchmark
