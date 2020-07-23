@@ -43,11 +43,10 @@ static bool run(const NewResourcesSubmissionArguments &arguments, Statistics &st
 
         timer.measureStart();
         retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, nullptr);
-        retVal |= clFlush(opencl.commandQueue);
+        retVal |= clFinish(opencl.commandQueue);
         timer.messureEnd();
         ASSERT_CL_SUCCESS(retVal);
 
-        retVal |= clFinish(opencl.commandQueue);
         retVal |= clReleaseMemObject(buffer);
         ASSERT_CL_SUCCESS(retVal);
 
