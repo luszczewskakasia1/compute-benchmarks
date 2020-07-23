@@ -1,4 +1,3 @@
-set(TARGET_NAME ulls_benchmark)
 add_executable(${TARGET_NAME})
 target_link_libraries(${TARGET_NAME} PRIVATE gtest)
 target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
