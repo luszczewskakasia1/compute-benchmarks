@@ -1,5 +1,7 @@
 #include "tests/best_walker_submission.h"
 
+#include <gtest/gtest.h>
+
 class BestWalkerSubmissionTest : public ::testing::TestWithParam<Api> {
 };
 

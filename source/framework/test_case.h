@@ -5,6 +5,8 @@
 #include "framework/string_utils.h"
 
 #include <cassert>
+#include <functional>
+#include <iostream>
 #include <string>
 #include <type_traits>
 
@@ -29,9 +31,12 @@ struct TestCaseArguments {
 
 template <typename Arguments>
 class TestCase : public TestCaseInterface {
-    static_assert(std::is_base_of_v<TestCaseArguments, Arguments>, "Arguments class should from TestCaseArguments");
+    static_assert(std::is_base_of_v<TestCaseArguments, Arguments>, "Arguments class should derive from TestCaseArguments");
 
   public:
+    using BenchmarkImplementation = std::function<bool(Arguments, Statistics &)>;
+    static inline BenchmarkImplementation implementations[(int)Api::COUNT];
+
     TestCase() = default;
     TestCase(Arguments arguments) : arguments(arguments) {
     }
@@ -45,20 +50,20 @@ class TestCase : public TestCaseInterface {
     }
 
     void run() {
+        // Get implementation
+        const auto apiIndex = static_cast<int>(arguments.api);
+        if (apiIndex >= static_cast<int>(Api::COUNT)) {
+            std::cerr << "WARNING: unknown API selected. Test was skipped.\n";
+            return;
+        }
+        const auto benchmarkImplementation = implementations[apiIndex];
+        if (benchmarkImplementation == nullptr) {
+            return;
+        }
+
         // Run test
         Statistics statistics{arguments.iterations};
-        bool testWasRun = false;
-        switch (arguments.api) {
-        case Api::OpenCL:
-            testWasRun = runOcl(arguments, statistics);
-            break;
-        case Api::L0:
-            testWasRun = runL0(arguments, statistics);
-            break;
-        default:
-            std::cerr << "WARNING: unknown API selected. Test was skipped.\n";
-            break;
-        }
+        const bool testWasRun = benchmarkImplementation(arguments, statistics);
         if (!testWasRun) {
             assert(statistics.isEmpty());
             return;
@@ -119,9 +124,6 @@ class TestCase : public TestCaseInterface {
 
         return true;
     }
-
-    virtual bool runOcl(const Arguments &arguments, Statistics &statistics) { return false; }
-    virtual bool runL0(const Arguments &arguments, Statistics &statistics) { return false; };
 
   private:
     Arguments arguments = {};

@@ -1,5 +1,7 @@
 #include "tests/best_submission.h"
 
+#include <gtest/gtest.h>
+
 class BestrSubmissionTest : public ::testing::TestWithParam<Api> {
 };
 

@@ -1,5 +1,7 @@
 #include "tests/completion_latency.h"
 
+#include <gtest/gtest.h>
+
 class CompletionLatencyTest : public ::testing::TestWithParam<Api> {
 };
 

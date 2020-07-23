@@ -1,5 +1,7 @@
 #include "tests/empty_kernel.h"
 
+#include <gtest/gtest.h>
+
 class EmptyKernelSubmissionTest : public ::testing::TestWithParam<std::tuple<Api, size_t, size_t>> {
 };
 

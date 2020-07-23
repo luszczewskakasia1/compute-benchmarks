@@ -1,5 +1,7 @@
 #include "tests/new_resources_submission.h"
 
+#include <gtest/gtest.h>
+
 class NewResourcesSubmissionTest : public ::testing::TestWithParam<std::tuple<Api, size_t>> {
 };
 
