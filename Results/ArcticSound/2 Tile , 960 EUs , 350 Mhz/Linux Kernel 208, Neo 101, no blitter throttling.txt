@@ -1,0 +1,30 @@
+./ulls_benchmark
+Running 10 iterations of each benchmark
+
+                                          TestCase      Mean [ns]    Median [ns]    StdDev [ns]       Min [ns]       Max [ns]
+                     BestWalkerSubmission(api=ocl)        1014431         892058         204089         848447        1659819
+                  EmptyKernel(api=ocl,gws=1,lws=1)         691308         700798           8762         659650         719018
+                EmptyKernel(api=ocl,gws=16,lws=16)         708068         712479          13932         676649         752126
+                EmptyKernel(api=ocl,gws=32,lws=32)         698886         704402           5922         659423         717614
+              EmptyKernel(api=ocl,gws=256,lws=256)         696212         694733           7552         661841         720095
+                EmptyKernel(api=ocl,gws=100,lws=1)         701730         701522           7094         680857         724166
+              EmptyKernel(api=ocl,gws=1600,lws=16)         697894         698246           6509         679066         718478
+              EmptyKernel(api=ocl,gws=3200,lws=32)         702403         703066           9436         680446         732245
+            EmptyKernel(api=ocl,gws=25600,lws=256)         699012         699478          11547         671968         735528
+               EmptyKernel(api=ocl,gws=1000,lws=1)         705904         702342          11155         679492         741180
+             EmptyKernel(api=ocl,gws=16000,lws=16)         704424         700732          18762         683684         763755
+             EmptyKernel(api=ocl,gws=32000,lws=32)         703170         701958           7497         666309         726880
+           EmptyKernel(api=ocl,gws=256000,lws=256)         694630         692708           9817         659355         725676
+              EmptyKernel(api=ocl,gws=10000,lws=1)         699232         699823          12652         675205         739244
+            EmptyKernel(api=ocl,gws=160000,lws=16)         696062         695976          12129         667437         734420
+            EmptyKernel(api=ocl,gws=320000,lws=32)         700934         692597          19243         665410         761786
+          EmptyKernel(api=ocl,gws=2560000,lws=256)         703405         700410          24299         669787         780247
+            NewResourcesSubmission(api=ocl,size=1)        1771571        1637487         387440        1426578        2996764
+        NewResourcesSubmission(api=ocl,size=65536)        3113174        3078741         242578        1772016        3880273
+       NewResourcesSubmission(api=ocl,size=524288)        3387737        3558428         181608        2125664        3962033
+      NewResourcesSubmission(api=ocl,size=1048576)        2452137        2212396         460750        1776995        3909157
+     NewResourcesSubmission(api=ocl,size=16777216)        3387543        3360617         147955        3027525        3855418
+     NewResourcesSubmission(api=ocl,size=67108864)        7228416        7115875         173651        6908983        7777550
+    NewResourcesSubmission(api=ocl,size=268435456)       21756604       21775934          54813       21535165       21929941
+   NewResourcesSubmission(api=ocl,size=1073741824)       80065878       79800139         760981       79339103       82472314
+                      RoundTripSubmission(api=ocl)         759679         761057           4813         741775         774901
