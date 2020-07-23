@@ -37,7 +37,7 @@ int executeAllTests(int argc, char **argv) {
             gtestIterations = std::atoi(value.c_str());
         }
     }
-    std::cout << "Running " << gtestIterations << " iterations of each benchmark\n" << std::endl;
+    std::cout << "Running " << gtestIterations << " iterations of each benchmark\n\n";
     if (gtestIterations == 0) {
         return 0;
     }
@@ -54,22 +54,24 @@ int printHelp() {
     std::cout << "UllsBenchmark is a set of tests aimed at measuring Ultra Low Latency Submission (ULLS) performance impact. "
                  "It works in two modes described below. Example invocations:\n"
                  "\t.\\ulls_benchmark.exe\n"
+                 "\t.\\ulls_benchmark.exe --iterations=100\n"
                  "\t.\\ulls_benchmark.exe --gtest_filter=*NewResourcesSubmission*\n"
                  "\t.\\ulls_benchmark.exe --test=EmptyKernel --workgroupSize=64 --workgroupCount=30\n"
                  "\t.\\ulls_benchmark.exe --test=EmptyKernel --api=ocl --workgroupSize=64 --workgroupCount=30\n"
+                 "\t.\\ulls_benchmark.exe --test=EmptyKernel --api=ocl --workgroupSize=64 --workgroupCount=30 --iterations=100\n"
                  "\n"
-                 "Fist mode is the default and it runs all available benchmarks in many predefined configurations. Underlying test engine "
-                 "is googletest, so standard googletest arguments like --gtest_filter can be used, if necessary."
+                 "First mode is the default and it runs all available benchmarks in many predefined configurations. Underlying test engine "
+                 "is googletest, so standard googletest arguments like --gtest_filter can be used, if necessary. Number of iterations can "
+                 "be selected with --iterations argument."
                  "\n\n"
                  "Second mode runs one specific benchmark with custom parameter values. Running benchmarks in this fashion requires "
-                 "using --test argument, followed by benchmark-specific parameters. Compute API (ocl or levelzero) can be selected with "
-                 "the --api parameter."
-                 "\n\n"
-                 "Available test cases:"
+                 "using --test argument, followed by benchmark-specific parameters. All parameters have to be specified, there are no "
+                 "default values. Compute API (ocl or levelzero) can be selected with  the --api parameter. Number of iterations can "
+                 "be selected with --iterations argument. Available test cases:"
                  "\n";
     for (const auto &entry : getTestMap()) {
         TestCaseInterface &testCase = *entry.second.get();
-        std::cout << testCase.getTestCaseName() << " - " << testCase.getHelp();
+        std::cout << '\t' << testCase.getTestCaseName() << " - " << testCase.getHelp();
         const auto helpParameters = testCase.getHelpParameters();
         if (helpParameters.size() != 0) {
             std::cout << " Parameters:\n"
