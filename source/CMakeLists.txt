@@ -1,4 +1,5 @@
-add_executable(${TARGET_NAME})
+# Define executable
+add_executable(${TARGET_NAME} CMakeLists.txt)
 target_link_libraries(${TARGET_NAME} PRIVATE gtest)
 target_include_directories(${TARGET_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(${TARGET_NAME} PRIVATE ../third_party/googletest/googletest/include)
@@ -7,7 +8,21 @@ if(DEFINED OUTPUT_DIR)
     set_target_properties(${TARGET_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIR}")
 endif()
 
+# Add sources
 add_subdirectory(framework)
 add_subdirectory(tests)
-get_target_property(SOURCES ${TARGET_NAME} SOURCES)
-source_group (TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCES})
+
+# Setup VS folders
+if (MSVC)
+    get_target_property(SOURCES ${TARGET_NAME} SOURCES)
+    source_group (TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCES})
+endif()
+
+# Link to compute libraries
+function(tryLinkTo DEPENDENCY)
+    if(TARGET ${DEPENDENCY})
+        target_link_libraries(${TARGET_NAME} PRIVATE ${DEPENDENCY})
+    endif()
+endfunction()
+tryLinkTo(OclInterface)
+tryLinkTo(LevelZeroInterface)

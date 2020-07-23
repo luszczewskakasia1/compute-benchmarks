@@ -20,5 +20,7 @@ endif()
 
 file(GLOB_RECURSE SOURCES *.cpp *.h)
 target_sources(${TARGET_NAME} PRIVATE ${SOURCES})
-target_link_libraries(${TARGET_NAME} PRIVATE ${OpenCL_LIBRARIES})
-target_include_directories(${TARGET_NAME} PRIVATE ${OpenCL_INCLUDE_DIRS})
+
+add_library(OclInterface INTERFACE)
+target_link_libraries(OclInterface INTERFACE ${OpenCL_LIBRARIES})
+target_include_directories(OclInterface INTERFACE ${OpenCL_INCLUDE_DIRS})
