@@ -1,3 +1,13 @@
+Machine fm06wvaw1193
+atspo208
+intel-opencl-101
+Freq    350 MHz
+EUs     960
+Tiles   2T
+enable_hw_throttle_blt  0
+OCL WAs Yes
+
+
 ./ulls_benchmark
 Running 10 iterations of each benchmark
 

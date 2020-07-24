@@ -1,3 +1,15 @@
+Machine fm06wvaw1193
+atspo208
+intel-opencl-101
+Freq    350 MHz
+EUs     960
+Tiles   2T
+enable_hw_throttle_blt  0
+OCL WAs Yes
+KMD options:
+echo off > /sys/kernel/debug/kmemleak
+echo 0 > /sys/module/drm/parameters/debug
+
                                           TestCase      Mean [ns]    Median [ns]    StdDev [ns]       Min [ns]       Max [ns]
                      BestWalkerSubmission(api=ocl)         562974         516618          87278         510693         838974
                   EmptyKernel(api=ocl,gws=1,lws=1)         465886         460839           9453         449033         495781
