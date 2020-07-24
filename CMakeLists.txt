@@ -4,6 +4,11 @@ set(PREDEFINED_TARGETS_FOLDER "CustomTargets")
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+# Enable MT Compilation in VisualStudio
+if (MSVC)
+    add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/MP>)
+endif()
+
 # Load dependencies
 if(NOT EXISTS third_party/googletest/CMakeLists.txt)
     execute_process(COMMAND git submodule update --init --recursive
