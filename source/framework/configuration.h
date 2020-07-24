@@ -6,6 +6,7 @@ struct Configuration {
     enum class PrintType {
         Default,
         Csv,
+        Verbose,
     } printType = PrintType::Default;
     int iterations = 10;
 };

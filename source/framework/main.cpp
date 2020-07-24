@@ -38,6 +38,7 @@ int printHelp() {
                  "It works in two modes described below. Parameters applicable for both modes:\n"
                  "\t--iterations=X - select how many times each test will be run\n"
                  "\t--csv          - dump results in CSV format for easy imports to spreadsheets\n"
+                 "\t--verbose      - dump results from all iterations\n"
                  "\n"
                  "Example invocations:\n"
                  "\t.\\ulls_benchmark.exe\n"

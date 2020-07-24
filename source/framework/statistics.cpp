@@ -69,6 +69,7 @@ constexpr static char *columnLabels[] = {"TestCase", "Mean [ns]", "Median [ns]",
 void Statistics::printStatisticsHeader(Configuration::PrintType printType) {
     const int columnCount = sizeof(columnWidths) / sizeof(columnWidths[0]);
     switch (printType) {
+    case Configuration::PrintType::Verbose:
     case Configuration::PrintType::Default: {
         for (int column = 0; column < columnCount; column++) {
             std::cout << std::setw(columnWidths[column]) << columnLabels[column];
@@ -93,6 +94,7 @@ void Statistics::printStatisticsHeader(Configuration::PrintType printType) {
 
 void Statistics::printStatistics(const std::string &testCaseName, Configuration::PrintType printType) {
     switch (printType) {
+    case Configuration::PrintType::Verbose:
     case Configuration::PrintType::Default: {
         int column = 0;
         std::cout << std::setw(columnWidths[column++]) << testCaseName;
@@ -117,5 +119,16 @@ void Statistics::printStatistics(const std::string &testCaseName, Configuration:
     default:
         std::cerr << "ERROR: unknown print type selected\n";
         abort();
+    }
+
+    if (printType == Configuration::PrintType::Verbose) {
+        for (int i = 0; i < samplesCount; i++) {
+            std::cout << samples[i];
+            if (i != samplesCount - 1) {
+                std::cout << " ";
+            } else {
+                std::cout << "\n\n";
+            }
+        }
     }
 }

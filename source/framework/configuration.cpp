@@ -16,5 +16,8 @@ void parseArgumentsForConfiguration(int argc, char **argv) {
         if (key == "--csv") {
             ::configuration.printType = Configuration::PrintType::Csv;
         }
+        if (key == "--verbose") {
+            ::configuration.printType = Configuration::PrintType::Verbose;
+        }
     }
 }
