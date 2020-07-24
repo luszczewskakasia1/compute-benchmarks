@@ -64,25 +64,58 @@ double Statistics::standardDeviation() {
 }
 
 constexpr static int columnWidths[] = {50, 15, 15, 15, 15, 15};
+constexpr static char *columnLabels[] = {"TestCase", "Mean [ns]", "Median [ns]", "StdDev", "Min [ns]", "Max [ns]"};
 
-void Statistics::printStatisticsHeader() {
-    int column = 0;
-    std::cout << std::setw(columnWidths[column++]) << "TestCase";
-    std::cout << std::setw(columnWidths[column++]) << "Mean [ns]";
-    std::cout << std::setw(columnWidths[column++]) << "Median [ns]";
-    std::cout << std::setw(columnWidths[column++]) << "StdDev";
-    std::cout << std::setw(columnWidths[column++]) << "Min [ns]";
-    std::cout << std::setw(columnWidths[column++]) << "Max [ns]";
-    std::cout << std::endl;
+void Statistics::printStatisticsHeader(Configuration::PrintType printType) {
+    const int columnCount = sizeof(columnWidths) / sizeof(columnWidths[0]);
+    switch (printType) {
+    case Configuration::PrintType::Default: {
+        for (int column = 0; column < columnCount; column++) {
+            std::cout << std::setw(columnWidths[column]) << columnLabels[column];
+        }
+        std::cout << std::endl;
+        break;
+    }
+    case Configuration::PrintType::Csv:
+        for (int column = 0; column < columnCount; column++) {
+            std::cout << columnLabels[column];
+            if (column != columnCount - 1) {
+                std::cout << ",";
+            }
+        }
+        std::cout << std::endl;
+        break;
+    default:
+        std::cerr << "ERROR: unknown print type selected\n";
+        abort();
+    }
 }
 
-void Statistics::printStatistics(const std::string &testCaseName) {
-    int column = 0;
-    std::cout << std::setw(columnWidths[column++]) << testCaseName;
-    std::cout << std::setw(columnWidths[column++]) << mean();
-    std::cout << std::setw(columnWidths[column++]) << median();
-    std::cout << std::setw(columnWidths[column++] - 1) << std::fixed << std::setprecision(2) << 100 * standardDeviation() << "%";
-    std::cout << std::setw(columnWidths[column++]) << min();
-    std::cout << std::setw(columnWidths[column++]) << max();
-    std::cout << std::endl;
+void Statistics::printStatistics(const std::string &testCaseName, Configuration::PrintType printType) {
+    switch (printType) {
+    case Configuration::PrintType::Default: {
+        int column = 0;
+        std::cout << std::setw(columnWidths[column++]) << testCaseName;
+        std::cout << std::setw(columnWidths[column++]) << mean();
+        std::cout << std::setw(columnWidths[column++]) << median();
+        std::cout << std::setw(columnWidths[column++] - 1) << std::fixed << std::setprecision(2) << 100 * standardDeviation() << "%";
+        std::cout << std::setw(columnWidths[column++]) << min();
+        std::cout << std::setw(columnWidths[column++]) << max();
+        std::cout << std::endl;
+        break;
+    }
+    case Configuration::PrintType::Csv: {
+        std::cout << testCaseName << ",";
+        std::cout << mean() << ",";
+        std::cout << median() << ",";
+        std::cout << std::fixed << std::setprecision(2) << 100 * standardDeviation() << "%,";
+        std::cout << min() << ",";
+        std::cout << max();
+        std::cout << std::endl;
+        break;
+    }
+    default:
+        std::cerr << "ERROR: unknown print type selected\n";
+        abort();
+    }
 }

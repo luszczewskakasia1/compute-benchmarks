@@ -8,7 +8,6 @@ class BestWalkerSubmissionTest : public ::testing::TestWithParam<Api> {
 TEST_P(BestWalkerSubmissionTest, Test) {
     UllsTest::BestWalkerSubmissionArguments args{};
     args.api = GetParam();
-    args.iterations = ::gtestIterations;
 
     UllsTest::BestWalkerSubmission test{args};
     test.run();

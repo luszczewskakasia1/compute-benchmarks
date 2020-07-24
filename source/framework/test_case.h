@@ -1,6 +1,7 @@
 #pragma once
 
 #include "framework/api.h"
+#include "framework/configuration.h"
 #include "framework/statistics.h"
 #include "framework/string_utils.h"
 
@@ -9,8 +10,6 @@
 #include <iostream>
 #include <string>
 #include <type_traits>
-
-extern int gtestIterations;
 
 struct TestCaseInterface {
     virtual bool runFromCommandLine(int argc, char **argv) = 0;
@@ -26,7 +25,7 @@ struct TestCaseArguments {
     virtual std::string getCurrentConfig() { return ""; }
 
     Api api = Api::Default;
-    int iterations = 1;
+    int iterations = 0;
 };
 
 template <typename Arguments>
@@ -50,6 +49,13 @@ class TestCase : public TestCaseInterface {
     }
 
     void run() {
+        // Set iterations count from global configuration
+        if (arguments.iterations != 0) {
+            std::cerr << "WARNING: arguments.iterations was not zero. Overriding with value from global configuration - "
+                      << ::configuration.iterations << ".\n";
+        }
+        arguments.iterations = ::configuration.iterations;
+
         // Get implementation
         const auto apiIndex = static_cast<int>(arguments.api);
         if (apiIndex >= static_cast<int>(Api::COUNT)) {
@@ -62,7 +68,7 @@ class TestCase : public TestCaseInterface {
         }
 
         // Run test
-        Statistics statistics{arguments.iterations};
+        Statistics statistics{::configuration.iterations};
         const bool testWasRun = benchmarkImplementation(arguments, statistics);
         if (!testWasRun) {
             assert(statistics.isEmpty());
@@ -73,9 +79,9 @@ class TestCase : public TestCaseInterface {
         // Output performance results
         const auto apiString = std::string{arguments.api == Api::OpenCL ? "api=ocl" : "api=l0"};
         const auto currentConfig = arguments.getCurrentConfig();
-        const auto configWithApi = currentConfig.size() == 0 ? apiString : apiString + "," + currentConfig;
+        const auto configWithApi = currentConfig.size() == 0 ? apiString : apiString + " " + currentConfig;
         const auto testCaseNameWithConfig = getTestCaseName() + "(" + configWithApi + ")";
-        statistics.printStatistics(testCaseNameWithConfig);
+        statistics.printStatistics(testCaseNameWithConfig, ::configuration.printType);
     }
 
     std::string getHelpParameters() override {
@@ -117,11 +123,6 @@ class TestCase : public TestCaseInterface {
                 return false;
             }
         }
-
-        if (key == "--iterations") {
-            arguments.iterations = std::atoi(value.c_str());
-        }
-
         return true;
     }
 

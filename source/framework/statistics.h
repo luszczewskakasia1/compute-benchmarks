@@ -1,5 +1,7 @@
 #pragma once
 
+#include "framework/configuration.h"
+
 #include <memory>
 #include <string>
 
@@ -18,8 +20,8 @@ class Statistics {
     Value median();
     double standardDeviation();
 
-    static void printStatisticsHeader();
-    void printStatistics(const std::string &testCaseName);
+    static void printStatisticsHeader(Configuration::PrintType printType);
+    void printStatistics(const std::string &testCaseName, Configuration::PrintType printType);
 
   private:
     const int maxSamplesCount;

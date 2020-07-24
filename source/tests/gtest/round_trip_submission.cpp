@@ -8,7 +8,6 @@ class RoundTripSubmissionTest : public ::testing::TestWithParam<Api> {
 TEST_P(RoundTripSubmissionTest, Test) {
     UllsTest::RoundTripSubmissionArguments args{};
     args.api = GetParam();
-    args.iterations = ::gtestIterations;
 
     UllsTest::RoundTripSubmission test{args};
     test.run();

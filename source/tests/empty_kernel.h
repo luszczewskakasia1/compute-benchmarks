@@ -19,7 +19,7 @@ struct EmptyKernelArguments : TestCaseArguments {
         const auto gws = workgroupCount * workgroupSize;
         const auto lws = workgroupSize;
         std::ostringstream result;
-        result << "gws=" << gws << ",lws=" << lws << "";
+        result << "gws=" << gws << " lws=" << lws << "";
         return result.str();
     }
 

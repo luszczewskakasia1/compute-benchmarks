@@ -1,10 +1,16 @@
 #pragma once
 
+#include "framework/configuration.h"
+
 #include <gtest/gtest.h>
 #include <sstream>
 
 class CustomEventListener : public ::testing::TestEventListener {
-    void OnTestProgramStart(const ::testing::UnitTest &unitTest) override {}
+    void OnTestProgramStart(const ::testing::UnitTest &unitTest) override {
+        if (::configuration.printType != Configuration::PrintType::Csv) {
+            std::cout << "Running " << ::configuration.iterations << " iterations of each benchmark\n\n";
+        }
+    }
     void OnTestProgramEnd(const ::testing::UnitTest &unitTest) override {
         if (failsDetected) {
             std::cout << "\n"

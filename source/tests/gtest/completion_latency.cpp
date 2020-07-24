@@ -8,7 +8,6 @@ class CompletionLatencyTest : public ::testing::TestWithParam<Api> {
 TEST_P(CompletionLatencyTest, Test) {
     UllsTest::CompletionLatencyArguments args{};
     args.api = GetParam();
-    args.iterations = ::gtestIterations;
 
     UllsTest::CompletionLatency test{args};
     test.run();
