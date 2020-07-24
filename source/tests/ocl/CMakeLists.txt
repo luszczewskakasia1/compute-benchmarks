@@ -7,15 +7,16 @@ message(STATUS "Including OpenCL tests")
 
 find_package(OpenCL QUIET)
 if(NOT ${OpenCL_FOUND})
-    set(ADDITIONAL_PATH "${CMAKE_SOURCE_DIR}/opencl-sdk")
-    message(STATUS "OpenCL installation not found. Trying ${ADDITIONAL_PATH}")
+    set(ADDITIONAL_PATH "${CMAKE_SOURCE_DIR}/third_party/opencl-sdk")
+    message(STATUS "OpenCL installation not found. Using ${ADDITIONAL_PATH}")
 
-    set(OpenCL_LIBRARIES    "${ADDITIONAL_PATH}/lib/x64/OpenCL.lib")
-    set(OpenCL_INCLUDE_DIRS "${ADDITIONAL_PATH}/include")
-
-    if(NOT EXISTS ${OpenCL_LIBRARIES} OR NOT EXISTS ${OpenCL_INCLUDE_DIRS})
-        message(FATAL_ERROR "OpenCL not found.")
+    if (WIN32)
+        set(LIB_NAME OpenCL.lib)
+    else()
+        set(LIB_NAME libOpenCL.so)
     endif()
+    set(OpenCL_LIBRARIES    "${ADDITIONAL_PATH}/lib/x64/${LIB_NAME}")
+    set(OpenCL_INCLUDE_DIRS "${ADDITIONAL_PATH}/include")
 endif()
 
 file(GLOB_RECURSE SOURCES *.cpp *.h)

@@ -5,7 +5,7 @@ A set of benchmarks created to help measuring performance impact of Ultra Low La
 Ulls Benchmark is currently not released in binary form.
 
 ## Building
-Internally UllsBenchmark uses googletest, which is reference as a git submodule and has to be cloned separately. Cloning command is performed by CMake, but Intel employees may have to properly set up proxy. If building hangs on cloning googletest, run
+Internally UllsBenchmark uses googletest, which is referenced as a git submodule and has to be cloned separately. Cloning command is performed by CMake, but Intel employees may have to properly set up proxy. If building hangs on cloning googletest, run
 ```
 git config --global http.proxy http://proxy-chain.intel.com:911
 git config --global https.proxy http://proxy-chain.intel.com:912
@@ -18,33 +18,7 @@ By default UllsBenchmark enables both OpenCL and LevelZero benchmarks. They can 
     cmake .. -DTEST_L0=OFF -DTEST_OCL=ON
 ```
 
-UllsBenchmark requires SDK for the APIs used. If the libraries are properly installed in your system, CMake should find them and build without problems. In case of failure or inability to install the libraries, there's also a fallback path, put the required SDKs in root directory like so:
-```
-+-- build
-+-- level-zero-sdk
-|  +-- include
-|    +-- level_zero
-|      +-- ze_api.h
-|      +-- ze_barrier.h
-|      +-- ze_callbacks.h
-|      ...
-|  +-- lib
-|    +-- x64
-|      +-- ze_loader.lib
-+-- opencl-sdk
-|  +-- include
-|    +-- CL
-|      +-- cl.h
-|      +-- cl_icd.h
-|      +-- cl_platform.h
-|      ...
-|  +-- lib
-|    +-- x64
-|      +-- OpenCL.lib
-+-- source
-+-- third_party
-+-- CMakeLists.txt
-```
+UllsBenchmark will try to find SDKs for the APIs used. In case of inability to find those, it will use libraries contained in [third_party/opencl-sdk](third_party/opencl-sdk) and [third_party/level-zero-sdk](third_party/level-zero-sdk) directories.
 
 ## Running
 For specific information about how to run the benchmarks, please run the binary with "--help" parameter.

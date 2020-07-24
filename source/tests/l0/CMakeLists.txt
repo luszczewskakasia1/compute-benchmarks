@@ -7,15 +7,16 @@ message(STATUS "Including LevelZero tests")
 
 find_package(LevelZero QUIET)
 if(NOT ${LevelZero_FOUND})
-    set(ADDITIONAL_PATH "${CMAKE_SOURCE_DIR}/level-zero-sdk")
+    set(ADDITIONAL_PATH "${CMAKE_SOURCE_DIR}/third_party/level-zero-sdk")
     message(STATUS "Level Zero installation not found. Trying ${ADDITIONAL_PATH}")
 
-    set(LevelZero_LIBRARIES    "${ADDITIONAL_PATH}/lib/x64/ze_loader.lib")
-    set(LevelZero_INCLUDE_DIRS "${ADDITIONAL_PATH}/include")
-
-    if(NOT EXISTS ${LevelZero_LIBRARIES} OR NOT EXISTS ${LevelZero_INCLUDE_DIRS})
-        message(FATAL_ERROR "LevelZero not found.")
+    if (WIN32)
+        set(LIB_NAME ze_loader.lib)
+    else()
+        set(LIB_NAME libze_loader.so)
     endif()
+    set(LevelZero_LIBRARIES    "${ADDITIONAL_PATH}/lib/x64/${LIB_NAME}")
+    set(LevelZero_INCLUDE_DIRS "${ADDITIONAL_PATH}/include")
 endif()
 
 file(GLOB_RECURSE SOURCES *.cpp *.h)
