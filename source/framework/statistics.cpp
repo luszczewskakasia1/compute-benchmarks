@@ -64,7 +64,7 @@ double Statistics::standardDeviation() {
 }
 
 constexpr static int columnWidths[] = {50, 15, 15, 15, 15, 15};
-constexpr static char *columnLabels[] = {"TestCase", "Mean [ns]", "Median [ns]", "StdDev", "Min [ns]", "Max [ns]"};
+constexpr static const char *columnLabels[] = {"TestCase", "Mean [ns]", "Median [ns]", "StdDev", "Min [ns]", "Max [ns]"};
 
 void Statistics::printStatisticsHeader(Configuration::PrintType printType) {
     const int columnCount = sizeof(columnWidths) / sizeof(columnWidths[0]);
