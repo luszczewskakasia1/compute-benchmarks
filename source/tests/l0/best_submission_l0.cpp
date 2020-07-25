@@ -13,6 +13,7 @@ static bool run(const BestSubmissionArguments &arguments, Statistics &statistics
     constexpr static auto bufferSize = 4096u;
     const auto extensionLoaded = zeDriverGetExtensionFunctionAddress(levelzero.driver, "zexCommandListAppendPipeControl", (void **)&zexCommandListAppendPipeControl);
     if (extensionLoaded != ZE_RESULT_SUCCESS) {
+        std::cout << "Extension load failed\n";
         // Cannot run this benchmark without this experimental API
         return false;
     }
