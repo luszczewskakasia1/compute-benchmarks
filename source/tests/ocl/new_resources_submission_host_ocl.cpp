@@ -39,7 +39,7 @@ static bool run(const NewResourcesSubmissionHostArguments &arguments, Statistics
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
         timer.measureStart();
-        int *hostMemory = (int *)clHostMemAllocINTEL(opencl.context, nullptr, 64, 0, &retVal);
+        int *hostMemory = (int *)clHostMemAllocINTEL(opencl.context, nullptr, sizeInBytes, 0, &retVal);
         ASSERT_CL_SUCCESS(clSetKernelArgSVMPointer(kernel, 0, hostMemory));
         retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, nullptr);
         retVal |= clFinish(opencl.commandQueue);
