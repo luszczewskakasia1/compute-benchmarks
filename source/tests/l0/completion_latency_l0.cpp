@@ -19,8 +19,8 @@ static bool run(const CompletionLatencyArguments &arguments, Statistics &statist
     Timer timer;
 
     ze_host_mem_alloc_desc_t allocationDesc{ZE_HOST_MEM_ALLOC_DESC_VERSION_CURRENT, ZE_HOST_MEM_ALLOC_FLAG_DEFAULT};
-    void *buffer = nullptr;
-    ASSERT_ZE_RESULT_SUCCESS(zeDriverAllocHostMem(levelzero.driver, &allocationDesc, bufferSize, 0, &buffer));
+    uint64_t *buffer = nullptr;
+    ASSERT_ZE_RESULT_SUCCESS(zeDriverAllocHostMem(levelzero.driver, &allocationDesc, bufferSize, 0, (void **)(&buffer)));
     ASSERT_ZE_RESULT_SUCCESS(zeDeviceMakeMemoryResident(levelzero.device, buffer, bufferSize));
 
     // Create two command lists, one writes 0x0 to the memory location, the other one writes 0x1
@@ -45,7 +45,7 @@ static bool run(const CompletionLatencyArguments &arguments, Statistics &statist
         ze_command_list_handle_t currentCommandList = cmdLists[currentValueToWrite];
 
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &currentCommandList, nullptr));
-        while (*((uint64_t *)buffer) != currentValueToWrite) {
+        while (*buffer != currentValueToWrite) {
         }
         timer.measureStart();
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
