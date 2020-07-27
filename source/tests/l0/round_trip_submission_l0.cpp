@@ -2,6 +2,7 @@
 #include "framework/register_test_case.h"
 #include "framework/timer.h"
 #include "tests/round_trip_submission.h"
+#include "framework/load_binary_file.h"
 
 #include <gtest/gtest.h>
 #include <level_zero/zex_ddi.h>
@@ -19,10 +20,8 @@ static bool run(const RoundTripSubmissionArguments &arguments, Statistics &stati
     ASSERT_ZE_RESULT_SUCCESS(zeDeviceMakeMemoryResident(levelzero.device, buffer, bufferSize));
 
     // Create kernel    
-    uint32_t spirvSize = 0;
-    auto spirvModule = readBinaryFile("write_one.spv", spirvSize);
-
-    if (spirvSize == 0) {
+    auto spirvModule = loadBinaryFile("write_one.spv");
+    if (spirvModule.size() == 0) {
         std::cout << " Spirv size = 0. Aborting\n";
         return false;
     }
@@ -30,8 +29,8 @@ static bool run(const RoundTripSubmissionArguments &arguments, Statistics &stati
     ze_kernel_handle_t kernel;
     ze_module_desc_t moduleDesc = {ZE_MODULE_DESC_VERSION_CURRENT};
     moduleDesc.format = ZE_MODULE_FORMAT_IL_SPIRV;
-    moduleDesc.pInputModule = reinterpret_cast<const uint8_t *>(spirvModule.get());
-    moduleDesc.inputSize = spirvSize;
+    moduleDesc.pInputModule = reinterpret_cast<const uint8_t *>(spirvModule.data());
+    moduleDesc.inputSize = spirvModule.size();
     EXPECT_ZE_RESULT_SUCCESS(zeModuleCreate(levelzero.device, &moduleDesc, &module, nullptr));
 
     ze_kernel_desc_t kernelDesc = {ZE_KERNEL_DESC_VERSION_CURRENT};

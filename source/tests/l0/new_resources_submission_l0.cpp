@@ -1,4 +1,5 @@
 #include "framework/levelzero.h"
+#include "framework/load_binary_file.h"
 #include "framework/register_test_case.h"
 #include "framework/timer.h"
 #include "tests/new_resources_submission.h"
@@ -11,11 +12,9 @@ static bool run(const NewResourcesSubmissionArguments &arguments, Statistics &st
     LevelZero levelzero;
     Timer timer;
 
-    // Create kernel    
-    uint32_t spirvSize = 0;
-    auto spirvModule = readBinaryFile("write_one.spv", spirvSize);
-
-    if (spirvSize == 0) {
+    // Create kernel
+    auto spirvModule = loadBinaryFile("write_one.spv");
+    if (spirvModule.size() == 0) {
         std::cout << " Spirv size = 0. Aborting\n";
         return false;
     }
@@ -23,10 +22,9 @@ static bool run(const NewResourcesSubmissionArguments &arguments, Statistics &st
     ze_kernel_handle_t kernel;
     ze_module_desc_t moduleDesc = {ZE_MODULE_DESC_VERSION_CURRENT};
     moduleDesc.format = ZE_MODULE_FORMAT_IL_SPIRV;
-    moduleDesc.pInputModule = reinterpret_cast<const uint8_t *>(spirvModule.get());
-    moduleDesc.inputSize = spirvSize;
+    moduleDesc.pInputModule = reinterpret_cast<const uint8_t *>(spirvModule.data());
+    moduleDesc.inputSize = spirvModule.size();
     EXPECT_ZE_RESULT_SUCCESS(zeModuleCreate(levelzero.device, &moduleDesc, &module, nullptr));
-
     ze_kernel_desc_t kernelDesc = {ZE_KERNEL_DESC_VERSION_CURRENT};
     kernelDesc.pKernelName = "write_one";
     EXPECT_ZE_RESULT_SUCCESS(zeKernelCreate(module, &kernelDesc, &kernel));
@@ -50,7 +48,7 @@ static bool run(const NewResourcesSubmissionArguments &arguments, Statistics &st
     EXPECT_ZE_RESULT_SUCCESS(zeKernelSetGroupSize(kernel, groupSizeX, groupSizeY, groupSizeZ));
     ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernel, 0, sizeof(buffer), &buffer));
 
-    // Create command lists and append kernel to write_one
+    // Create command lists and append kernel to write one
     const ze_command_list_desc_t cmdListDesc = {ZE_COMMAND_LIST_DESC_VERSION_CURRENT};
     ze_command_list_handle_t cmdList;
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.device, &cmdListDesc, &cmdList));
@@ -88,4 +86,3 @@ static bool run(const NewResourcesSubmissionArguments &arguments, Statistics &st
 
 static RegisterTestCase<NewResourcesSubmission> registerTestCase(run, Api::L0);
 } // namespace UllsTest
-

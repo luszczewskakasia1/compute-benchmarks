@@ -22,7 +22,7 @@ static bool run(const BestWalkerSubmissionArguments &arguments, Statistics &stat
     volatile uint64_t *volatileBuffer = static_cast<uint64_t *>(buffer);
 
     // Create kernel
-    const auto kernelBinary = loadBinaryFile("write.spv");
+    const auto kernelBinary = loadBinaryFile("write_one.spv");
     ze_module_desc_t moduleDesc{};
     moduleDesc.version = ZE_MODULE_DESC_VERSION_CURRENT;
     moduleDesc.format = ZE_MODULE_FORMAT_IL_SPIRV;
@@ -35,7 +35,7 @@ static bool run(const BestWalkerSubmissionArguments &arguments, Statistics &stat
     ze_kernel_desc_t kernelDesc{};
     kernelDesc.version = ZE_KERNEL_DESC_VERSION_CURRENT;
     kernelDesc.flags = ZE_KERNEL_FLAG_NONE;
-    kernelDesc.pKernelName = "write";
+    kernelDesc.pKernelName = "write_one";
     ze_kernel_handle_t kernel;
     ASSERT_ZE_RESULT_SUCCESS(zeKernelCreate(module, &kernelDesc, &kernel));
 

@@ -1,4 +1,5 @@
 #include "framework/levelzero.h"
+#include "framework/load_binary_file.h"
 #include "framework/register_test_case.h"
 #include "framework/timer.h"
 #include "tests/empty_kernel.h"
@@ -13,39 +14,34 @@ static bool run(const EmptyKernelArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;
     Timer timer;
 
-    // Create kernel    
-    uint32_t spirvSize = 0;
-    auto spirvModule = readBinaryFile("empty_kernel.spv", spirvSize);
-
-    if (spirvSize == 0) {
+    // Create kernel
+    auto spirvModule = loadBinaryFile("empty_kernel.spv");
+    if (spirvModule.size() == 0) {
         std::cout << " Spirv size = 0. Aborting\n";
         return false;
     }
-
     ze_module_handle_t module;
     ze_kernel_handle_t kernel;
     ze_module_desc_t moduleDesc = {ZE_MODULE_DESC_VERSION_CURRENT};
     moduleDesc.format = ZE_MODULE_FORMAT_IL_SPIRV;
-    moduleDesc.pInputModule = reinterpret_cast<const uint8_t *>(spirvModule.get());
-    moduleDesc.inputSize = spirvSize;
+    moduleDesc.pInputModule = reinterpret_cast<const uint8_t *>(spirvModule.data());
+    moduleDesc.inputSize = spirvModule.size();
     EXPECT_ZE_RESULT_SUCCESS(zeModuleCreate(levelzero.device, &moduleDesc, &module, nullptr));
-
     ze_kernel_desc_t kernelDesc = {ZE_KERNEL_DESC_VERSION_CURRENT};
     kernelDesc.pKernelName = "empty";
     EXPECT_ZE_RESULT_SUCCESS(zeKernelCreate(module, &kernelDesc, &kernel));
 
-    uint32_t groupSizeX = arguments.workgroupSize;
+    uint32_t groupSizeX = static_cast<uint32_t>(arguments.workgroupSize);
     uint32_t groupSizeY = 1u;
     uint32_t groupSizeZ = 1u;
-
     EXPECT_ZE_RESULT_SUCCESS(zeKernelSetGroupSize(kernel, groupSizeX, groupSizeY, groupSizeZ));
 
     ze_group_count_t dispatchTraits;
-    dispatchTraits.groupCountX = arguments.workgroupCount;
+    dispatchTraits.groupCountX = static_cast<uint32_t>(arguments.workgroupCount);
     dispatchTraits.groupCountY = 1u;
     dispatchTraits.groupCountZ = 1u;
 
-    // Create command list and append empty kernel 
+    // Create command list and append empty kernel
     const ze_command_list_desc_t cmdListDesc = {ZE_COMMAND_LIST_DESC_VERSION_CURRENT};
     ze_command_list_handle_t cmdList;
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.device, &cmdListDesc, &cmdList));
@@ -57,9 +53,7 @@ static bool run(const EmptyKernelArguments &arguments, Statistics &statistics) {
     ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
 
     // Benchmark
-    int currentValueToWrite = 1;
     for (auto i = 0; i < arguments.iterations; i++) {
-
         timer.measureStart();
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
