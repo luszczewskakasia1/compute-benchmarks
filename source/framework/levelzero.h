@@ -7,7 +7,7 @@
 #define ASSERT_ZE_RESULT_SUCCESS(retVal)      \
     if (retVal != ZE_RESULT_SUCCESS) {        \
         EXPECT_EQ(ZE_RESULT_SUCCESS, retVal); \
-        return true;                          \
+        return TestResult::Error;             \
     }
 
 #define EXPECT_ZE_RESULT_SUCCESS(retVal)      \

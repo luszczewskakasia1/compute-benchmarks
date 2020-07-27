@@ -7,7 +7,7 @@
 #include <gtest/gtest.h>
 
 namespace UllsTest {
-static bool run(const BestWalkerSubmissionArguments &arguments, Statistics &statistics) {
+static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics &statistics) {
     // Setup
     Opencl opencl;
     Timer timer;
@@ -61,7 +61,7 @@ static bool run(const BestWalkerSubmissionArguments &arguments, Statistics &stat
     ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, hostMemory));
     ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
     ASSERT_CL_SUCCESS(clReleaseProgram(program));
-    return true;
+    return TestResult::Success;
 }
 
 static RegisterTestCase<BestWalkerSubmission> registerTestCase(run, Api::OpenCL);

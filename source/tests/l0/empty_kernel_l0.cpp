@@ -9,7 +9,7 @@
 
 namespace UllsTest {
 
-static bool run(const EmptyKernelArguments &arguments, Statistics &statistics) {
+static TestResult run(const EmptyKernelArguments &arguments, Statistics &statistics) {
     // Setup
     LevelZero levelzero;
     Timer timer;
@@ -17,8 +17,7 @@ static bool run(const EmptyKernelArguments &arguments, Statistics &statistics) {
     // Create kernel
     auto spirvModule = loadBinaryFile("empty_kernel.spv");
     if (spirvModule.size() == 0) {
-        std::cout << " Spirv size = 0. Aborting\n";
-        return false;
+        return TestResult::KernelNotFound;
     }
     ze_module_handle_t module;
     ze_kernel_handle_t kernel;
@@ -64,7 +63,7 @@ static bool run(const EmptyKernelArguments &arguments, Statistics &statistics) {
     ASSERT_ZE_RESULT_SUCCESS(zeKernelDestroy(kernel));
     ASSERT_ZE_RESULT_SUCCESS(zeModuleDestroy(module));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));
-    return true;
+    return TestResult::Success;
 }
 
 static RegisterTestCase<EmptyKernel> registerTestCase(run, Api::L0);

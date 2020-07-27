@@ -7,7 +7,7 @@
 
 namespace UllsTest {
 
-static bool run(const RoundTripSubmissionArguments &arguments, Statistics &statistics) {
+static TestResult run(const RoundTripSubmissionArguments &arguments, Statistics &statistics) {
     // Setup
     Opencl opencl;
     Timer timer;
@@ -52,7 +52,7 @@ static bool run(const RoundTripSubmissionArguments &arguments, Statistics &stati
     ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, hostMemory));
     ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
     ASSERT_CL_SUCCESS(clReleaseProgram(program));
-    return true;
+    return TestResult::Success;
 }
 
 static RegisterTestCase<RoundTripSubmission> registerTestCase(run, Api::OpenCL);

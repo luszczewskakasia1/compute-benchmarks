@@ -7,7 +7,7 @@
 
 namespace UllsTest {
 
-static bool run(const EmptyKernelArguments &arguments, Statistics &statistics) {
+static TestResult run(const EmptyKernelArguments &arguments, Statistics &statistics) {
     // Setup
     Opencl opencl;
     Timer timer;
@@ -44,7 +44,7 @@ static bool run(const EmptyKernelArguments &arguments, Statistics &statistics) {
     // Cleanup
     ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
     ASSERT_CL_SUCCESS(clReleaseProgram(program));
-    return true;
+    return TestResult::Success;
 }
 
 static RegisterTestCase<EmptyKernel> registerTestCase(run, Api::OpenCL);

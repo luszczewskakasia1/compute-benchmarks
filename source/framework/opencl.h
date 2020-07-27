@@ -9,7 +9,7 @@
 #define ASSERT_CL_SUCCESS(retVal)      \
     if (retVal != CL_SUCCESS) {        \
         EXPECT_EQ(CL_SUCCESS, retVal); \
-        return true;                   \
+        return TestResult::Error;      \
     }
 
 #define EXPECT_CL_SUCCESS(retVal)      \

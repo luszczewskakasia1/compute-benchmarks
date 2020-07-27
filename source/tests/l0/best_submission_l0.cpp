@@ -8,15 +8,13 @@
 #include <level_zero/zex_ddi.h>
 
 namespace UllsTest {
-static bool run(const BestSubmissionArguments &arguments, Statistics &statistics) {
+static TestResult run(const BestSubmissionArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;
     zex_pfnCommandListAppendPipeControl_t zexCommandListAppendPipeControl{};
     constexpr static auto bufferSize = 4096u;
     const auto extensionLoaded = zeDriverGetExtensionFunctionAddress(levelzero.driver, "zexCommandListAppendPipeControl", (void **)&zexCommandListAppendPipeControl);
     if (extensionLoaded != ZE_RESULT_SUCCESS) {
-        std::cout << "Extension load failed\n";
-        // Cannot run this benchmark without this experimental API
-        return false;
+        return TestResult::DriverFunctionNotFound;
     }
     Timer timer;
 
@@ -55,7 +53,7 @@ static bool run(const BestSubmissionArguments &arguments, Statistics &statistics
     ASSERT_ZE_RESULT_SUCCESS(zeDeviceEvictMemory(levelzero.device, buffer, bufferSize));
     ASSERT_ZE_RESULT_SUCCESS(zeDriverFreeMem(levelzero.driver, buffer));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));
-    return true;
+    return TestResult::Success;
 }
 
 static RegisterTestCase<BestSubmission> registerTestCase(run, Api::L0);

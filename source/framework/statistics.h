@@ -22,6 +22,7 @@ class Statistics {
 
     static void printStatisticsHeader(Configuration::PrintType printType);
     void printStatistics(const std::string &testCaseName, Configuration::PrintType printType);
+    void printStatisticsString(const std::string &testCaseName, Configuration::PrintType printType, const std::string &message);
 
   private:
     const int maxSamplesCount;

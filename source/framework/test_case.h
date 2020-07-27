@@ -28,12 +28,19 @@ struct TestCaseArguments {
     int iterations = 0;
 };
 
+enum class TestResult {
+    Success,
+    Error,
+    DriverFunctionNotFound,
+    KernelNotFound,
+};
+
 template <typename Arguments>
 class TestCase : public TestCaseInterface {
     static_assert(std::is_base_of_v<TestCaseArguments, Arguments>, "Arguments class should derive from TestCaseArguments");
 
   public:
-    using BenchmarkImplementation = std::function<bool(Arguments, Statistics &)>;
+    using BenchmarkImplementation = std::function<TestResult(Arguments, Statistics &)>;
     static inline BenchmarkImplementation implementations[(int)Api::COUNT];
 
     TestCase() = default;
@@ -67,21 +74,34 @@ class TestCase : public TestCaseInterface {
             return;
         }
 
-        // Run test
-        Statistics statistics{::configuration.iterations};
-        const bool testWasRun = benchmarkImplementation(arguments, statistics);
-        if (!testWasRun) {
-            assert(statistics.isEmpty());
-            return;
-        }
-        assert(statistics.isFull());
-
-        // Output performance results
+        // Get test case name
         const auto apiString = std::string{arguments.api == Api::OpenCL ? "api=ocl" : "api=l0"};
         const auto currentConfig = arguments.getCurrentConfig();
         const auto configWithApi = currentConfig.size() == 0 ? apiString : apiString + " " + currentConfig;
         const auto testCaseNameWithConfig = getTestCaseName() + "(" + configWithApi + ")";
-        statistics.printStatistics(testCaseNameWithConfig, ::configuration.printType);
+
+        // Run test
+        Statistics statistics{::configuration.iterations};
+        const TestResult testResult = benchmarkImplementation(arguments, statistics);
+        switch (testResult) {
+        case TestResult::Success:
+            assert(statistics.isFull());
+            statistics.printStatistics(testCaseNameWithConfig, ::configuration.printType);
+            break;
+        case TestResult::Error:
+            statistics.printStatisticsString(testCaseNameWithConfig, ::configuration.printType, "ERROR");
+            break;
+        case TestResult::DriverFunctionNotFound:
+            assert(statistics.isEmpty());
+            statistics.printStatisticsString(testCaseNameWithConfig, ::configuration.printType, "SKIPPED");
+            break;
+        case TestResult::KernelNotFound:
+            std::cerr << "ERROR: binary kernel was not found. Kernels should be located in workind directory";
+            std::abort();
+        default:
+            std::cerr << "ERROR: unknown result was returned by test.\n";
+            std::abort();
+        }
     }
 
     std::string getHelpParameters() override {

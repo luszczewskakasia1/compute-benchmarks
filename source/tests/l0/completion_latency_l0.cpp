@@ -8,14 +8,13 @@
 #include <level_zero/zex_ddi.h>
 
 namespace UllsTest {
-static bool run(const CompletionLatencyArguments &arguments, Statistics &statistics) {
+static TestResult run(const CompletionLatencyArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;
     zex_pfnCommandListAppendPipeControl_t zexCommandListAppendPipeControl{};
     constexpr static auto bufferSize = 4096u;
     const auto extensionLoaded = zeDriverGetExtensionFunctionAddress(levelzero.driver, "zexCommandListAppendPipeControl", (void **)&zexCommandListAppendPipeControl);
     if (extensionLoaded != ZE_RESULT_SUCCESS) {
-        // Cannot run this benchmark without this experimental API
-        return false;
+        return TestResult::DriverFunctionNotFound;
     }
     Timer timer;
 
@@ -55,7 +54,7 @@ static bool run(const CompletionLatencyArguments &arguments, Statistics &statist
 
     ASSERT_ZE_RESULT_SUCCESS(zeDriverFreeMem(levelzero.driver, buffer));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));
-    return true;
+    return TestResult::Success;
 }
 
 static RegisterTestCase<CompletionLatency> registerTestCase(run, Api::L0);

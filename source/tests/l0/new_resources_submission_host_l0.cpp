@@ -8,15 +8,14 @@
 #include <level_zero/zex_ddi.h>
 
 namespace UllsTest {
-static bool run(const NewResourcesSubmissionHostArguments &arguments, Statistics &statistics) {
+static TestResult run(const NewResourcesSubmissionHostArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;
     Timer timer;
 
     // Create kernel
     auto spirvModule = loadBinaryFile("write_one.spv");
     if (spirvModule.size() == 0) {
-        std::cout << " Spirv size = 0. Aborting\n";
-        return false;
+        return TestResult::KernelNotFound;
     }
     ze_module_handle_t module;
     ze_kernel_handle_t kernel;
@@ -88,7 +87,7 @@ static bool run(const NewResourcesSubmissionHostArguments &arguments, Statistics
 
     ASSERT_ZE_RESULT_SUCCESS(zeKernelDestroy(kernel));
     ASSERT_ZE_RESULT_SUCCESS(zeModuleDestroy(module));
-    return true;
+    return TestResult::Success;
 }
 
 static RegisterTestCase<NewResourcesSubmissionHost> registerTestCase(run, Api::L0);

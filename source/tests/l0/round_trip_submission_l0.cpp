@@ -1,14 +1,14 @@
 #include "framework/levelzero.h"
+#include "framework/load_binary_file.h"
 #include "framework/register_test_case.h"
 #include "framework/timer.h"
 #include "tests/round_trip_submission.h"
-#include "framework/load_binary_file.h"
 
 #include <gtest/gtest.h>
 #include <level_zero/zex_ddi.h>
 
 namespace UllsTest {
-static bool run(const RoundTripSubmissionArguments &arguments, Statistics &statistics) {
+static TestResult run(const RoundTripSubmissionArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;
     constexpr static auto bufferSize = 4096u;
     Timer timer;
@@ -19,11 +19,10 @@ static bool run(const RoundTripSubmissionArguments &arguments, Statistics &stati
     ASSERT_ZE_RESULT_SUCCESS(zeDriverAllocHostMem(levelzero.driver, &allocationDesc, bufferSize, 0, (void **)(&buffer)));
     ASSERT_ZE_RESULT_SUCCESS(zeDeviceMakeMemoryResident(levelzero.device, buffer, bufferSize));
 
-    // Create kernel    
+    // Create kernel
     auto spirvModule = loadBinaryFile("write_one.spv");
     if (spirvModule.size() == 0) {
-        std::cout << " Spirv size = 0. Aborting\n";
-        return false;
+        return TestResult::KernelNotFound;
     }
     ze_module_handle_t module;
     ze_kernel_handle_t kernel;
@@ -74,9 +73,8 @@ static bool run(const RoundTripSubmissionArguments &arguments, Statistics &stati
     ASSERT_ZE_RESULT_SUCCESS(zeModuleDestroy(module));
     ASSERT_ZE_RESULT_SUCCESS(zeDriverFreeMem(levelzero.driver, buffer));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));
-    return true;
+    return TestResult::Success;
 }
 
 static RegisterTestCase<RoundTripSubmission> registerTestCase(run, Api::L0);
 } // namespace UllsTest
-

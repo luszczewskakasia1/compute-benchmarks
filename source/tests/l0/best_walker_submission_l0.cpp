@@ -9,7 +9,7 @@
 #include <level_zero/zex_ddi.h>
 
 namespace UllsTest {
-static bool run(const BestWalkerSubmissionArguments &arguments, Statistics &statistics) {
+static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;
     constexpr static auto bufferSize = 4096u;
     Timer timer;
@@ -23,6 +23,9 @@ static bool run(const BestWalkerSubmissionArguments &arguments, Statistics &stat
 
     // Create kernel
     const auto kernelBinary = loadBinaryFile("write_one.spv");
+    if (kernelBinary.size() == 0) {
+        return TestResult::KernelNotFound;
+    }
     ze_module_desc_t moduleDesc{};
     moduleDesc.version = ZE_MODULE_DESC_VERSION_CURRENT;
     moduleDesc.format = ZE_MODULE_FORMAT_IL_SPIRV;
@@ -75,7 +78,7 @@ static bool run(const BestWalkerSubmissionArguments &arguments, Statistics &stat
     ASSERT_ZE_RESULT_SUCCESS(zeModuleDestroy(module));
     ASSERT_ZE_RESULT_SUCCESS(zeDriverFreeMem(levelzero.driver, buffer));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));
-    return true;
+    return TestResult::Success;
 }
 
 static RegisterTestCase<BestWalkerSubmission> registerTestCase(run, Api::L0);
