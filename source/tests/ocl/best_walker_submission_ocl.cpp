@@ -17,6 +17,7 @@ static bool run(const BestWalkerSubmissionArguments &arguments, Statistics &stat
 
     // Create system memory buffer
     int *hostMemory = (int *)clHostMemAllocINTEL(opencl.context, nullptr, 64, 0, &retVal);
+    volatile int *volatileHostMemory = hostMemory;
     ASSERT_CL_SUCCESS(retVal);
 
     // Create kernel
@@ -53,7 +54,7 @@ static bool run(const BestWalkerSubmissionArguments &arguments, Statistics &stat
         retVal |= clFlush(opencl.commandQueue);
         ASSERT_CL_SUCCESS(retVal);
 
-        while (*hostMemory != 1) {
+        while (*volatileHostMemory != 1) {
         }
         timer.measureEnd();
         statistics.pushValue(timer.Get());
