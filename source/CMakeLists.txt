@@ -16,6 +16,11 @@ if (MSVC)
     source_group (TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCES})
 endif()
 
+# Ignore CRT Warnings
+if (MSVC)
+    target_compile_definitions(${TARGET_NAME} PRIVATE _CRT_SECURE_NO_WARNINGS)
+endif()
+
 # Link to compute libraries
 function(tryLinkTo DEPENDENCY)
     if(TARGET ${DEPENDENCY})
@@ -34,6 +39,6 @@ foreach(KERNEL ${KERNELS})
         POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
         ${KERNEL}
-        ${OUTPUT_DIR}/$<IF:$<CONFIG:Debug>,Debug,Release>/${KERNEL_NAME}
+        $<TARGET_FILE_DIR:${TARGET_NAME}>/${KERNEL_NAME}
     )
 endforeach()

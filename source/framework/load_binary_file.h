@@ -7,9 +7,7 @@
 inline std::vector<uint8_t> loadBinaryFile(const std::string &filePath) {
     std::ifstream stream(filePath, std::ios::in);
     if (!stream.good()) {
-        char buffer[128];
-        strerror_s(buffer, errno);
-        std::cerr << "Failed to load binary file: " << filePath << " " << buffer << "\n";
+        std::cerr << "Failed to load binary file: " << filePath << " " << strerror(errno) << "\n";
         return {};
     }
 
