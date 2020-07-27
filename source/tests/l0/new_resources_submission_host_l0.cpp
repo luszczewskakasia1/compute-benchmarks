@@ -60,6 +60,8 @@ static bool run(const NewResourcesSubmissionHostArguments &arguments, Statistics
 
     // Benchmark
     for (auto i = 0; i < arguments.iterations; i++) {
+        timer.measureStart();
+
         // Create buffer
         ASSERT_ZE_RESULT_SUCCESS(zeDriverAllocHostMem(levelzero.driver, &allocationDesc, bufferSize, 0, (void **)(&buffer)));
         ASSERT_ZE_RESULT_SUCCESS(zeDeviceMakeMemoryResident(levelzero.device, buffer, bufferSize));
@@ -70,10 +72,10 @@ static bool run(const NewResourcesSubmissionHostArguments &arguments, Statistics
         ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &dispatchTraits, nullptr, 0, nullptr));
         ASSERT_ZE_RESULT_SUCCESS(zeCommandListClose(cmdList));
 
-        // Measure dispatch and execution time
-        timer.measureStart();
+        // Dispatch kernel and wait for completion
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
+
         timer.measureEnd();
 
         // Cleanup after iteration
