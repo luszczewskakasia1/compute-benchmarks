@@ -11,6 +11,8 @@ static bool run(const NewResourcesSubmissionArguments &arguments, Statistics &st
     // Setup
     Opencl opencl;
     Timer timer;
+    auto clHostMemAllocINTEL = (pfn_clHostMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clHostMemAllocINTEL");
+    auto clMemFreeINTEL = (pfn_clMemFreeINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clMemFreeINTEL");
     cl_int retVal;
 
     // Create kernel
@@ -28,21 +30,21 @@ static bool run(const NewResourcesSubmissionArguments &arguments, Statistics &st
     // Warmup kernel
     const size_t gws = 1;
     const size_t sizeInBytes = arguments.size;
-    cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, sizeInBytes, nullptr, &retVal);
+    int *hostMemory = (int *)clHostMemAllocINTEL(opencl.context, nullptr, 64, 0, &retVal);
     ASSERT_CL_SUCCESS(retVal);
-    retVal |= clSetKernelArg(kernel, 0, sizeof(buffer), &buffer);
+    retVal |= clSetKernelArgSVMPointer(kernel, 0, hostMemory);
     ASSERT_CL_SUCCESS(retVal);
     retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, nullptr);
     ASSERT_CL_SUCCESS(retVal);
     retVal |= clFinish(opencl.commandQueue);
     ASSERT_CL_SUCCESS(retVal);
-    retVal |= clReleaseMemObject(buffer);
+    retVal |= clMemFreeINTEL(opencl.context, hostMemory);
     ASSERT_CL_SUCCESS(retVal);
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
-        cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, sizeInBytes, nullptr, &retVal);
-        retVal |= clSetKernelArg(kernel, 0, sizeof(buffer), &buffer);
+        int *hostMemory = (int *)clHostMemAllocINTEL(opencl.context, nullptr, 64, 0, &retVal);
+        retVal |= clSetKernelArgSVMPointer(kernel, 0, hostMemory);
         ASSERT_CL_SUCCESS(retVal);
 
         timer.measureStart();
@@ -51,7 +53,7 @@ static bool run(const NewResourcesSubmissionArguments &arguments, Statistics &st
         timer.measureEnd();
         ASSERT_CL_SUCCESS(retVal);
 
-        retVal |= clReleaseMemObject(buffer);
+        retVal |= clMemFreeINTEL(opencl.context, hostMemory);
         ASSERT_CL_SUCCESS(retVal);
 
         statistics.pushValue(timer.Get());

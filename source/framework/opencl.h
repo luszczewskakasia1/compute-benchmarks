@@ -26,7 +26,7 @@ typedef CL_API_ENTRY void *(CL_API_CALL *pfn_clHostMemAllocINTEL)(
     cl_uint alignment,
     cl_int *errcode_ret);
 
-typedef CL_API_ENTRY void *(CL_API_CALL *pfn_clMemFreeINTEL)(
+typedef CL_API_ENTRY cl_int(CL_API_CALL *pfn_clMemFreeINTEL)(
     cl_context context,
     const void *ptr);
 
