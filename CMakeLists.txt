@@ -4,11 +4,6 @@ set(PREDEFINED_TARGETS_FOLDER "CustomTargets")
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-# Setup VS multiconfig
-if (MSVC)
-    set(CMAKE_CONFIGURATION_TYPES Debug Release)
-endif()
-
 # Enable MT Compilation in VisualStudio
 if (MSVC)
     add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/MP>)
@@ -33,6 +28,8 @@ add_subdirectory(third_party/googletest)
 
 # Benchmark
 if(MSVC)
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_DEBUG} /MT")
+    set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_DEBUG} /MT")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 endif()
