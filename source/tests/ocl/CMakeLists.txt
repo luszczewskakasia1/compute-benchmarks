@@ -17,6 +17,8 @@ if(NOT ${OpenCL_FOUND})
     endif()
     set(OpenCL_LIBRARIES    "${ADDITIONAL_PATH}/lib/x64/${LIB_NAME}")
     set(OpenCL_INCLUDE_DIRS "${ADDITIONAL_PATH}/include")
+else()
+    message(STATUS "OpenCL installation found")
 endif()
 
 file(GLOB_RECURSE SOURCES *.cpp *.h)

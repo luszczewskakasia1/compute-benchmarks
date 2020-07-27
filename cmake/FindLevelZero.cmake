@@ -28,6 +28,3 @@ if(LevelZero_FOUND)
     list(APPEND LevelZero_LIBRARIES ${LevelZero_LIBRARY} ${CMAKE_DL_LIBS})
     list(APPEND LevelZero_INCLUDE_DIRS ${LevelZero_INCLUDE_DIR})
 endif()
-
-MESSAGE(STATUS "LevelZero_LIBRARIES: " ${LevelZero_LIBRARIES})
-MESSAGE(STATUS "LevelZero_INCLUDE_DIRS: " ${LevelZero_INCLUDE_DIRS})

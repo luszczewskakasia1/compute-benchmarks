@@ -17,6 +17,8 @@ if(NOT ${LevelZero_FOUND})
     endif()
     set(LevelZero_LIBRARIES    "${ADDITIONAL_PATH}/lib/x64/${LIB_NAME}")
     set(LevelZero_INCLUDE_DIRS "${ADDITIONAL_PATH}/include")
+else()
+    message(STATUS "Level Zero installation found")
 endif()
 
 file(GLOB_RECURSE SOURCES *.cpp *.h *.cl *.spv)
