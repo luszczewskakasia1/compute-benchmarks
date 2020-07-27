@@ -16,9 +16,10 @@ static bool run(const BestWalkerSubmissionArguments &arguments, Statistics &stat
 
     // Create buffer
     ze_host_mem_alloc_desc_t allocationDesc{ZE_HOST_MEM_ALLOC_DESC_VERSION_CURRENT, ZE_HOST_MEM_ALLOC_FLAG_DEFAULT};
-    uint64_t *buffer = nullptr;
-    ASSERT_ZE_RESULT_SUCCESS(zeDriverAllocHostMem(levelzero.driver, &allocationDesc, bufferSize, 0, (void **)(&buffer)));
+    void *buffer = nullptr;
+    ASSERT_ZE_RESULT_SUCCESS(zeDriverAllocHostMem(levelzero.driver, &allocationDesc, bufferSize, 0, &buffer));
     ASSERT_ZE_RESULT_SUCCESS(zeDeviceMakeMemoryResident(levelzero.device, buffer, bufferSize));
+    volatile uint64_t *volatileBuffer = static_cast<uint64_t *>(buffer);
 
     // Create kernel
     const auto kernelBinary = loadBinaryFile("write.spv");
@@ -56,12 +57,12 @@ static bool run(const BestWalkerSubmissionArguments &arguments, Statistics &stat
 
     // Benchmark
     for (auto i = 0; i < arguments.iterations; i++) {
-        *buffer = 0;
+        *volatileBuffer = 0;
         _mm_clflush(buffer);
 
         timer.measureStart();
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
-        while (*buffer != 1) {
+        while (*volatileBuffer != 1) {
         }
         timer.measureEnd();
 

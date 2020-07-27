@@ -20,9 +20,10 @@ static bool run(const BestSubmissionArguments &arguments, Statistics &statistics
     Timer timer;
 
     ze_host_mem_alloc_desc_t allocationDesc{ZE_HOST_MEM_ALLOC_DESC_VERSION_CURRENT, ZE_HOST_MEM_ALLOC_FLAG_DEFAULT};
-    uint64_t *buffer = nullptr;
-    ASSERT_ZE_RESULT_SUCCESS(zeDriverAllocHostMem(levelzero.driver, &allocationDesc, bufferSize, 0, (void **)(&buffer)));
+    void *buffer = nullptr;
+    ASSERT_ZE_RESULT_SUCCESS(zeDriverAllocHostMem(levelzero.driver, &allocationDesc, bufferSize, 0, &buffer));
     ASSERT_ZE_RESULT_SUCCESS(zeDeviceMakeMemoryResident(levelzero.device, buffer, bufferSize));
+    volatile uint64_t *volatileBuffer = static_cast<uint64_t *>(buffer);
 
     // Create command list writing 1 to the buffer
     const ze_command_list_desc_t cmdListDesc = {ZE_COMMAND_LIST_DESC_VERSION_CURRENT};
@@ -38,12 +39,12 @@ static bool run(const BestSubmissionArguments &arguments, Statistics &statistics
     // Benchmark
     int currentValueToWrite = 1;
     for (auto i = 0; i < arguments.iterations; i++) {
-        *buffer = 0;
+        *volatileBuffer = 0;
         _mm_clflush(buffer);
 
         timer.measureStart();
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
-        while (*buffer != 1) {
+        while (*volatileBuffer != 1) {
         }
         timer.measureEnd();
         statistics.pushValue(timer.Get());
