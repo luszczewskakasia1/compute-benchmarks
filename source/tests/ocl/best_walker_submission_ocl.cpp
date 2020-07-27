@@ -19,8 +19,8 @@ static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics
     cl_int retVal;
 
     // Create system memory buffer
-    int *hostMemory = (int *)clHostMemAllocINTEL(opencl.context, nullptr, 64, 0, &retVal);
-    volatile int *volatileHostMemory = hostMemory;
+    void *hostMemory = clHostMemAllocINTEL(opencl.context, nullptr, 64, 0, &retVal);
+    volatile cl_int *volatileHostMemory = static_cast<cl_int *>(hostMemory);
     ASSERT_CL_SUCCESS(retVal);
 
     // Create kernel
@@ -39,7 +39,7 @@ static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics
     size_t gws = 1;
     for (int i = 0; i < arguments.iterations; i++) {
         // Reset value
-        *hostMemory = 0;
+        *volatileHostMemory = 0;
         _mm_clflush(hostMemory);
 
         // Warmup, kernel

@@ -42,7 +42,7 @@ static TestResult run(const NewResourcesSubmissionDeviceArguments &arguments, St
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
         timer.measureStart();
-        int *hostMemory = (int *)clDeviceMemAllocINTEL(opencl.context, opencl.device, nullptr, sizeInBytes, 0, &retVal);
+        void *hostMemory = clDeviceMemAllocINTEL(opencl.context, opencl.device, nullptr, sizeInBytes, 0, &retVal);
         ASSERT_CL_SUCCESS(clSetKernelArgSVMPointer(kernel, 0, hostMemory));
         retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, nullptr);
         retVal |= clFinish(opencl.commandQueue);

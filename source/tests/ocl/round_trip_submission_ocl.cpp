@@ -19,7 +19,7 @@ static TestResult run(const RoundTripSubmissionArguments &arguments, Statistics 
     cl_int retVal;
 
     // Create system memory buffer
-    int *hostMemory = (int *)clHostMemAllocINTEL(opencl.context, nullptr, 64, 0, &retVal);
+    void *hostMemory = clHostMemAllocINTEL(opencl.context, nullptr, 64, 0, &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
     // Create kernel
