@@ -4,6 +4,7 @@
 #include "framework/timer.h"
 #include "tests/best_walker_submission.h"
 
+#include <emmintrin.h>
 #include <gtest/gtest.h>
 #include <level_zero/zex_ddi.h>
 
@@ -56,6 +57,7 @@ static bool run(const BestWalkerSubmissionArguments &arguments, Statistics &stat
     // Benchmark
     for (auto i = 0; i < arguments.iterations; i++) {
         *buffer = 0;
+        _mm_clflush(buffer);
 
         timer.measureStart();
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));

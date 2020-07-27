@@ -3,6 +3,7 @@
 #include "framework/timer.h"
 #include "tests/best_walker_submission.h"
 
+#include <emmintrin.h>
 #include <gtest/gtest.h>
 
 namespace UllsTest {
@@ -38,6 +39,7 @@ static bool run(const BestWalkerSubmissionArguments &arguments, Statistics &stat
     for (int i = 0; i < arguments.iterations; i++) {
         // Reset value
         *hostMemory = 0;
+        _mm_clflush(hostMemory);
 
         // Warmup, kernel
         size_t warmupOffset = 8;
