@@ -6,7 +6,7 @@
 
 namespace UllsTest {
 
-struct NewResourcesSubmissionArguments : TestCaseArguments {
+struct NewResourcesSubmissionHostArguments : TestCaseArguments {
     size_t size;
 
     std::string getHelp() override {
@@ -31,16 +31,16 @@ struct NewResourcesSubmissionArguments : TestCaseArguments {
     }
 };
 
-class NewResourcesSubmission : public TestCase<NewResourcesSubmissionArguments> {
+class NewResourcesSubmissionHost : public TestCase<NewResourcesSubmissionHostArguments> {
   public:
-    using TestCase<NewResourcesSubmissionArguments>::TestCase;
+    using TestCase<NewResourcesSubmissionHostArguments>::TestCase;
 
     std::string getHelp() override {
-        return "enqueues kernel with a new resource to measure resource preparation time.";
+        return "enqueues kernel with a new host resource to measure resource preparation time.";
     };
 
     std::string getTestCaseName() override {
-        return "NewResourcesSubmission";
+        return "NewResourcesSubmissionHost";
     }
 };
 

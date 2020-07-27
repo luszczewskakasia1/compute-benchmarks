@@ -2,13 +2,13 @@
 #include "framework/load_binary_file.h"
 #include "framework/register_test_case.h"
 #include "framework/timer.h"
-#include "tests/new_resources_submission.h"
+#include "tests/new_resources_submission_host.h"
 
 #include <gtest/gtest.h>
 #include <level_zero/zex_ddi.h>
 
 namespace UllsTest {
-static bool run(const NewResourcesSubmissionArguments &arguments, Statistics &statistics) {
+static bool run(const NewResourcesSubmissionHostArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;
     Timer timer;
 
@@ -84,5 +84,5 @@ static bool run(const NewResourcesSubmissionArguments &arguments, Statistics &st
     return true;
 }
 
-static RegisterTestCase<NewResourcesSubmission> registerTestCase(run, Api::L0);
+static RegisterTestCase<NewResourcesSubmissionHost> registerTestCase(run, Api::L0);
 } // namespace UllsTest

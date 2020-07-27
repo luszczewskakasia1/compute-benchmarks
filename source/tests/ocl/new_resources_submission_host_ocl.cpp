@@ -1,13 +1,13 @@
 #include "framework/opencl.h"
 #include "framework/register_test_case.h"
 #include "framework/timer.h"
-#include "tests/new_resources_submission.h"
+#include "tests/new_resources_submission_host.h"
 
 #include <gtest/gtest.h>
 
 namespace UllsTest {
 
-static bool run(const NewResourcesSubmissionArguments &arguments, Statistics &statistics) {
+static bool run(const NewResourcesSubmissionHostArguments &arguments, Statistics &statistics) {
     // Setup
     Opencl opencl;
     Timer timer;
@@ -58,5 +58,5 @@ static bool run(const NewResourcesSubmissionArguments &arguments, Statistics &st
     return true;
 }
 
-static RegisterTestCase<NewResourcesSubmission> registerTestCase(run, Api::OpenCL);
+static RegisterTestCase<NewResourcesSubmissionHost> registerTestCase(run, Api::OpenCL);
 } // namespace UllsTest

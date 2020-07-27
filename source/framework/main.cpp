@@ -43,7 +43,7 @@ int printHelp() {
                  "Example invocations:\n"
                  "\t.\\ulls_benchmark.exe\n"
                  "\t.\\ulls_benchmark.exe --iterations=100 --csv\n"
-                 "\t.\\ulls_benchmark.exe --gtest_filter=*NewResourcesSubmission*\n"
+                 "\t.\\ulls_benchmark.exe --gtest_filter=*NewResourcesSubmissionHost*\n"
                  "\t.\\ulls_benchmark.exe --test=EmptyKernel --workgroupSize=64 --workgroupCount=30\n"
                  "\t.\\ulls_benchmark.exe --test=EmptyKernel --api=ocl --workgroupSize=64 --workgroupCount=30\n"
                  "\t.\\ulls_benchmark.exe --test=EmptyKernel --api=ocl --workgroupSize=64 --workgroupCount=30 --iterations=100\n"

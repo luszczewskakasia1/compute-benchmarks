@@ -1,16 +1,16 @@
-#include "tests/new_resources_submission.h"
+#include "tests/new_resources_submission_host.h"
 
 #include <gtest/gtest.h>
 
-class NewResourcesSubmissionTest : public ::testing::TestWithParam<std::tuple<Api, size_t>> {
+class NewResourcesSubmissionHostTest : public ::testing::TestWithParam<std::tuple<Api, size_t>> {
 };
 
-TEST_P(NewResourcesSubmissionTest, Test) {
-    UllsTest::NewResourcesSubmissionArguments args;
+TEST_P(NewResourcesSubmissionHostTest, Test) {
+    UllsTest::NewResourcesSubmissionHostArguments args;
     args.api = std::get<0>(GetParam());
     args.size = std::get<1>(GetParam());
 
-    UllsTest::NewResourcesSubmission test{args};
+    UllsTest::NewResourcesSubmissionHost test{args};
     test.run();
 }
 
@@ -19,8 +19,8 @@ constexpr size_t megaByte = kiloByte * kiloByte;
 constexpr size_t gigaByte = 1024u * megaByte;
 
 INSTANTIATE_TEST_SUITE_P(
-    NewResourcesSubmissionTest,
-    NewResourcesSubmissionTest,
+    NewResourcesSubmissionHostTest,
+    NewResourcesSubmissionHostTest,
     ::testing::Combine(
         ::testing::Values(Api::OpenCL, Api::L0),
         ::testing::Values(1, 64 * kiloByte, 512 * kiloByte, 1 * megaByte, 16 * megaByte, 64 * megaByte, 256 * megaByte, 1 * gigaByte)));
