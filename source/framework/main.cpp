@@ -29,7 +29,6 @@ int executeAllTests(int argc, char **argv) {
     auto &listeners = ::testing::UnitTest::GetInstance()->listeners();
     delete listeners.Release(listeners.default_result_printer());
     listeners.Append(new CustomEventListener());
-    Statistics::printStatisticsHeader(::configuration.printType);
     return RUN_ALL_TESTS();
 }
 
