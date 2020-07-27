@@ -2,10 +2,11 @@
 
 #include "tests/best_submission.h"
 #include "tests/best_walker_submission.h"
+#include "tests/completion_latency.h"
 #include "tests/empty_kernel.h"
+#include "tests/new_resources_submission_device.h"
 #include "tests/new_resources_submission_host.h"
 #include "tests/round_trip_submission.h"
-#include "tests/completion_latency.h"
 
 TestMap getTestMap() {
     TestMap testMap;
@@ -13,6 +14,7 @@ TestMap getTestMap() {
     TEST_CASE(BestWalkerSubmission)
     TEST_CASE(BestSubmission)
     TEST_CASE(EmptyKernel)
+    TEST_CASE(NewResourcesSubmissionDevice)
     TEST_CASE(NewResourcesSubmissionHost)
     TEST_CASE(RoundTripSubmission)
     TEST_CASE(CompletionLatency)
