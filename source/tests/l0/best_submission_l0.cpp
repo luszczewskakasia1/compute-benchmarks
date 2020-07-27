@@ -38,7 +38,6 @@ static bool run(const BestSubmissionArguments &arguments, Statistics &statistics
     ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
 
     // Benchmark
-    int currentValueToWrite = 1;
     for (auto i = 0; i < arguments.iterations; i++) {
         *volatileBuffer = 0;
         _mm_clflush(buffer);
