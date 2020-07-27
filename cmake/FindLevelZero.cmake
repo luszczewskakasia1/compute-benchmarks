@@ -13,7 +13,7 @@ find_library(LevelZero_LIBRARY
   NAMES ze_loader ze_loader32 ze_loader64
   PATHS
     ${L0_ROOT}
-  PATH_SUFFIXES "lib" "lib/level_zero/"
+  PATH_SUFFIXES "lib" "lib/"
 )
 
 find_package_handle_standard_args(LevelZero
