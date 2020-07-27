@@ -1,7 +1,8 @@
 #include "statistics.h"
 
+#include "framework/error.h"
+
 #include <algorithm>
-#include <cassert>
 #include <cmath>
 #include <iomanip>
 #include <iostream>
@@ -13,7 +14,7 @@ Statistics::Statistics(int maxSamplesCount)
 }
 
 void Statistics::pushValue(Value value) {
-    assert(samplesCount <= maxSamplesCount);
+    ERROR_IF(samplesCount > maxSamplesCount, "Too much values pushed by the test");
     samples[samplesCount++] = value;
 }
 
@@ -87,8 +88,7 @@ void Statistics::printStatisticsHeader(Configuration::PrintType printType) {
         std::cout << std::endl;
         break;
     default:
-        std::cerr << "ERROR: unknown print type selected\n";
-        abort();
+        ERROR("unknown print type selected");
     }
 }
 
@@ -117,8 +117,7 @@ void Statistics::printStatistics(const std::string &testCaseName, Configuration:
         break;
     }
     default:
-        std::cerr << "ERROR: unknown print type selected\n";
-        abort();
+        ERROR("unknown print type selected");
     }
 
     if (printType == Configuration::PrintType::Verbose) {
@@ -156,7 +155,6 @@ void Statistics::printStatisticsString(const std::string &testCaseName, Configur
         break;
     }
     default:
-        std::cerr << "ERROR: unknown print type selected\n";
-        abort();
+        ERROR("unknown print type selected");
     }
 }

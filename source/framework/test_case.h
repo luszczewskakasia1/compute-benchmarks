@@ -2,10 +2,10 @@
 
 #include "framework/api.h"
 #include "framework/configuration.h"
+#include "framework/error.h"
 #include "framework/statistics.h"
 #include "framework/string_utils.h"
 
-#include <cassert>
 #include <functional>
 #include <iostream>
 #include <string>
@@ -85,22 +85,20 @@ class TestCase : public TestCaseInterface {
         const TestResult testResult = benchmarkImplementation(arguments, statistics);
         switch (testResult) {
         case TestResult::Success:
-            assert(statistics.isFull());
+            ERROR_UNLESS(statistics.isFull(), "test did not generate as many values as expected");
             statistics.printStatistics(testCaseNameWithConfig, ::configuration.printType);
             break;
         case TestResult::Error:
             statistics.printStatisticsString(testCaseNameWithConfig, ::configuration.printType, "ERROR");
             break;
         case TestResult::DriverFunctionNotFound:
-            assert(statistics.isEmpty());
+            ERROR_UNLESS(statistics.isEmpty(), "test was skipped but generated some values");
             statistics.printStatisticsString(testCaseNameWithConfig, ::configuration.printType, "SKIPPED");
             break;
         case TestResult::KernelNotFound:
-            std::cerr << "ERROR: binary kernel was not found. Kernels should be located in workind directory";
-            std::abort();
+            ERROR("binary kernel was not found. Kernels should be located in working directory");
         default:
-            std::cerr << "ERROR: unknown result was returned by test.\n";
-            std::abort();
+            ERROR("unknown result was returned by test");
         }
     }
 
