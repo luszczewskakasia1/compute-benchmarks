@@ -29,50 +29,56 @@ static bool run(const NewResourcesSubmissionHostArguments &arguments, Statistics
     kernelDesc.pKernelName = "write_one";
     EXPECT_ZE_RESULT_SUCCESS(zeKernelCreate(module, &kernelDesc, &kernel));
 
+    // Configure kernel
     uint32_t groupSizeX = 1u;
     uint32_t groupSizeY = 1u;
     uint32_t groupSizeZ = 1u;
+    EXPECT_ZE_RESULT_SUCCESS(zeKernelSetGroupSize(kernel, groupSizeX, groupSizeY, groupSizeZ));
 
-    ze_group_count_t dispatchTraits;
-    dispatchTraits.groupCountX = 1u;
-    dispatchTraits.groupCountY = 1u;
-    dispatchTraits.groupCountZ = 1u;
-
-    // Create buffer
+    // Create buffer for warmup
     const auto bufferSize = arguments.size;
     ze_host_mem_alloc_desc_t allocationDesc{ZE_HOST_MEM_ALLOC_DESC_VERSION_CURRENT, ZE_HOST_MEM_ALLOC_FLAG_DEFAULT};
     uint64_t *buffer = nullptr;
     ASSERT_ZE_RESULT_SUCCESS(zeDriverAllocHostMem(levelzero.driver, &allocationDesc, bufferSize, 0, (void **)(&buffer)));
     ASSERT_ZE_RESULT_SUCCESS(zeDeviceMakeMemoryResident(levelzero.device, buffer, bufferSize));
 
-    EXPECT_ZE_RESULT_SUCCESS(zeKernelSetGroupSize(kernel, groupSizeX, groupSizeY, groupSizeZ));
-    ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernel, 0, sizeof(buffer), &buffer));
-
-    // Create command lists and append kernel to write one
+    // Warmup
     const ze_command_list_desc_t cmdListDesc = {ZE_COMMAND_LIST_DESC_VERSION_CURRENT};
+    const ze_group_count_t dispatchTraits{1, 1, 1};
     ze_command_list_handle_t cmdList;
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.device, &cmdListDesc, &cmdList));
+    ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernel, 0, sizeof(buffer), &buffer));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &dispatchTraits, nullptr, 0, nullptr));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListClose(cmdList));
-
-    // Warmup
     ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
 
-    // Cleanup buffer
+    // Cleanup after warmup
     ASSERT_ZE_RESULT_SUCCESS(zeDeviceEvictMemory(levelzero.device, buffer, bufferSize));
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));
     ASSERT_ZE_RESULT_SUCCESS(zeDriverFreeMem(levelzero.driver, buffer));
 
+    // Benchmark
     for (auto i = 0; i < arguments.iterations; i++) {
+        // Create buffer
         ASSERT_ZE_RESULT_SUCCESS(zeDriverAllocHostMem(levelzero.driver, &allocationDesc, bufferSize, 0, (void **)(&buffer)));
         ASSERT_ZE_RESULT_SUCCESS(zeDeviceMakeMemoryResident(levelzero.device, buffer, bufferSize));
 
+        // Create command list to write 1
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.device, &cmdListDesc, &cmdList));
+        ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernel, 0, sizeof(buffer), &buffer));
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &dispatchTraits, nullptr, 0, nullptr));
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandListClose(cmdList));
+
+        // Measure dispatch and execution time
         timer.measureStart();
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
         timer.measureEnd();
 
+        // Cleanup after iteration
         ASSERT_ZE_RESULT_SUCCESS(zeDeviceEvictMemory(levelzero.device, buffer, bufferSize));
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));
         ASSERT_ZE_RESULT_SUCCESS(zeDriverFreeMem(levelzero.driver, buffer));
 
         statistics.pushValue(timer.Get());
@@ -80,7 +86,6 @@ static bool run(const NewResourcesSubmissionHostArguments &arguments, Statistics
 
     ASSERT_ZE_RESULT_SUCCESS(zeKernelDestroy(kernel));
     ASSERT_ZE_RESULT_SUCCESS(zeModuleDestroy(module));
-    ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));
     return true;
 }
 
