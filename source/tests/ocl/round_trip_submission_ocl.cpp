@@ -26,8 +26,7 @@ static bool run(const RoundTripSubmissionArguments &arguments, Statistics &stati
     const auto sourceLength = strlen(source);
     cl_program program = clCreateProgramWithSource(opencl.context, 1, &source, &sourceLength, &retVal);
     ASSERT_CL_SUCCESS(retVal);
-    retVal = clBuildProgram(program, 1, &opencl.device, nullptr, nullptr, nullptr);
-    ASSERT_CL_SUCCESS(retVal);
+    ASSERT_CL_SUCCESS(clBuildProgram(program, 1, &opencl.device, nullptr, nullptr, nullptr));
     cl_kernel kernel = clCreateKernel(program, "write", &retVal);
     ASSERT_CL_SUCCESS(retVal);
 

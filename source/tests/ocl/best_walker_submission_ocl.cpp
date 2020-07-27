@@ -27,16 +27,13 @@ static bool run(const BestWalkerSubmissionArguments &arguments, Statistics &stat
     const auto sourceLength = strlen(source);
     cl_program program = clCreateProgramWithSource(opencl.context, 1, &source, &sourceLength, &retVal);
     ASSERT_CL_SUCCESS(retVal);
-    retVal = clBuildProgram(program, 1, &opencl.device, nullptr, nullptr, nullptr);
-    ASSERT_CL_SUCCESS(retVal);
+    ASSERT_CL_SUCCESS(clBuildProgram(program, 1, &opencl.device, nullptr, nullptr, nullptr));
     cl_kernel kernel = clCreateKernel(program, "write", &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
     // Benchmark
-    ASSERT_CL_SUCCESS(retVal);
-    retVal = clSetKernelArgSVMPointer(kernel, 0, hostMemory);
+    ASSERT_CL_SUCCESS(clSetKernelArgSVMPointer(kernel, 0, hostMemory));
     size_t gws = 1;
-
     for (int i = 0; i < arguments.iterations; i++) {
         // Reset value
         *hostMemory = 0;

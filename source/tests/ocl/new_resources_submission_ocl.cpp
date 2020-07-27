@@ -22,8 +22,7 @@ static bool run(const NewResourcesSubmissionArguments &arguments, Statistics &st
     const auto sourceLength = strlen(source);
     cl_program program = clCreateProgramWithSource(opencl.context, 1, &source, &sourceLength, &retVal);
     ASSERT_CL_SUCCESS(retVal);
-    retVal = clBuildProgram(program, 1, &opencl.device, nullptr, nullptr, nullptr);
-    ASSERT_CL_SUCCESS(retVal);
+    ASSERT_CL_SUCCESS(clBuildProgram(program, 1, &opencl.device, nullptr, nullptr, nullptr));
     cl_kernel kernel = clCreateKernel(program, "write", &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
@@ -31,21 +30,16 @@ static bool run(const NewResourcesSubmissionArguments &arguments, Statistics &st
     const size_t gws = 1;
     const size_t sizeInBytes = arguments.size;
     int *hostMemory = (int *)clHostMemAllocINTEL(opencl.context, nullptr, 64, 0, &retVal);
-    ASSERT_CL_SUCCESS(retVal);
-    retVal |= clSetKernelArgSVMPointer(kernel, 0, hostMemory);
-    ASSERT_CL_SUCCESS(retVal);
-    retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, nullptr);
-    ASSERT_CL_SUCCESS(retVal);
-    retVal |= clFinish(opencl.commandQueue);
-    ASSERT_CL_SUCCESS(retVal);
-    retVal |= clMemFreeINTEL(opencl.context, hostMemory);
+    ASSERT_CL_SUCCESS(clSetKernelArgSVMPointer(kernel, 0, hostMemory));
+    ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, nullptr));
+    ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
+    ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, hostMemory));
     ASSERT_CL_SUCCESS(retVal);
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
         int *hostMemory = (int *)clHostMemAllocINTEL(opencl.context, nullptr, 64, 0, &retVal);
-        retVal |= clSetKernelArgSVMPointer(kernel, 0, hostMemory);
-        ASSERT_CL_SUCCESS(retVal);
+        ASSERT_CL_SUCCESS(clSetKernelArgSVMPointer(kernel, 0, hostMemory));
 
         timer.measureStart();
         retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, nullptr);
@@ -53,8 +47,7 @@ static bool run(const NewResourcesSubmissionArguments &arguments, Statistics &st
         timer.measureEnd();
         ASSERT_CL_SUCCESS(retVal);
 
-        retVal |= clMemFreeINTEL(opencl.context, hostMemory);
-        ASSERT_CL_SUCCESS(retVal);
+        ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, hostMemory));
 
         statistics.pushValue(timer.Get());
     }
