@@ -13,6 +13,9 @@ static TestResult run(const NewResourcesSubmissionHostArguments &arguments, Stat
     Timer timer;
     auto clHostMemAllocINTEL = (pfn_clHostMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clHostMemAllocINTEL");
     auto clMemFreeINTEL = (pfn_clMemFreeINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clMemFreeINTEL");
+    if (!clHostMemAllocINTEL || !clMemFreeINTEL) {
+        return TestResult::DriverFunctionNotFound;
+    }
     cl_int retVal;
 
     // Create kernel
