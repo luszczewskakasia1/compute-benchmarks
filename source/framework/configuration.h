@@ -14,4 +14,4 @@ struct Configuration {
 };
 
 extern Configuration configuration;
-void parseArgumentsForConfiguration(int argc, char **argv);
+bool parseArgumentsForConfiguration(int argc, char **argv);

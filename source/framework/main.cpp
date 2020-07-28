@@ -70,7 +70,11 @@ int printHelp() {
 }
 
 int main(int argc, char **argv) {
-    parseArgumentsForConfiguration(argc, argv);
+    if (!parseArgumentsForConfiguration(argc, argv)) {
+        std::cerr << "Error parsing command line\n";
+        return 1;
+    }
+
     if (argc > 1) {
         const std::string firstArgument{argv[1]};
 
