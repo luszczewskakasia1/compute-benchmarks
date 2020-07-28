@@ -11,8 +11,8 @@ TEST_P(EmptyKernelSubmissionTest, Test) {
     args.workgroupCount = std::get<1>(GetParam());
     args.workgroupSize = std::get<2>(GetParam());
 
-    UllsTest::EmptyKernel test{args};
-    test.run();
+    UllsTest::EmptyKernel test;
+    test.run(args);
 }
 
 INSTANTIATE_TEST_SUITE_P(

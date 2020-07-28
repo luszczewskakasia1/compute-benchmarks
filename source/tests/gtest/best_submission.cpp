@@ -9,8 +9,8 @@ TEST_P(BestrSubmissionTest, Test) {
     UllsTest::BestSubmissionArguments args{};
     args.api = GetParam();
 
-    UllsTest::BestSubmission test{args};
-    test.run();
+    UllsTest::BestSubmission test;
+    test.run(args);
 }
 
 INSTANTIATE_TEST_SUITE_P(

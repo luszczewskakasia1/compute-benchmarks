@@ -10,8 +10,8 @@ TEST_P(NewResourcesSubmissionDeviceTest, Test) {
     args.api = std::get<0>(GetParam());
     args.size = std::get<1>(GetParam());
 
-    UllsTest::NewResourcesSubmissionDevice test{args};
-    test.run();
+    UllsTest::NewResourcesSubmissionDevice test;
+    test.run(args);
 }
 
 constexpr size_t kiloByte = 1024u;

@@ -10,8 +10,8 @@ TEST_P(NewResourcesSubmissionHostTest, Test) {
     args.api = std::get<0>(GetParam());
     args.size = std::get<1>(GetParam());
 
-    UllsTest::NewResourcesSubmissionHost test{args};
-    test.run();
+    UllsTest::NewResourcesSubmissionHost test;
+    test.run(args);
 }
 
 constexpr size_t kiloByte = 1024u;

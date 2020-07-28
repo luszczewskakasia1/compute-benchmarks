@@ -9,8 +9,8 @@ TEST_P(CompletionLatencyTest, Test) {
     UllsTest::CompletionLatencyArguments args{};
     args.api = GetParam();
 
-    UllsTest::CompletionLatency test{args};
-    test.run();
+    UllsTest::CompletionLatency test;
+    test.run(args);
 }
 
 INSTANTIATE_TEST_SUITE_P(

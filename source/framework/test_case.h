@@ -43,31 +43,24 @@ class TestCase : public TestCaseInterface {
     using BenchmarkImplementation = std::function<TestResult(Arguments, Statistics &)>;
     static inline BenchmarkImplementation implementations[(int)Api::COUNT];
 
-    TestCase() = default;
-    TestCase(Arguments arguments) : arguments(arguments) {}
-    std::string getHelpParameters() const override { return arguments.getHelp(); }
+    std::string getHelpParameters() const override { return Arguments{}.getHelp(); }
 
     bool runFromCommandLine(int argc, char **argv) override {
-        // Test-specific parameters
-        if (!parseArguments(argc, argv)) {
+        // Parse test-specific parameters
+        Arguments arguments;
+        if (!parseArguments(arguments, argc, argv)) {
             return false;
         }
 
         // Try running with all possible APIs. If some are disabled, e.g. --api=ocl is passed, then the rest will be skipped in run() method
         for (int apiIndex = 0; apiIndex < static_cast<int>(Api::COUNT); apiIndex++) {
-            Arguments arguments = this->arguments;
             arguments.api = static_cast<Api>(apiIndex);
-            runWithArguments(arguments);
+            run(arguments);
         }
         return true;
     }
 
-    void run() {
-        runWithArguments(this->arguments);
-    }
-
-  protected:
-    void runWithArguments(Arguments arguments) const {
+    void run(Arguments arguments) const {
         // Set iterations count from global configuration
         if (arguments.iterations != 0) {
             std::cerr << "WARNING: arguments.iterations was not zero. Overriding with value from global configuration - "
@@ -120,7 +113,8 @@ class TestCase : public TestCaseInterface {
         }
     }
 
-    bool parseArguments(int argc, char **argv) {
+  private:
+    static bool parseArguments(Arguments &arguments, int argc, char **argv) {
         for (int i = 2; i < argc; i++) {
             const auto argument = std::string{argv[i]};
             std::string key, value;
@@ -139,7 +133,4 @@ class TestCase : public TestCaseInterface {
 
         return true;
     }
-
-  private:
-    Arguments arguments = {};
 };

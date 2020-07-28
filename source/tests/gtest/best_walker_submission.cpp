@@ -9,8 +9,8 @@ TEST_P(BestWalkerSubmissionTest, Test) {
     UllsTest::BestWalkerSubmissionArguments args{};
     args.api = GetParam();
 
-    UllsTest::BestWalkerSubmission test{args};
-    test.run();
+    UllsTest::BestWalkerSubmission test;
+    test.run(args);
 }
 
 INSTANTIATE_TEST_SUITE_P(

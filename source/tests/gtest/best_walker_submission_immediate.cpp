@@ -9,8 +9,8 @@ TEST_P(BestWalkerSubmissionImmediateTest, Test) {
     UllsTest::BestWalkerSubmissionImmediateArguments args{};
     args.api = GetParam();
 
-    UllsTest::BestWalkerSubmissionImmediate test{args};
-    test.run();
+    UllsTest::BestWalkerSubmissionImmediate test;
+    test.run(args);
 }
 
 INSTANTIATE_TEST_SUITE_P(

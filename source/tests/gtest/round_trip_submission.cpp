@@ -9,8 +9,8 @@ TEST_P(RoundTripSubmissionTest, Test) {
     UllsTest::RoundTripSubmissionArguments args{};
     args.api = GetParam();
 
-    UllsTest::RoundTripSubmission test{args};
-    test.run();
+    UllsTest::RoundTripSubmission test;
+    test.run(args);
 }
 
 INSTANTIATE_TEST_SUITE_P(
