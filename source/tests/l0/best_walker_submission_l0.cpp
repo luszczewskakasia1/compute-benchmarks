@@ -46,7 +46,7 @@ static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics
     ASSERT_ZE_RESULT_SUCCESS(zeKernelSetGroupSize(kernel, 1, 1, 1));
     ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernel, 0, sizeof(buffer), &buffer));
 
-    // Create command lists writing 0 or 1 to the buffer
+    // Create a command list writing 1 to the buffer
     const ze_group_count_t groupCount{1, 1, 1};
     const ze_command_list_desc_t cmdListDesc = {ZE_COMMAND_LIST_DESC_VERSION_CURRENT};
     ze_command_list_handle_t cmdList;
