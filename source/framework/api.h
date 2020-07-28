@@ -6,4 +6,5 @@ enum class Api {
 
     COUNT,
     Default = OpenCL,
+    All = 0xffff,
 };

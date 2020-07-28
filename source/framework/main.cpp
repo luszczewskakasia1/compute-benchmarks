@@ -38,9 +38,11 @@ int printHelp() {
                  "\t--iterations=X - select how many times each test will be run\n"
                  "\t--csv          - dump results in CSV format for easy imports to spreadsheets\n"
                  "\t--verbose      - dump results from all iterations\n"
+                 "\t--api          - select graphics API to use. Possible values: ocl, l0, all"
                  "\n"
                  "Example invocations:\n"
                  "\t.\\ulls_benchmark.exe\n"
+                 "\t.\\ulls_benchmark.exe --api=l0\n"
                  "\t.\\ulls_benchmark.exe --iterations=100 --csv\n"
                  "\t.\\ulls_benchmark.exe --gtest_filter=*NewResourcesSubmissionHost*\n"
                  "\t.\\ulls_benchmark.exe --test=EmptyKernel --workgroupSize=64 --workgroupCount=30\n"
@@ -48,13 +50,11 @@ int printHelp() {
                  "\t.\\ulls_benchmark.exe --test=EmptyKernel --api=ocl --workgroupSize=64 --workgroupCount=30 --iterations=100\n"
                  "\n"
                  "First mode is the default and it runs all available benchmarks in many predefined configurations. Underlying test engine "
-                 "is googletest, so standard googletest arguments like --gtest_filter can be used, if necessary. Number of iterations can "
-                 "be selected with --iterations argument.\n"
+                 "is googletest, so standard googletest arguments like --gtest_filter can be used, if necessary.\n"
                  "\n"
                  "Second mode runs one specific benchmark with custom parameter values. Running benchmarks in this fashion requires "
                  "using --test argument, followed by benchmark-specific parameters. All parameters have to be specified, there are no "
-                 "default values. Compute API (ocl or levelzero) can be selected with  the --api parameter. Number of iterations can "
-                 "be selected with --iterations argument. Available test cases:\n"
+                 "default values. Available test cases:\n"
                  "\n";
     for (const auto &entry : getTestMap()) {
         TestCaseInterface &testCase = *entry.second.get();

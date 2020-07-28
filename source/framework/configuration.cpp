@@ -19,5 +19,14 @@ void parseArgumentsForConfiguration(int argc, char **argv) {
         if (key == "--verbose") {
             ::configuration.printType = Configuration::PrintType::Verbose;
         }
+        if (key == "--api") {
+            if (value == "ocl") {
+                ::configuration.selectedApi = Api::OpenCL;
+            } else if (value == "l0") {
+                ::configuration.selectedApi = Api::L0;
+            } else if (value == "all") {
+                ::configuration.selectedApi = Api::All;
+            }
+        }
     }
 }

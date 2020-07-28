@@ -48,14 +48,26 @@ class TestCase : public TestCaseInterface {
     std::string getHelpParameters() const override { return arguments.getHelp(); }
 
     bool runFromCommandLine(int argc, char **argv) override {
+        // Test-specific parameters
         if (!parseArguments(argc, argv)) {
             return false;
         }
-        run();
+
+        // Try running with all possible APIs. If some are disabled, e.g. --api=ocl is passed, then the rest will be skipped in run() method
+        for (int apiIndex = 0; apiIndex < static_cast<int>(Api::COUNT); apiIndex++) {
+            Arguments arguments = this->arguments;
+            arguments.api = static_cast<Api>(apiIndex);
+            runWithArguments(arguments);
+        }
         return true;
     }
 
     void run() {
+        runWithArguments(this->arguments);
+    }
+
+  protected:
+    void runWithArguments(Arguments arguments) const {
         // Set iterations count from global configuration
         if (arguments.iterations != 0) {
             std::cerr << "WARNING: arguments.iterations was not zero. Overriding with value from global configuration - "
@@ -63,12 +75,18 @@ class TestCase : public TestCaseInterface {
         }
         arguments.iterations = ::configuration.iterations;
 
-        // Get implementation
+        // Get API
         const auto apiIndex = static_cast<int>(arguments.api);
         if (apiIndex >= static_cast<int>(Api::COUNT)) {
             std::cerr << "WARNING: unknown API selected. Test was skipped.\n";
             return;
         }
+        const auto selectedApi = ::configuration.selectedApi; // Api selected by the user via the --api argument
+        if (arguments.api != selectedApi && selectedApi != Api::All) {
+            return;
+        }
+
+        // Get implementation
         const auto benchmarkImplementation = implementations[apiIndex];
         if (benchmarkImplementation == nullptr) {
             return;
@@ -102,16 +120,11 @@ class TestCase : public TestCaseInterface {
         }
     }
 
-  protected:
     bool parseArguments(int argc, char **argv) {
         for (int i = 2; i < argc; i++) {
             const auto argument = std::string{argv[i]};
             std::string key, value;
             if (!parseArgumentToKeyValue(argument, key, value)) {
-                return false;
-            }
-
-            if (!parseArgumentBase(key, value)) {
                 return false;
             }
 
@@ -124,19 +137,6 @@ class TestCase : public TestCaseInterface {
             return false;
         }
 
-        return true;
-    }
-
-    bool parseArgumentBase(const std::string &key, const std::string &value) {
-        if (key == "--api") {
-            if (value == "opencl" || value == "ocl") {
-                arguments.api = Api::OpenCL;
-            } else if (value == "l0" || value == "levelzero") {
-                arguments.api = Api::L0;
-            } else {
-                return false;
-            }
-        }
         return true;
     }
 
