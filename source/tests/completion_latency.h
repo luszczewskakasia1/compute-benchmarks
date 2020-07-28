@@ -10,12 +10,12 @@ class CompletionLatency : public TestCase<CompletionLatencyArguments> {
   public:
     using TestCase<CompletionLatencyArguments>::TestCase;
 
-    std::string getHelp() override {
+    std::string getHelp() const override {
         return "enqueues system memory write and measures time between the moment when update is visible on CPU and"
                "the moment when synchronizing call returns\n";
     }
 
-    std::string getTestCaseName() override {
+    std::string getTestCaseName() const override {
         return "CompletionLatency";
     }
 };

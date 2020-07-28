@@ -10,12 +10,12 @@ struct EmptyKernelArguments : TestCaseArguments {
     size_t workgroupCount;
     size_t workgroupSize;
 
-    std::string getHelp() override {
+    std::string getHelp() const override {
         return "\t\t--workgroupCount=X\n"
                "\t\t--workgroupSize=X\n";
     }
 
-    std::string getCurrentConfig() override {
+    std::string getCurrentConfig() const override {
         const auto gws = workgroupCount * workgroupSize;
         const auto lws = workgroupSize;
         std::ostringstream result;
@@ -33,7 +33,7 @@ struct EmptyKernelArguments : TestCaseArguments {
         return true;
     }
 
-    bool validateArguments() override {
+    bool validateArguments() const override {
         return workgroupCount != 0 && workgroupSize != 0;
     }
 };
@@ -42,11 +42,11 @@ class EmptyKernel : public TestCase<EmptyKernelArguments> {
   public:
     using TestCase<EmptyKernelArguments>::TestCase;
 
-    std::string getHelp() override {
+    std::string getHelp() const override {
         return "enqueues empty kernel to measure walker spawn time.";
     }
 
-    std::string getTestCaseName() override {
+    std::string getTestCaseName() const override {
         return "EmptyKernel";
     }
 };

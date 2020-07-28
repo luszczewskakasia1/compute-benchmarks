@@ -13,16 +13,16 @@
 
 struct TestCaseInterface {
     virtual bool runFromCommandLine(int argc, char **argv) = 0;
-    virtual std::string getHelp() = 0;
-    virtual std::string getHelpParameters() = 0;
-    virtual std::string getTestCaseName() = 0;
+    virtual std::string getHelp() const = 0;
+    virtual std::string getHelpParameters() const = 0;
+    virtual std::string getTestCaseName() const = 0;
 };
 
 struct TestCaseArguments {
     virtual bool parseArgument(const std::string &key, const std::string &value) { return true; }
-    virtual bool validateArguments() { return true; }
-    virtual std::string getHelp() { return ""; }
-    virtual std::string getCurrentConfig() { return ""; }
+    virtual bool validateArguments() const { return true; }
+    virtual std::string getHelp() const { return ""; }
+    virtual std::string getCurrentConfig() const { return ""; }
 
     Api api = Api::Default;
     int iterations = 0;
@@ -44,8 +44,8 @@ class TestCase : public TestCaseInterface {
     static inline BenchmarkImplementation implementations[(int)Api::COUNT];
 
     TestCase() = default;
-    TestCase(Arguments arguments) : arguments(arguments) {
-    }
+    TestCase(Arguments arguments) : arguments(arguments) {}
+    std::string getHelpParameters() const override { return arguments.getHelp(); }
 
     bool runFromCommandLine(int argc, char **argv) override {
         if (!parseArguments(argc, argv)) {
@@ -100,10 +100,6 @@ class TestCase : public TestCaseInterface {
         default:
             ERROR("unknown result was returned by test");
         }
-    }
-
-    std::string getHelpParameters() override {
-        return arguments.getHelp();
     }
 
   protected:

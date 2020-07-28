@@ -9,11 +9,11 @@ namespace UllsTest {
 struct NewResourcesSubmissionHostArguments : TestCaseArguments {
     size_t size;
 
-    std::string getHelp() override {
+    std::string getHelp() const override {
         return "\t\t--size=X\n";
     }
 
-    std::string getCurrentConfig() override {
+    std::string getCurrentConfig() const override {
         std::ostringstream result;
         result << "size=" << size << "";
         return result.str();
@@ -26,7 +26,7 @@ struct NewResourcesSubmissionHostArguments : TestCaseArguments {
         return true;
     }
 
-    bool validateArguments() override {
+    bool validateArguments() const override {
         return size != 0;
     }
 };
@@ -35,11 +35,11 @@ class NewResourcesSubmissionHost : public TestCase<NewResourcesSubmissionHostArg
   public:
     using TestCase<NewResourcesSubmissionHostArguments>::TestCase;
 
-    std::string getHelp() override {
+    std::string getHelp() const override {
         return "enqueues kernel with a new host resource to measure resource preparation time.";
     };
 
-    std::string getTestCaseName() override {
+    std::string getTestCaseName() const override {
         return "NewResourcesSubmissionHost";
     }
 };

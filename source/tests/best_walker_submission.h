@@ -10,11 +10,11 @@ class BestWalkerSubmission : public TestCase<BestWalkerSubmissionArguments> {
   public:
     using TestCase<BestWalkerSubmissionArguments>::TestCase;
 
-    std::string getHelp() override {
+    std::string getHelp() const override {
         return "enqueues kernel which updates system memory location and waits for the update in busy loop\n";
     }
 
-    std::string getTestCaseName() override {
+    std::string getTestCaseName() const override {
         return "BestWalkerSubmission";
     }
 };
