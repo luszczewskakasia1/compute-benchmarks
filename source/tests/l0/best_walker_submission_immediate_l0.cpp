@@ -1,0 +1,105 @@
+#include "framework/levelzero.h"
+#include "framework/load_binary_file.h"
+#include "framework/register_test_case.h"
+#include "framework/timer.h"
+#include "tests/best_walker_submission_immediate.h"
+
+#include <emmintrin.h>
+#include <gtest/gtest.h>
+#include <level_zero/zex_ddi.h>
+
+namespace UllsTest {
+static TestResult run(const BestWalkerSubmissionImmediateArguments &arguments, Statistics &statistics) {
+    LevelZero levelzero{false};
+    constexpr static auto bufferSize = 4096u;
+    Timer timer;
+
+    // Create event
+    ze_event_pool_desc_t eventPoolDesc;
+    eventPoolDesc.version = ZE_EVENT_POOL_DESC_VERSION_CURRENT;
+    eventPoolDesc.flags = ZE_EVENT_POOL_FLAG_HOST_VISIBLE;
+    eventPoolDesc.count = 1;
+    ze_event_pool_handle_t eventPool;
+    ASSERT_ZE_RESULT_SUCCESS(zeEventPoolCreate(levelzero.driver, &eventPoolDesc, 1, &levelzero.device, &eventPool));
+    ze_event_desc_t eventDesc;
+    eventDesc.version = ZE_EVENT_DESC_VERSION_CURRENT;
+    eventDesc.index = 0;
+    eventDesc.signal = ZE_EVENT_SCOPE_FLAG_DEVICE;
+    eventDesc.wait = ZE_EVENT_SCOPE_FLAG_HOST;
+    ze_event_handle_t event{};
+    ASSERT_ZE_RESULT_SUCCESS(zeEventCreate(eventPool, &eventDesc, &event));
+
+    // Create buffer
+    ze_host_mem_alloc_desc_t allocationDesc{ZE_HOST_MEM_ALLOC_DESC_VERSION_CURRENT, ZE_HOST_MEM_ALLOC_FLAG_DEFAULT};
+    void *buffer = nullptr;
+    ASSERT_ZE_RESULT_SUCCESS(zeDriverAllocHostMem(levelzero.driver, &allocationDesc, bufferSize, 0, &buffer));
+    ASSERT_ZE_RESULT_SUCCESS(zeDeviceMakeMemoryResident(levelzero.device, buffer, bufferSize));
+    volatile uint64_t *volatileBuffer = static_cast<uint64_t *>(buffer);
+
+    // Create kernel
+    const auto kernelBinary = loadBinaryFile("write_one.spv");
+    if (kernelBinary.size() == 0) {
+        return TestResult::KernelNotFound;
+    }
+    ze_module_desc_t moduleDesc{};
+    moduleDesc.version = ZE_MODULE_DESC_VERSION_CURRENT;
+    moduleDesc.format = ZE_MODULE_FORMAT_IL_SPIRV;
+    moduleDesc.inputSize = kernelBinary.size();
+    moduleDesc.pInputModule = kernelBinary.data();
+    moduleDesc.pBuildFlags = nullptr;
+    moduleDesc.pConstants = nullptr;
+    ze_module_handle_t module;
+    ASSERT_ZE_RESULT_SUCCESS(zeModuleCreate(levelzero.device, &moduleDesc, &module, nullptr));
+    ze_kernel_desc_t kernelDesc{};
+    kernelDesc.version = ZE_KERNEL_DESC_VERSION_CURRENT;
+    kernelDesc.flags = ZE_KERNEL_FLAG_NONE;
+    kernelDesc.pKernelName = "write_one";
+    ze_kernel_handle_t kernel;
+    ASSERT_ZE_RESULT_SUCCESS(zeKernelCreate(module, &kernelDesc, &kernel));
+
+    // Configure kernel
+    ASSERT_ZE_RESULT_SUCCESS(zeKernelSetGroupSize(kernel, 1, 1, 1));
+    ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernel, 0, sizeof(buffer), &buffer));
+
+    // Create an immediate command list
+    const ze_group_count_t groupCount{1, 1, 1};
+    _ze_command_queue_desc_t commandQueueDesc{};
+    commandQueueDesc.version = ZE_COMMAND_QUEUE_DESC_VERSION_CURRENT;
+    commandQueueDesc.mode = ZE_COMMAND_QUEUE_MODE_ASYNCHRONOUS;
+    ze_command_list_handle_t cmdList;
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreateImmediate(levelzero.device, &commandQueueDesc, &cmdList));
+
+    // Warmup
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, event, 0, nullptr));
+    ASSERT_ZE_RESULT_SUCCESS(zeEventHostSynchronize(event, std::numeric_limits<uint32_t>::max()));
+    ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(event));
+
+    // Benchmark
+    for (auto i = 0; i < arguments.iterations; i++) {
+        *volatileBuffer = 0;
+        _mm_clflush(buffer);
+
+        timer.measureStart();
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, event, 0, nullptr));
+        while (*volatileBuffer != 1) {
+        }
+        timer.measureEnd();
+
+        ASSERT_ZE_RESULT_SUCCESS(zeEventHostSynchronize(event, std::numeric_limits<uint32_t>::max()));
+        ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(event));
+
+        statistics.pushValue(timer.Get());
+    }
+
+    ASSERT_ZE_RESULT_SUCCESS(zeDeviceEvictMemory(levelzero.device, buffer, bufferSize));
+    ASSERT_ZE_RESULT_SUCCESS(zeKernelDestroy(kernel));
+    ASSERT_ZE_RESULT_SUCCESS(zeModuleDestroy(module));
+    ASSERT_ZE_RESULT_SUCCESS(zeDriverFreeMem(levelzero.driver, buffer));
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));
+    ASSERT_ZE_RESULT_SUCCESS(zeEventDestroy(event));
+    ASSERT_ZE_RESULT_SUCCESS(zeEventPoolDestroy(eventPool));
+    return TestResult::Success;
+}
+
+static RegisterTestCase<BestWalkerSubmissionImmediate> registerTestCase(run, Api::L0);
+} // namespace UllsTest

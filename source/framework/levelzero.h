@@ -16,7 +16,8 @@
     }
 
 struct LevelZero {
-    LevelZero() {
+    LevelZero() : LevelZero(true) {}
+    LevelZero(bool createCommandQueue) {
         EXPECT_ZE_RESULT_SUCCESS(zeInit(ZE_INIT_FLAG_NONE));
 
         uint32_t driverCount = 0;
@@ -31,17 +32,21 @@ struct LevelZero {
         deviceCount = 1;
         EXPECT_ZE_RESULT_SUCCESS(zeDeviceGet(driver, &deviceCount, &device));
 
-        ze_command_queue_desc_t commandQueueDesc = {ZE_COMMAND_QUEUE_DESC_VERSION_CURRENT};
-        commandQueueDesc.ordinal = 0;
-        commandQueueDesc.mode = ZE_COMMAND_QUEUE_MODE_ASYNCHRONOUS;
-        EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueCreate(device, &commandQueueDesc, &commandQueue));
+        if (createCommandQueue) {
+            ze_command_queue_desc_t commandQueueDesc = {ZE_COMMAND_QUEUE_DESC_VERSION_CURRENT};
+            commandQueueDesc.ordinal = 0;
+            commandQueueDesc.mode = ZE_COMMAND_QUEUE_MODE_ASYNCHRONOUS;
+            EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueCreate(device, &commandQueueDesc, &commandQueue));
+        }
     }
 
     ~LevelZero() {
-        EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueDestroy(commandQueue));
+        if (commandQueue != nullptr) {
+            EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueDestroy(commandQueue));
+        }
     }
 
-    ze_driver_handle_t driver;
-    ze_device_handle_t device;
-    ze_command_queue_handle_t commandQueue;
+    ze_driver_handle_t driver{};
+    ze_device_handle_t device{};
+    ze_command_queue_handle_t commandQueue{};
 };
