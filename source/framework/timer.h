@@ -3,57 +3,23 @@
 
 class Timer {
   public:
-    inline void measureStart() {
-        *((std::chrono::high_resolution_clock::time_point *)&m_startTime) =
-            std::chrono::high_resolution_clock::now();
+    using Clock = std::chrono::high_resolution_clock;
+
+    void measureStart() {
+        startTime = Clock::now();
     }
 
-    inline void measureEnd() {
-        *((std::chrono::high_resolution_clock::time_point *)&m_endTime) =
-            std::chrono::high_resolution_clock::now();
+    void measureEnd() {
+        endTime = Clock::now();
     }
 
-    long long int Get() {
-        long long int nanosecondTime = 0;
-        std::chrono::duration<double> diffTime = std::chrono::duration_cast<
-            std::chrono::duration<double>>(
-            *(reinterpret_cast<std::chrono::high_resolution_clock::time_point *>(
-                &m_endTime)) -
-            *(reinterpret_cast<std::chrono::high_resolution_clock::time_point *>(
-                &m_startTime)));
-        nanosecondTime = (long long int)(diffTime.count() * (double)1000000000.0);
+    long long int Get() const {
+        std::chrono::duration<double> diffTime = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime);
+        long long int nanosecondTime = (long long int)(diffTime.count() * (double)1000000000.0);
         return nanosecondTime;
     }
 
-    long long GetStart() {
-        long long ret =
-            (long long)(reinterpret_cast<
-                            std::chrono::high_resolution_clock::time_point *>(
-                            &m_startTime)
-                            ->time_since_epoch()
-                            .count());
-        return ret;
-    }
-
-    long long GetEnd() {
-        long long ret =
-            (long long)(reinterpret_cast<
-                            std::chrono::high_resolution_clock::time_point *>(
-                            &m_endTime)
-                            ->time_since_epoch()
-                            .count());
-        return ret;
-    }
-
-    // This operator enables setting the same start time for more Timers
-    Timer &operator=(const Timer &t) {
-        m_startTime = t.m_startTime;
-        return *this;
-    }
-
-    static void SetFreq() {}
-
   private:
-    std::chrono::high_resolution_clock::time_point m_startTime;
-    std::chrono::high_resolution_clock::time_point m_endTime;
+    Clock::time_point startTime;
+    Clock::time_point endTime;
 };
