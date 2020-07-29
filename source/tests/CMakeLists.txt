@@ -1,4 +1,4 @@
-set(TARGET_NAME ulls_benchmarks)
+set(TARGET_NAME ulls_benchmark)
 add_executable(${TARGET_NAME} CMakeLists.txt)
 target_link_libraries(${TARGET_NAME} PRIVATE compute_benchmarks_framework)
 
