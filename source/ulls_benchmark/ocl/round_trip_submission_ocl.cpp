@@ -5,8 +5,6 @@
 
 #include <gtest/gtest.h>
 
-namespace UllsTest {
-
 static TestResult run(const RoundTripSubmissionArguments &arguments, Statistics &statistics) {
     // Setup
     Opencl opencl;
@@ -59,4 +57,3 @@ static TestResult run(const RoundTripSubmissionArguments &arguments, Statistics 
 }
 
 static RegisterTestCase<RoundTripSubmission> registerTestCase(run, Api::OpenCL);
-} // namespace UllsTest

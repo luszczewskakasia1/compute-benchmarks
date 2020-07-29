@@ -7,7 +7,6 @@
 #include <gtest/gtest.h>
 #include <level_zero/zex_ddi.h>
 
-namespace UllsTest {
 static TestResult run(const CompletionLatencyArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;
     zex_pfnCommandListAppendPipeControl_t zexCommandListAppendPipeControl{};
@@ -58,4 +57,3 @@ static TestResult run(const CompletionLatencyArguments &arguments, Statistics &s
 }
 
 static RegisterTestCase<CompletionLatency> registerTestCase(run, Api::L0);
-} // namespace UllsTest

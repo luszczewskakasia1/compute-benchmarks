@@ -11,7 +11,7 @@
 
 TestMap getTestMap() {
     TestMap testMap;
-#define TEST_CASE(name) testMap[#name] = std::unique_ptr<TestCaseInterface>(new UllsTest::name());
+#define TEST_CASE(name) testMap[#name] = std::unique_ptr<TestCaseInterface>(new name());
     TEST_CASE(BestWalkerSubmission)
     TEST_CASE(BestWalkerSubmissionImmediate)
     TEST_CASE(BestSubmission)

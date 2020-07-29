@@ -6,10 +6,10 @@ class BestrSubmissionTest : public ::testing::TestWithParam<Api> {
 };
 
 TEST_P(BestrSubmissionTest, Test) {
-    UllsTest::BestSubmissionArguments args{};
+    BestSubmissionArguments args{};
     args.api = GetParam();
 
-    UllsTest::BestSubmission test;
+    BestSubmission test;
     test.run(args);
 }
 

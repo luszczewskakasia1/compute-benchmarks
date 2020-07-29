@@ -7,7 +7,6 @@
 #include <gtest/gtest.h>
 #include <level_zero/zex_ddi.h>
 
-namespace UllsTest {
 static TestResult run(const BestSubmissionArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;
     zex_pfnCommandListAppendPipeControl_t zexCommandListAppendPipeControl{};
@@ -57,4 +56,3 @@ static TestResult run(const BestSubmissionArguments &arguments, Statistics &stat
 }
 
 static RegisterTestCase<BestSubmission> registerTestCase(run, Api::L0);
-} // namespace UllsTest

@@ -8,7 +8,6 @@
 #include <gtest/gtest.h>
 #include <level_zero/zex_ddi.h>
 
-namespace UllsTest {
 static TestResult run(const BestWalkerSubmissionImmediateArguments &arguments, Statistics &statistics) {
     LevelZero levelzero{false};
     constexpr static auto bufferSize = 4096u;
@@ -102,4 +101,3 @@ static TestResult run(const BestWalkerSubmissionImmediateArguments &arguments, S
 }
 
 static RegisterTestCase<BestWalkerSubmissionImmediate> registerTestCase(run, Api::L0);
-} // namespace UllsTest

@@ -4,8 +4,6 @@
 
 #include <sstream>
 
-namespace UllsTest {
-
 struct NewResourcesSubmissionDeviceArguments : TestCaseArguments {
     size_t size;
 
@@ -43,5 +41,3 @@ class NewResourcesSubmissionDevice : public TestCase<NewResourcesSubmissionDevic
         return "NewResourcesSubmissionDevice";
     }
 };
-
-} // namespace UllsTest

@@ -7,7 +7,6 @@
 #include <gtest/gtest.h>
 #include <level_zero/zex_ddi.h>
 
-namespace UllsTest {
 static TestResult run(const RoundTripSubmissionArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;
     constexpr static auto bufferSize = 4096u;
@@ -77,4 +76,3 @@ static TestResult run(const RoundTripSubmissionArguments &arguments, Statistics 
 }
 
 static RegisterTestCase<RoundTripSubmission> registerTestCase(run, Api::L0);
-} // namespace UllsTest

@@ -2,8 +2,6 @@
 
 #include "framework/test_case.h"
 
-namespace UllsTest {
-
 struct BestSubmissionArguments : TestCaseArguments {};
 
 class BestSubmission : public TestCase<BestSubmissionArguments> {
@@ -18,5 +16,3 @@ class BestSubmission : public TestCase<BestSubmissionArguments> {
         return "BestSubmission";
     }
 };
-
-} // namespace UllsTest

@@ -2,8 +2,6 @@
 
 #include "framework/test_case.h"
 
-namespace UllsTest {
-
 struct CompletionLatencyArguments : TestCaseArguments {};
 
 class CompletionLatency : public TestCase<CompletionLatencyArguments> {
@@ -19,5 +17,3 @@ class CompletionLatency : public TestCase<CompletionLatencyArguments> {
         return "CompletionLatency";
     }
 };
-
-} // namespace UllsTest

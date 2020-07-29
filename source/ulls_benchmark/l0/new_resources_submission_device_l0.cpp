@@ -7,7 +7,6 @@
 #include <gtest/gtest.h>
 #include <level_zero/zex_ddi.h>
 
-namespace UllsTest {
 static TestResult run(const NewResourcesSubmissionDeviceArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;
     Timer timer;
@@ -91,4 +90,3 @@ static TestResult run(const NewResourcesSubmissionDeviceArguments &arguments, St
 }
 
 static RegisterTestCase<NewResourcesSubmissionDevice> registerTestCase(run, Api::L0);
-} // namespace UllsTest

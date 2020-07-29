@@ -6,7 +6,6 @@
 #include <emmintrin.h>
 #include <gtest/gtest.h>
 
-namespace UllsTest {
 static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics &statistics) {
     // Setup
     Opencl opencl;
@@ -68,4 +67,3 @@ static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics
 }
 
 static RegisterTestCase<BestWalkerSubmission> registerTestCase(run, Api::OpenCL);
-} // namespace UllsTest

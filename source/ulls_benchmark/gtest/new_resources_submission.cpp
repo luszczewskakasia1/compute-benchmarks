@@ -6,11 +6,11 @@ class NewResourcesSubmissionHostTest : public ::testing::TestWithParam<std::tupl
 };
 
 TEST_P(NewResourcesSubmissionHostTest, Test) {
-    UllsTest::NewResourcesSubmissionHostArguments args;
+    NewResourcesSubmissionHostArguments args;
     args.api = std::get<0>(GetParam());
     args.size = std::get<1>(GetParam());
 
-    UllsTest::NewResourcesSubmissionHost test;
+    NewResourcesSubmissionHost test;
     test.run(args);
 }
 

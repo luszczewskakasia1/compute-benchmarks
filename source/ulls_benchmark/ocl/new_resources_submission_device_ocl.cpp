@@ -5,8 +5,6 @@
 
 #include <gtest/gtest.h>
 
-namespace UllsTest {
-
 static TestResult run(const NewResourcesSubmissionDeviceArguments &arguments, Statistics &statistics) {
     // Setup
     Opencl opencl;
@@ -61,4 +59,3 @@ static TestResult run(const NewResourcesSubmissionDeviceArguments &arguments, St
 }
 
 static RegisterTestCase<NewResourcesSubmissionDevice> registerTestCase(run, Api::OpenCL);
-} // namespace UllsTest

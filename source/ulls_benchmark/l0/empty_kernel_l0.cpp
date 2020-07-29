@@ -7,8 +7,6 @@
 #include <gtest/gtest.h>
 #include <level_zero/zex_ddi.h>
 
-namespace UllsTest {
-
 static TestResult run(const EmptyKernelArguments &arguments, Statistics &statistics) {
     // Setup
     LevelZero levelzero;
@@ -67,4 +65,3 @@ static TestResult run(const EmptyKernelArguments &arguments, Statistics &statist
 }
 
 static RegisterTestCase<EmptyKernel> registerTestCase(run, Api::L0);
-} // namespace UllsTest

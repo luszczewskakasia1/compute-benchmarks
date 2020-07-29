@@ -4,8 +4,6 @@
 
 #include <sstream>
 
-namespace UllsTest {
-
 struct EmptyKernelArguments : TestCaseArguments {
     size_t workgroupCount;
     size_t workgroupSize;
@@ -50,5 +48,3 @@ class EmptyKernel : public TestCase<EmptyKernelArguments> {
         return "EmptyKernel";
     }
 };
-
-} // namespace UllsTest

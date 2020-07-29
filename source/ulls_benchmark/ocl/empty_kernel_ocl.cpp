@@ -5,8 +5,6 @@
 
 #include <gtest/gtest.h>
 
-namespace UllsTest {
-
 static TestResult run(const EmptyKernelArguments &arguments, Statistics &statistics) {
     // Setup
     Opencl opencl;
@@ -48,4 +46,3 @@ static TestResult run(const EmptyKernelArguments &arguments, Statistics &statist
 }
 
 static RegisterTestCase<EmptyKernel> registerTestCase(run, Api::OpenCL);
-} // namespace UllsTest

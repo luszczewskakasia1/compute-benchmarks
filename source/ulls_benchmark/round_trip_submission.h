@@ -2,8 +2,6 @@
 
 #include "framework/test_case.h"
 
-namespace UllsTest {
-
 struct RoundTripSubmissionArguments : TestCaseArguments {};
 
 class RoundTripSubmission : public TestCase<RoundTripSubmissionArguments> {
@@ -18,5 +16,3 @@ class RoundTripSubmission : public TestCase<RoundTripSubmissionArguments> {
         return "RoundTripSubmission";
     }
 };
-
-} // namespace UllsTest

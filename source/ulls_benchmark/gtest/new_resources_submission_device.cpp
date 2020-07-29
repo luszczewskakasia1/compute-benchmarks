@@ -6,11 +6,11 @@ class NewResourcesSubmissionDeviceTest : public ::testing::TestWithParam<std::tu
 };
 
 TEST_P(NewResourcesSubmissionDeviceTest, Test) {
-    UllsTest::NewResourcesSubmissionDeviceArguments args;
+    NewResourcesSubmissionDeviceArguments args;
     args.api = std::get<0>(GetParam());
     args.size = std::get<1>(GetParam());
 
-    UllsTest::NewResourcesSubmissionDevice test;
+    NewResourcesSubmissionDevice test;
     test.run(args);
 }
 

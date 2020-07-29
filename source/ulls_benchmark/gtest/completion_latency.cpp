@@ -6,10 +6,10 @@ class CompletionLatencyTest : public ::testing::TestWithParam<Api> {
 };
 
 TEST_P(CompletionLatencyTest, Test) {
-    UllsTest::CompletionLatencyArguments args{};
+    CompletionLatencyArguments args{};
     args.api = GetParam();
 
-    UllsTest::CompletionLatency test;
+    CompletionLatency test;
     test.run(args);
 }
 
