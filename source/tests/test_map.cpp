@@ -1,4 +1,4 @@
-#include "test_map.h"
+#include "framework/test_map.h"
 
 #include "tests/best_submission.h"
 #include "tests/best_walker_submission.h"

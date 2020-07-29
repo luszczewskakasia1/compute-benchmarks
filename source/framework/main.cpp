@@ -1,7 +1,7 @@
 #include "framework/configuration.h"
 #include "framework/gtest_event_listener.h"
 #include "framework/statistics.h"
-#include "tests/test_map.h"
+#include "framework/test_map.h"
 
 #include <gtest/gtest.h>
 #include <iostream>
