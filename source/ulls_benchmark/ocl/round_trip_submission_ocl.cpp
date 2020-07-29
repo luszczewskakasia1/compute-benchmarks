@@ -1,13 +1,13 @@
 #include "framework/ocl/opencl.h"
 #include "framework/register_test_case.h"
 #include "framework/timer.h"
-#include "tests/best_walker_submission.h"
+#include "ulls_benchmark/round_trip_submission.h"
 
-#include <emmintrin.h>
 #include <gtest/gtest.h>
 
 namespace UllsTest {
-static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics &statistics) {
+
+static TestResult run(const RoundTripSubmissionArguments &arguments, Statistics &statistics) {
     // Setup
     Opencl opencl;
     Timer timer;
@@ -20,7 +20,6 @@ static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics
 
     // Create system memory buffer
     void *hostMemory = clHostMemAllocINTEL(opencl.context, nullptr, 64, 0, &retVal);
-    volatile cl_int *volatileHostMemory = static_cast<cl_int *>(hostMemory);
     ASSERT_CL_SUCCESS(retVal);
 
     // Create kernel
@@ -34,29 +33,21 @@ static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics
     cl_kernel kernel = clCreateKernel(program, "write", &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
-    // Benchmark
-    ASSERT_CL_SUCCESS(clSetKernelArgSVMPointer(kernel, 0, hostMemory));
+    // Warmup kernel
     size_t gws = 1;
+    retVal |= clSetKernelArgSVMPointer(kernel, 0, hostMemory);
+    retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, nullptr);
+    retVal |= clFinish(opencl.commandQueue);
+    ASSERT_CL_SUCCESS(retVal);
+
+    // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
-        // Reset value
-        *volatileHostMemory = 0;
-        _mm_clflush(hostMemory);
-
-        // Warmup, kernel
-        size_t warmupOffset = 8;
-        retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, &warmupOffset, &gws, nullptr, 0, nullptr, nullptr);
-        retVal |= clFinish(opencl.commandQueue);
-        ASSERT_CL_SUCCESS(retVal);
-
-        // Enqueue write on GPU and poll for update on CPU
         timer.measureStart();
         retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, nullptr);
-        retVal |= clFlush(opencl.commandQueue);
-        ASSERT_CL_SUCCESS(retVal);
-
-        while (*volatileHostMemory != 1) {
-        }
+        retVal |= clFinish(opencl.commandQueue);
         timer.measureEnd();
+
+        ASSERT_CL_SUCCESS(retVal);
         statistics.pushValue(timer.Get());
     }
 
@@ -67,5 +58,5 @@ static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics
     return TestResult::Success;
 }
 
-static RegisterTestCase<BestWalkerSubmission> registerTestCase(run, Api::OpenCL);
+static RegisterTestCase<RoundTripSubmission> registerTestCase(run, Api::OpenCL);
 } // namespace UllsTest

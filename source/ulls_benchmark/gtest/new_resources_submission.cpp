@@ -1,4 +1,4 @@
-#include "tests/new_resources_submission_host.h"
+#include "ulls_benchmark/new_resources_submission_host.h"
 
 #include <gtest/gtest.h>
 

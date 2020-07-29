@@ -1,7 +1,7 @@
 #include "framework/ocl/opencl.h"
 #include "framework/register_test_case.h"
 #include "framework/timer.h"
-#include "tests/new_resources_submission_device.h"
+#include "ulls_benchmark/new_resources_submission_device.h"
 
 #include <gtest/gtest.h>
 

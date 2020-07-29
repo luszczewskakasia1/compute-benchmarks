@@ -1,4 +1,4 @@
-#include "tests/best_submission.h"
+#include "ulls_benchmark/best_submission.h"
 
 #include <gtest/gtest.h>
 

@@ -1,14 +1,14 @@
 #include "framework/l0/levelzero.h"
 #include "framework/register_test_case.h"
 #include "framework/timer.h"
-#include "tests/completion_latency.h"
+#include "ulls_benchmark/best_submission.h"
 
 #include <emmintrin.h>
 #include <gtest/gtest.h>
 #include <level_zero/zex_ddi.h>
 
 namespace UllsTest {
-static TestResult run(const CompletionLatencyArguments &arguments, Statistics &statistics) {
+static TestResult run(const BestSubmissionArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;
     zex_pfnCommandListAppendPipeControl_t zexCommandListAppendPipeControl{};
     constexpr static auto bufferSize = 4096u;
@@ -40,22 +40,21 @@ static TestResult run(const CompletionLatencyArguments &arguments, Statistics &s
         *volatileBuffer = 0;
         _mm_clflush(buffer);
 
+        timer.measureStart();
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
         while (*volatileBuffer != 1) {
         }
-        timer.measureStart();
-        ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
         timer.measureEnd();
         statistics.pushValue(timer.Get());
+
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
     }
 
-    ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
     ASSERT_ZE_RESULT_SUCCESS(zeDeviceEvictMemory(levelzero.device, buffer, bufferSize));
-
     ASSERT_ZE_RESULT_SUCCESS(zeDriverFreeMem(levelzero.driver, buffer));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));
     return TestResult::Success;
 }
 
-static RegisterTestCase<CompletionLatency> registerTestCase(run, Api::L0);
+static RegisterTestCase<BestSubmission> registerTestCase(run, Api::L0);
 } // namespace UllsTest

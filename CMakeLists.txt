@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8.0 FATAL_ERROR)
-project(ULLS_Benchmark)
+project(ComputeBenchmarks)
 set(PREDEFINED_TARGETS_FOLDER "CustomTargets")
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")

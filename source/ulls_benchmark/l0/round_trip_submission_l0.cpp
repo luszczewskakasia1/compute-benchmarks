@@ -2,20 +2,25 @@
 #include "framework/load_binary_file.h"
 #include "framework/register_test_case.h"
 #include "framework/timer.h"
-#include "tests/empty_kernel.h"
+#include "ulls_benchmark/round_trip_submission.h"
 
 #include <gtest/gtest.h>
 #include <level_zero/zex_ddi.h>
 
 namespace UllsTest {
-
-static TestResult run(const EmptyKernelArguments &arguments, Statistics &statistics) {
-    // Setup
+static TestResult run(const RoundTripSubmissionArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;
+    constexpr static auto bufferSize = 4096u;
     Timer timer;
 
+    // Create buffer
+    ze_host_mem_alloc_desc_t allocationDesc{ZE_HOST_MEM_ALLOC_DESC_VERSION_CURRENT, ZE_HOST_MEM_ALLOC_FLAG_DEFAULT};
+    uint64_t *buffer = nullptr;
+    ASSERT_ZE_RESULT_SUCCESS(zeDriverAllocHostMem(levelzero.driver, &allocationDesc, bufferSize, 0, (void **)(&buffer)));
+    ASSERT_ZE_RESULT_SUCCESS(zeDeviceMakeMemoryResident(levelzero.device, buffer, bufferSize));
+
     // Create kernel
-    auto spirvModule = loadBinaryFile("empty_kernel.spv");
+    auto spirvModule = loadBinaryFile("write_one.spv");
     if (spirvModule.size() == 0) {
         return TestResult::KernelNotFound;
     }
@@ -26,21 +31,24 @@ static TestResult run(const EmptyKernelArguments &arguments, Statistics &statist
     moduleDesc.pInputModule = reinterpret_cast<const uint8_t *>(spirvModule.data());
     moduleDesc.inputSize = spirvModule.size();
     EXPECT_ZE_RESULT_SUCCESS(zeModuleCreate(levelzero.device, &moduleDesc, &module, nullptr));
+
     ze_kernel_desc_t kernelDesc = {ZE_KERNEL_DESC_VERSION_CURRENT};
-    kernelDesc.pKernelName = "empty";
+    kernelDesc.pKernelName = "write_one";
     EXPECT_ZE_RESULT_SUCCESS(zeKernelCreate(module, &kernelDesc, &kernel));
 
-    uint32_t groupSizeX = static_cast<uint32_t>(arguments.workgroupSize);
+    uint32_t groupSizeX = 1u;
     uint32_t groupSizeY = 1u;
     uint32_t groupSizeZ = 1u;
+
     EXPECT_ZE_RESULT_SUCCESS(zeKernelSetGroupSize(kernel, groupSizeX, groupSizeY, groupSizeZ));
+    ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernel, 0, sizeof(buffer), &buffer));
 
     ze_group_count_t dispatchTraits;
-    dispatchTraits.groupCountX = static_cast<uint32_t>(arguments.workgroupCount);
+    dispatchTraits.groupCountX = 1u;
     dispatchTraits.groupCountY = 1u;
     dispatchTraits.groupCountZ = 1u;
 
-    // Create command list and append empty kernel
+    // Create command lists and append kernel to write one
     const ze_command_list_desc_t cmdListDesc = {ZE_COMMAND_LIST_DESC_VERSION_CURRENT};
     ze_command_list_handle_t cmdList;
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.device, &cmdListDesc, &cmdList));
@@ -51,20 +59,22 @@ static TestResult run(const EmptyKernelArguments &arguments, Statistics &statist
     ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
 
-    // Benchmark
     for (auto i = 0; i < arguments.iterations; i++) {
         timer.measureStart();
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
         timer.measureEnd();
+
         statistics.pushValue(timer.Get());
     }
 
+    ASSERT_ZE_RESULT_SUCCESS(zeDeviceEvictMemory(levelzero.device, buffer, bufferSize));
     ASSERT_ZE_RESULT_SUCCESS(zeKernelDestroy(kernel));
     ASSERT_ZE_RESULT_SUCCESS(zeModuleDestroy(module));
+    ASSERT_ZE_RESULT_SUCCESS(zeDriverFreeMem(levelzero.driver, buffer));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));
     return TestResult::Success;
 }
 
-static RegisterTestCase<EmptyKernel> registerTestCase(run, Api::L0);
+static RegisterTestCase<RoundTripSubmission> registerTestCase(run, Api::L0);
 } // namespace UllsTest

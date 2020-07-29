@@ -2,32 +2,17 @@
 #include "framework/load_binary_file.h"
 #include "framework/register_test_case.h"
 #include "framework/timer.h"
-#include "tests/best_walker_submission_immediate.h"
+#include "ulls_benchmark/best_walker_submission.h"
 
 #include <emmintrin.h>
 #include <gtest/gtest.h>
 #include <level_zero/zex_ddi.h>
 
 namespace UllsTest {
-static TestResult run(const BestWalkerSubmissionImmediateArguments &arguments, Statistics &statistics) {
-    LevelZero levelzero{false};
+static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics &statistics) {
+    LevelZero levelzero;
     constexpr static auto bufferSize = 4096u;
     Timer timer;
-
-    // Create event
-    ze_event_pool_desc_t eventPoolDesc;
-    eventPoolDesc.version = ZE_EVENT_POOL_DESC_VERSION_CURRENT;
-    eventPoolDesc.flags = ZE_EVENT_POOL_FLAG_HOST_VISIBLE;
-    eventPoolDesc.count = 1;
-    ze_event_pool_handle_t eventPool;
-    ASSERT_ZE_RESULT_SUCCESS(zeEventPoolCreate(levelzero.driver, &eventPoolDesc, 1, &levelzero.device, &eventPool));
-    ze_event_desc_t eventDesc;
-    eventDesc.version = ZE_EVENT_DESC_VERSION_CURRENT;
-    eventDesc.index = 0;
-    eventDesc.signal = ZE_EVENT_SCOPE_FLAG_DEVICE;
-    eventDesc.wait = ZE_EVENT_SCOPE_FLAG_HOST;
-    ze_event_handle_t event{};
-    ASSERT_ZE_RESULT_SUCCESS(zeEventCreate(eventPool, &eventDesc, &event));
 
     // Create buffer
     ze_host_mem_alloc_desc_t allocationDesc{ZE_HOST_MEM_ALLOC_DESC_VERSION_CURRENT, ZE_HOST_MEM_ALLOC_FLAG_DEFAULT};
@@ -61,18 +46,17 @@ static TestResult run(const BestWalkerSubmissionImmediateArguments &arguments, S
     ASSERT_ZE_RESULT_SUCCESS(zeKernelSetGroupSize(kernel, 1, 1, 1));
     ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernel, 0, sizeof(buffer), &buffer));
 
-    // Create an immediate command list
+    // Create a command list writing 1 to the buffer
     const ze_group_count_t groupCount{1, 1, 1};
-    _ze_command_queue_desc_t commandQueueDesc{};
-    commandQueueDesc.version = ZE_COMMAND_QUEUE_DESC_VERSION_CURRENT;
-    commandQueueDesc.mode = ZE_COMMAND_QUEUE_MODE_ASYNCHRONOUS;
+    const ze_command_list_desc_t cmdListDesc = {ZE_COMMAND_LIST_DESC_VERSION_CURRENT};
     ze_command_list_handle_t cmdList;
-    ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreateImmediate(levelzero.device, &commandQueueDesc, &cmdList));
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.device, &cmdListDesc, &cmdList));
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, nullptr, 0, nullptr));
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandListClose(cmdList));
 
     // Warmup
-    ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, event, 0, nullptr));
-    ASSERT_ZE_RESULT_SUCCESS(zeEventHostSynchronize(event, std::numeric_limits<uint32_t>::max()));
-    ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(event));
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
 
     // Benchmark
     for (auto i = 0; i < arguments.iterations; i++) {
@@ -80,14 +64,12 @@ static TestResult run(const BestWalkerSubmissionImmediateArguments &arguments, S
         _mm_clflush(buffer);
 
         timer.measureStart();
-        ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, event, 0, nullptr));
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
         while (*volatileBuffer != 1) {
         }
         timer.measureEnd();
 
-        ASSERT_ZE_RESULT_SUCCESS(zeEventHostSynchronize(event, std::numeric_limits<uint32_t>::max()));
-        ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(event));
-
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
         statistics.pushValue(timer.Get());
     }
 
@@ -96,10 +78,8 @@ static TestResult run(const BestWalkerSubmissionImmediateArguments &arguments, S
     ASSERT_ZE_RESULT_SUCCESS(zeModuleDestroy(module));
     ASSERT_ZE_RESULT_SUCCESS(zeDriverFreeMem(levelzero.driver, buffer));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));
-    ASSERT_ZE_RESULT_SUCCESS(zeEventDestroy(event));
-    ASSERT_ZE_RESULT_SUCCESS(zeEventPoolDestroy(eventPool));
     return TestResult::Success;
 }
 
-static RegisterTestCase<BestWalkerSubmissionImmediate> registerTestCase(run, Api::L0);
+static RegisterTestCase<BestWalkerSubmission> registerTestCase(run, Api::L0);
 } // namespace UllsTest

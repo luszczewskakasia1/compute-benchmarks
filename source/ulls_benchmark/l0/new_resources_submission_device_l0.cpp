@@ -2,13 +2,13 @@
 #include "framework/load_binary_file.h"
 #include "framework/register_test_case.h"
 #include "framework/timer.h"
-#include "tests/new_resources_submission_host.h"
+#include "ulls_benchmark/new_resources_submission_device.h"
 
 #include <gtest/gtest.h>
 #include <level_zero/zex_ddi.h>
 
 namespace UllsTest {
-static TestResult run(const NewResourcesSubmissionHostArguments &arguments, Statistics &statistics) {
+static TestResult run(const NewResourcesSubmissionDeviceArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;
     Timer timer;
 
@@ -90,5 +90,5 @@ static TestResult run(const NewResourcesSubmissionHostArguments &arguments, Stat
     return TestResult::Success;
 }
 
-static RegisterTestCase<NewResourcesSubmissionHost> registerTestCase(run, Api::L0);
+static RegisterTestCase<NewResourcesSubmissionDevice> registerTestCase(run, Api::L0);
 } // namespace UllsTest
