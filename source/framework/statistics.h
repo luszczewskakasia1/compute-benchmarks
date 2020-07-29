@@ -7,7 +7,7 @@
 
 class Statistics {
   public:
-    using Value = long long int;
+    using Value = double;
 
     explicit Statistics(int maxSamplesCount);
     void pushValue(Value value);

@@ -65,7 +65,7 @@ double Statistics::standardDeviation() {
 }
 
 constexpr static int columnWidths[] = {54, 15, 15, 15, 15, 15};
-constexpr static const char *columnLabels[] = {"TestCase", "Mean [ns]", "Median [ns]", "StdDev", "Min [ns]", "Max [ns]"};
+constexpr static const char *columnLabels[] = {"TestCase", "Mean [us]", "Median [us]", "StdDev", "Min [us]", "Max [us]"};
 constexpr static int columnCount = sizeof(columnWidths) / sizeof(columnWidths[0]);
 
 void Statistics::printStatisticsHeader(Configuration::PrintType printType) {
@@ -97,22 +97,24 @@ void Statistics::printStatistics(const std::string &testCaseName, Configuration:
     case Configuration::PrintType::Verbose:
     case Configuration::PrintType::Default: {
         int column = 0;
+        std::cout << std::fixed;
         std::cout << std::setw(columnWidths[column++]) << testCaseName;
-        std::cout << std::setw(columnWidths[column++]) << mean();
-        std::cout << std::setw(columnWidths[column++]) << median();
-        std::cout << std::setw(columnWidths[column++] - 1) << std::fixed << std::setprecision(2) << 100 * standardDeviation() << "%";
-        std::cout << std::setw(columnWidths[column++]) << min();
-        std::cout << std::setw(columnWidths[column++]) << max();
+        std::cout << std::setw(columnWidths[column++]) << std::setprecision(3) << mean();
+        std::cout << std::setw(columnWidths[column++]) << std::setprecision(3) << median();
+        std::cout << std::setw(columnWidths[column++] - 1) << std::setprecision(2) << 100 * standardDeviation() << "%";
+        std::cout << std::setw(columnWidths[column++]) << std::setprecision(3) << min();
+        std::cout << std::setw(columnWidths[column++]) << std::setprecision(3) << max();
         std::cout << std::endl;
         break;
     }
     case Configuration::PrintType::Csv: {
+        std::cout << std::fixed;
         std::cout << testCaseName << ",";
-        std::cout << mean() << ",";
-        std::cout << median() << ",";
-        std::cout << std::fixed << std::setprecision(2) << 100 * standardDeviation() << "%,";
-        std::cout << min() << ",";
-        std::cout << max();
+        std::cout << std::setprecision(3) << mean() << ",";
+        std::cout << std::setprecision(3) << median() << ",";
+        std::cout << std::setprecision(2) << 100 * standardDeviation() << "%,";
+        std::cout << std::setprecision(3) << min() << ",";
+        std::cout << std::setprecision(3) << max();
         std::cout << std::endl;
         break;
     }

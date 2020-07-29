@@ -13,10 +13,10 @@ class Timer {
         endTime = Clock::now();
     }
 
-    long long int Get() const {
+    double Get() const {
         std::chrono::duration<double> diffTime = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime);
-        long long int nanosecondTime = (long long int)(diffTime.count() * (double)1000000000.0);
-        return nanosecondTime;
+        double microsecondTime = diffTime.count() * 1000000.0;
+        return microsecondTime;
     }
 
   private:
