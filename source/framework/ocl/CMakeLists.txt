@@ -1,0 +1,23 @@
+if(NOT TEST_OCL)
+    return()
+endif()
+
+find_package(OpenCL QUIET)
+if(NOT ${OpenCL_FOUND})
+    set(ADDITIONAL_PATH "${CMAKE_SOURCE_DIR}/third_party/opencl-sdk")
+    message(STATUS "OpenCL installation not found. Using ${ADDITIONAL_PATH}")
+
+    if (WIN32)
+        set(LIB_NAME OpenCL.lib)
+    else()
+        set(LIB_NAME libOpenCL.so)
+    endif()
+    set(OpenCL_LIBRARIES    "${ADDITIONAL_PATH}/lib/x64/${LIB_NAME}")
+    set(OpenCL_INCLUDE_DIRS "${ADDITIONAL_PATH}/include")
+else()
+    message(STATUS "OpenCL installation found")
+endif()
+
+add_library(OclInterface INTERFACE)
+target_link_libraries(OclInterface INTERFACE ${OpenCL_LIBRARIES})
+target_include_directories(OclInterface INTERFACE ${OpenCL_INCLUDE_DIRS})
