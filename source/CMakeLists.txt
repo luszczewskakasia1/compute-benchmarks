@@ -1,4 +1,4 @@
-# Helper macro
+# Helper functions
 function(copy_kernels_to_bin_directory TARGET_NAME)
     get_target_property(KERNELS ${TARGET_NAME} KERNELS)
     foreach(KERNEL ${KERNELS})
@@ -12,6 +12,14 @@ function(copy_kernels_to_bin_directory TARGET_NAME)
         )
     endforeach()
 endfunction()
+
+function(setup_vs_folders TARGET_NAME BASE_DIR)
+    if (MSVC)
+        get_target_property(SOURCES ${TARGET_NAME} SOURCES)
+        source_group (TREE ${BASE_DIR} FILES ${SOURCES})
+    endif()
+endfunction()
+
 
 # Setup output directories
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIR}")

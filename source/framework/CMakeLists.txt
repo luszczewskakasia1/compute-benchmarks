@@ -6,12 +6,6 @@ target_link_libraries(${TARGET_NAME} PUBLIC gtest)
 target_include_directories(${TARGET_NAME} PUBLIC ${SOURCE_ROOT})
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_17)
 
-# Setup VS folders
-if (MSVC)
-    get_target_property(SOURCES ${TARGET_NAME} SOURCES)
-    source_group (TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCES})
-endif()
-
 # Ignore CRT Warnings
 if (MSVC)
     target_compile_definitions(${TARGET_NAME} PUBLIC _CRT_SECURE_NO_WARNINGS)
@@ -27,3 +21,6 @@ function(tryLinkTo DEPENDENCY)
 endfunction()
 tryLinkTo(OclInterface)
 tryLinkTo(LevelZeroInterface)
+
+# Create directory structure in Visual Studio
+setup_vs_folders(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
