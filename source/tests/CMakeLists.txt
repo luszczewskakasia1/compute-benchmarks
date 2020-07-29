@@ -1,7 +1,6 @@
 set(TARGET_NAME ulls_benchmarks)
 add_executable(${TARGET_NAME} CMakeLists.txt)
 target_link_libraries(${TARGET_NAME} PRIVATE compute_benchmarks_framework)
-set_target_properties(${TARGET_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIR}")
 
 # Add sources
 file(GLOB SOURCES *.cpp *.h)
