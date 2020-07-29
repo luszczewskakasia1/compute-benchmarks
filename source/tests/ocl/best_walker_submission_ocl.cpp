@@ -1,4 +1,4 @@
-#include "framework/opencl.h"
+#include "framework/ocl/opencl.h"
 #include "framework/register_test_case.h"
 #include "framework/timer.h"
 #include "tests/best_walker_submission.h"

@@ -1,4 +1,4 @@
-#include "framework/levelzero.h"
+#include "framework/l0/levelzero.h"
 #include "framework/load_binary_file.h"
 #include "framework/register_test_case.h"
 #include "framework/timer.h"
