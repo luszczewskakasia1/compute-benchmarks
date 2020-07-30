@@ -55,7 +55,7 @@ double Statistics::standardDeviation() {
     Value diffSum = 0;
     for (int i = 0; i < samplesCount; i++) {
         const auto difference = samples[i] - mean;
-        diffSum = difference * difference;
+        diffSum += difference * difference;
     }
     double stdDev = static_cast<double>(diffSum);
     stdDev /= samplesCount;
