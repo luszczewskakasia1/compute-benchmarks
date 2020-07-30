@@ -39,7 +39,8 @@ typedef CL_API_ENTRY cl_int(CL_API_CALL *pfn_clMemFreeINTEL)(
     const void *ptr);
 
 struct Opencl {
-    Opencl() {
+    Opencl() : Opencl(true) {}
+    Opencl(bool createQueue) {
         cl_uint numPlatforms;
         EXPECT_CL_SUCCESS(clGetPlatformIDs(0, nullptr, &numPlatforms));
         if (numPlatforms == 0) {
@@ -56,17 +57,21 @@ struct Opencl {
         context = clCreateContext(nullptr, 1, &device, nullptr, nullptr, &retVal);
         EXPECT_CL_SUCCESS(retVal);
 
-        commandQueue = clCreateCommandQueueWithProperties(context, device, nullptr, &retVal);
-        EXPECT_CL_SUCCESS(retVal);
+        if (createQueue) {
+            commandQueue = clCreateCommandQueueWithProperties(context, device, nullptr, &retVal);
+            EXPECT_CL_SUCCESS(retVal);
+        }
     }
 
     ~Opencl() {
-        EXPECT_CL_SUCCESS(clReleaseCommandQueue(commandQueue));
+        if (commandQueue != nullptr) {
+            EXPECT_CL_SUCCESS(clReleaseCommandQueue(commandQueue));
+        }
         EXPECT_CL_SUCCESS(clReleaseContext(context));
     }
 
-    cl_platform_id platform;
-    cl_device_id device;
-    cl_context context;
-    cl_command_queue commandQueue;
+    cl_platform_id platform{};
+    cl_device_id device{};
+    cl_context context{};
+    cl_command_queue commandQueue{};
 };

@@ -1,6 +1,9 @@
 # Helper functions
 function(copy_kernels_to_bin_directory TARGET_NAME)
     get_target_property(KERNELS ${TARGET_NAME} KERNELS)
+    if (KERNELS STREQUAL "KERNELS-NOTFOUND")
+        return()
+    endif()
     foreach(KERNEL ${KERNELS})
         get_filename_component(KERNEL_NAME ${KERNEL} NAME)
         add_custom_command(
@@ -55,3 +58,4 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 set(SOURCE_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 add_subdirectory(framework)
 add_subdirectory(ulls_benchmark)
+add_subdirectory(pci_benchmark)
