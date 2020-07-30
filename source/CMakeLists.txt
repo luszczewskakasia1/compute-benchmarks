@@ -20,6 +20,31 @@ function(setup_vs_folders TARGET_NAME BASE_DIR)
     endif()
 endfunction()
 
+function(add_subdirectories)
+  file(GLOB SUB_DIRS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/*)
+  foreach(SUB_DIR ${SUB_DIRS})
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${SUB_DIR}/CMakeLists.txt)
+      add_subdirectory(${SUB_DIR})
+    endif()
+  endforeach()
+endfunction()
+
+function (add_benchmark TARGET_NAME)
+    add_executable(${TARGET_NAME} CMakeLists.txt)
+    target_link_libraries(${TARGET_NAME} PRIVATE compute_benchmarks_framework)
+
+    # Add sources
+    file(GLOB SOURCES *.cpp *.h)
+    target_sources(${TARGET_NAME} PRIVATE ${SOURCES})
+    add_subdirectories()
+
+    # Ensure kernels reside inside benchmark's working directory
+    copy_kernels_to_bin_directory(${TARGET_NAME})
+
+    # Create directory structure in Visual Studio
+    setup_vs_folders(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
+endfunction()
+
 
 # Setup output directories
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIR}")
