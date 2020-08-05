@@ -5,27 +5,11 @@
 #include <sstream>
 
 struct NewResourcesSubmissionDeviceArguments : TestCaseArguments {
-    size_t size;
+    PositiveIntegerTestCaseArgument size;
 
-    std::string getHelp() const override {
-        return "\t\t--size=X\n";
-    }
-
-    std::string getCurrentConfig() const override {
-        std::ostringstream result;
-        result << "size=" << size << "";
-        return result.str();
-    }
-
-    bool parseArgument(const std::string &key, const std::string &value) override {
-        if (key == "--size") {
-            size = std::atoi(value.c_str());
-        }
-        return true;
-    }
-
-    bool validateArguments() const override {
-        return size != 0;
+    NewResourcesSubmissionDeviceArguments()
+        : size("size") {
+        arguments.push_back(&size);
     }
 };
 

@@ -5,34 +5,14 @@
 #include <sstream>
 
 struct EmptyKernelArguments : TestCaseArguments {
-    size_t workgroupCount;
-    size_t workgroupSize;
+    PositiveIntegerTestCaseArgument workgroupCount;
+    PositiveIntegerTestCaseArgument workgroupSize;
 
-    std::string getHelp() const override {
-        return "\t\t--workgroupCount=X\n"
-               "\t\t--workgroupSize=X\n";
-    }
-
-    std::string getCurrentConfig() const override {
-        const auto gws = workgroupCount * workgroupSize;
-        const auto lws = workgroupSize;
-        std::ostringstream result;
-        result << "gws=" << gws << " lws=" << lws << "";
-        return result.str();
-    }
-
-    bool parseArgument(const std::string &key, const std::string &value) override {
-        if (key == "--workgroupCount") {
-            workgroupCount = std::atoi(value.c_str());
-        }
-        if (key == "--workgroupSize") {
-            workgroupSize = std::atoi(value.c_str());
-        }
-        return true;
-    }
-
-    bool validateArguments() const override {
-        return workgroupCount != 0 && workgroupSize != 0;
+    EmptyKernelArguments()
+        : workgroupCount("wgc", "workgroup count"),
+          workgroupSize("wgs", "workgroup size (aka local work size)") {
+        arguments.push_back(&workgroupCount);
+        arguments.push_back(&workgroupSize);
     }
 };
 

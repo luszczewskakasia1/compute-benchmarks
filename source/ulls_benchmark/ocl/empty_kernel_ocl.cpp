@@ -10,8 +10,8 @@ static TestResult run(const EmptyKernelArguments &arguments, Statistics &statist
     Opencl opencl;
     Timer timer;
     cl_int retVal;
-    const auto gws = arguments.workgroupCount * arguments.workgroupSize;
-    const auto lws = arguments.workgroupSize;
+    const size_t gws = arguments.workgroupCount * arguments.workgroupSize;
+    const size_t lws = arguments.workgroupSize;
 
     // Create kernel
     const char *source = "__kernel void empty() {}";
