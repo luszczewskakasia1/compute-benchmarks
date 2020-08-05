@@ -68,7 +68,7 @@ struct PositiveIntegerTestCaseArgument : TestCaseArgument {
         this->value = std::atoi(value.c_str());
     }
 
-    size_t value;
+    size_t value = 0u;
 };
 
 struct TransferDirectionTestCaseArgument : TestCaseArgument {
@@ -118,7 +118,7 @@ struct TransferDirectionTestCaseArgument : TestCaseArgument {
         }
     }
 
-    TransferDirection value;
+    TransferDirection value = TransferDirection::Unknown;
 };
 
 struct BooleanTestCaseArgument : TestCaseArgument {
@@ -146,5 +146,5 @@ struct BooleanTestCaseArgument : TestCaseArgument {
         this->value = std::atoi(value.c_str());
     }
 
-    int value;
+    int value = -1;
 };
