@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <string>
 
 inline bool parseArgumentToKeyValue(const std::string &argument, std::string &outKey, std::string &outValue) {
@@ -17,4 +18,11 @@ inline bool parseArgumentToKeyValue(const std::string &argument, std::string &ou
     outKey = argument.substr(0, index);
     outValue = argument.substr(index + 1);
     return true;
+}
+
+inline std::string toLower(const std::string &arg) {
+    std::string result = arg;
+    std::transform(arg.begin(), arg.end(), result.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+    return result;
 }
