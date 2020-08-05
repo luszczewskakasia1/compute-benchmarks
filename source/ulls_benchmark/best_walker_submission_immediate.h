@@ -1,6 +1,6 @@
 #pragma once
 
-#include "framework/test_case.h"
+#include "framework/test_case/test_case.h"
 
 struct BestWalkerSubmissionImmediateArguments : TestCaseArguments {};
 

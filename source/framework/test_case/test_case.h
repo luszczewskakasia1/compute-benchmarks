@@ -1,11 +1,11 @@
 #pragma once
 
 #include "framework/api.h"
-#include "framework/argument.h"
 #include "framework/configuration.h"
 #include "framework/error.h"
 #include "framework/statistics.h"
 #include "framework/string_utils.h"
+#include "framework/test_case/test_case_arguments.h"
 
 #include <functional>
 #include <iostream>
@@ -16,44 +16,6 @@ struct TestCaseInterface {
     virtual std::string getHelp() const = 0;
     virtual std::string getHelpParameters() const = 0;
     virtual std::string getTestCaseName() const = 0;
-};
-
-struct TestCaseArguments {
-    virtual bool parseArgument(const std::string &key, const std::string &value) {
-        for (auto &argument : arguments) {
-            argument->parse(key, value);
-        }
-        return true;
-    }
-    virtual bool validateArguments() const {
-        for (const auto &argument : arguments) {
-            if (!argument->validate()) {
-                return false;
-            }
-        }
-        return true;
-    }
-    virtual std::string getHelp() const {
-        std::ostringstream result;
-        for (const auto &argument : arguments) {
-            result << "\t\t" << argument->getHelp() << '\n';
-        }
-        return result.str();
-    }
-    virtual std::string getCurrentConfig() const {
-        std::ostringstream result;
-        for (auto i = 0; i < arguments.size(); i++) {
-            result << arguments[i]->toString();
-            if (i != arguments.size() - 1) {
-                result << " ";
-            }
-        }
-        return result.str();
-    }
-
-    std::vector<TestCaseArgument *> arguments;
-    Api api = Api::Default;
-    int iterations = 0;
 };
 
 enum class TestResult {

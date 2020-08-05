@@ -1,5 +1,5 @@
 #include "framework/l0/levelzero.h"
-#include "framework/register_test_case.h"
+#include "framework/test_case/register_test_case.h"
 #include "framework/timer.h"
 #include "ulls_benchmark/completion_latency.h"
 

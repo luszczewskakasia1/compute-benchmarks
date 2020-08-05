@@ -1,4 +1,4 @@
-#include "framework/test_map.h"
+#include "framework/test_case/test_map.h"
 
 #include "ulls_benchmark/best_submission.h"
 #include "ulls_benchmark/best_walker_submission.h"

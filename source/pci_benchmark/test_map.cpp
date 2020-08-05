@@ -1,4 +1,4 @@
-#include "framework/test_map.h"
+#include "framework/test_case/test_map.h"
 
 TestMap getTestMap() {
     TestMap testMap;
