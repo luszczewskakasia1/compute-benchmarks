@@ -15,21 +15,21 @@ bool parseArgumentsForConfiguration(int argc, char **argv) {
             return false;
         }
 
-        if (key == "--iterations") {
+        if (key == "iterations") {
             ::configuration.iterations = std::atoi(value.c_str());
             if (::configuration.iterations == 0) {
                 return false;
             }
         }
-        if (key == "--csv") {
+        if (key == "csv") {
             FAIL_IF_VALUE_WAS_PASSED
             ::configuration.printType = Configuration::PrintType::Csv;
         }
-        if (key == "--verbose") {
+        if (key == "verbose") {
             FAIL_IF_VALUE_WAS_PASSED
             ::configuration.printType = Configuration::PrintType::Verbose;
         }
-        if (key == "--api") {
+        if (key == "api") {
             if (value == "ocl") {
                 ::configuration.selectedApi = Api::OpenCL;
             } else if (value == "l0") {

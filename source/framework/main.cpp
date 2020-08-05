@@ -77,16 +77,19 @@ int main(int argc, char **argv) {
 
     if (argc > 1) {
         const std::string firstArgument{argv[1]};
-
-        const std::string singleTestParamName = "--test=";
-        if (firstArgument.find(singleTestParamName) == 0) {
-            std::string testName = firstArgument.substr(singleTestParamName.size());
-            return executeSingleTest(testName, argc, argv);
+        std::string key, value;
+        if (!parseArgumentToKeyValue(firstArgument, key, value)) {
+            std::cerr << "Error parsing command line\n";
+            return 1;
         }
 
-        if (firstArgument == "-h" || firstArgument == "--help") {
+        if (key == "test") {
+            return executeSingleTest(value, argc, argv);
+        }
+        if (key == "help") {
             return printHelp();
         }
     }
+
     return executeAllTests(argc, argv);
 }

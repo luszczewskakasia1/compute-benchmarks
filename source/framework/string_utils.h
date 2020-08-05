@@ -4,9 +4,16 @@
 #include <string>
 
 inline bool parseArgumentToKeyValue(const std::string &argument, std::string &outKey, std::string &outValue) {
+    const std::string prefix = "--";
+    const bool incorrectPrefix = argument.find(prefix) != 0;
+    const bool empty = argument == prefix;
+    if (incorrectPrefix || empty) {
+        return false;
+    }
+
     size_t index = argument.find('=');
     if (index == std::string::npos) {
-        outKey = argument;
+        outKey = argument.substr(prefix.size());
         outValue = "";
         return true;
     }
@@ -15,7 +22,7 @@ inline bool parseArgumentToKeyValue(const std::string &argument, std::string &ou
         return false;
     }
 
-    outKey = argument.substr(0, index);
+    outKey = argument.substr(prefix.size(), index - prefix.size());
     outValue = argument.substr(index + 1);
     return true;
 }
