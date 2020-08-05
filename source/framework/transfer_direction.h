@@ -7,3 +7,11 @@ enum class TransferDirection {
     DH,
     DD,
 };
+
+enum class TransferOperand {
+    Unknown,
+    Source,
+    Destination
+};
+
+bool isDeviceMemory(TransferDirection direction, TransferOperand operand);
