@@ -7,6 +7,12 @@
 #include <sstream>
 
 class CustomEventListener : public ::testing::TestEventListener {
+    struct ErrorInfo {
+        ErrorInfo() : name(), errorMessage() {}
+        std::ostringstream name;
+        std::ostringstream errorMessage;
+    } currentTestCaseErrorInfo{};
+
     void OnTestProgramStart(const ::testing::UnitTest &unitTest) override {
         if (::configuration.printType != Configuration::PrintType::Csv) {
             std::cout << "Running " << ::configuration.iterations << " iterations of each benchmark\n\n";
@@ -14,9 +20,12 @@ class CustomEventListener : public ::testing::TestEventListener {
         Statistics::printStatisticsHeader(::configuration.printType);
     }
     void OnTestProgramEnd(const ::testing::UnitTest &unitTest) override {
-        if (failsDetected) {
-            std::cout << "\n"
-                      << failMessage.str();
+        if (errorInfos.size() > 0) {
+            std::cout << "\n";
+            for (const auto &errorInfo : errorInfos) {
+                std::cout << "[  FAILED  ] " << errorInfo.name.str() << '\n'
+                          << errorInfo.errorMessage.str() << '\n';
+            }
         }
     }
 
@@ -32,21 +41,21 @@ class CustomEventListener : public ::testing::TestEventListener {
     void OnTestCaseStart(const ::testing::TestCase &testCase) override {}
     void OnTestCaseEnd(const ::testing::TestCase &testCase) override {}
 
-    void OnTestStart(const ::testing::TestInfo &testCase) override {}
-    void OnTestEnd(const ::testing::TestInfo &testCase) override {
-        if (testCase.result()->Failed()) {
-            failMessage << "[  FAILED  ] " << testCase.test_case_name() << "." << testCase.name() << std::endl;
-        }
+    void OnTestStart(const ::testing::TestInfo &testCase) override {
+        currentTestCaseErrorInfo = {};
     }
-
     void OnTestPartResult(const ::testing::TestPartResult &testPartResult) override {
         if (testPartResult.failed()) {
-            failsDetected = true;
-            std::cout << testPartResult.file_name() << ":" << testPartResult.line_number() << "\n"
-                      << testPartResult.message() << "\n";
+            currentTestCaseErrorInfo.errorMessage << testPartResult.file_name() << ":" << testPartResult.line_number() << "\n"
+                                                  << testPartResult.message() << "\n";
+        }
+    }
+    void OnTestEnd(const ::testing::TestInfo &testCase) override {
+        if (testCase.result()->Failed()) {
+            currentTestCaseErrorInfo.name << testCase.test_case_name() << "." << testCase.name();
+            errorInfos.push_back(std::move(currentTestCaseErrorInfo));
         }
     }
 
-    std::ostringstream failMessage{};
-    bool failsDetected = false;
+    std::vector<ErrorInfo> errorInfos = {};
 };
