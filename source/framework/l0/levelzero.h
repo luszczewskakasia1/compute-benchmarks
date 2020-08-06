@@ -18,7 +18,7 @@
 struct LevelZero {
     LevelZero() : LevelZero(true) {}
     LevelZero(bool createCommandQueue) {
-        EXPECT_ZE_RESULT_SUCCESS(zeInit(ZE_INIT_FLAG_NONE));
+        EXPECT_ZE_RESULT_SUCCESS(zeInit(ZE_INIT_FLAG_GPU_ONLY));
 
         uint32_t driverCount = 0;
         EXPECT_ZE_RESULT_SUCCESS(zeDriverGet(&driverCount, nullptr));
@@ -32,11 +32,13 @@ struct LevelZero {
         deviceCount = 1;
         EXPECT_ZE_RESULT_SUCCESS(zeDeviceGet(driver, &deviceCount, &device));
 
+        const ze_context_desc_t contextDesc{ZE_STRUCTURE_TYPE_CONTEXT_DESC};
+        EXPECT_ZE_RESULT_SUCCESS(zeContextCreate(driver, &contextDesc, &context));
+
         if (createCommandQueue) {
-            ze_command_queue_desc_t commandQueueDesc = {ZE_COMMAND_QUEUE_DESC_VERSION_CURRENT};
-            commandQueueDesc.ordinal = 0;
+            ze_command_queue_desc_t commandQueueDesc{ZE_STRUCTURE_TYPE_COMMAND_QUEUE_DESC};
             commandQueueDesc.mode = ZE_COMMAND_QUEUE_MODE_ASYNCHRONOUS;
-            EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueCreate(device, &commandQueueDesc, &commandQueue));
+            EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueCreate(context, device, &commandQueueDesc, &commandQueue));
         }
     }
 
@@ -48,5 +50,6 @@ struct LevelZero {
 
     ze_driver_handle_t driver{};
     ze_device_handle_t device{};
+    ze_context_handle_t context{};
     ze_command_queue_handle_t commandQueue{};
 };

@@ -13,45 +13,38 @@ static TestResult run(const RoundTripSubmissionArguments &arguments, Statistics 
     Timer timer;
 
     // Create buffer
-    ze_host_mem_alloc_desc_t allocationDesc{ZE_HOST_MEM_ALLOC_DESC_VERSION_CURRENT, ZE_HOST_MEM_ALLOC_FLAG_DEFAULT};
-    uint64_t *buffer = nullptr;
-    ASSERT_ZE_RESULT_SUCCESS(zeDriverAllocHostMem(levelzero.driver, &allocationDesc, bufferSize, 0, (void **)(&buffer)));
-    ASSERT_ZE_RESULT_SUCCESS(zeDeviceMakeMemoryResident(levelzero.device, buffer, bufferSize));
+    const ze_host_mem_alloc_desc_t allocationDesc{ZE_STRUCTURE_TYPE_HOST_MEM_ALLOC_DESC};
+    void *buffer = nullptr;
+    ASSERT_ZE_RESULT_SUCCESS(zeMemAllocHost(levelzero.context, &allocationDesc, bufferSize, 0, &buffer));
+    ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, buffer, bufferSize));
 
     // Create kernel
-    auto spirvModule = loadBinaryFile("write_one.spv");
-    if (spirvModule.size() == 0) {
+    const auto kernelBinary = loadBinaryFile("write_one.spv");
+    if (kernelBinary.size() == 0) {
         return TestResult::KernelNotFound;
     }
-    ze_module_handle_t module;
-    ze_kernel_handle_t kernel;
-    ze_module_desc_t moduleDesc = {ZE_MODULE_DESC_VERSION_CURRENT};
+    ze_module_desc_t moduleDesc{ZE_STRUCTURE_TYPE_MODULE_DESC};
     moduleDesc.format = ZE_MODULE_FORMAT_IL_SPIRV;
-    moduleDesc.pInputModule = reinterpret_cast<const uint8_t *>(spirvModule.data());
-    moduleDesc.inputSize = spirvModule.size();
-    EXPECT_ZE_RESULT_SUCCESS(zeModuleCreate(levelzero.device, &moduleDesc, &module, nullptr));
-
-    ze_kernel_desc_t kernelDesc = {ZE_KERNEL_DESC_VERSION_CURRENT};
+    moduleDesc.inputSize = kernelBinary.size();
+    moduleDesc.pInputModule = kernelBinary.data();
+    ze_module_handle_t module;
+    ASSERT_ZE_RESULT_SUCCESS(zeModuleCreate(levelzero.context, levelzero.device, &moduleDesc, &module, nullptr));
+    ze_kernel_desc_t kernelDesc{ZE_STRUCTURE_TYPE_KERNEL_DESC};
+    kernelDesc.flags = ZE_KERNEL_FLAG_EXPLICIT_RESIDENCY;
     kernelDesc.pKernelName = "write_one";
-    EXPECT_ZE_RESULT_SUCCESS(zeKernelCreate(module, &kernelDesc, &kernel));
+    ze_kernel_handle_t kernel;
+    ASSERT_ZE_RESULT_SUCCESS(zeKernelCreate(module, &kernelDesc, &kernel));
 
-    uint32_t groupSizeX = 1u;
-    uint32_t groupSizeY = 1u;
-    uint32_t groupSizeZ = 1u;
-
-    EXPECT_ZE_RESULT_SUCCESS(zeKernelSetGroupSize(kernel, groupSizeX, groupSizeY, groupSizeZ));
+    // Configure kernel
+    EXPECT_ZE_RESULT_SUCCESS(zeKernelSetGroupSize(kernel, 1, 1, 1));
     ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernel, 0, sizeof(buffer), &buffer));
 
-    ze_group_count_t dispatchTraits;
-    dispatchTraits.groupCountX = 1u;
-    dispatchTraits.groupCountY = 1u;
-    dispatchTraits.groupCountZ = 1u;
-
     // Create command lists and append kernel to write one
-    const ze_command_list_desc_t cmdListDesc = {ZE_COMMAND_LIST_DESC_VERSION_CURRENT};
+    const ze_group_count_t groupCount{1u, 1u, 1u};
+    const ze_command_list_desc_t cmdListDesc{ZE_STRUCTURE_TYPE_COMMAND_LIST_DESC};
     ze_command_list_handle_t cmdList;
-    ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.device, &cmdListDesc, &cmdList));
-    ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &dispatchTraits, nullptr, 0, nullptr));
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.context, levelzero.device, &cmdListDesc, &cmdList));
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, nullptr, 0, nullptr));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListClose(cmdList));
 
     // Warmup
@@ -67,10 +60,10 @@ static TestResult run(const RoundTripSubmissionArguments &arguments, Statistics 
         statistics.pushValue(timer.Get());
     }
 
-    ASSERT_ZE_RESULT_SUCCESS(zeDeviceEvictMemory(levelzero.device, buffer, bufferSize));
+    ASSERT_ZE_RESULT_SUCCESS(zeContextEvictMemory(levelzero.context, levelzero.device, buffer, bufferSize));
     ASSERT_ZE_RESULT_SUCCESS(zeKernelDestroy(kernel));
     ASSERT_ZE_RESULT_SUCCESS(zeModuleDestroy(module));
-    ASSERT_ZE_RESULT_SUCCESS(zeDriverFreeMem(levelzero.driver, buffer));
+    ASSERT_ZE_RESULT_SUCCESS(zeMemFree(levelzero.context, buffer));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));
     return TestResult::Success;
 }
