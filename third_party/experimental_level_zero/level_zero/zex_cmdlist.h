@@ -52,37 +52,42 @@ extern "C" {
 ///         + nullptr == ptr
 ///         + 0 for size
 ///     - ::ZE_RESULT_ERROR_UNKNOWN
-__zedllexport ze_result_t __zecall
+ZE_DLLEXPORT ze_result_t ZE_APICALL
 zexCommandListReserveSpace(
     zex_command_list_handle_t hCommandList, ///< [in] handle of the command list
     size_t size,                            ///< [in] size (in bytes) to reserve
     void **ptr                              ///< [out] pointer to command buffer space reserved
 );
-__zedllexport ze_result_t __zecall
+ZE_DLLEXPORT ze_result_t ZE_APICALL
 zexCommandListAppendMILoadRegReg(
     zex_command_list_handle_t hCommandList,
     ALU_REG destination,
     ALU_REG source);
-__zedllexport ze_result_t __zecall
+ZE_DLLEXPORT ze_result_t ZE_APICALL
 zexCommandListAppendMILoadRegMem(
     zex_command_list_handle_t hCommandList,
     ALU_REG reg,
     uint64_t address);
-__zedllexport ze_result_t __zecall
+ZE_DLLEXPORT ze_result_t ZE_APICALL
 zexCommandListAppendMILoadRegImm(
     zex_command_list_handle_t hCommandList,
     ALU_REG destination,
     uint32_t val);
-__zedllexport ze_result_t __zecall
+ZE_DLLEXPORT ze_result_t ZE_APICALL
 zexCommandListAppendMIStoreRegMem(
     zex_command_list_handle_t hCommandList,
     ALU_REG reg,
     uint64_t address);
-__zedllexport ze_result_t __zecall
+ZE_DLLEXPORT ze_result_t ZE_APICALL
 zexCommandListAppendMIMath(
     zex_command_list_handle_t hCommandList,
     zex_alu_operation_t *opArray,
     size_t noOperations);
+ZE_DLLEXPORT ze_result_t ZE_APICALL
+zexCommandListAppendPipeControl(
+    zex_command_list_handle_t hCommandList,
+    void *dstptr,
+    uint64_t value);
 #if defined(__cplusplus)
 } // extern "C"
 #endif

@@ -50,7 +50,7 @@ extern "C" {
 ///         + ::ZEX_COMMAND_GRAPH_DESC_VERSION_CURRENT < desc->version
 ///     - ::ZE_RESULT_ERROR_OUT_OF_HOST_MEMORY
 ///     - ::ZE_RESULT_ERROR_OUT_OF_DEVICE_MEMORY
-__zedllexport ze_result_t __zecall
+ZE_DLLEXPORT ze_result_t ZE_APICALL
 zexCommandGraphCreate(
     ze_device_handle_t hDevice,                ///< [in] handle of the device object
     const ze_command_list_desc_t *desc,        ///< [in] pointer to command graph descriptor
@@ -74,7 +74,7 @@ zexCommandGraphCreate(
 ///     - ::ZE_RESULT_ERROR_INVALID_ARGUMENT
 ///         + nullptr == hCommandGraph
 ///     - ::ZE_RESULT_ERROR_UNKNOWN
-__zedllexport ze_result_t __zecall
+ZE_DLLEXPORT ze_result_t ZE_APICALL
 zexCommandGraphDestroy(
     zex_command_graph_handle_t hCommandGraph ///< [in][release] handle of command graph object to destroy
 );
@@ -97,19 +97,19 @@ zexCommandGraphDestroy(
 ///     - ::ZE_RESULT_ERROR_INVALID_ARGUMENT
 ///         + nullptr == hCommandGraph
 ///     - ::ZE_RESULT_ERROR_UNKNOWN
-__zedllexport ze_result_t __zecall
+ZE_DLLEXPORT ze_result_t ZE_APICALL
 zexCommandGraphClose(
     zex_command_graph_handle_t hCommandGraph ///< [in] handle of command graph object to close
 );
 
-__zedllexport ze_result_t __zecall
+ZE_DLLEXPORT ze_result_t ZE_APICALL
 zexCommandGraphCreateNode(
     zex_command_graph_handle_t hCommandGraph,
     zex_command_graph_handle_t *phCommandNode,
     zex_command_graph_handle_t *phParentNodes,
     size_t noParentNodes,
     COMMANDGRAPH_TYPE nodeType);
-__zedllexport ze_result_t __zecall
+ZE_DLLEXPORT ze_result_t ZE_APICALL
 zexCommandGraphCreateLoadRegImemNode(
     zex_command_graph_handle_t hCommandGraph,
     zex_command_graph_handle_t *phCommandNode,
@@ -117,7 +117,7 @@ zexCommandGraphCreateLoadRegImemNode(
     size_t noParentNodes,
     ALU_REG regDestination,
     ALU_REG regSourceAddress);
-__zedllexport ze_result_t __zecall
+ZE_DLLEXPORT ze_result_t ZE_APICALL
 zexCommandGraphCreateStoreRegImemNode(
     zex_command_graph_handle_t hCommandGraph,
     zex_command_graph_handle_t *phCommandNode,
@@ -125,16 +125,16 @@ zexCommandGraphCreateStoreRegImemNode(
     size_t noParentNodes,
     ALU_REG regDestinationAddress,
     ALU_REG regSource);
-__zedllexport ze_result_t __zecall
+ZE_DLLEXPORT ze_result_t ZE_APICALL
 zexCommandGraphNodeAddChildren(
     zex_command_graph_handle_t hCommandNode,
     zex_command_graph_handle_t *phChildrenNodes,
     size_t noChildrenNodes);
-__zedllexport ze_result_t __zecall
+ZE_DLLEXPORT ze_result_t ZE_APICALL
 zexCommandGraphOpenNode(
     zex_command_graph_handle_t hCommandNode,
     zex_command_list_handle_t *phCommandList);
-__zedllexport ze_result_t __zecall
+ZE_DLLEXPORT ze_result_t ZE_APICALL
 zexCommandGraphCloseNode(
     zex_command_graph_handle_t hCommandNode);
 #if defined(__cplusplus)

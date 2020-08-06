@@ -24,7 +24,7 @@
 #if defined(__cplusplus)
 #pragma once
 #endif
-#include <level_zero/ze_common.h>
+#include <level_zero/ze_api.h>
 
 #if defined(__cplusplus)
 extern "C" {

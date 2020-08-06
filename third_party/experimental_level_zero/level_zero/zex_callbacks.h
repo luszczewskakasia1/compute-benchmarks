@@ -44,7 +44,7 @@ typedef struct _zex_init_params_t {
 /// @param[in] result Return value
 /// @param[in] pTracerUserData Per-Tracer user data
 /// @param[in,out] ppTracerInstanceUserData Per-Tracer, Per-Instance user data
-typedef void(__zecall *zex_pfnInitCb_t)(
+typedef void(ZE_APICALL *zex_pfnInitCb_t)(
     zex_init_params_t *params,
     ze_result_t result,
     void *pTracerUserData,
@@ -72,7 +72,7 @@ typedef struct _zex_command_list_reserve_space_params_t {
 /// @param[in] result Return value
 /// @param[in] pTracerUserData Per-Tracer user data
 /// @param[in,out] ppTracerInstanceUserData Per-Tracer, Per-Instance user data
-typedef void(__zecall *zex_pfnCommandListReserveSpaceCb_t)(
+typedef void(ZE_APICALL *zex_pfnCommandListReserveSpaceCb_t)(
     zex_command_list_reserve_space_params_t *params,
     ze_result_t result,
     void *pTracerUserData,
@@ -100,7 +100,7 @@ typedef struct _zex_command_graph_create_params_t {
 /// @param[in] result Return value
 /// @param[in] pTracerUserData Per-Tracer user data
 /// @param[in,out] ppTracerInstanceUserData Per-Tracer, Per-Instance user data
-typedef void(__zecall *zex_pfnCommandGraphCreateCb_t)(
+typedef void(ZE_APICALL *zex_pfnCommandGraphCreateCb_t)(
     zex_command_graph_create_params_t *params,
     ze_result_t result,
     void *pTracerUserData,
@@ -120,7 +120,7 @@ typedef struct _zex_command_graph_destroy_params_t {
 /// @param[in] result Return value
 /// @param[in] pTracerUserData Per-Tracer user data
 /// @param[in,out] ppTracerInstanceUserData Per-Tracer, Per-Instance user data
-typedef void(__zecall *zex_pfnCommandGraphDestroyCb_t)(
+typedef void(ZE_APICALL *zex_pfnCommandGraphDestroyCb_t)(
     zex_command_graph_destroy_params_t *params,
     ze_result_t result,
     void *pTracerUserData,
@@ -140,7 +140,7 @@ typedef struct _zex_command_graph_close_params_t {
 /// @param[in] result Return value
 /// @param[in] pTracerUserData Per-Tracer user data
 /// @param[in,out] ppTracerInstanceUserData Per-Tracer, Per-Instance user data
-typedef void(__zecall *zex_pfnCommandGraphCloseCb_t)(
+typedef void(ZE_APICALL *zex_pfnCommandGraphCloseCb_t)(
     zex_command_graph_close_params_t *params,
     ze_result_t result,
     void *pTracerUserData,

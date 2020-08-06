@@ -32,7 +32,7 @@ extern "C" {
 
 ///////////////////////////////////////////////////////////////////////////////
 /// @brief Function-pointer for zexInit
-typedef ze_result_t(__zecall *zex_pfnInit_t)(
+typedef ze_result_t(ZE_APICALL *zex_pfnInit_t)(
     ze_init_flag_t);
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -52,7 +52,7 @@ typedef struct _zex_global_dditable_t {
 ///         + nullptr for pDdiTable
 ///     - ::ZE_RESULT_ERROR_UNKNOWN
 ///         + version not supported
-__zedllexport ze_result_t __zecall
+ZE_DLLEXPORT ze_result_t ZE_APICALL
 zexGetGlobalProcAddrTable(
     ze_api_version_t version,        ///< [in] API version requested
     zex_global_dditable_t *pDdiTable ///< [in,out] pointer to table of DDI function pointers
@@ -60,38 +60,38 @@ zexGetGlobalProcAddrTable(
 
 ///////////////////////////////////////////////////////////////////////////////
 /// @brief Function-pointer for zexGetGlobalProcAddrTable
-typedef ze_result_t(__zecall *zex_pfnGetGlobalProcAddrTable_t)(
+typedef ze_result_t(ZE_APICALL *zex_pfnGetGlobalProcAddrTable_t)(
     ze_api_version_t,
     zex_global_dditable_t *);
 
 ///////////////////////////////////////////////////////////////////////////////
 /// @brief Function-pointer for zexCommandListReserveSpace
-typedef ze_result_t(__zecall *zex_pfnCommandListReserveSpace_t)(
+typedef ze_result_t(ZE_APICALL *zex_pfnCommandListReserveSpace_t)(
     zex_command_list_handle_t,
     size_t,
     void **);
 
-typedef ze_result_t(__zecall *zex_pfnCommandListAppendMILoadRegReg_t)(
+typedef ze_result_t(ZE_APICALL *zex_pfnCommandListAppendMILoadRegReg_t)(
     zex_command_list_handle_t hCommandList,
     ALU_REG destination,
     ALU_REG source);
-typedef ze_result_t(__zecall *zex_pfnCommandListAppendMILoadRegMem_t)(
+typedef ze_result_t(ZE_APICALL *zex_pfnCommandListAppendMILoadRegMem_t)(
     zex_command_list_handle_t hCommandList,
     ALU_REG reg,
     uint64_t address);
-typedef ze_result_t(__zecall *zex_pfnCommandListAppendMILoadRegImm_t)(
+typedef ze_result_t(ZE_APICALL *zex_pfnCommandListAppendMILoadRegImm_t)(
     zex_command_list_handle_t hCommandList,
     ALU_REG destination,
     uint32_t val);
-typedef ze_result_t(__zecall *zex_pfnCommandListAppendMIStoreRegMem_t)(
+typedef ze_result_t(ZE_APICALL *zex_pfnCommandListAppendMIStoreRegMem_t)(
     zex_command_list_handle_t hCommandList,
     ALU_REG reg,
     uint64_t address);
-typedef ze_result_t(__zecall *zex_pfnCommandListAppendMIMath_t)(
+typedef ze_result_t(ZE_APICALL *zex_pfnCommandListAppendMIMath_t)(
     zex_command_list_handle_t hCommandList,
     zex_alu_operation_t *opArray,
     size_t noOperations);
-typedef ze_result_t(__zecall *zex_pfnCommandListAppendPipeControl_t)(
+typedef ze_result_t(ZE_APICALL *zex_pfnCommandListAppendPipeControl_t)(
     zex_command_list_handle_t hCommandList,
     void *dstptr,
     uint64_t value);
@@ -105,6 +105,7 @@ typedef struct _zex_command_list_dditable_t {
     zex_pfnCommandListAppendMILoadRegImm_t pfnAppendMILoadRegImm;
     zex_pfnCommandListAppendMIStoreRegMem_t pfnAppendMIStoreRegMem;
     zex_pfnCommandListAppendMIMath_t pfnAppendMIMath;
+    zex_pfnCommandListAppendPipeControl_t pfnAppendPipeControl;
 } zex_command_list_dditable_t;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -118,7 +119,7 @@ typedef struct _zex_command_list_dditable_t {
 ///         + nullptr for pDdiTable
 ///     - ::ZE_RESULT_ERROR_UNKNOWN
 ///         + version not supported
-__zedllexport ze_result_t __zecall
+ZE_DLLEXPORT ze_result_t ZE_APICALL
 zexGetCommandListProcAddrTable(
     ze_api_version_t version,              ///< [in] API version requested
     zex_command_list_dditable_t *pDdiTable ///< [in,out] pointer to table of DDI function pointers
@@ -126,47 +127,47 @@ zexGetCommandListProcAddrTable(
 
 ///////////////////////////////////////////////////////////////////////////////
 /// @brief Function-pointer for zexGetCommandListProcAddrTable
-typedef ze_result_t(__zecall *zex_pfnGetCommandListProcAddrTable_t)(
+typedef ze_result_t(ZE_APICALL *zex_pfnGetCommandListProcAddrTable_t)(
     ze_api_version_t,
     zex_command_list_dditable_t *);
 
-typedef ze_result_t(__zecall *zex_pfnCommandGraphCreate_t)(
+typedef ze_result_t(ZE_APICALL *zex_pfnCommandGraphCreate_t)(
     ze_device_handle_t hDevice,                ///< [in] handle of the device object
     const ze_command_list_desc_t *desc,        ///< [in] pointer to command list descriptor
     zex_command_graph_handle_t *phCommandGraph ///< [out] pointer to handle of command graph created
 );
-typedef ze_result_t(__zecall *zex_pfnCommandGraphDestroy_t)(
+typedef ze_result_t(ZE_APICALL *zex_pfnCommandGraphDestroy_t)(
     zex_command_graph_handle_t hCommandGraph);
-typedef ze_result_t(__zecall *zex_pfnCommandGraphClose_t)(
+typedef ze_result_t(ZE_APICALL *zex_pfnCommandGraphClose_t)(
     zex_command_graph_handle_t hCommandGraph);
-typedef ze_result_t(__zecall *zex_pfnCommandGraphCreateNode_t)(
+typedef ze_result_t(ZE_APICALL *zex_pfnCommandGraphCreateNode_t)(
     zex_command_graph_handle_t hCommandGraph,
     zex_command_graph_handle_t *phCommandNode,
     zex_command_graph_handle_t *phParentNodes,
     size_t noParentNodes,
     COMMANDGRAPH_TYPE nodeType);
-typedef ze_result_t(__zecall *zex_pfnCommandGraphCreateLoadRegImemNode_t)(
+typedef ze_result_t(ZE_APICALL *zex_pfnCommandGraphCreateLoadRegImemNode_t)(
     zex_command_graph_handle_t hCommandGraph,
     zex_command_graph_handle_t *phCommandNode,
     zex_command_graph_handle_t *phParentNodes,
     size_t noParentNodes,
     ALU_REG val,
     ALU_REG address);
-typedef ze_result_t(__zecall *zex_pfnCommandGraphCreateStoreRegImemNode_t)(
+typedef ze_result_t(ZE_APICALL *zex_pfnCommandGraphCreateStoreRegImemNode_t)(
     zex_command_graph_handle_t hCommandGraph,
     zex_command_graph_handle_t *phCommandNode,
     zex_command_graph_handle_t *phParentNodes,
     size_t noParentNodes,
     ALU_REG val,
     ALU_REG address);
-typedef ze_result_t(__zecall *zex_pfnCommandGraphNodeAddChildren_t)(
+typedef ze_result_t(ZE_APICALL *zex_pfnCommandGraphNodeAddChildren_t)(
     zex_command_graph_handle_t hCommandNode,
     zex_command_graph_handle_t *phChildrenNodes,
     size_t noChildrenNodes);
-typedef ze_result_t(__zecall *zex_pfnCommandGraphOpenNode_t)(
+typedef ze_result_t(ZE_APICALL *zex_pfnCommandGraphOpenNode_t)(
     zex_command_graph_handle_t hCommandNode,
     zex_command_list_handle_t *phCommandList);
-typedef ze_result_t(__zecall *zex_pfnCommandGraphCloseNode_t)(
+typedef ze_result_t(ZE_APICALL *zex_pfnCommandGraphCloseNode_t)(
     zex_command_graph_handle_t hCommandNode);
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -194,7 +195,7 @@ typedef struct _zex_command_graph_dditable_t {
 ///         + nullptr for pDdiTable
 ///     - ::ZE_RESULT_ERROR_UNKNOWN
 ///         + version not supported
-__zedllexport ze_result_t __zecall
+ZE_DLLEXPORT ze_result_t ZE_APICALL
 zexGetCommandGraphProcAddrTable(
     ze_api_version_t version,               ///< [in] API version requested
     zex_command_graph_dditable_t *pDdiTable ///< [in,out] pointer to table of DDI function pointers
@@ -202,11 +203,11 @@ zexGetCommandGraphProcAddrTable(
 
 ///////////////////////////////////////////////////////////////////////////////
 /// @brief Function-pointer for zexGetCommandGraphProcAddrTable
-typedef ze_result_t(__zecall *zex_pfnGetCommandGraphProcAddrTable_t)(
+typedef ze_result_t(ZE_APICALL *zex_pfnGetCommandGraphProcAddrTable_t)(
     ze_api_version_t,
     zex_command_graph_dditable_t *);
 
-typedef ze_result_t(__zecall *zex_pfnCommandQueueExecuteCommandGraphs_t)(
+typedef ze_result_t(ZE_APICALL *zex_pfnCommandQueueExecuteCommandGraphs_t)(
     ze_command_queue_handle_t hCommandQueue,
     uint32_t numCommandGraphs,
     zex_command_graph_handle_t *phCommandGraphs,
@@ -227,7 +228,7 @@ typedef struct _zex_command_queue_dditable_t {
 ///         + nullptr for pDdiTable
 ///     - ::ZE_RESULT_ERROR_UNKNOWN
 ///         + version not supported
-__zedllexport ze_result_t __zecall
+ZE_DLLEXPORT ze_result_t ZE_APICALL
 zexGetCommandQueueProcAddrTable(
     ze_api_version_t version,               ///< [in] API version requested
     zex_command_queue_dditable_t *pDdiTable ///< [in,out] pointer to table of DDI function pointers
@@ -235,7 +236,7 @@ zexGetCommandQueueProcAddrTable(
 
 ///////////////////////////////////////////////////////////////////////////////
 /// @brief Function-pointer for zexGetCommandQueueProcAddrTable
-typedef ze_result_t(__zecall *zex_pfnGetCommandQueueProcAddrTable_t)(
+typedef ze_result_t(ZE_APICALL *zex_pfnGetCommandQueueProcAddrTable_t)(
     ze_api_version_t,
     zex_command_queue_dditable_t *);
 

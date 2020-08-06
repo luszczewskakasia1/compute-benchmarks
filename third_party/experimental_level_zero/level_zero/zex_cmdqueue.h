@@ -32,7 +32,7 @@
 #if defined(__cplusplus)
 extern "C" {
 #endif
-__zedllexport ze_result_t __zecall
+ZE_DLLEXPORT ze_result_t ZE_APICALL
 zexCommandQueueExecuteCommandGraphs(
     ze_command_queue_handle_t hCommandQueue,
     uint32_t numCommandGraphs,
