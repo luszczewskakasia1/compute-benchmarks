@@ -64,24 +64,43 @@ double Statistics::standardDeviation() {
     return stdDev;
 }
 
-constexpr static int columnWidths[] = {54, 15, 15, 15, 15, 15};
-constexpr static const char *columnLabels[] = {"TestCase", "Mean [us]", "Median [us]", "StdDev", "Min [us]", "Max [us]"};
-constexpr static int columnCount = sizeof(columnWidths) / sizeof(columnWidths[0]);
+struct ColumnInfo {
+    int width;
+    const char *label;
+    bool printUnit;
+};
+constexpr ColumnInfo columns[] = {
+    {54, "TestCase", false},
+    {15, "Mean", true},
+    {15, "Median", true},
+    {15, "StdDev", false},
+    {15, "Min", true},
+    {15, "Max", true},
+};
+constexpr static int columnCount = sizeof(columns) / sizeof(columns[0]);
 
-void Statistics::printStatisticsHeader(Configuration::PrintType printType) {
+std::string Statistics::getColumnName(const std::string &label, const std::string &unit, bool hasUnit) {
+    if (hasUnit) {
+        return label + " [" + unit + "]";
+    }
+    return label;
+}
+
+void Statistics::printStatisticsHeader(Configuration::PrintType printType, const std::string &unit) {
     switch (printType) {
     case Configuration::PrintType::Verbose:
     case Configuration::PrintType::Default: {
-        for (int column = 0; column < columnCount; column++) {
-            std::cout << std::setw(columnWidths[column]) << columnLabels[column];
+        for (const ColumnInfo &column : columns) {
+            std::cout << std::setw(column.width) << getColumnName(column.label, unit, column.printUnit);
         }
         std::cout << std::endl;
         break;
     }
     case Configuration::PrintType::Csv:
-        for (int column = 0; column < columnCount; column++) {
-            std::cout << columnLabels[column];
-            if (column != columnCount - 1) {
+        for (int columnIndex = 0; columnIndex < columnCount; columnIndex++) {
+            const ColumnInfo &column = columns[columnIndex];
+            std::cout << getColumnName(column.label, unit, column.printUnit);
+            if (columnIndex != columnCount - 1) {
                 std::cout << ",";
             }
         }
@@ -98,12 +117,12 @@ void Statistics::printStatistics(const std::string &testCaseName, Configuration:
     case Configuration::PrintType::Default: {
         int column = 0;
         std::cout << std::fixed;
-        std::cout << std::setw(columnWidths[column++]) << testCaseName;
-        std::cout << std::setw(columnWidths[column++]) << std::setprecision(3) << mean();
-        std::cout << std::setw(columnWidths[column++]) << std::setprecision(3) << median();
-        std::cout << std::setw(columnWidths[column++] - 1) << std::setprecision(2) << 100 * standardDeviation() << "%";
-        std::cout << std::setw(columnWidths[column++]) << std::setprecision(3) << min();
-        std::cout << std::setw(columnWidths[column++]) << std::setprecision(3) << max();
+        std::cout << std::setw(columns[column++].width) << testCaseName;
+        std::cout << std::setw(columns[column++].width) << std::setprecision(3) << mean();
+        std::cout << std::setw(columns[column++].width) << std::setprecision(3) << median();
+        std::cout << std::setw(columns[column++].width - 1) << std::setprecision(2) << 100 * standardDeviation() << "%";
+        std::cout << std::setw(columns[column++].width) << std::setprecision(3) << min();
+        std::cout << std::setw(columns[column++].width) << std::setprecision(3) << max();
         std::cout << std::endl;
         break;
     }
@@ -138,9 +157,9 @@ void Statistics::printStatisticsString(const std::string &testCaseName, Configur
     switch (printType) {
     case Configuration::PrintType::Verbose:
     case Configuration::PrintType::Default: {
-        std::cout << std::setw(columnWidths[0]) << testCaseName;
+        std::cout << std::setw(columns[0].width) << testCaseName;
         for (int column = 1; column < columnCount; column++) {
-            std::cout << std::setw(columnWidths[column]) << message;
+            std::cout << std::setw(columns[column].width) << message;
         }
         std::cout << std::endl;
         break;

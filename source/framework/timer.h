@@ -19,6 +19,11 @@ class Timer {
         return microsecondTime;
     }
 
+    double getBandwidth(size_t bufferSizeInBytes) const {
+        const auto timeNs = Get() * 1000.0;
+        return bufferSizeInBytes / timeNs; // Bytes/Nanoseconds = Gigabytes/Seconds
+    }
+
   private:
     Clock::time_point startTime;
     Clock::time_point endTime;

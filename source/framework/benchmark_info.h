@@ -15,3 +15,5 @@ inline std::string getBenchmarkFilename() {
     return getBenchmarkName();
 #endif
 }
+
+std::string getMeasurmentsUnit();

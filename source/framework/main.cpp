@@ -16,7 +16,7 @@ int executeSingleTest(const std::string &testName, int argc, char **argv) {
     }
 
     TestCaseInterface *testCase = it->second.get();
-    Statistics::printStatisticsHeader(::configuration.printType);
+    Statistics::printStatisticsHeader(::configuration.printType, getMeasurmentsUnit());
     if (!testCase->runFromCommandLine(argc, argv)) {
         std::cerr << "Error parsing command line\n";
         return 1;

@@ -20,11 +20,13 @@ class Statistics {
     Value median();
     double standardDeviation();
 
-    static void printStatisticsHeader(Configuration::PrintType printType);
+    static void printStatisticsHeader(Configuration::PrintType printType, const std::string &unit);
     void printStatistics(const std::string &testCaseName, Configuration::PrintType printType);
     void printStatisticsString(const std::string &testCaseName, Configuration::PrintType printType, const std::string &message);
 
   private:
+    static std::string getColumnName(const std::string &label, const std::string &unit, bool hasUnit);
+
     const int maxSamplesCount;
     const std::unique_ptr<Value[]> samples;
     int samplesCount = 0;

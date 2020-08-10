@@ -13,3 +13,7 @@ TestMap getTestMap() {
 std::string getBenchmarkName() {
     return "pci_benchmark";
 }
+
+std::string getMeasurmentsUnit() {
+    return "GB/s";
+}

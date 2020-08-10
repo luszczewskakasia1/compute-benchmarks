@@ -29,3 +29,7 @@ TestMap getTestMap() {
 std::string getBenchmarkName() {
     return "ulls_benchmark";
 }
+
+std::string getMeasurmentsUnit() {
+    return "ms";
+}
