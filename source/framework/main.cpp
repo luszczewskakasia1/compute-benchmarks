@@ -1,7 +1,7 @@
+#include "framework/benchmark_info.h"
 #include "framework/configuration.h"
 #include "framework/gtest_event_listener.h"
 #include "framework/statistics.h"
-#include "framework/test_case/test_map.h"
 
 #include <gtest/gtest.h>
 #include <iostream>
@@ -33,6 +33,8 @@ int executeAllTests(int argc, char **argv) {
 }
 
 int printHelp() {
+    const auto filename = getBenchmarkFilename();
+    // clang-format off
     std::cout << "UllsBenchmark is a set of tests aimed at measuring Ultra Low Latency Submission (ULLS) performance impact. "
                  "It works in two modes described below. Parameters applicable for both modes:\n"
                  "\t--iterations=X - select how many times each test will be run\n"
@@ -41,13 +43,13 @@ int printHelp() {
                  "\t--api          - select graphics API to use. Possible values: ocl, l0, all"
                  "\n"
                  "Example invocations:\n"
-                 "\t.\\ulls_benchmark.exe\n"
-                 "\t.\\ulls_benchmark.exe --api=l0\n"
-                 "\t.\\ulls_benchmark.exe --iterations=100 --csv\n"
-                 "\t.\\ulls_benchmark.exe --gtest_filter=*NewResourcesSubmissionHost*\n"
-                 "\t.\\ulls_benchmark.exe --test=EmptyKernel --workgroupSize=64 --workgroupCount=30\n"
-                 "\t.\\ulls_benchmark.exe --test=EmptyKernel --api=ocl --workgroupSize=64 --workgroupCount=30\n"
-                 "\t.\\ulls_benchmark.exe --test=EmptyKernel --api=ocl --workgroupSize=64 --workgroupCount=30 --iterations=100\n"
+                 "\t" << filename << "\n"
+                 "\t" << filename << " --api=l0\n"
+                 "\t" << filename << " --iterations=100 --csv\n"
+                 "\t" << filename << " --gtest_filter=*NewResourcesSubmissionHost*\n"
+                 "\t" << filename << " --test=EmptyKernel --workgroupSize=64 --workgroupCount=30\n"
+                 "\t" << filename << " --test=EmptyKernel --api=ocl --workgroupSize=64 --workgroupCount=30\n"
+                 "\t" << filename << " --test=EmptyKernel --api=ocl --workgroupSize=64 --workgroupCount=30 --iterations=100\n"
                  "\n"
                  "First mode is the default and it runs all available benchmarks in many predefined configurations. Underlying test engine "
                  "is googletest, so standard googletest arguments like --gtest_filter can be used, if necessary.\n"
@@ -56,6 +58,7 @@ int printHelp() {
                  "using --test argument, followed by benchmark-specific parameters. All parameters have to be specified, there are no "
                  "default values. Available test cases:\n"
                  "\n";
+    // clang-format on
     for (const auto &entry : getTestMap()) {
         TestCaseInterface &testCase = *entry.second.get();
         std::cout << '\t' << testCase.getTestCaseName() << " - " << testCase.getHelp();

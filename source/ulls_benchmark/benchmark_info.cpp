@@ -1,4 +1,4 @@
-#include "framework/test_case/test_map.h"
+#include "framework/benchmark_info.h"
 
 #include "ulls_benchmark/best_submission.h"
 #include "ulls_benchmark/best_walker_submission.h"
@@ -24,4 +24,8 @@ TestMap getTestMap() {
     TEST_CASE(WalkerCompletionLatency)
 #undef TEST_CASE
     return testMap;
+}
+
+std::string getBenchmarkName() {
+    return "ulls_benchmark";
 }

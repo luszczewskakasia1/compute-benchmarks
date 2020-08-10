@@ -1,4 +1,4 @@
-#include "framework/test_case/test_map.h"
+#include "framework/benchmark_info.h"
 
 #include "pci_benchmark/usm_copy.h"
 
@@ -8,4 +8,8 @@ TestMap getTestMap() {
     TEST_CASE(UsmCopy)
 #undef TEST_CASE
     return testMap;
+}
+
+std::string getBenchmarkName() {
+    return "pci_benchmark";
 }
