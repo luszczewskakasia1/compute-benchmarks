@@ -70,7 +70,7 @@ struct ColumnInfo {
     bool printUnit;
 };
 constexpr ColumnInfo columns[] = {
-    {54, "TestCase", false},
+    {62, "TestCase", false},
     {15, "Mean", true},
     {15, "Median", true},
     {15, "StdDev", false},

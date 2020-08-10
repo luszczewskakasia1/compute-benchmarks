@@ -14,4 +14,11 @@ enum class TransferOperand {
     Destination
 };
 
+enum class MemoryPlacement {
+    Unknown,
+    Host,
+    Device,
+};
+
 bool isDeviceMemory(TransferDirection direction, TransferOperand operand);
+bool isDeviceMemory(MemoryPlacement placement);

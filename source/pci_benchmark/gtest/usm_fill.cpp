@@ -1,0 +1,29 @@
+#include "pci_benchmark/usm_fill.h"
+
+#include <gtest/gtest.h>
+
+class UsmFillTest : public ::testing::TestWithParam<std::tuple<Api, MemoryPlacement, size_t, size_t>> {
+};
+
+TEST_P(UsmFillTest, Test) {
+    UsmFillArguments args;
+    args.api = std::get<0>(GetParam());
+    args.memoryPlacement = std::get<1>(GetParam());
+    args.bufferSize = std::get<2>(GetParam());
+    args.patternSize = std::get<3>(GetParam());
+
+    UsmFill test;
+    test.run(args);
+}
+
+constexpr size_t kiloByte = 1024u;
+constexpr size_t megaByte = 1024u * kiloByte;
+
+INSTANTIATE_TEST_SUITE_P(
+    UsmFillTest,
+    UsmFillTest,
+    ::testing::Combine(
+        ::testing::Values(Api::OpenCL, Api::L0),
+        ::testing::Values(MemoryPlacement::Host, MemoryPlacement::Device),
+        ::testing::Values(128 * megaByte, 512 * megaByte),
+        ::testing::Values(16, 256)));

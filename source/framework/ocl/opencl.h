@@ -48,6 +48,16 @@ typedef CL_API_ENTRY cl_int(CL_API_CALL *pfn_clEnqueueMemcpyINTEL)(
     const cl_event *eventWaitList,
     cl_event *event);
 
+typedef CL_API_ENTRY cl_int(CL_API_CALL *pfn_clEnqueueMemFillINTEL)(
+    cl_command_queue commandQueue,
+    void *dstPtr,
+    const void *pattern,
+    size_t patternSize,
+    size_t size,
+    cl_uint numEventsInWaitList,
+    const cl_event *eventWaitList,
+    cl_event *event);
+
 struct Opencl {
     Opencl() : Opencl(true) {}
     Opencl(bool createQueue) {

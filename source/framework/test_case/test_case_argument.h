@@ -121,6 +121,48 @@ struct TransferDirectionTestCaseArgument : TestCaseArgument {
     TransferDirection value = TransferDirection::Unknown;
 };
 
+struct MemoryPlacementTestCaseArgument : TestCaseArgument {
+    using TestCaseArgument::TestCaseArgument;
+
+    operator MemoryPlacement() const {
+        return value;
+    }
+
+    MemoryPlacementTestCaseArgument &operator=(MemoryPlacement value) {
+        this->value = value;
+        return *this;
+    }
+
+    bool validate() const {
+        return this->value != MemoryPlacement::Unknown;
+    }
+
+  protected:
+    std::string toStringValue() const override {
+        switch (value) {
+        case MemoryPlacement::Host:
+            return "host";
+        case MemoryPlacement::Device:
+            return "device";
+        default:
+            ERROR("Unknown memory placement");
+        }
+    }
+
+    void parseImpl(const std::string &value) override {
+        const std::string valueLower = toLower(value);
+        if (valueLower == "host") {
+            this->value = MemoryPlacement::Host;
+        } else if (valueLower == "device") {
+            this->value = MemoryPlacement::Device;
+        } else {
+            this->value = MemoryPlacement::Unknown;
+        }
+    }
+
+    MemoryPlacement value = MemoryPlacement::Unknown;
+};
+
 struct BooleanTestCaseArgument : TestCaseArgument {
     using TestCaseArgument::TestCaseArgument;
 

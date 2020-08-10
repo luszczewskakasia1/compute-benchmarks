@@ -1,11 +1,13 @@
 #include "framework/benchmark_info.h"
 
 #include "pci_benchmark/usm_copy.h"
+#include "pci_benchmark/usm_fill.h"
 
 TestMap getTestMap() {
     TestMap testMap;
 #define TEST_CASE(name) testMap[#name] = std::unique_ptr<TestCaseInterface>(new name());
     TEST_CASE(UsmCopy)
+    TEST_CASE(UsmFill)
 #undef TEST_CASE
     return testMap;
 }

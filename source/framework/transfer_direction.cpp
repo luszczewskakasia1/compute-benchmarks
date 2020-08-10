@@ -19,3 +19,14 @@ bool isDeviceMemory(TransferDirection direction, TransferOperand operand) {
 
     ERROR("Unreachable code");
 }
+
+bool isDeviceMemory(MemoryPlacement placement) {
+    switch (placement) {
+    case MemoryPlacement::Device:
+        return true;
+    case MemoryPlacement::Host:
+        return false;
+    default:
+        ERROR("Unknown placement");
+    }
+}

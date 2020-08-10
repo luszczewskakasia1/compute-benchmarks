@@ -1,0 +1,48 @@
+#include "framework/ocl/opencl.h"
+#include "framework/test_case/register_test_case.h"
+#include "framework/timer.h"
+#include "pci_benchmark/usm_fill.h"
+
+#include <gtest/gtest.h>
+
+static TestResult run(const UsmFillArguments &arguments, Statistics &statistics) {
+    // Setup
+    Opencl opencl;
+    Timer timer;
+    auto clHostMemAllocINTEL = (pfn_clHostMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clHostMemAllocINTEL");
+    auto clDeviceMemAllocINTEL = (pfn_clDeviceMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clDeviceMemAllocINTEL");
+    auto clMemFreeINTEL = (pfn_clMemFreeINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clMemFreeINTEL");
+    auto clEnqueueMemFillINTEL = (pfn_clEnqueueMemFillINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clEnqueueMemFillINTEL");
+    if (!clHostMemAllocINTEL || !clDeviceMemAllocINTEL || !clMemFreeINTEL || !clEnqueueMemFillINTEL) {
+        return TestResult::DriverFunctionNotFound;
+    }
+    cl_int retVal;
+
+    // Create buffers
+    void *buffer{};
+    if (isDeviceMemory(arguments.memoryPlacement)) {
+        buffer = clDeviceMemAllocINTEL(opencl.context, opencl.device, nullptr, arguments.bufferSize, 0u, &retVal);
+    } else {
+        buffer = clHostMemAllocINTEL(opencl.context, nullptr, arguments.bufferSize, 0u, &retVal);
+    }
+    EXPECT_CL_SUCCESS(retVal);
+
+    // Create pattern
+    const auto pattern = std::make_unique<uint8_t[]>(arguments.patternSize);
+
+    // Warmup
+    EXPECT_CL_SUCCESS(clEnqueueMemFillINTEL(opencl.commandQueue, buffer, pattern.get(), arguments.patternSize, arguments.bufferSize, 0, nullptr, nullptr));
+    EXPECT_CL_SUCCESS(clFinish(opencl.commandQueue));
+
+    // Benchmark
+    for (int i = 0; i < arguments.iterations; i++) {
+        EXPECT_CL_SUCCESS(clEnqueueMemFillINTEL(opencl.commandQueue, buffer, pattern.get(), arguments.patternSize, arguments.bufferSize, 0, nullptr, nullptr));
+        timer.measureStart();
+        EXPECT_CL_SUCCESS(clFinish(opencl.commandQueue));
+        timer.measureEnd();
+        statistics.pushValue(timer.getBandwidth(arguments.bufferSize));
+    }
+    return TestResult::Success;
+}
+
+static RegisterTestCase<UsmFill> registerTestCase(run, Api::OpenCL);
