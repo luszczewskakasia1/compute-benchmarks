@@ -1,10 +1,13 @@
 # Define Framework library
-file(GLOB_RECURSE SOURCES *.cpp *.h)
+file(GLOB SOURCES *.cpp *.h)
 set(TARGET_NAME compute_benchmarks_framework)
-add_library(${TARGET_NAME} STATIC CMakeLists.txt ${SOURCES})
+add_library(${TARGET_NAME} STATIC ${SOURCES})
 target_link_libraries(${TARGET_NAME} PUBLIC gtest)
 target_include_directories(${TARGET_NAME} PUBLIC ${SOURCE_ROOT})
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_17)
+
+# Add subdirectories
+add_subdirectory(test_case)
 
 # Ignore CRT Warnings
 if (MSVC)
