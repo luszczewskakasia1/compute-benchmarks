@@ -2,10 +2,10 @@
 
 enum class TransferDirection {
     Unknown,
-    HH,
-    HD,
-    DH,
-    DD,
+    SysToSys,
+    SysToDev,
+    DevToSys,
+    DevToDev,
 };
 
 enum class TransferOperand {

@@ -7,13 +7,13 @@ bool isDeviceMemory(TransferDirection direction, TransferOperand operand) {
     ERROR_IF(operand == TransferOperand::Unknown, "Unknown operand");
 
     switch (direction) {
-    case TransferDirection::HH:
+    case TransferDirection::SysToSys:
         return false;
-    case TransferDirection::HD:
+    case TransferDirection::SysToDev:
         return operand == TransferOperand::Destination;
-    case TransferDirection::DH:
+    case TransferDirection::DevToSys:
         return operand == TransferOperand::Source;
-    case TransferDirection::DD:
+    case TransferDirection::DevToDev:
         return true;
     }
 

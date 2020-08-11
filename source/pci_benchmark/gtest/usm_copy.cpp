@@ -23,5 +23,5 @@ INSTANTIATE_TEST_SUITE_P(
     UsmCopyTest,
     ::testing::Combine(
         ::testing::Values(Api::OpenCL, Api::L0),
-        ::testing::Values(TransferDirection::HD, TransferDirection::DH, TransferDirection::DD),
+        ::testing::Values(TransferDirection::SysToDev, TransferDirection::DevToSys, TransferDirection::DevToDev),
         ::testing::Values(128 * megaByte, 512 * megaByte)));
