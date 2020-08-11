@@ -9,7 +9,7 @@ Ulls Benchmark is released to gfx-assets.igk.intel.com. [Linux](https://gfx-asse
 Pci Benchmark is currently not released in binary form.
 
 ## Building
-Internally ComputeBenchmarks uses googletest, which is referenced as a git submodule and has to be cloned separately. Cloning command is automatically performed by CMake, but Intel employees may have to properly set up proxy. If building hangs on cloning googletest, run
+Internally ComputeBenchmarks uses googletest, which is referenced as a git submodule and has to be cloned separately. Cloning command is automatically performed by CMake, but Intel employees may have to properly set up proxy. If building hangs on cloning googletest, use [build.sh](build.sh] script, which sets up proxy or run the following commands:
 ```
 git config --global http.proxy http://proxy-chain.intel.com:911
 git config --global https.proxy http://proxy-chain.intel.com:912
@@ -22,7 +22,7 @@ By default ComputeBenchmarks enables both OpenCL and LevelZero benchmarks. They 
     cmake .. -DTEST_L0=OFF -DTEST_OCL=ON
 ```
 
-ComputeBenchmarks will try to find SDKs for the APIs used. In case of inability to find those, it will use libraries contained in [third_party/opencl-sdk](third_party/opencl-sdk) and [third_party/level-zero-sdk](third_party/level-zero-sdk) directories.
+ComputeBenchmarks will try to find SDKs for the APIs used. In case of inability to find those, it will use libraries contained in [third_party/opencl-sdk](third_party/opencl-sdk) and [third_party/level-zero-sdk](third_party/level-zero-sdk) directories. The libraries where compiled on Ubuntu 18.04 LTS with gcc 7.4.0 compiler. Using a different setup may result in build failures due to ABI incompatibility, so it's safest to have the SDK installed in your system.
 
 ## Running
 For specific information about how to run the benchmarks, please run the binary with "--help" parameter.
