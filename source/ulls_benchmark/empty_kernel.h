@@ -9,11 +9,8 @@ struct EmptyKernelArguments : TestCaseArguments {
     PositiveIntegerTestCaseArgument workgroupSize;
 
     EmptyKernelArguments()
-        : workgroupCount("wgc", "workgroup count"),
-          workgroupSize("wgs", "workgroup size (aka local work size)") {
-        arguments.push_back(&workgroupCount);
-        arguments.push_back(&workgroupSize);
-    }
+        : workgroupCount(*this, "wgc", "workgroup count"),
+          workgroupSize(*this, "wgs", "workgroup size (aka local work size)") {}
 };
 
 class EmptyKernel : public TestCase<EmptyKernelArguments> {

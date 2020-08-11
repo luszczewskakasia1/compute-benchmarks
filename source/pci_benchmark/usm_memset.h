@@ -10,11 +10,8 @@ struct UsmMemsetArguments : TestCaseArguments {
     PositiveIntegerTestCaseArgument bufferSize;
 
     UsmMemsetArguments()
-        : memoryPlacement("memory", "host or device"),
-          bufferSize("size", "size of the buffer to be filled") {
-        arguments.push_back(&memoryPlacement);
-        arguments.push_back(&bufferSize);
-    }
+        : memoryPlacement(*this, "memory", "host or device"),
+          bufferSize(*this, "size", "size of the buffer to be filled") {}
 };
 
 class UsmMemset : public TestCase<UsmMemsetArguments> {

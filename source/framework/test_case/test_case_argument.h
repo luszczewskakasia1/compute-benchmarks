@@ -7,10 +7,11 @@
 #include <sstream>
 #include <string>
 
+struct TestCaseArguments;
+
 struct TestCaseArgument {
-    TestCaseArgument(const std::string &key) : TestCaseArgument(key, "") {}
-    TestCaseArgument(const std::string &key, const std::string &extraHelp)
-        : key(key), extraHelp(extraHelp) {}
+    TestCaseArgument(TestCaseArguments &parent, const std::string &key) : TestCaseArgument(parent, key, "") {}
+    TestCaseArgument(TestCaseArguments &parent, const std::string &key, const std::string &extraHelp);
 
     std::string getHelp() const {
         std::ostringstream result;

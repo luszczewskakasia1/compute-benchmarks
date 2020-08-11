@@ -8,9 +8,7 @@ struct NewResourcesSubmissionHostArguments : TestCaseArguments {
     PositiveIntegerTestCaseArgument size;
 
     NewResourcesSubmissionHostArguments()
-        : size("size") {
-        arguments.push_back(&size);
-    }
+        : size(*this, "size") {}
 };
 
 class NewResourcesSubmissionHost : public TestCase<NewResourcesSubmissionHostArguments> {
