@@ -28,5 +28,5 @@ ComputeBenchmarks will try to find SDKs for the APIs used. In case of inability 
 For specific information about how to run the benchmarks, please run the binary with "--help" parameter.
 
 ## Contributing
-Please insert new benchmarks you add to TestMap contained in source/<benchmark_name>/test_map.cpp. This will enable the benchmark in single-test mode.
+Please insert new benchmarks you add to TestMap contained in source/<benchmark_name>/benchmark_info.cpp. This will enable the benchmark in single-test mode.
 Please use ClangFormat to properly format the code. Visual Studio extension can be downloaded [here](https://marketplace.visualstudio.com/items?itemName=LLVMExtensions.ClangFormat).

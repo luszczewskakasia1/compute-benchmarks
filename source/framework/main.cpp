@@ -40,7 +40,7 @@ int printHelp() {
                  "\t--iterations=X - select how many times each test will be run\n"
                  "\t--csv          - dump results in CSV format for easy imports to spreadsheets\n"
                  "\t--verbose      - dump results from all iterations\n"
-                 "\t--api          - select graphics API to use. Possible values: ocl, l0, all"
+                 "\t--api          - select graphics API to use. Possible values: ocl, l0, all\n"
                  "\n"
                  "Example invocations:\n"
                  "\t" << filename << "\n"

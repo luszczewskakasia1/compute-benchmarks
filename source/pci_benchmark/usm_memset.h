@@ -11,7 +11,7 @@ struct UsmMemsetArguments : TestCaseArguments {
 
     UsmMemsetArguments()
         : memoryPlacement(*this, "memory", "host or device"),
-          bufferSize(*this, "size", "size of the buffer to be filled") {}
+          bufferSize(*this, "size", "size of the buffer to be set") {}
 };
 
 class UsmMemset : public TestCase<UsmMemsetArguments> {

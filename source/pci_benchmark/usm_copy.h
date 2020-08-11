@@ -19,7 +19,7 @@ class UsmCopy : public TestCase<UsmCopyArguments> {
     using TestCase<UsmCopyArguments>::TestCase;
 
     std::string getHelp() const override {
-        return "allocated two unified shared memory buffers and measures copy bandwidth between them.";
+        return "allocates two unified shared memory buffers and measures copy bandwidth between them.";
     }
 
     std::string getTestCaseName() const override {
