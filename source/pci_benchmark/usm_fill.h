@@ -11,7 +11,7 @@ struct UsmFillArguments : TestCaseArguments {
     PositiveIntegerTestCaseArgument patternSize;
 
     UsmFillArguments()
-        : memoryPlacement(*this, "memory", "host or device"),
+        : memoryPlacement(*this, "memory"),
           bufferSize(*this, "size", "size of the buffer to be filled"),
           patternSize(*this, "patternSize") {}
 };

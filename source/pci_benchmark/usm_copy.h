@@ -10,7 +10,7 @@ struct UsmCopyArguments : TestCaseArguments {
     PositiveIntegerTestCaseArgument size;
 
     UsmCopyArguments()
-        : transferDirection(*this, "transfer", "(HH, HD, DH or DD)"),
+        : transferDirection(*this, "transfer"),
           size(*this, "size") {}
 };
 

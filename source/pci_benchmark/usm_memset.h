@@ -10,7 +10,7 @@ struct UsmMemsetArguments : TestCaseArguments {
     PositiveIntegerTestCaseArgument bufferSize;
 
     UsmMemsetArguments()
-        : memoryPlacement(*this, "memory", "host or device"),
+        : memoryPlacement(*this, "memory"),
           bufferSize(*this, "size", "size of the buffer to be set") {}
 };
 

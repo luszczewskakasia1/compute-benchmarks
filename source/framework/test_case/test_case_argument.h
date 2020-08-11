@@ -73,7 +73,8 @@ struct PositiveIntegerTestCaseArgument : TestCaseArgument {
 };
 
 struct TransferDirectionTestCaseArgument : TestCaseArgument {
-    using TestCaseArgument::TestCaseArgument;
+    TransferDirectionTestCaseArgument(TestCaseArguments &parent, const std::string &key)
+        : TestCaseArgument(parent, key, "(HH, HD, DH or DD)") {}
 
     operator TransferDirection() const {
         return value;
@@ -123,7 +124,8 @@ struct TransferDirectionTestCaseArgument : TestCaseArgument {
 };
 
 struct MemoryPlacementTestCaseArgument : TestCaseArgument {
-    using TestCaseArgument::TestCaseArgument;
+    MemoryPlacementTestCaseArgument(TestCaseArguments &parent, const std::string &key)
+        : TestCaseArgument(parent, key, "(host or device)") {}
 
     operator MemoryPlacement() const {
         return value;
