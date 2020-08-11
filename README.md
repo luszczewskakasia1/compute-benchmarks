@@ -9,7 +9,7 @@ Ulls Benchmark is released to gfx-assets.igk.intel.com. [Linux](https://gfx-asse
 Pci Benchmark is currently not released in binary form.
 
 ## Building
-Internally ComputeBenchmarks uses googletest, which is referenced as a git submodule and has to be cloned separately. Cloning command is automatically performed by CMake, but Intel employees may have to properly set up proxy. If building hangs on cloning googletest, use [build.sh](build.sh] script, which sets up proxy or run the following commands:
+Internally ComputeBenchmarks uses googletest, which is referenced as a git submodule and has to be cloned separately. Cloning command is automatically performed by CMake, but Intel employees may have to properly set up proxy. If building hangs on cloning googletest, use [build.sh](build.sh) script, which sets up proxy or run the following commands:
 ```
 git config --global http.proxy http://proxy-chain.intel.com:911
 git config --global https.proxy http://proxy-chain.intel.com:912
