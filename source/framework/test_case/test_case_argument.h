@@ -167,7 +167,8 @@ struct MemoryPlacementTestCaseArgument : TestCaseArgument {
 };
 
 struct BooleanTestCaseArgument : TestCaseArgument {
-    using TestCaseArgument::TestCaseArgument;
+    BooleanTestCaseArgument(TestCaseArguments &parent, const std::string &key)
+        : TestCaseArgument(parent, key, "(0 or 1)") {}
 
     operator bool() const {
         return value != 0;
