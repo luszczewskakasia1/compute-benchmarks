@@ -19,10 +19,11 @@ struct TestCaseInterface {
 };
 
 enum class TestResult {
-    Success,
-    Error,
-    DriverFunctionNotFound,
-    KernelNotFound,
+    Success,                // should be returned after a successful run
+    Error,                  // an error was returned by the compute API
+    DriverFunctionNotFound, // extension function was not found and test is skipped
+    DeviceNotCapable,       // device does not support some functionality needed in test (e.g. compression)
+    KernelNotFound,         // binary kernel was not found in working directory
 };
 
 template <typename Arguments>
@@ -92,6 +93,7 @@ class TestCase : public TestCaseInterface {
         case TestResult::Error:
             statistics.printStatisticsString(testCaseNameWithConfig, ::configuration.printType, "ERROR");
             break;
+        case TestResult::DeviceNotCapable:
         case TestResult::DriverFunctionNotFound:
             ERROR_UNLESS(statistics.isEmpty(), "test was skipped but generated some values");
             statistics.printStatisticsString(testCaseNameWithConfig, ::configuration.printType, "SKIPPED");
