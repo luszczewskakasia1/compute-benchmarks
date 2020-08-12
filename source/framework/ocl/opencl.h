@@ -2,9 +2,12 @@
 
 #define CL_TARGET_OPENCL_VERSION 220
 #include <CL/cl.h>
+#include <CL/embargo/cl_ext_private_internal.h>
 #include <exception>
 #include <gtest/gtest.h>
 #include <iostream>
+
+#define CL_MEM_USES_COMPRESSION_INTEL (0x10051)
 
 #define ASSERT_CL_SUCCESS(retVal)      \
     if (retVal != CL_SUCCESS) {        \
