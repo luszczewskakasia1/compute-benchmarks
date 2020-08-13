@@ -40,6 +40,8 @@ static TestResult run(const UsmMemsetArguments &arguments, Statistics &statistic
         timer.measureEnd();
         statistics.pushValue(timer.getBandwidth(arguments.bufferSize));
     }
+
+    EXPECT_CL_SUCCESS(clMemFreeINTEL(opencl.context, buffer));
     return TestResult::Success;
 }
 

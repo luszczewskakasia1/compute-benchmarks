@@ -43,6 +43,9 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
         timer.measureEnd();
         statistics.pushValue(timer.getBandwidth(arguments.size));
     }
+
+    EXPECT_CL_SUCCESS(clMemFreeINTEL(opencl.context, destination));
+    EXPECT_CL_SUCCESS(clMemFreeINTEL(opencl.context, source));
     return TestResult::Success;
 }
 

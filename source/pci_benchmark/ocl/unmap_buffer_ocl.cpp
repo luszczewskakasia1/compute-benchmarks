@@ -41,6 +41,8 @@ static TestResult run(const UnmapBufferArguments &arguments, Statistics &statist
 
         statistics.pushValue(timer.getBandwidth(arguments.size));
     }
+
+    ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));
     return TestResult::Success;
 }
 

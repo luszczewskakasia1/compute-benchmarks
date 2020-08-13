@@ -43,6 +43,8 @@ static TestResult run(const MapBufferArguments &arguments, Statistics &statistic
         ASSERT_CL_SUCCESS(clEnqueueUnmapMemObject(opencl.commandQueue, buffer, ptr, 0, nullptr, nullptr));
         clFinish(opencl.commandQueue);
     }
+
+    ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));
     return TestResult::Success;
 }
 
