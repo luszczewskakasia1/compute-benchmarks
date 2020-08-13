@@ -1,3 +1,5 @@
+#pragma once
+
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/test_case_argument.h"
 
