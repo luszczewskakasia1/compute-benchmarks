@@ -7,8 +7,8 @@
 
 struct UsmFillArguments : TestCaseArguments {
     MemoryPlacementTestCaseArgument memoryPlacement;
-    PositiveIntegerTestCaseArgument bufferSize;
-    PositiveIntegerTestCaseArgument patternSize;
+    ByteSizeTestCaseArgument bufferSize;
+    ByteSizeTestCaseArgument patternSize;
 
     UsmFillArguments()
         : memoryPlacement(*this, "memory"),

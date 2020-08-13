@@ -7,7 +7,7 @@
 
 struct UsmCopyArguments : TestCaseArguments {
     TransferDirectionTestCaseArgument transferDirection;
-    PositiveIntegerTestCaseArgument size;
+    ByteSizeTestCaseArgument size;
 
     UsmCopyArguments()
         : transferDirection(*this, "transfer"),

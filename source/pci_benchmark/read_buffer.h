@@ -6,7 +6,7 @@
 #include <sstream>
 
 struct ReadBufferArguments : TestCaseArguments {
-    PositiveIntegerTestCaseArgument size;
+    ByteSizeTestCaseArgument size;
     BooleanTestCaseArgument compressed;
 
     ReadBufferArguments()

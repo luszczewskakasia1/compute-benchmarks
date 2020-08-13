@@ -72,6 +72,52 @@ struct PositiveIntegerTestCaseArgument : TestCaseArgument {
     size_t value = 0u;
 };
 
+struct ByteSizeTestCaseArgument : PositiveIntegerTestCaseArgument {
+    using PositiveIntegerTestCaseArgument::PositiveIntegerTestCaseArgument;
+
+    ByteSizeTestCaseArgument &operator=(size_t value) {
+        this->value = value;
+        return *this;
+    }
+
+    std::string toStringValue() const override {
+        const std::string units[] = {"", "KB", "MB", "GB"};
+        const auto unitCount = sizeof(units) / sizeof(units[0]);
+
+        auto currentUnit = 0u;
+        auto currentValue = this->value;
+        for (; currentUnit < unitCount; currentUnit++) {
+            if (currentValue % 1024 != 0) {
+                break;
+            }
+            currentValue /= 1024;
+        }
+
+        return std::to_string(currentValue) + units[currentUnit];
+    }
+
+    void parseImpl(const std::string &value) override {
+        const std::string units[] = {"KB", "MB", "GB", "B", ""};
+        const size_t unitMultipliers[] = {1024, 1024 * 1024, 1024 * 1024 * 1024, 1, 1};
+        const auto unitCount = sizeof(units) / sizeof(units[0]);
+        static_assert(unitCount == sizeof(unitMultipliers) / sizeof(unitMultipliers[0]));
+
+        std::string valueWithoutUnit;
+        auto currentUnit = 0u;
+        for (; currentUnit < unitCount; currentUnit++) {
+            const auto unitPosition = value.rfind(units[currentUnit]);
+            const auto expectedUnitPosition = value.length() - units[currentUnit].length();
+            if (unitPosition == expectedUnitPosition) {
+                valueWithoutUnit = value.substr(0, unitPosition);
+                break;
+            }
+        }
+
+        this->value = std::atoi(valueWithoutUnit.c_str());
+        this->value *= unitMultipliers[currentUnit];
+    }
+};
+
 struct TransferDirectionTestCaseArgument : TestCaseArgument {
     TransferDirectionTestCaseArgument(TestCaseArguments &parent, const std::string &key)
         : TestCaseArgument(parent, key, "(SysToSys, SysToDev, DevToSys or DevToDev)") {}

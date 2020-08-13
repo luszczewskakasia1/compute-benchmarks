@@ -7,7 +7,7 @@
 #include <sstream>
 
 struct MapBufferArguments : TestCaseArguments {
-    PositiveIntegerTestCaseArgument size;
+    ByteSizeTestCaseArgument size;
     BooleanTestCaseArgument compressed;
     MapFlagsTestCaseArgument mapFlags;
 

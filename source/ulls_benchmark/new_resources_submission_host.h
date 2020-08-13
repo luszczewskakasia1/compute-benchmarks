@@ -5,7 +5,7 @@
 #include <sstream>
 
 struct NewResourcesSubmissionHostArguments : TestCaseArguments {
-    PositiveIntegerTestCaseArgument size;
+    ByteSizeTestCaseArgument size;
 
     NewResourcesSubmissionHostArguments()
         : size(*this, "size") {}

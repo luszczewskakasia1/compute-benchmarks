@@ -7,7 +7,7 @@
 
 struct UsmMemsetArguments : TestCaseArguments {
     MemoryPlacementTestCaseArgument memoryPlacement;
-    PositiveIntegerTestCaseArgument bufferSize;
+    ByteSizeTestCaseArgument bufferSize;
 
     UsmMemsetArguments()
         : memoryPlacement(*this, "memory"),
