@@ -32,7 +32,7 @@ static TestResult run(const NewResourcesSubmissionDeviceArguments &arguments, St
     uint32_t groupSizeX = 1u;
     uint32_t groupSizeY = 1u;
     uint32_t groupSizeZ = 1u;
-    EXPECT_ZE_RESULT_SUCCESS(zeKernelSetGroupSize(kernel, groupSizeX, groupSizeY, groupSizeZ));
+    ASSERT_ZE_RESULT_SUCCESS(zeKernelSetGroupSize(kernel, groupSizeX, groupSizeY, groupSizeZ));
 
     // Create buffer for warmup
     const auto bufferSize = arguments.size;

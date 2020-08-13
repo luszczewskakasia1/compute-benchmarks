@@ -25,25 +25,25 @@ static TestResult run(const UsmFillArguments &arguments, Statistics &statistics)
     } else {
         buffer = clHostMemAllocINTEL(opencl.context, nullptr, arguments.bufferSize, 0u, &retVal);
     }
-    EXPECT_CL_SUCCESS(retVal);
+    ASSERT_CL_SUCCESS(retVal);
 
     // Create pattern
     const auto pattern = std::make_unique<uint8_t[]>(arguments.patternSize);
 
     // Warmup
-    EXPECT_CL_SUCCESS(clEnqueueMemFillINTEL(opencl.commandQueue, buffer, pattern.get(), arguments.patternSize, arguments.bufferSize, 0, nullptr, nullptr));
-    EXPECT_CL_SUCCESS(clFinish(opencl.commandQueue));
+    ASSERT_CL_SUCCESS(clEnqueueMemFillINTEL(opencl.commandQueue, buffer, pattern.get(), arguments.patternSize, arguments.bufferSize, 0, nullptr, nullptr));
+    ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
         timer.measureStart();
-        EXPECT_CL_SUCCESS(clEnqueueMemFillINTEL(opencl.commandQueue, buffer, pattern.get(), arguments.patternSize, arguments.bufferSize, 0, nullptr, nullptr));
-        EXPECT_CL_SUCCESS(clFinish(opencl.commandQueue));
+        ASSERT_CL_SUCCESS(clEnqueueMemFillINTEL(opencl.commandQueue, buffer, pattern.get(), arguments.patternSize, arguments.bufferSize, 0, nullptr, nullptr));
+        ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
         statistics.pushValue(timer.getBandwidth(arguments.bufferSize));
     }
 
-    EXPECT_CL_SUCCESS(clMemFreeINTEL(opencl.context, buffer));
+    ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, buffer));
     return TestResult::Success;
 }
 

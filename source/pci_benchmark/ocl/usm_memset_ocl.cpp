@@ -25,23 +25,23 @@ static TestResult run(const UsmMemsetArguments &arguments, Statistics &statistic
     } else {
         buffer = clHostMemAllocINTEL(opencl.context, nullptr, arguments.bufferSize, 0u, &retVal);
     }
-    EXPECT_CL_SUCCESS(retVal);
+    ASSERT_CL_SUCCESS(retVal);
 
     // Warmup
     const uint8_t memsetValue = 0x1;
-    EXPECT_CL_SUCCESS(clEnqueueMemsetINTEL(opencl.commandQueue, buffer, memsetValue, arguments.bufferSize, 0, nullptr, nullptr));
-    EXPECT_CL_SUCCESS(clFinish(opencl.commandQueue));
+    ASSERT_CL_SUCCESS(clEnqueueMemsetINTEL(opencl.commandQueue, buffer, memsetValue, arguments.bufferSize, 0, nullptr, nullptr));
+    ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
         timer.measureStart();
-        EXPECT_CL_SUCCESS(clEnqueueMemsetINTEL(opencl.commandQueue, buffer, memsetValue, arguments.bufferSize, 0, nullptr, nullptr));
-        EXPECT_CL_SUCCESS(clFinish(opencl.commandQueue));
+        ASSERT_CL_SUCCESS(clEnqueueMemsetINTEL(opencl.commandQueue, buffer, memsetValue, arguments.bufferSize, 0, nullptr, nullptr));
+        ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
         statistics.pushValue(timer.getBandwidth(arguments.bufferSize));
     }
 
-    EXPECT_CL_SUCCESS(clMemFreeINTEL(opencl.context, buffer));
+    ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, buffer));
     return TestResult::Success;
 }
 

@@ -23,15 +23,15 @@ static TestResult run(const EmptyKernelArguments &arguments, Statistics &statist
     moduleDesc.format = ZE_MODULE_FORMAT_IL_SPIRV;
     moduleDesc.pInputModule = reinterpret_cast<const uint8_t *>(spirvModule.data());
     moduleDesc.inputSize = spirvModule.size();
-    EXPECT_ZE_RESULT_SUCCESS(zeModuleCreate(levelzero.context, levelzero.device, &moduleDesc, &module, nullptr));
+    ASSERT_ZE_RESULT_SUCCESS(zeModuleCreate(levelzero.context, levelzero.device, &moduleDesc, &module, nullptr));
     ze_kernel_desc_t kernelDesc{ZE_STRUCTURE_TYPE_KERNEL_DESC};
     kernelDesc.pKernelName = "empty";
-    EXPECT_ZE_RESULT_SUCCESS(zeKernelCreate(module, &kernelDesc, &kernel));
+    ASSERT_ZE_RESULT_SUCCESS(zeKernelCreate(module, &kernelDesc, &kernel));
 
     uint32_t groupSizeX = static_cast<uint32_t>(arguments.workgroupSize);
     uint32_t groupSizeY = 1u;
     uint32_t groupSizeZ = 1u;
-    EXPECT_ZE_RESULT_SUCCESS(zeKernelSetGroupSize(kernel, groupSizeX, groupSizeY, groupSizeZ));
+    ASSERT_ZE_RESULT_SUCCESS(zeKernelSetGroupSize(kernel, groupSizeX, groupSizeY, groupSizeZ));
 
     ze_group_count_t dispatchTraits;
     dispatchTraits.groupCountX = static_cast<uint32_t>(arguments.workgroupCount);

@@ -32,20 +32,20 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
     }
 
     // Warmup
-    EXPECT_CL_SUCCESS(clEnqueueMemcpyINTEL(opencl.commandQueue, CL_FALSE, destination, source, arguments.size, 0, nullptr, nullptr));
-    EXPECT_CL_SUCCESS(clFinish(opencl.commandQueue));
+    ASSERT_CL_SUCCESS(clEnqueueMemcpyINTEL(opencl.commandQueue, CL_FALSE, destination, source, arguments.size, 0, nullptr, nullptr));
+    ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
         timer.measureStart();
-        EXPECT_CL_SUCCESS(clEnqueueMemcpyINTEL(opencl.commandQueue, CL_FALSE, destination, source, arguments.size, 0, nullptr, nullptr));
-        EXPECT_CL_SUCCESS(clFinish(opencl.commandQueue));
+        ASSERT_CL_SUCCESS(clEnqueueMemcpyINTEL(opencl.commandQueue, CL_FALSE, destination, source, arguments.size, 0, nullptr, nullptr));
+        ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
         statistics.pushValue(timer.getBandwidth(arguments.size));
     }
 
-    EXPECT_CL_SUCCESS(clMemFreeINTEL(opencl.context, destination));
-    EXPECT_CL_SUCCESS(clMemFreeINTEL(opencl.context, source));
+    ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, destination));
+    ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, source));
     return TestResult::Success;
 }
 
