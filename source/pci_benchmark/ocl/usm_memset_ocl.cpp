@@ -34,8 +34,8 @@ static TestResult run(const UsmMemsetArguments &arguments, Statistics &statistic
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
-        EXPECT_CL_SUCCESS(clEnqueueMemsetINTEL(opencl.commandQueue, buffer, memsetValue, arguments.bufferSize, 0, nullptr, nullptr));
         timer.measureStart();
+        EXPECT_CL_SUCCESS(clEnqueueMemsetINTEL(opencl.commandQueue, buffer, memsetValue, arguments.bufferSize, 0, nullptr, nullptr));
         EXPECT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
         statistics.pushValue(timer.getBandwidth(arguments.bufferSize));

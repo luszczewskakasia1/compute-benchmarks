@@ -32,10 +32,9 @@ static TestResult run(const MapBufferArguments &arguments, Statistics &statistic
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
+        timer.measureStart();
         ptr = clEnqueueMapBuffer(opencl.commandQueue, buffer, CL_NON_BLOCKING, arguments.mapFlags, 0, arguments.size, 0, nullptr, nullptr, &retVal);
         ASSERT_CL_SUCCESS(retVal);
-
-        timer.measureStart();
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
 

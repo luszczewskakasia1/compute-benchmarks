@@ -36,8 +36,8 @@ static TestResult run(const UsmFillArguments &arguments, Statistics &statistics)
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
-        EXPECT_CL_SUCCESS(clEnqueueMemFillINTEL(opencl.commandQueue, buffer, pattern.get(), arguments.patternSize, arguments.bufferSize, 0, nullptr, nullptr));
         timer.measureStart();
+        EXPECT_CL_SUCCESS(clEnqueueMemFillINTEL(opencl.commandQueue, buffer, pattern.get(), arguments.patternSize, arguments.bufferSize, 0, nullptr, nullptr));
         EXPECT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
         statistics.pushValue(timer.getBandwidth(arguments.bufferSize));

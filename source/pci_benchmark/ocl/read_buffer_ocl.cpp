@@ -29,10 +29,11 @@ static TestResult run(const ReadBufferArguments &arguments, Statistics &statisti
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
-        ASSERT_CL_SUCCESS(clEnqueueReadBuffer(opencl.commandQueue, buffer, CL_NON_BLOCKING, 0, arguments.size, cpuBuffer.get(), 0, nullptr, nullptr));
         timer.measureStart();
-        ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
+        ASSERT_CL_SUCCESS(clEnqueueReadBuffer(opencl.commandQueue, buffer, CL_NON_BLOCKING, 0, arguments.size, cpuBuffer.get(), 0, nullptr, nullptr));
+        ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue))
         timer.measureEnd();
+
         statistics.pushValue(timer.getBandwidth(arguments.size));
     }
     return TestResult::Success;
