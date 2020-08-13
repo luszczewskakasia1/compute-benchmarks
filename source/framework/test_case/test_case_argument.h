@@ -56,7 +56,7 @@ struct PositiveIntegerTestCaseArgument : TestCaseArgument {
         return *this;
     }
 
-    bool validate() const {
+    bool validate() const override {
         return this->value > 0;
     }
 
@@ -131,7 +131,7 @@ struct TransferDirectionTestCaseArgument : TestCaseArgument {
         return *this;
     }
 
-    bool validate() const {
+    bool validate() const override {
         return this->value != TransferDirection::Unknown;
     }
 
@@ -182,7 +182,7 @@ struct MemoryPlacementTestCaseArgument : TestCaseArgument {
         return *this;
     }
 
-    bool validate() const {
+    bool validate() const override {
         return this->value != MemoryPlacement::Unknown;
     }
 
@@ -225,7 +225,7 @@ struct BooleanTestCaseArgument : TestCaseArgument {
         return *this;
     }
 
-    bool validate() const {
+    bool validate() const override {
         return value == 0 || value == 1;
     }
 

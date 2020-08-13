@@ -36,9 +36,30 @@ struct LevelZero {
         EXPECT_ZE_RESULT_SUCCESS(zeContextCreate(driver, &contextDesc, &context));
 
         if (createCommandQueue) {
+            EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetCommandQueueGroupProperties(device, &numQueueGroups, nullptr));
+            if (numQueueGroups == 0) {
+                std::cout << "No queue groups found!\n";
+                std::terminate();
+            }
+
+            std::vector<ze_command_queue_group_properties_t> queueProperties(numQueueGroups);
+            EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetCommandQueueGroupProperties(device,
+                                                                            &numQueueGroups,
+                                                                            queueProperties.data()));
+
+
             ze_command_queue_desc_t commandQueueDesc{ZE_STRUCTURE_TYPE_COMMAND_QUEUE_DESC};
+            for (uint32_t i = 0; i < numQueueGroups; i++) {
+                if (queueProperties[i].flags & ZE_COMMAND_QUEUE_GROUP_PROPERTY_FLAG_COMPUTE) {
+                    commandQueueDesc.ordinal = i;
+                    break;
+                }
+            }
+            commandQueueDesc.index = 0;
             commandQueueDesc.mode = ZE_COMMAND_QUEUE_MODE_ASYNCHRONOUS;
             EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueCreate(context, device, &commandQueueDesc, &commandQueue));
+
+            commandListCommandQueueGroupOrdinal = commandQueueDesc.ordinal;
         }
     }
 
@@ -52,4 +73,6 @@ struct LevelZero {
     ze_device_handle_t device{};
     ze_context_handle_t context{};
     ze_command_queue_handle_t commandQueue{};
+    uint32_t numQueueGroups = 0;
+    uint32_t commandListCommandQueueGroupOrdinal = 0;
 };
