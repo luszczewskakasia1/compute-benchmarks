@@ -1,6 +1,7 @@
 #include "framework/benchmark_info.h"
 
 #include "pci_benchmark/copy_buffer.h"
+#include "pci_benchmark/fill_buffer.h"
 #include "pci_benchmark/map_buffer.h"
 #include "pci_benchmark/read_buffer.h"
 #include "pci_benchmark/unmap_buffer.h"
@@ -13,6 +14,7 @@ TestMap getTestMap() {
     TestMap testMap;
 #define TEST_CASE(name) testMap[#name] = std::unique_ptr<TestCaseInterface>(new name());
     TEST_CASE(CopyBuffer)
+    TEST_CASE(FillBuffer)
     TEST_CASE(MapBuffer)
     TEST_CASE(ReadBuffer)
     TEST_CASE(UnmapBuffer)
