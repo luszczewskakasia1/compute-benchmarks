@@ -1,0 +1,28 @@
+#pragma once
+
+#include "framework/test_case/test_case.h"
+#include "framework/transfer_direction.h"
+
+#include <sstream>
+
+struct CopyBufferArguments : TestCaseArguments {
+    ByteSizeTestCaseArgument size;
+    BooleanTestCaseArgument compressed;
+
+    CopyBufferArguments()
+        : size(*this, "size"),
+          compressed(*this, "compressed") {}
+};
+
+class CopyBuffer : public TestCase<CopyBufferArguments> {
+  public:
+    using TestCase<CopyBufferArguments>::TestCase;
+
+    std::string getHelp() const override {
+        return "allocates two OpenCL buffers and measures copy bandwidth between them.";
+    }
+
+    std::string getTestCaseName() const override {
+        return "CopyBuffer";
+    }
+};
