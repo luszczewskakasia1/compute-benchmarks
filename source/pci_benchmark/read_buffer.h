@@ -19,7 +19,7 @@ class ReadBuffer : public TestCase<ReadBufferArguments> {
     using TestCase<ReadBufferArguments>::TestCase;
 
     std::string getHelp() const override {
-        return "allocates two OpenCL buffers and measures copy bandwidth between them.";
+        return "allocates an OpenCL buffer and measures read bandwidth.";
     }
 
     std::string getTestCaseName() const override {
