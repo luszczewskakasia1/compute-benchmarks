@@ -11,11 +11,7 @@ static TestResult run(const BestSubmissionArguments &arguments, Statistics &stat
     LevelZero levelzero;
     zex_pfnCommandListAppendPipeControl_t zexCommandListAppendPipeControl{};
     constexpr static auto bufferSize = 4096u;
-    // const auto extensionLoaded = zeDriverGetExtensionFunctionAddress(levelzero.driver, "zexCommandListAppendPipeControl", (void **)&zexCommandListAppendPipeControl);
-    const auto extensionLoaded = ZE_RESULT_ERROR_UNKNOWN;
-    if (extensionLoaded != ZE_RESULT_SUCCESS) {
-        return TestResult::DriverFunctionNotFound;
-    }
+    constexpr uint64_t timestampInitial = 0xffffffffu;
     Timer timer;
 
     // Create buffer
@@ -26,10 +22,11 @@ static TestResult run(const BestSubmissionArguments &arguments, Statistics &stat
     volatile uint64_t *volatileBuffer = static_cast<uint64_t *>(buffer);
 
     // Create command list writing 1 to the buffer
-    const ze_command_list_desc_t cmdListDesc{ZE_STRUCTURE_TYPE_COMMAND_LIST_DESC};
+    ze_command_list_desc_t cmdListDesc{};
+    cmdListDesc.commandQueueGroupOrdinal = levelzero.commandListCommandQueueGroupOrdinal;
     ze_command_list_handle_t cmdList;
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.context, levelzero.device, &cmdListDesc, &cmdList));
-    ASSERT_ZE_RESULT_SUCCESS(zexCommandListAppendPipeControl(cmdList, buffer, 1));
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendWriteGlobalTimestamp(cmdList, static_cast<uint64_t*>(buffer), nullptr, 0, nullptr));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListClose(cmdList));
 
     // Warmup
@@ -38,12 +35,12 @@ static TestResult run(const BestSubmissionArguments &arguments, Statistics &stat
 
     // Benchmark
     for (auto i = 0; i < arguments.iterations; i++) {
-        *volatileBuffer = 0;
+        *volatileBuffer = timestampInitial;
         _mm_clflush(buffer);
 
         timer.measureStart();
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
-        while (*volatileBuffer != 1) {
+        while (*volatileBuffer != timestampInitial) {
         }
         timer.measureEnd();
         statistics.pushValue(timer.Get());
