@@ -44,7 +44,7 @@ class TestCase : public TestCaseInterface {
         }
 
         // Try running with all possible APIs. If some are disabled, e.g. --api=ocl is passed, then the rest will be skipped in run() method
-        for (int apiIndex = 0; apiIndex < static_cast<int>(Api::COUNT); apiIndex++) {
+        for (int apiIndex = static_cast<int>(Api::FIRST); apiIndex <= static_cast<int>(Api::LAST); apiIndex++) {
             arguments.api = static_cast<Api>(apiIndex);
             run(arguments);
         }
@@ -59,31 +59,30 @@ class TestCase : public TestCaseInterface {
         }
         arguments.iterations = ::configuration.iterations;
 
-        // Get API
-        const auto apiIndex = static_cast<int>(arguments.api);
-        if (apiIndex >= static_cast<int>(Api::COUNT)) {
-            std::cerr << "WARNING: unknown API selected. Test was skipped.\n";
+        // Create statistics object
+        const auto testCaseNameWithConfig = getTestCaseNameWithConfig(arguments);
+        Statistics statistics{arguments.iterations};
+
+        // Validate arguments
+        if (!arguments.validateArguments()) {
+            statistics.printStatisticsString(testCaseNameWithConfig, ::configuration.printType, "INVALID_ARGS");
             return;
         }
+
+        // Get API
         const auto selectedApi = ::configuration.selectedApi; // Api selected by the user via the --api argument
         if (arguments.api != selectedApi && selectedApi != Api::All) {
             return;
         }
 
         // Get implementation
+        const auto apiIndex = static_cast<int>(arguments.api);
         const auto benchmarkImplementation = implementations[apiIndex];
         if (benchmarkImplementation == nullptr) {
             return;
         }
 
-        // Get test case name
-        const auto apiString = std::string{arguments.api == Api::OpenCL ? "api=ocl" : "api=l0"};
-        const auto currentConfig = arguments.getCurrentConfig();
-        const auto configWithApi = currentConfig.size() == 0 ? apiString : apiString + " " + currentConfig;
-        const auto testCaseNameWithConfig = getTestCaseName() + "(" + configWithApi + ")";
-
         // Run test
-        Statistics statistics{::configuration.iterations};
         const TestResult testResult = benchmarkImplementation(arguments, statistics);
         switch (testResult) {
         case TestResult::Success:
@@ -119,10 +118,19 @@ class TestCase : public TestCaseInterface {
             }
         }
 
-        if (!arguments.validateArguments()) {
-            return false;
+        return true;
+    }
+
+    std::string getTestCaseNameWithConfig(const Arguments &arguments) const {
+        std::ostringstream result{};
+        result << getTestCaseName() << "(api=" << std::to_string(arguments.api);
+
+        const auto config = arguments.getCurrentConfig();
+        if (config.size() > 0) {
+            result << " " << config;
         }
 
-        return true;
+        result << ")";
+        return result.str();
     }
 };

@@ -15,6 +15,15 @@ bool TestCaseArguments::validateArguments() const {
             return false;
         }
     }
+
+    if (!validateApi(api)) {
+        return false;
+    }
+
+    if (iterations <= 0) {
+        return false;
+    }
+
     return true;
 }
 
