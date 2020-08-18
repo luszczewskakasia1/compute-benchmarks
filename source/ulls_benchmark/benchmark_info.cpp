@@ -31,7 +31,7 @@ std::string getBenchmarkName() {
 }
 
 std::string getMeasurmentsUnit() {
-    return "ms";
+    return "us";
 }
 
 int getTestCaseNameColumnWidth() {
