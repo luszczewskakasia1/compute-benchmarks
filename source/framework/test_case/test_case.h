@@ -31,7 +31,11 @@ class TestCase : public TestCaseInterface {
     static_assert(std::is_base_of_v<TestCaseArguments, Arguments>, "Arguments class should derive from TestCaseArguments");
 
   public:
-    using BenchmarkImplementation = std::function<TestResult(Arguments, Statistics &)>;
+    struct BenchmarkImplementation {
+        using Function = std::function<TestResult(Arguments, Statistics &)>;
+        Function function = {};
+        bool requiresIntelExtensions = false;
+    };
     static inline BenchmarkImplementation implementations[(int)Api::COUNT];
 
     std::string getHelpParameters() const override { return Arguments{}.getHelp(); }
@@ -77,13 +81,18 @@ class TestCase : public TestCaseInterface {
 
         // Get implementation
         const auto apiIndex = static_cast<int>(arguments.api);
-        const auto benchmarkImplementation = implementations[apiIndex];
-        if (benchmarkImplementation == nullptr) {
+        const auto &benchmarkImplementation = implementations[apiIndex];
+        if (benchmarkImplementation.function == nullptr) {
+            return;
+        }
+
+        // Silently skip benchmarks requiring Intel extensions if they were disabled
+        if (::configuration.noIntelExtensions && benchmarkImplementation.requiresIntelExtensions) {
             return;
         }
 
         // Run test
-        const TestResult testResult = benchmarkImplementation(arguments, statistics);
+        const TestResult testResult = benchmarkImplementation.function(arguments, statistics);
         switch (testResult) {
         case TestResult::Success:
             ERROR_UNLESS(statistics.isFull(), "test did not generate as many values as expected");

@@ -11,6 +11,7 @@ struct Configuration {
     } printType = PrintType::Default;
     int iterations = 10;
     Api selectedApi = Api::All;
+    bool noIntelExtensions = false;
 };
 
 extern Configuration configuration;

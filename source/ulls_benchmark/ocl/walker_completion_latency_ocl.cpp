@@ -63,4 +63,4 @@ static TestResult run(const WalkerCompletionLatencyArguments &arguments, Statist
     return TestResult::Success;
 }
 
-static RegisterTestCase<WalkerCompletionLatency> registerTestCase(run, Api::OpenCL);
+static RegisterTestCase<WalkerCompletionLatency> registerTestCase(run, Api::OpenCL, true);

@@ -29,6 +29,10 @@ bool parseArgumentsForConfiguration(int argc, char **argv) {
             FAIL_IF_VALUE_WAS_PASSED
             ::configuration.printType = Configuration::PrintType::Verbose;
         }
+        if (key == "no-intel-extensions") {
+            FAIL_IF_VALUE_WAS_PASSED
+            ::configuration.noIntelExtensions = true;
+        }
         if (key == "api") {
             ::configuration.selectedApi = parseApi(value);
             if (::configuration.selectedApi == Api::Unknown) {

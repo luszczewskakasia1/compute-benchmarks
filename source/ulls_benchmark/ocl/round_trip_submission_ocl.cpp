@@ -56,4 +56,4 @@ static TestResult run(const RoundTripSubmissionArguments &arguments, Statistics 
     return TestResult::Success;
 }
 
-static RegisterTestCase<RoundTripSubmission> registerTestCase(run, Api::OpenCL);
+static RegisterTestCase<RoundTripSubmission> registerTestCase(run, Api::OpenCL, true);
