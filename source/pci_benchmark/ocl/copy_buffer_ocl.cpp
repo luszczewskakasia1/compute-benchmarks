@@ -21,13 +21,13 @@ static TestResult run(const CopyBufferArguments &arguments, Statistics &statisti
     auto cpuBuffer = std::make_unique<uint8_t[]>(arguments.size);
 
     // Check buffers compression
-    //cl_bool isSrcCompressed{};
-    //cl_bool isDstCompressed{};
-    //ASSERT_CL_SUCCESS(clGetMemObjectInfo(source, CL_MEM_USES_COMPRESSION_INTEL, sizeof(isSrcCompressed), &isSrcCompressed, nullptr));
-    //ASSERT_CL_SUCCESS(clGetMemObjectInfo(destination, CL_MEM_USES_COMPRESSION_INTEL, sizeof(isDstCompressed), &isDstCompressed, nullptr));
-    //if ((isSrcCompressed == CL_TRUE) != arguments.compressed && (isDstCompressed == CL_TRUE) != arguments.compressed) {
-    //    return TestResult::DeviceNotCapable;
-    //}
+    cl_bool isSrcCompressed{};
+    cl_bool isDstCompressed{};
+    ASSERT_CL_SUCCESS(clGetMemObjectInfo(source, CL_MEM_USES_COMPRESSION_INTEL, sizeof(isSrcCompressed), &isSrcCompressed, nullptr));
+    ASSERT_CL_SUCCESS(clGetMemObjectInfo(destination, CL_MEM_USES_COMPRESSION_INTEL, sizeof(isDstCompressed), &isDstCompressed, nullptr));
+    if ((isSrcCompressed == CL_TRUE) != arguments.compressed && (isDstCompressed == CL_TRUE) != arguments.compressed) {
+        return TestResult::DeviceNotCapable;
+    }
 
     // Warmup
     ASSERT_CL_SUCCESS(clEnqueueCopyBuffer(opencl.commandQueue, source, destination, 0, 0, arguments.size, 0, nullptr, nullptr));

@@ -18,11 +18,11 @@ static TestResult run(const UnmapBufferArguments &arguments, Statistics &statist
     auto cpuBuffer = std::make_unique<uint8_t[]>(arguments.size);
 
     // Check buffer compression
-    //cl_bool isCompressed{};
-    //ASSERT_CL_SUCCESS(clGetMemObjectInfo(buffer, CL_MEM_USES_COMPRESSION_INTEL, sizeof(isCompressed), &isCompressed, nullptr));
-    //if ((isCompressed == CL_TRUE) != arguments.compressed) {
-    //    return TestResult::DeviceNotCapable;
-    //}
+    cl_bool isCompressed{};
+    ASSERT_CL_SUCCESS(clGetMemObjectInfo(buffer, CL_MEM_USES_COMPRESSION_INTEL, sizeof(isCompressed), &isCompressed, nullptr));
+    if ((isCompressed == CL_TRUE) != arguments.compressed) {
+        return TestResult::DeviceNotCapable;
+    }
 
     // Warmup
     void *ptr = clEnqueueMapBuffer(opencl.commandQueue, buffer, CL_BLOCKING, arguments.mapFlags, 0, arguments.size, 0, nullptr, nullptr, &retVal);

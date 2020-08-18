@@ -18,11 +18,11 @@ static TestResult run(const WriteBufferRectArguments &arguments, Statistics &sta
     auto cpuBuffer = std::make_unique<uint8_t[]>(arguments.size);
 
     // Check buffer compression
-    //cl_bool isCompressed{};
-    //ASSERT_CL_SUCCESS(clGetMemObjectInfo(buffer, CL_MEM_USES_COMPRESSION_INTEL, sizeof(isCompressed), &isCompressed, nullptr));
-    //if ((isCompressed == CL_TRUE) != arguments.compressed) {
-    //    return TestResult::DeviceNotCapable;
-    //}
+    cl_bool isCompressed{};
+    ASSERT_CL_SUCCESS(clGetMemObjectInfo(buffer, CL_MEM_USES_COMPRESSION_INTEL, sizeof(isCompressed), &isCompressed, nullptr));
+    if ((isCompressed == CL_TRUE) != arguments.compressed) {
+        return TestResult::DeviceNotCapable;
+    }
 
     // Warmup
     size_t bufferOffset[3] = {};

@@ -18,11 +18,11 @@ static TestResult run(const FillBufferArguments &arguments, Statistics &statisti
     auto cpuBuffer = std::make_unique<uint8_t[]>(arguments.size);
 
     // Check buffer compression
-    //cl_bool isCompressed{};
-    //ASSERT_CL_SUCCESS(clGetMemObjectInfo(buffer, CL_MEM_USES_COMPRESSION_INTEL, sizeof(isCompressed), &isCompressed, nullptr));
-    //if ((isCompressed == CL_TRUE) != arguments.compressed) {
-    //    return TestResult::DeviceNotCapable;
-    //}
+    cl_bool isCompressed{};
+    ASSERT_CL_SUCCESS(clGetMemObjectInfo(buffer, CL_MEM_USES_COMPRESSION_INTEL, sizeof(isCompressed), &isCompressed, nullptr));
+    if ((isCompressed == CL_TRUE) != arguments.compressed) {
+        return TestResult::DeviceNotCapable;
+    }
 
     // Create pattern
     const auto pattern = std::make_unique<uint8_t[]>(arguments.patternSize);
