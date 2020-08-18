@@ -32,7 +32,7 @@ inline std::string to_string(Api api) {
 }
 } // namespace std
 
-Api parseApi(const std::string &value) {
+inline Api parseApi(const std::string &value) {
     if (value == "ocl") {
         return Api::OpenCL;
     } else if (value == "l0") {
