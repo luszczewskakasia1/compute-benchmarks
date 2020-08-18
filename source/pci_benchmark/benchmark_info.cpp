@@ -9,6 +9,7 @@
 #include "pci_benchmark/usm_fill.h"
 #include "pci_benchmark/usm_memset.h"
 #include "pci_benchmark/write_buffer.h"
+#include "pci_benchmark/write_buffer_rect.h"
 
 TestMap getTestMap() {
     TestMap testMap;
@@ -22,6 +23,7 @@ TestMap getTestMap() {
     TEST_CASE(UsmFill)
     TEST_CASE(UsmMemset)
     TEST_CASE(WriteBuffer)
+    TEST_CASE(WriteBufferRect)
 #undef TEST_CASE
     return testMap;
 }
