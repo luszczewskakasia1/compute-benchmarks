@@ -30,13 +30,8 @@ bool parseArgumentsForConfiguration(int argc, char **argv) {
             ::configuration.printType = Configuration::PrintType::Verbose;
         }
         if (key == "api") {
-            if (value == "ocl") {
-                ::configuration.selectedApi = Api::OpenCL;
-            } else if (value == "l0") {
-                ::configuration.selectedApi = Api::L0;
-            } else if (value == "all") {
-                ::configuration.selectedApi = Api::All;
-            } else {
+            ::configuration.selectedApi = parseApi(value);
+            if (::configuration.selectedApi == Api::Unknown) {
                 return false;
             }
         }

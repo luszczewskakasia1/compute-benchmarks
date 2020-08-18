@@ -32,6 +32,18 @@ inline std::string to_string(Api api) {
 }
 } // namespace std
 
+Api parseApi(const std::string &value) {
+    if (value == "ocl") {
+        return Api::OpenCL;
+    } else if (value == "l0") {
+        return Api::L0;
+    } else if (value == "all") {
+        return Api::All;
+    } else {
+        return Api::Unknown;
+    }
+}
+
 inline bool validateApi(Api api) {
     switch (api) {
     case Api::OpenCL:
