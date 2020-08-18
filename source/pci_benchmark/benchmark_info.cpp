@@ -35,3 +35,7 @@ std::string getBenchmarkName() {
 std::string getMeasurmentsUnit() {
     return "GB/s";
 }
+
+int getTestCaseNameColumnWidth() {
+    return 106;
+}

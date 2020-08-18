@@ -1,5 +1,6 @@
 #include "statistics.h"
 
+#include "framework/benchmark_info.h"
 #include "framework/error.h"
 
 #include <algorithm>
@@ -32,15 +33,15 @@ struct ColumnInfo {
     const char *label;
     bool printUnit;
 };
-constexpr static ColumnInfo columns[] = {
-    {67, "TestCase", false},
+const static ColumnInfo columns[] = {
+    {getTestCaseNameColumnWidth(), "TestCase", false},
     {15, "Mean", true},
     {15, "Median", true},
     {15, "StdDev", false},
     {15, "Min", true},
     {15, "Max", true},
 };
-constexpr static int columnCount = sizeof(columns) / sizeof(columns[0]);
+const static int columnCount = sizeof(columns) / sizeof(columns[0]);
 
 static std::string getColumnName(const std::string &label, const std::string &unit, bool hasUnit) {
     if (hasUnit) {

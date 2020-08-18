@@ -33,3 +33,7 @@ std::string getBenchmarkName() {
 std::string getMeasurmentsUnit() {
     return "ms";
 }
+
+int getTestCaseNameColumnWidth() {
+    return 49;
+}
