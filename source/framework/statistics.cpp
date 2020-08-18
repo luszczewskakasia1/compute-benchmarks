@@ -8,8 +8,9 @@
 #include <iostream>
 #include <numeric>
 
-Statistics::Statistics(int maxSamplesCount)
+Statistics::Statistics(int maxSamplesCount, Configuration::PrintType printType)
     : maxSamplesCount(maxSamplesCount),
+      printType(printType),
       samples(std::make_unique<Value[]>(maxSamplesCount)) {
 }
 
@@ -26,50 +27,12 @@ bool Statistics::isFull() {
     return samplesCount == maxSamplesCount;
 }
 
-Statistics::Value Statistics::min() {
-    return *std::min_element(samples.get(), samples.get() + samplesCount);
-}
-
-Statistics::Value Statistics::max() {
-    return *std::max_element(samples.get(), samples.get() + samplesCount);
-}
-
-Statistics::Value Statistics::mean() {
-    return std::accumulate(samples.get(), samples.get() + samplesCount, Value{0}) / samplesCount;
-}
-
-Statistics::Value Statistics::median() {
-    std::sort(samples.get(), samples.get() + samplesCount);
-    if (samplesCount % 2 == 0) {
-        const auto left = samples[samplesCount / 2 - 1];
-        const auto right = samples[samplesCount / 2];
-        return (left + right) / 2;
-    } else {
-        const auto middle = samples[samplesCount / 2];
-        return middle;
-    }
-}
-
-double Statistics::standardDeviation() {
-    const Value mean = this->mean();
-    Value diffSum = 0;
-    for (int i = 0; i < samplesCount; i++) {
-        const auto difference = samples[i] - mean;
-        diffSum += difference * difference;
-    }
-    double stdDev = static_cast<double>(diffSum);
-    stdDev /= samplesCount;
-    stdDev = std::sqrt(static_cast<double>(stdDev));
-    stdDev /= mean;
-    return stdDev;
-}
-
 struct ColumnInfo {
     int width;
     const char *label;
     bool printUnit;
 };
-constexpr ColumnInfo columns[] = {
+constexpr static ColumnInfo columns[] = {
     {67, "TestCase", false},
     {15, "Mean", true},
     {15, "Median", true},
@@ -79,7 +42,7 @@ constexpr ColumnInfo columns[] = {
 };
 constexpr static int columnCount = sizeof(columns) / sizeof(columns[0]);
 
-std::string Statistics::getColumnName(const std::string &label, const std::string &unit, bool hasUnit) {
+static std::string getColumnName(const std::string &label, const std::string &unit, bool hasUnit) {
     if (hasUnit) {
         return label + " [" + unit + "]";
     }
@@ -111,7 +74,7 @@ void Statistics::printStatisticsHeader(Configuration::PrintType printType, const
     }
 }
 
-void Statistics::printStatistics(const std::string &testCaseName, Configuration::PrintType printType) {
+void Statistics::printStatistics(const std::string &testCaseName) {
     switch (printType) {
     case Configuration::PrintType::Verbose:
     case Configuration::PrintType::Default: {
@@ -153,7 +116,7 @@ void Statistics::printStatistics(const std::string &testCaseName, Configuration:
     }
 }
 
-void Statistics::printStatisticsString(const std::string &testCaseName, Configuration::PrintType printType, const std::string &message) {
+void Statistics::printStatisticsString(const std::string &testCaseName, const std::string &message) {
     switch (printType) {
     case Configuration::PrintType::Verbose:
     case Configuration::PrintType::Default: {
@@ -178,4 +141,42 @@ void Statistics::printStatisticsString(const std::string &testCaseName, Configur
     default:
         ERROR("unknown print type selected");
     }
+}
+
+Statistics::Value Statistics::min() {
+    return *std::min_element(samples.get(), samples.get() + samplesCount);
+}
+
+Statistics::Value Statistics::max() {
+    return *std::max_element(samples.get(), samples.get() + samplesCount);
+}
+
+Statistics::Value Statistics::mean() {
+    return std::accumulate(samples.get(), samples.get() + samplesCount, Value{0}) / samplesCount;
+}
+
+Statistics::Value Statistics::median() {
+    std::sort(samples.get(), samples.get() + samplesCount);
+    if (samplesCount % 2 == 0) {
+        const auto left = samples[samplesCount / 2 - 1];
+        const auto right = samples[samplesCount / 2];
+        return (left + right) / 2;
+    } else {
+        const auto middle = samples[samplesCount / 2];
+        return middle;
+    }
+}
+
+double Statistics::standardDeviation() {
+    const Value mean = this->mean();
+    Value diffSum = 0;
+    for (int i = 0; i < samplesCount; i++) {
+        const auto difference = samples[i] - mean;
+        diffSum += difference * difference;
+    }
+    double stdDev = static_cast<double>(diffSum);
+    stdDev /= samplesCount;
+    stdDev = std::sqrt(static_cast<double>(stdDev));
+    stdDev /= mean;
+    return stdDev;
 }

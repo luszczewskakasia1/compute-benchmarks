@@ -61,11 +61,11 @@ class TestCase : public TestCaseInterface {
 
         // Create statistics object
         const auto testCaseNameWithConfig = getTestCaseNameWithConfig(arguments);
-        Statistics statistics{arguments.iterations};
+        Statistics statistics{arguments.iterations, ::configuration.printType};
 
         // Validate arguments
         if (!arguments.validateArguments()) {
-            statistics.printStatisticsString(testCaseNameWithConfig, ::configuration.printType, "INVALID_ARGS");
+            statistics.printStatisticsString(testCaseNameWithConfig, "INVALID_ARGS");
             return;
         }
 
@@ -87,15 +87,15 @@ class TestCase : public TestCaseInterface {
         switch (testResult) {
         case TestResult::Success:
             ERROR_UNLESS(statistics.isFull(), "test did not generate as many values as expected");
-            statistics.printStatistics(testCaseNameWithConfig, ::configuration.printType);
+            statistics.printStatistics(testCaseNameWithConfig);
             break;
         case TestResult::Error:
-            statistics.printStatisticsString(testCaseNameWithConfig, ::configuration.printType, "ERROR");
+            statistics.printStatisticsString(testCaseNameWithConfig, "ERROR");
             break;
         case TestResult::DeviceNotCapable:
         case TestResult::DriverFunctionNotFound:
             ERROR_UNLESS(statistics.isEmpty(), "test was skipped but generated some values");
-            statistics.printStatisticsString(testCaseNameWithConfig, ::configuration.printType, "SKIPPED");
+            statistics.printStatisticsString(testCaseNameWithConfig, "SKIPPED");
             break;
         case TestResult::KernelNotFound:
             ERROR("binary kernel was not found. Kernels should be located in working directory");
