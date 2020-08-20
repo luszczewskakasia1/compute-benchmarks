@@ -40,7 +40,7 @@ static TestResult run(const BestSubmissionArguments &arguments, Statistics &stat
 
         timer.measureStart();
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
-        while (*volatileBuffer != timestampInitial) {
+        while (*volatileBuffer == timestampInitial) {
         }
         timer.measureEnd();
         statistics.pushValue(timer.Get());
