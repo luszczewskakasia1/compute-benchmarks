@@ -9,6 +9,7 @@
 #include "ulls_benchmark/new_resources_submission_host.h"
 #include "ulls_benchmark/round_trip_submission.h"
 #include "ulls_benchmark/walker_completion_latency.h"
+#include "ulls_benchmark/write_latency.h"
 
 TestMap getTestMap() {
     TestMap testMap;
@@ -22,6 +23,7 @@ TestMap getTestMap() {
     TEST_CASE(RoundTripSubmission)
     TEST_CASE(CompletionLatency)
     TEST_CASE(WalkerCompletionLatency)
+    TEST_CASE(WriteLatency)
 #undef TEST_CASE
     return testMap;
 }
