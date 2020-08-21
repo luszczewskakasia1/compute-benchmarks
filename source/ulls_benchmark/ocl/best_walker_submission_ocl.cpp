@@ -23,8 +23,8 @@ static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics
     ASSERT_CL_SUCCESS(retVal);
 
     // Create kernel
-    const char *source = "__kernel void write(__global int *outBuffer) {  \n"
-                         "   outBuffer[get_global_id(0)] = 1;             \n"
+    const char *source = "__kernel void write(__global uint *outBuffer) {  \n"
+                         "   outBuffer[0u] = 1;             \n"
                          "}";
     const auto sourceLength = strlen(source);
     cl_program program = clCreateProgramWithSource(opencl.context, 1, &source, &sourceLength, &retVal);
@@ -36,20 +36,21 @@ static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics
     // Benchmark
     ASSERT_CL_SUCCESS(clSetKernelArgSVMPointer(kernel, 0, hostMemory));
     size_t gws = 1;
+    size_t lws = 1;
     for (int i = 0; i < arguments.iterations; i++) {
+        // Warmup, kernel
+        size_t warmupOffset = 8;
+        retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr);
+        retVal |= clFinish(opencl.commandQueue);
+        ASSERT_CL_SUCCESS(retVal);
+
         // Reset value
         *volatileHostMemory = 0;
         _mm_clflush(hostMemory);
 
-        // Warmup, kernel
-        size_t warmupOffset = 8;
-        retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, &warmupOffset, &gws, nullptr, 0, nullptr, nullptr);
-        retVal |= clFinish(opencl.commandQueue);
-        ASSERT_CL_SUCCESS(retVal);
-
         // Enqueue write on GPU and poll for update on CPU
         timer.measureStart();
-        retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, nullptr);
+        retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr);
         retVal |= clFlush(opencl.commandQueue);
         ASSERT_CL_SUCCESS(retVal);
 
