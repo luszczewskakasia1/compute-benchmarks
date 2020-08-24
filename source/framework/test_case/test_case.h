@@ -105,6 +105,8 @@ class TestCase : public TestCaseInterface {
             statistics.printStatisticsString(testCaseNameWithConfig, "ERROR");
             break;
         case TestResult::DeviceNotCapable:
+            ERROR_UNLESS(statistics.isEmpty(), "test was skipped but generated some values");
+            break;
         case TestResult::DriverFunctionNotFound:
             ERROR_UNLESS(statistics.isEmpty(), "test was skipped but generated some values");
             statistics.printStatisticsString(testCaseNameWithConfig, "SKIPPED");
