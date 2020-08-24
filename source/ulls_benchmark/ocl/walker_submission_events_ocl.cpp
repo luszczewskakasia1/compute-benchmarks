@@ -16,31 +16,25 @@ static TestResult run(const WalkerSubmissionEventsArguments &arguments, Statisti
     EXPECT_CL_SUCCESS(retVal);
     cl_event profilingEvent{};
 
-    // Create system memory buffer
-    cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, 64, nullptr, &retVal);
-    ASSERT_CL_SUCCESS(retVal);
-
     // Create kernel
-    const char *source = "__kernel void write(__global int *outBuffer) {  \n"
-                         "   outBuffer[get_global_id(0)] = 1;             \n"
-                         "}";
+    const char *source = "__kernel void empty() {}";
     const auto sourceLength = strlen(source);
     cl_program program = clCreateProgramWithSource(opencl.context, 1, &source, &sourceLength, &retVal);
     ASSERT_CL_SUCCESS(retVal);
     ASSERT_CL_SUCCESS(clBuildProgram(program, 1, &opencl.device, nullptr, nullptr, nullptr));
-    cl_kernel kernel = clCreateKernel(program, "write", &retVal);
+    cl_kernel kernel = clCreateKernel(program, "empty", &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
     // Warmup run
     const size_t gws = 1;
-    ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 0, sizeof(buffer), &buffer));
+    const size_t lws = 1;
     retVal |= clEnqueueNDRangeKernel(commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, &profilingEvent);
     retVal |= clFinish(commandQueue);
     ASSERT_CL_SUCCESS(retVal);
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
-        ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, &profilingEvent));
+        ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &profilingEvent));
         ASSERT_CL_SUCCESS(clWaitForEvents(1, &profilingEvent));
 
         cl_ulong queued{}, start{};
@@ -53,7 +47,7 @@ static TestResult run(const WalkerSubmissionEventsArguments &arguments, Statisti
     }
 
     // Cleanup
-    ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));
+    ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
     ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
     ASSERT_CL_SUCCESS(clReleaseProgram(program));
     ASSERT_CL_SUCCESS(clReleaseCommandQueue(commandQueue));
