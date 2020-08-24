@@ -60,4 +60,4 @@ static TestResult run(const StartLatencyArguments &arguments, Statistics &statis
     return TestResult::Success;
 }
 
-static RegisterTestCase<StartLatency> registerTestCase(run, Api::OpenCL, true);
+static RegisterTestCase<StartLatency> registerTestCase(run, Api::OpenCL);
