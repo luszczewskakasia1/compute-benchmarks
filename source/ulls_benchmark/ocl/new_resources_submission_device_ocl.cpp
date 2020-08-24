@@ -9,11 +9,6 @@ static TestResult run(const NewResourcesSubmissionDeviceArguments &arguments, St
     // Setup
     Opencl opencl;
     Timer timer;
-    auto clDeviceMemAllocINTEL = (pfn_clDeviceMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clDeviceMemAllocINTEL");
-    auto clMemFreeINTEL = (pfn_clMemFreeINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clMemFreeINTEL");
-    if (!clDeviceMemAllocINTEL || !clMemFreeINTEL) {
-        return TestResult::DriverFunctionNotFound;
-    }
     cl_int retVal;
 
     // Create kernel
@@ -30,24 +25,26 @@ static TestResult run(const NewResourcesSubmissionDeviceArguments &arguments, St
     // Warmup kernel
     const size_t gws = 1;
     const size_t sizeInBytes = arguments.size;
-    int *hostMemory = (int *)clDeviceMemAllocINTEL(opencl.context, opencl.device, nullptr, 64, 0, &retVal);
-    ASSERT_CL_SUCCESS(clSetKernelArgSVMPointer(kernel, 0, hostMemory));
+    cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, sizeInBytes, nullptr, &retVal);
+    ASSERT_CL_SUCCESS(retVal);
+    ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 0, sizeof(buffer), &buffer));
     ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, nullptr));
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
-    ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, hostMemory));
+    ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));
     ASSERT_CL_SUCCESS(retVal);
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
         timer.measureStart();
-        void *hostMemory = clDeviceMemAllocINTEL(opencl.context, opencl.device, nullptr, sizeInBytes, 0, &retVal);
-        ASSERT_CL_SUCCESS(clSetKernelArgSVMPointer(kernel, 0, hostMemory));
+        buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, sizeInBytes, nullptr, &retVal);
+        ASSERT_CL_SUCCESS(retVal);
+        ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 0, sizeof(buffer), &buffer));
         retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, nullptr);
         retVal |= clFinish(opencl.commandQueue);
         timer.measureEnd();
 
         ASSERT_CL_SUCCESS(retVal);
-        ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, hostMemory));
+        ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));
 
         statistics.pushValue(timer.Get());
     }
@@ -58,4 +55,4 @@ static TestResult run(const NewResourcesSubmissionDeviceArguments &arguments, St
     return TestResult::Success;
 }
 
-static RegisterTestCase<NewResourcesSubmissionDevice> registerTestCase(run, Api::OpenCL, true);
+static RegisterTestCase<NewResourcesSubmissionDevice> registerTestCase(run, Api::OpenCL);
