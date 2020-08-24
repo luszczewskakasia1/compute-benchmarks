@@ -35,8 +35,8 @@ static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics
 
     // Benchmark
     ASSERT_CL_SUCCESS(clSetKernelArgSVMPointer(kernel, 0, hostMemory));
-    size_t gws = 1;
-    size_t lws = 1;
+    const size_t gws = 1;
+    const size_t lws = 1;
     for (int i = 0; i < arguments.iterations; i++) {
         // Warmup, kernel
         size_t warmupOffset = 8;

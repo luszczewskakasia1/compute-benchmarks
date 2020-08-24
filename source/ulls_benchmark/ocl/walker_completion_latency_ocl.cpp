@@ -35,8 +35,9 @@ static TestResult run(const WalkerCompletionLatencyArguments &arguments, Statist
 
     // Warmup run
     const size_t gws = 1;
+    const size_t lws = 1;
     ASSERT_CL_SUCCESS(clSetKernelArgSVMPointer(kernel, 0, hostMemory));
-    retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, nullptr);
+    retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr);
     retVal |= clFinish(opencl.commandQueue);
     ASSERT_CL_SUCCESS(retVal);
 
@@ -45,7 +46,7 @@ static TestResult run(const WalkerCompletionLatencyArguments &arguments, Statist
         *volatileHostMemory = 0;
         _mm_clflush(hostMemory);
 
-        ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, nullptr));
+        ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
         ASSERT_CL_SUCCESS(clFlush(opencl.commandQueue));
         while (*volatileHostMemory != 1) {
         }

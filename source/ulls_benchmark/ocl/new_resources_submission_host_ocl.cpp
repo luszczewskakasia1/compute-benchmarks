@@ -29,10 +29,11 @@ static TestResult run(const NewResourcesSubmissionHostArguments &arguments, Stat
 
     // Warmup kernel
     const size_t gws = 1;
+    const size_t lws = 1;
     const size_t sizeInBytes = arguments.size;
     int *hostMemory = (int *)clHostMemAllocINTEL(opencl.context, nullptr, 64, 0, &retVal);
     ASSERT_CL_SUCCESS(clSetKernelArgSVMPointer(kernel, 0, hostMemory));
-    ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, nullptr));
+    ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
     ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, hostMemory));
     ASSERT_CL_SUCCESS(retVal);
@@ -42,7 +43,7 @@ static TestResult run(const NewResourcesSubmissionHostArguments &arguments, Stat
         timer.measureStart();
         void *hostMemory = clHostMemAllocINTEL(opencl.context, nullptr, sizeInBytes, 0, &retVal);
         ASSERT_CL_SUCCESS(clSetKernelArgSVMPointer(kernel, 0, hostMemory));
-        retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, nullptr);
+        retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr);
         retVal |= clFinish(opencl.commandQueue);
         timer.measureEnd();
 

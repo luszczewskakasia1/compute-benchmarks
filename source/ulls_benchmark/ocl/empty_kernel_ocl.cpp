@@ -23,8 +23,7 @@ static TestResult run(const EmptyKernelArguments &arguments, Statistics &statist
     ASSERT_CL_SUCCESS(retVal);
 
     // Warmup, kernel
-    size_t warmupOffset = 8;
-    retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, &warmupOffset, &gws, &lws, 0, nullptr, nullptr);
+    retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr);
     retVal |= clFinish(opencl.commandQueue);
     ASSERT_CL_SUCCESS(retVal);
 
