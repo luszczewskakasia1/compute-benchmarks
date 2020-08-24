@@ -1,7 +1,8 @@
+#include "ulls_benchmark/write_latency.h"
+
 #include "framework/l0/levelzero.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/timer.h"
-#include "ulls_benchmark/write_latency.h"
 
 #include <emmintrin.h>
 #include <gtest/gtest.h>
@@ -21,38 +22,37 @@ static TestResult run(const WriteLatencyArguments &arguments, Statistics &statis
     ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, buffer, bufferSize));
     volatile uint64_t *volatileBuffer = static_cast<uint64_t *>(buffer);
 
-    // Create command list writing 1 to the buffer
-    ze_command_list_desc_t cmdListDesc{};
-    cmdListDesc.commandQueueGroupOrdinal = levelzero.commandListCommandQueueGroupOrdinal;
-    ze_command_list_handle_t cmdList;
-
     // Create event pool
     ze_event_pool_desc_t eventPoolDesc = {
         ZE_STRUCTURE_TYPE_EVENT_POOL_DESC,
         nullptr,
         ZE_EVENT_POOL_FLAG_HOST_VISIBLE,
-        4};
-    ze_event_pool_handle_t hEventPool;
+        2};
+    ze_event_pool_handle_t hEventPool{};
     ASSERT_ZE_RESULT_SUCCESS(zeEventPoolCreate(levelzero.context, &eventPoolDesc, 0, nullptr, &hEventPool));
 
-    ze_event_desc_t eventDesc = {
+    // Create events
+    const ze_event_desc_t eventDesc = {
         ZE_STRUCTURE_TYPE_EVENT_DESC,
         nullptr,
         0,
-        0,
+        ZE_EVENT_SCOPE_FLAG_DEVICE,
         ZE_EVENT_SCOPE_FLAG_HOST};
     ze_event_handle_t hEvent;
     ASSERT_ZE_RESULT_SUCCESS(zeEventCreate(hEventPool, &eventDesc, &hEvent));
-
-    ze_event_desc_t eventDesc2 = {
+    const ze_event_desc_t eventDesc2 = {
         ZE_STRUCTURE_TYPE_EVENT_DESC,
         nullptr,
         1,
-        0,
-        ZE_EVENT_SCOPE_FLAG_HOST};
+        ZE_EVENT_SCOPE_FLAG_HOST,
+        ZE_EVENT_SCOPE_FLAG_DEVICE};
     ze_event_handle_t hEvent2;
     ASSERT_ZE_RESULT_SUCCESS(zeEventCreate(hEventPool, &eventDesc2, &hEvent2));
 
+    // Create command list writing 1 to the buffer
+    ze_command_list_desc_t cmdListDesc{ZE_STRUCTURE_TYPE_COMMAND_LIST_DESC};
+    cmdListDesc.commandQueueGroupOrdinal = levelzero.commandListCommandQueueGroupOrdinal;
+    ze_command_list_handle_t cmdList;
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.context, levelzero.device, &cmdListDesc, &cmdList));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendSignalEvent(cmdList, hEvent));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendWaitOnEvents(cmdList, 1u, &hEvent2));
