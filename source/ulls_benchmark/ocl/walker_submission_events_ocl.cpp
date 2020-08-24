@@ -2,12 +2,12 @@
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/timer.h"
-#include "ulls_benchmark/start_latency.h"
+#include "ulls_benchmark/walker_submission_events.h"
 
 #include <emmintrin.h>
 #include <gtest/gtest.h>
 
-static TestResult run(const StartLatencyArguments &arguments, Statistics &statistics) {
+static TestResult run(const WalkerSubmissionEventsArguments &arguments, Statistics &statistics) {
     // Setup
     Opencl opencl(false);
     cl_int retVal{};
@@ -60,4 +60,4 @@ static TestResult run(const StartLatencyArguments &arguments, Statistics &statis
     return TestResult::Success;
 }
 
-static RegisterTestCase<StartLatency> registerTestCase(run, Api::OpenCL);
+static RegisterTestCase<WalkerSubmissionEvents> registerTestCase(run, Api::OpenCL);

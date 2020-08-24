@@ -8,8 +8,8 @@
 #include "ulls_benchmark/new_resources_submission_device.h"
 #include "ulls_benchmark/new_resources_submission_host.h"
 #include "ulls_benchmark/round_trip_submission.h"
-#include "ulls_benchmark/start_latency.h"
 #include "ulls_benchmark/walker_completion_latency.h"
+#include "ulls_benchmark/walker_submission_events.h"
 #include "ulls_benchmark/write_latency.h"
 
 TestMap getTestMap() {
@@ -23,8 +23,8 @@ TestMap getTestMap() {
     TEST_CASE(NewResourcesSubmissionHost)
     TEST_CASE(RoundTripSubmission)
     TEST_CASE(CompletionLatency)
-    TEST_CASE(StartLatency)
     TEST_CASE(WalkerCompletionLatency)
+    TEST_CASE(WalkerSubmissionEvents)
     TEST_CASE(WriteLatency)
 #undef TEST_CASE
     return testMap;
