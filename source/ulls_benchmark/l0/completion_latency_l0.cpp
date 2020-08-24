@@ -39,7 +39,7 @@ static TestResult run(const CompletionLatencyArguments &arguments, Statistics &s
         _mm_clflush(buffer);
 
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
-        while (*volatileBuffer != timestampInitial) {
+        while (*volatileBuffer == timestampInitial) {
         }
         timer.measureStart();
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
