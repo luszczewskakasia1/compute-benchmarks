@@ -56,7 +56,7 @@ int printHelp() {
                  "is googletest, so standard googletest arguments like --gtest_filter can be used, if necessary.\n"
                  "\n"
                  "Second mode runs one specific benchmark with custom parameter values. Running benchmarks in this fashion requires "
-                 "using --test argument, followed by benchmark-specific parameters. All parameters have to be specified, there are no "
+                 "using --test argument, along with benchmark-specific parameters. All parameters have to be specified, there are no "
                  "default values. Available test cases:\n"
                  "\n";
     // clang-format on
@@ -79,10 +79,10 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    if (argc > 1) {
-        const std::string firstArgument{argv[1]};
+    for (int argIndex = 1; argIndex < argc; argIndex++) {
+        const std::string argument{argv[argIndex]};
         std::string key, value;
-        if (!parseArgumentToKeyValue(firstArgument, key, value)) {
+        if (!parseArgumentToKeyValue(argument, key, value)) {
             std::cerr << "Error parsing command line\n";
             return 1;
         }
