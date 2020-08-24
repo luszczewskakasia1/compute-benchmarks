@@ -63,6 +63,9 @@ class TestCase : public TestCaseInterface {
         }
         arguments.iterations = ::configuration.iterations;
 
+        // Set if Intel extensions can be used from global configuration
+        arguments.noIntelExtensions = ::configuration.noIntelExtensions;
+
         // Create statistics object
         const auto testCaseNameWithConfig = getTestCaseNameWithConfig(arguments);
         Statistics statistics{arguments.iterations, ::configuration.printType};
@@ -87,7 +90,7 @@ class TestCase : public TestCaseInterface {
         }
 
         // Silently skip benchmarks requiring Intel extensions if they were disabled
-        if (::configuration.noIntelExtensions && benchmarkImplementation.requiresIntelExtensions) {
+        if (arguments.noIntelExtensions && benchmarkImplementation.requiresIntelExtensions) {
             return;
         }
 

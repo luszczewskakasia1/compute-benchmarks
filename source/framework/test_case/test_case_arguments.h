@@ -15,4 +15,5 @@ struct TestCaseArguments {
     std::vector<TestCaseArgument *> arguments;
     Api api = Api::Unknown;
     int iterations = 0;
+    bool noIntelExtensions = false;
 };
