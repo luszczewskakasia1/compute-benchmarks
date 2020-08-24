@@ -9,15 +9,10 @@ static TestResult run(const RoundTripSubmissionArguments &arguments, Statistics 
     // Setup
     Opencl opencl;
     Timer timer;
-    auto clHostMemAllocINTEL = (pfn_clHostMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clHostMemAllocINTEL");
-    auto clMemFreeINTEL = (pfn_clMemFreeINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clMemFreeINTEL");
-    if (!clHostMemAllocINTEL || !clMemFreeINTEL) {
-        return TestResult::DriverFunctionNotFound;
-    }
     cl_int retVal;
 
-    // Create system memory buffer
-    void *hostMemory = clHostMemAllocINTEL(opencl.context, nullptr, 64, 0, &retVal);
+    // Create buffer
+    cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, 64u, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
     // Create kernel
@@ -33,7 +28,8 @@ static TestResult run(const RoundTripSubmissionArguments &arguments, Statistics 
 
     // Warmup kernel
     size_t gws = 1;
-    retVal |= clSetKernelArgSVMPointer(kernel, 0, hostMemory);
+
+    retVal |= clSetKernelArg(kernel, 0, sizeof(buffer), &buffer);
     retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, nullptr);
     retVal |= clFinish(opencl.commandQueue);
     ASSERT_CL_SUCCESS(retVal);
@@ -50,10 +46,10 @@ static TestResult run(const RoundTripSubmissionArguments &arguments, Statistics 
     }
 
     // Cleanup
-    ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, hostMemory));
+    ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));
     ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
     ASSERT_CL_SUCCESS(clReleaseProgram(program));
     return TestResult::Success;
 }
 
-static RegisterTestCase<RoundTripSubmission> registerTestCase(run, Api::OpenCL, true);
+static RegisterTestCase<RoundTripSubmission> registerTestCase(run, Api::OpenCL, false);
