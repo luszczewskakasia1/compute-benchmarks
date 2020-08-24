@@ -6,22 +6,26 @@
 #include <gtest/gtest.h>
 
 static TestResult run(const FillBufferArguments &arguments, Statistics &statistics) {
+    if (arguments.compressed && arguments.noIntelExtensions) {
+        return TestResult::DeviceNotCapable;
+    }
+
     // Setup
     Opencl opencl;
     Timer timer;
     cl_int retVal;
 
     // Create buffer
-    const cl_mem_flags compressionHint = arguments.compressed ? CL_MEM_COMPRESSED_HINT_INTEL : CL_MEM_UNCOMPRESSED_HINT_INTEL;
+    const cl_mem_flags compressionHint = Opencl::getCompressionFlags(arguments.compressed, arguments.noIntelExtensions);
     const cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE | compressionHint, arguments.size, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
     auto cpuBuffer = std::make_unique<uint8_t[]>(arguments.size);
 
     // Check buffer compression
-    cl_bool isCompressed{};
-    ASSERT_CL_SUCCESS(clGetMemObjectInfo(buffer, CL_MEM_USES_COMPRESSION_INTEL, sizeof(isCompressed), &isCompressed, nullptr));
-    if ((isCompressed == CL_TRUE) != arguments.compressed) {
-        return TestResult::DeviceNotCapable;
+    const auto compressionStatus = Opencl::verifyCompression(buffer, arguments.compressed, arguments.noIntelExtensions);
+    if (compressionStatus != TestResult::Success) {
+        ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));
+        return compressionStatus;
     }
 
     // Create pattern

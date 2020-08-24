@@ -6,13 +6,17 @@
 #include <gtest/gtest.h>
 
 static TestResult run(const CopyBufferArguments &arguments, Statistics &statistics) {
+    if (arguments.compressed && arguments.noIntelExtensions) {
+        return TestResult::DeviceNotCapable;
+    }
+
     // Setup
     Opencl opencl;
     Timer timer;
     cl_int retVal;
 
     // Create buffer
-    const cl_mem_flags compressionHint = arguments.compressed ? CL_MEM_COMPRESSED_HINT_INTEL : CL_MEM_UNCOMPRESSED_HINT_INTEL;
+    const cl_mem_flags compressionHint = Opencl::getCompressionFlags(arguments.compressed, arguments.noIntelExtensions);
     const cl_mem_flags memFlags = CL_MEM_READ_WRITE | compressionHint;
     const cl_mem source = clCreateBuffer(opencl.context, memFlags, arguments.size, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
@@ -21,12 +25,16 @@ static TestResult run(const CopyBufferArguments &arguments, Statistics &statisti
     auto cpuBuffer = std::make_unique<uint8_t[]>(arguments.size);
 
     // Check buffers compression
-    cl_bool isSrcCompressed{};
-    cl_bool isDstCompressed{};
-    ASSERT_CL_SUCCESS(clGetMemObjectInfo(source, CL_MEM_USES_COMPRESSION_INTEL, sizeof(isSrcCompressed), &isSrcCompressed, nullptr));
-    ASSERT_CL_SUCCESS(clGetMemObjectInfo(destination, CL_MEM_USES_COMPRESSION_INTEL, sizeof(isDstCompressed), &isDstCompressed, nullptr));
-    if ((isSrcCompressed == CL_TRUE) != arguments.compressed && (isDstCompressed == CL_TRUE) != arguments.compressed) {
-        return TestResult::DeviceNotCapable;
+    auto compressionStatus = Opencl::verifyCompression(source, arguments.compressed, arguments.noIntelExtensions);
+    if (compressionStatus != TestResult::Success) {
+        ASSERT_CL_SUCCESS(clReleaseMemObject(source));
+        return compressionStatus;
+    }
+    compressionStatus = Opencl::verifyCompression(destination, arguments.compressed, arguments.noIntelExtensions);
+    if (compressionStatus != TestResult::Success) {
+        ASSERT_CL_SUCCESS(clReleaseMemObject(source));
+        ASSERT_CL_SUCCESS(clReleaseMemObject(destination));
+        return compressionStatus;
     }
 
     // Warmup
