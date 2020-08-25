@@ -1,3 +1,4 @@
+#include "framework/ocl/map_flags_ocl.h"
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/timer.h"
@@ -29,14 +30,15 @@ static TestResult run(const UnmapBufferArguments &arguments, Statistics &statist
     }
 
     // Warmup
-    void *ptr = clEnqueueMapBuffer(opencl.commandQueue, buffer, CL_BLOCKING, arguments.mapFlags, 0, arguments.size, 0, nullptr, nullptr, &retVal);
+    const auto mapFlags = convertMapFlags(arguments.mapFlags);
+    void *ptr = clEnqueueMapBuffer(opencl.commandQueue, buffer, CL_BLOCKING, mapFlags, 0, arguments.size, 0, nullptr, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
     ASSERT_CL_SUCCESS(clEnqueueUnmapMemObject(opencl.commandQueue, buffer, ptr, 0, nullptr, nullptr));
     clFinish(opencl.commandQueue);
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
-        ptr = clEnqueueMapBuffer(opencl.commandQueue, buffer, CL_BLOCKING, arguments.mapFlags, 0, arguments.size, 0, nullptr, nullptr, &retVal);
+        ptr = clEnqueueMapBuffer(opencl.commandQueue, buffer, CL_BLOCKING, mapFlags, 0, arguments.size, 0, nullptr, nullptr, &retVal);
 
         timer.measureStart();
         ASSERT_CL_SUCCESS(clEnqueueUnmapMemObject(opencl.commandQueue, buffer, ptr, 0, nullptr, nullptr));

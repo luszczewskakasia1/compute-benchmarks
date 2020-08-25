@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-class UnmapBufferTest : public ::testing::TestWithParam<std::tuple<Api, size_t, bool, cl_map_flags>> {
+class UnmapBufferTest : public ::testing::TestWithParam<std::tuple<Api, size_t, bool, MapFlags>> {
 };
 
 TEST_P(UnmapBufferTest, Test) {
@@ -26,4 +26,4 @@ INSTANTIATE_TEST_SUITE_P(
         ::testing::Values(Api::OpenCL, Api::L0),
         ::testing::Values(128 * megaByte, 512 * megaByte),
         ::testing::Values(false, true),
-        ::testing::Values(CL_MAP_READ, CL_MAP_WRITE)));
+        ::testing::Values(MapFlags::Read, MapFlags::Write, MapFlags::WriteInvalidate)));

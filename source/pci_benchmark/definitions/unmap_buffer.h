@@ -1,7 +1,7 @@
 #pragma once
 
-#include "framework/test_case/ocl/test_case_argument_ocl.h"
 #include "framework/test_case/test_case.h"
+#include "framework/test_case/test_case_argument.h"
 #include "framework/transfer_direction.h"
 
 #include <sstream>
