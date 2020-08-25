@@ -21,6 +21,7 @@ endif()
 add_library(OclInterface INTERFACE)
 target_link_libraries(OclInterface INTERFACE ${OpenCL_LIBRARIES})
 target_include_directories(OclInterface INTERFACE ${OpenCL_INCLUDE_DIRS})
+target_include_directories(OclInterface INTERFACE ${CMAKE_SOURCE_DIR}/third_party/opencl-intel)
 
 file(GLOB_RECURSE SOURCES *.cpp *.h)
 target_sources(${TARGET_NAME} PRIVATE ${SOURCES})

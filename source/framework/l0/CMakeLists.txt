@@ -21,7 +21,7 @@ endif()
 add_library(LevelZeroInterface INTERFACE)
 target_link_libraries(LevelZeroInterface INTERFACE ${LevelZero_LIBRARIES})
 target_include_directories(LevelZeroInterface INTERFACE ${LevelZero_INCLUDE_DIRS})
-target_include_directories(LevelZeroInterface INTERFACE ${CMAKE_SOURCE_DIR}/third_party/experimental_level_zero)
+target_include_directories(LevelZeroInterface INTERFACE ${CMAKE_SOURCE_DIR}/third_party/level-zero-intel)
 
 file(GLOB_RECURSE SOURCES *.cpp *.h)
 target_sources(${TARGET_NAME} PRIVATE ${SOURCES})
