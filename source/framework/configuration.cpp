@@ -15,6 +15,18 @@ bool parseArgumentsForConfiguration(int argc, char **argv) {
             return false;
         }
 
+        if (key == "oclPlatform") {
+            ::configuration.oclPlatformIndex = std::atoi(value.c_str());
+        }
+        if (key == "oclDevice") {
+            ::configuration.oclDeviceIndex = std::atoi(value.c_str());
+        }
+        if (key == "l0Driver") {
+            ::configuration.l0DriverIndex = std::atoi(value.c_str());
+        }
+        if (key == "l0Device") {
+            ::configuration.l0DeviceIndex = std::atoi(value.c_str());
+        }
         if (key == "iterations") {
             ::configuration.iterations = std::atoi(value.c_str());
             if (::configuration.iterations == 0) {

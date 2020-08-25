@@ -75,22 +75,34 @@ typedef CL_API_ENTRY cl_int(CL_API_CALL *pfn_clEnqueueMemsetINTEL)(
 struct Opencl {
     Opencl() : Opencl(true) {}
     Opencl(bool createQueue) {
+        // Get Platform
         cl_uint numPlatforms;
         EXPECT_CL_SUCCESS(clGetPlatformIDs(0, nullptr, &numPlatforms));
-        if (numPlatforms == 0) {
-            throw std::exception();
+        const auto platformIndex = ::configuration.oclPlatformIndex;
+        if (platformIndex >= numPlatforms) {
+            ERROR("Invalid platform selected");
         }
+        auto platforms = std::make_unique<cl_platform_id[]>(numPlatforms);
+        EXPECT_CL_SUCCESS(clGetPlatformIDs(numPlatforms, platforms.get(), nullptr));
+        this->platform = platforms[platformIndex];
 
-        EXPECT_CL_SUCCESS(clGetPlatformIDs(1, &platform, nullptr));
-
+        // Get Device
         cl_uint numDevices;
         EXPECT_CL_SUCCESS(clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 0, nullptr, &numDevices));
-        EXPECT_CL_SUCCESS(clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 1, &device, nullptr));
+        const auto deviceIndex = ::configuration.oclDeviceIndex;
+        if (deviceIndex >= numDevices) {
+            ERROR("Invalid device selected");
+        }
+        auto devices = std::make_unique<cl_device_id[]>(numDevices);
+        EXPECT_CL_SUCCESS(clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, numDevices, devices.get(), nullptr));
+        this->device = devices[deviceIndex];
 
+        // Create context
         cl_int retVal{};
         context = clCreateContext(nullptr, 1, &device, nullptr, nullptr, &retVal);
         EXPECT_CL_SUCCESS(retVal);
 
+        // Create command queue
         if (createQueue) {
             commandQueue = clCreateCommandQueueWithProperties(context, device, nullptr, &retVal);
             EXPECT_CL_SUCCESS(retVal);

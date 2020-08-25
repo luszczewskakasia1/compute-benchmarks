@@ -1,7 +1,7 @@
 #pragma once
 
-#include "framework/string_utils.h"
 #include "framework/api.h"
+#include "framework/string_utils.h"
 
 struct Configuration {
     enum class PrintType {
@@ -9,6 +9,11 @@ struct Configuration {
         Csv,
         Verbose,
     } printType = PrintType::Default;
+    size_t oclPlatformIndex = 0;
+    size_t oclDeviceIndex = 0;
+    size_t l0DriverIndex = 0;
+    size_t l0DeviceIndex = 0;
+
     int iterations = 10;
     Api selectedApi = Api::All;
     bool noIntelExtensions = false;
