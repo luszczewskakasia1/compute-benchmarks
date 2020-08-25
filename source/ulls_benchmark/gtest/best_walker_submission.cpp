@@ -1,4 +1,4 @@
-#include "ulls_benchmark/best_walker_submission.h"
+#include "ulls_benchmark/definitions/best_walker_submission.h"
 
 #include <gtest/gtest.h>
 

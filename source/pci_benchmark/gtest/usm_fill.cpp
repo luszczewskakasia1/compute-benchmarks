@@ -1,4 +1,4 @@
-#include "pci_benchmark/usm_fill.h"
+#include "pci_benchmark/definitions/usm_fill.h"
 
 #include <gtest/gtest.h>
 

@@ -70,6 +70,17 @@ function (add_benchmark TARGET_NAME)
     setup_vs_folders(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
 endfunction()
 
+function(add_sources_to_benchmark TARGET_NAME)
+    file(GLOB_RECURSE SOURCES *.cpp *.h *.cl *.spv)
+    target_sources(${TARGET_NAME} PRIVATE ${SOURCES})
+endfunction()
+
+function (add_sources_and_kernels_to_benchmark TARGET_NAME)
+    add_sources_to_benchmark(${TARGET_NAME})
+    file(GLOB_RECURSE KERNELS *.spv)
+    set_property(TARGET ${TARGET_NAME} APPEND PROPERTY KERNELS ${KERNELS})
+endfunction()
+
 
 # Setup output directories
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIR}")

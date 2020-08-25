@@ -1,4 +1,4 @@
-#include "pci_benchmark/read_buffer.h"
+#include "pci_benchmark/definitions/read_buffer.h"
 
 #include <gtest/gtest.h>
 

@@ -1,4 +1,4 @@
-#include "ulls_benchmark/write_latency.h"
+#include "ulls_benchmark/definitions/write_latency.h"
 
 #include <gtest/gtest.h>
 

@@ -1,4 +1,4 @@
-#include "ulls_benchmark/new_resources_submission_device.h"
+#include "ulls_benchmark/definitions/new_resources_submission_device.h"
 
 #include <gtest/gtest.h>
 

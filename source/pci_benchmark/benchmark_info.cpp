@@ -1,15 +1,15 @@
 #include "framework/benchmark_info.h"
 
-#include "pci_benchmark/copy_buffer.h"
-#include "pci_benchmark/fill_buffer.h"
-#include "pci_benchmark/map_buffer.h"
-#include "pci_benchmark/read_buffer.h"
-#include "pci_benchmark/unmap_buffer.h"
-#include "pci_benchmark/usm_copy.h"
-#include "pci_benchmark/usm_fill.h"
-#include "pci_benchmark/usm_memset.h"
-#include "pci_benchmark/write_buffer.h"
-#include "pci_benchmark/write_buffer_rect.h"
+#include "pci_benchmark/definitions/copy_buffer.h"
+#include "pci_benchmark/definitions/fill_buffer.h"
+#include "pci_benchmark/definitions/map_buffer.h"
+#include "pci_benchmark/definitions/read_buffer.h"
+#include "pci_benchmark/definitions/unmap_buffer.h"
+#include "pci_benchmark/definitions/usm_copy.h"
+#include "pci_benchmark/definitions/usm_fill.h"
+#include "pci_benchmark/definitions/usm_memset.h"
+#include "pci_benchmark/definitions/write_buffer.h"
+#include "pci_benchmark/definitions/write_buffer_rect.h"
 
 TestMap getTestMap() {
     TestMap testMap;

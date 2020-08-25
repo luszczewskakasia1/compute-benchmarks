@@ -1,4 +1,4 @@
-#include "pci_benchmark/copy_buffer.h"
+#include "pci_benchmark/definitions/copy_buffer.h"
 
 #include <gtest/gtest.h>
 
