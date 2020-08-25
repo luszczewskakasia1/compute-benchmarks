@@ -1,0 +1,10 @@
+function(add_sources_to_benchmark TARGET_NAME)
+    file(GLOB_RECURSE SOURCES *.cpp *.h *.cl *.spv)
+    target_sources(${TARGET_NAME} PRIVATE ${SOURCES})
+endfunction()
+
+function (add_sources_and_kernels_to_benchmark TARGET_NAME)
+    add_sources_to_benchmark(${TARGET_NAME})
+    file(GLOB_RECURSE KERNELS *.spv)
+    set_property(TARGET ${TARGET_NAME} APPEND PROPERTY KERNELS ${KERNELS})
+endfunction()

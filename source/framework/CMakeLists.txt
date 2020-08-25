@@ -5,9 +5,7 @@ add_library(${TARGET_NAME} STATIC ${SOURCES})
 target_link_libraries(${TARGET_NAME} PUBLIC gtest)
 target_include_directories(${TARGET_NAME} PUBLIC ${SOURCE_ROOT})
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_17)
-
-# Add subdirectories
-add_subdirectory(test_case)
+add_subdirectories()
 
 # Ignore CRT Warnings
 if (MSVC)
@@ -15,8 +13,6 @@ if (MSVC)
 endif()
 
 # Link to compute libraries
-add_subdirectory(ocl)
-add_subdirectory(l0)
 function(tryLinkTo DEPENDENCY)
     if(TARGET ${DEPENDENCY})
         target_link_libraries(${TARGET_NAME} PUBLIC ${DEPENDENCY})
