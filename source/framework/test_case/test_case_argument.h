@@ -83,6 +83,10 @@ struct ByteSizeTestCaseArgument : PositiveIntegerTestCaseArgument {
     }
 
     std::string toStringValue() const override {
+        if (this->value == 0) {
+            return "0";
+        }
+
         const std::string units[] = {"", "KB", "MB", "GB"};
         const auto unitCount = sizeof(units) / sizeof(units[0]);
 
