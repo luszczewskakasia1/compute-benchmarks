@@ -1,6 +1,7 @@
 #include "framework/benchmark_info.h"
 #include "framework/configuration.h"
 #include "framework/gtest_event_listener.h"
+#include "framework/print_device_info.h"
 #include "framework/statistics.h"
 
 #include <gtest/gtest.h>
@@ -8,6 +9,8 @@
 #include <string>
 
 int executeSingleTest(const std::string &testName, int argc, char **argv) {
+    printDeviceInfo();
+
     const TestMap testMap = getTestMap();
     auto it = testMap.find(testName);
     if (it == testMap.end()) {
@@ -25,6 +28,8 @@ int executeSingleTest(const std::string &testName, int argc, char **argv) {
 }
 
 int executeAllTests(int argc, char **argv) {
+    printDeviceInfo();
+
     ::testing::InitGoogleTest(&argc, argv);
     auto &listeners = ::testing::UnitTest::GetInstance()->listeners();
     delete listeners.Release(listeners.default_result_printer());

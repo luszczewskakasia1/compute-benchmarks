@@ -23,6 +23,28 @@ function(setup_vs_folders TARGET_NAME BASE_DIR)
     endif()
 endfunction()
 
+function(link_to_framework TARGET_NAME LIBRARY_NAME)
+    # The framework uses static initializers to register device info print functions.
+    # Those tend to be optimized away by the compilers, so we need to pass compiler
+    # specific linker flags to avoid this. Various compilers are explicitly supported.
+    # The 'else' branch will still produce a functional benchmark, but the static
+    # initializers MAY be optimized away and no device info may be printed.
+
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        target_link_libraries(${TARGET_NAME} PRIVATE ${LIBRARY_NAME})
+        set_property(TARGET ${TARGET_NAME} APPEND PROPERTY LINK_FLAGS /WHOLEARCHIVE:${LIBRARY_NAME})
+    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        target_link_libraries(${TARGET_NAME} PRIVATE
+          "-Wl,--whole-archive"
+          ${LIBRARY_NAME}
+          "-Wl,--no-whole-archive"
+        )
+    else()
+        target_link_libraries(${TARGET_NAME} PRIVATE ${LIBRARY_NAME})
+        message(WARNING "Device info might not be printed")
+    endif()
+endfunction()
+
 function(add_subdirectories)
   file(GLOB SUB_DIRS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/*)
   foreach(SUB_DIR ${SUB_DIRS})
@@ -34,7 +56,7 @@ endfunction()
 
 function (add_benchmark TARGET_NAME)
     add_executable(${TARGET_NAME} CMakeLists.txt)
-    target_link_libraries(${TARGET_NAME} PRIVATE compute_benchmarks_framework)
+    link_to_framework(${TARGET_NAME} compute_benchmarks_framework)
 
     # Add sources
     file(GLOB SOURCES *.cpp *.h)

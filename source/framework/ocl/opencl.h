@@ -22,6 +22,11 @@
         EXPECT_EQ(CL_SUCCESS, retVal); \
     }
 
+#define CL_SUCCESS_OR_TERMINATE(retVal)                                                      \
+    if (retVal != CL_SUCCESS) {                                                              \
+        ERROR(std::string("Fatal OpenCL error occurred, retVal=") + std::to_string(retVal)); \
+    }
+
 using cl_mem_properties_intel = cl_bitfield;
 
 typedef CL_API_ENTRY void *(CL_API_CALL *pfn_clHostMemAllocINTEL)(
