@@ -1,0 +1,13 @@
+Running 20 iterations of each benchmark
+
+                                                                                                  TestCase    Mean [GB/s]  Median [GB/s]         StdDev     Min [GB/s]     Max [GB/s]
+                                                               CopyBuffer(api=ocl size=128MB compressed=0)        385.088        385.042          0.12%        384.037        386.165
+                                                               CopyBuffer(api=ocl size=512MB compressed=0)        392.556        392.606          0.04%        392.199        392.754
+                                                FillBuffer(api=ocl size=128MB patternSize=16 compressed=0)        312.492        312.566          0.12%        311.196        313.052
+                                               FillBuffer(api=ocl size=128MB patternSize=128 compressed=0)         94.646         94.644          0.25%         94.201         95.122
+                                                FillBuffer(api=ocl size=512MB patternSize=16 compressed=0)        320.939        320.927          0.06%        320.500        321.299
+                                               FillBuffer(api=ocl size=512MB patternSize=128 compressed=0)         97.419         97.416          0.09%         97.297         97.608
+                                                  MapBuffer(api=ocl size=128MB compressed=0 mapFlags=read)          0.825          0.825          0.00%          0.825          0.825
+                                                 MapBuffer(api=ocl size=128MB compressed=0 mapFlags=write)          0.825          0.825          0.00%          0.825          0.825
+                                       MapBuffer(api=ocl size=128MB compressed=0 mapFlags=writeInvalidate)      69868.655      71244.766          7.26%      52062.734      75403.218
+                                                  MapBuffer(api=ocl size=512MB compressed=0 mapFlags=read)          0.825          0.825          0.00%          0.825          0.825

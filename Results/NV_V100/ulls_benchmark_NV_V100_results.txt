@@ -1,0 +1,29 @@
+Running 20 iterations of each benchmark
+
+                                         TestCase      Mean [us]    Median [us]         StdDev       Min [us]       Max [us]
+                 EmptyKernel(api=ocl wgc=1 wgs=1)          6.607          6.539          4.05%          6.344          7.396
+                EmptyKernel(api=ocl wgc=1 wgs=16)          6.653          6.593          3.58%          6.359          7.291
+                EmptyKernel(api=ocl wgc=1 wgs=32)          6.508          6.501          3.15%          6.234          7.040
+               EmptyKernel(api=ocl wgc=1 wgs=256)          6.466          6.362          3.55%          6.182          6.984
+               EmptyKernel(api=ocl wgc=100 wgs=1)          6.544          6.488          3.30%          6.250          7.230
+              EmptyKernel(api=ocl wgc=100 wgs=16)          6.497          6.451          3.71%          6.176          7.132
+              EmptyKernel(api=ocl wgc=100 wgs=32)          6.559          6.540          4.36%          6.250          7.591
+             EmptyKernel(api=ocl wgc=100 wgs=256)          6.482          6.429          3.74%          6.225          7.250
+              EmptyKernel(api=ocl wgc=1000 wgs=1)          7.916          7.819          3.18%          7.663          8.691
+             EmptyKernel(api=ocl wgc=1000 wgs=16)          7.886          7.808          3.47%          7.564          8.792
+             EmptyKernel(api=ocl wgc=1000 wgs=32)          7.930          7.873          3.08%          7.656          8.650
+            EmptyKernel(api=ocl wgc=1000 wgs=256)          8.331          8.354          5.52%          7.558          9.385
+             EmptyKernel(api=ocl wgc=10000 wgs=1)         21.958         21.879          1.34%         21.528         22.695
+            EmptyKernel(api=ocl wgc=10000 wgs=16)         21.899         21.857          1.09%         21.572         22.540
+            EmptyKernel(api=ocl wgc=10000 wgs=32)         21.869         21.809          1.23%         21.534         22.674
+           EmptyKernel(api=ocl wgc=10000 wgs=256)         21.841         21.831          1.10%         21.475         22.465
+     NewResourcesSubmissionDevice(api=ocl size=1)         72.562         72.846          1.85%         70.552         76.540
+  NewResourcesSubmissionDevice(api=ocl size=64KB)         73.094         72.875          0.89%         72.509         75.627
+ NewResourcesSubmissionDevice(api=ocl size=512KB)         73.544         73.303          1.99%         71.893         79.678
+   NewResourcesSubmissionDevice(api=ocl size=1MB)         73.245         73.040          1.60%         72.108         77.241
+  NewResourcesSubmissionDevice(api=ocl size=16MB)        476.152        476.193          0.09%        475.323        476.733
+  NewResourcesSubmissionDevice(api=ocl size=64MB)        979.842        975.388          2.25%        961.856       1062.345
+ NewResourcesSubmissionDevice(api=ocl size=256MB)        888.107        889.633          5.56%        797.712       1067.397
+   NewResourcesSubmissionDevice(api=ocl size=1GB)      11694.248       1541.171        172.53%       1290.780      59999.924
+                     RoundTripSubmission(api=ocl)          9.055          8.935          5.05%          8.445         10.210
+                  WalkerSubmissionEvents(api=ocl)          5.414          5.312          8.76%          4.832          6.880
