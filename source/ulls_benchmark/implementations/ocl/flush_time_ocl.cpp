@@ -36,8 +36,9 @@ static TestResult run(const FlushTimeArguments &arguments, Statistics &statistic
     for (int i = 0; i < arguments.iterations; i++) {
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, lwsForNdr, 0, nullptr, eventForNdr));
         timer.measureStart();
-        ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
+        ASSERT_CL_SUCCESS(clFlush(opencl.commandQueue));
         timer.measureEnd();
+        ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));        
         statistics.pushValue(timer.Get());
     }
 
