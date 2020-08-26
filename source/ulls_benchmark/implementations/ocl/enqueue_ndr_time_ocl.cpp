@@ -39,14 +39,15 @@ static TestResult run(const EnqueueNdrTimeArguments &arguments, Statistics &stat
         timer.measureEnd();
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         statistics.pushValue(timer.Get());
+        if (eventForNdr) {
+            ASSERT_CL_SUCCESS(clReleaseEvent(event));
+            event = nullptr;
+        }
     }
 
     // Cleanup
     ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
     ASSERT_CL_SUCCESS(clReleaseProgram(program));
-    if (eventForNdr) {
-        ASSERT_CL_SUCCESS(clReleaseEvent(event));
-    }
     return TestResult::Success;
 }
 
