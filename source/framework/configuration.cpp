@@ -21,6 +21,9 @@ bool parseArgumentsForConfiguration(int argc, char **argv) {
         if (key == "oclDevice") {
             ::configuration.oclDeviceIndex = std::atoi(value.c_str());
         }
+        if (key == "oclUseOOQ") {
+            ::configuration.oclUseOOQ = std::atoi(value.c_str());
+        }
         if (key == "l0Driver") {
             ::configuration.l0DriverIndex = std::atoi(value.c_str());
         }

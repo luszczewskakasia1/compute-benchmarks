@@ -11,6 +11,7 @@ struct Configuration {
     } printType = PrintType::Default;
     size_t oclPlatformIndex = 0;
     size_t oclDeviceIndex = 0;
+    bool oclUseOOQ = true;
     size_t l0DriverIndex = 0;
     size_t l0DeviceIndex = 0;
 

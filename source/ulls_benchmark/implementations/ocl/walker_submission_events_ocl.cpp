@@ -11,8 +11,7 @@ static TestResult run(const WalkerSubmissionEventsArguments &arguments, Statisti
     // Setup
     Opencl opencl(false);
     cl_int retVal{};
-    const cl_queue_properties queueProperties[] = {CL_QUEUE_PROPERTIES, CL_QUEUE_PROFILING_ENABLE, 0};
-    cl_command_queue commandQueue = clCreateCommandQueueWithProperties(opencl.context, opencl.device, queueProperties, &retVal);
+    cl_command_queue commandQueue = clCreateCommandQueueWithProperties(opencl.context, opencl.device, opencl.profilingQueueProperties, &retVal);
     EXPECT_CL_SUCCESS(retVal);
     cl_event profilingEvent{};
 

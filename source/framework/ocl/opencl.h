@@ -107,9 +107,17 @@ struct Opencl {
         context = clCreateContext(nullptr, 1, &device, nullptr, nullptr, &retVal);
         EXPECT_CL_SUCCESS(retVal);
 
+        // Get command queue properties
+        cl_command_queue_properties supportedProperties{};
+        EXPECT_CL_SUCCESS(clGetDeviceInfo(device, CL_DEVICE_QUEUE_ON_HOST_PROPERTIES, sizeof(supportedProperties), &supportedProperties, nullptr));
+        if (::configuration.oclUseOOQ && (supportedProperties & CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE)) {
+            this->queueProperties[1] |= CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
+            this->profilingQueueProperties[1] |= CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
+        }
+
         // Create command queue
         if (createQueue) {
-            commandQueue = clCreateCommandQueueWithProperties(context, device, nullptr, &retVal);
+            commandQueue = clCreateCommandQueueWithProperties(context, device, this->queueProperties, &retVal);
             EXPECT_CL_SUCCESS(retVal);
         }
     }
@@ -124,6 +132,8 @@ struct Opencl {
     cl_platform_id platform{};
     cl_device_id device{};
     cl_context context{};
+    cl_command_queue_properties queueProperties[3] = {CL_QUEUE_PROPERTIES, 0, 0};
+    cl_command_queue_properties profilingQueueProperties[3] = {CL_QUEUE_PROPERTIES, CL_QUEUE_PROFILING_ENABLE, 0};
     cl_command_queue commandQueue{};
 
     static cl_mem_flags getCompressionFlags(bool compression, bool noIntelExtensions) {
