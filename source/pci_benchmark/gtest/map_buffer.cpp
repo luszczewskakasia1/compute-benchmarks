@@ -1,8 +1,8 @@
-#include "pci_benchmark/map_buffer.h"
+#include "pci_benchmark/definitions/map_buffer.h"
 
 #include <gtest/gtest.h>
 
-class MapBufferTest : public ::testing::TestWithParam<std::tuple<Api, size_t, bool, cl_map_flags>> {
+class MapBufferTest : public ::testing::TestWithParam<std::tuple<Api, size_t, bool, MapFlags>> {
 };
 
 TEST_P(MapBufferTest, Test) {
@@ -26,4 +26,4 @@ INSTANTIATE_TEST_SUITE_P(
         ::testing::Values(Api::OpenCL, Api::L0),
         ::testing::Values(128 * megaByte, 512 * megaByte),
         ::testing::Values(false, true),
-        ::testing::Values(CL_MAP_READ, CL_MAP_WRITE, CL_MAP_WRITE_INVALIDATE_REGION)));
+        ::testing::Values(MapFlags::Read, MapFlags::Write, MapFlags::WriteInvalidate)));

@@ -1,14 +1,16 @@
 #include "framework/benchmark_info.h"
 
-#include "ulls_benchmark/best_submission.h"
-#include "ulls_benchmark/best_walker_submission.h"
-#include "ulls_benchmark/best_walker_submission_immediate.h"
-#include "ulls_benchmark/completion_latency.h"
-#include "ulls_benchmark/empty_kernel.h"
-#include "ulls_benchmark/new_resources_submission_device.h"
-#include "ulls_benchmark/new_resources_submission_host.h"
-#include "ulls_benchmark/round_trip_submission.h"
-#include "ulls_benchmark/walker_completion_latency.h"
+#include "ulls_benchmark/definitions/best_submission.h"
+#include "ulls_benchmark/definitions/best_walker_submission.h"
+#include "ulls_benchmark/definitions/best_walker_submission_immediate.h"
+#include "ulls_benchmark/definitions/completion_latency.h"
+#include "ulls_benchmark/definitions/empty_kernel.h"
+#include "ulls_benchmark/definitions/new_resources_submission_device.h"
+#include "ulls_benchmark/definitions/new_resources_submission_host.h"
+#include "ulls_benchmark/definitions/round_trip_submission.h"
+#include "ulls_benchmark/definitions/walker_completion_latency.h"
+#include "ulls_benchmark/definitions/walker_submission_events.h"
+#include "ulls_benchmark/definitions/write_latency.h"
 
 TestMap getTestMap() {
     TestMap testMap;
@@ -22,6 +24,8 @@ TestMap getTestMap() {
     TEST_CASE(RoundTripSubmission)
     TEST_CASE(CompletionLatency)
     TEST_CASE(WalkerCompletionLatency)
+    TEST_CASE(WalkerSubmissionEvents)
+    TEST_CASE(WriteLatency)
 #undef TEST_CASE
     return testMap;
 }
@@ -31,5 +35,9 @@ std::string getBenchmarkName() {
 }
 
 std::string getMeasurmentsUnit() {
-    return "ms";
+    return "us";
+}
+
+int getTestCaseNameColumnWidth() {
+    return 49;
 }

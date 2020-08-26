@@ -15,6 +15,18 @@ bool parseArgumentsForConfiguration(int argc, char **argv) {
             return false;
         }
 
+        if (key == "oclPlatform") {
+            ::configuration.oclPlatformIndex = std::atoi(value.c_str());
+        }
+        if (key == "oclDevice") {
+            ::configuration.oclDeviceIndex = std::atoi(value.c_str());
+        }
+        if (key == "l0Driver") {
+            ::configuration.l0DriverIndex = std::atoi(value.c_str());
+        }
+        if (key == "l0Device") {
+            ::configuration.l0DeviceIndex = std::atoi(value.c_str());
+        }
         if (key == "iterations") {
             ::configuration.iterations = std::atoi(value.c_str());
             if (::configuration.iterations == 0) {
@@ -29,14 +41,13 @@ bool parseArgumentsForConfiguration(int argc, char **argv) {
             FAIL_IF_VALUE_WAS_PASSED
             ::configuration.printType = Configuration::PrintType::Verbose;
         }
+        if (key == "no-intel-extensions") {
+            FAIL_IF_VALUE_WAS_PASSED
+            ::configuration.noIntelExtensions = true;
+        }
         if (key == "api") {
-            if (value == "ocl") {
-                ::configuration.selectedApi = Api::OpenCL;
-            } else if (value == "l0") {
-                ::configuration.selectedApi = Api::L0;
-            } else if (value == "all") {
-                ::configuration.selectedApi = Api::All;
-            } else {
+            ::configuration.selectedApi = parseApi(value);
+            if (::configuration.selectedApi == Api::Unknown) {
                 return false;
             }
         }

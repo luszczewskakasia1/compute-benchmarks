@@ -1,4 +1,4 @@
-#include "ulls_benchmark/completion_latency.h"
+#include "ulls_benchmark/definitions/completion_latency.h"
 
 #include <gtest/gtest.h>
 

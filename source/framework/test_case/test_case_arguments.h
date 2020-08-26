@@ -13,6 +13,7 @@ struct TestCaseArguments {
     std::string getCurrentConfig() const;
 
     std::vector<TestCaseArgument *> arguments;
-    Api api = Api::Default;
+    Api api = Api::Unknown;
     int iterations = 0;
+    bool noIntelExtensions = false;
 };

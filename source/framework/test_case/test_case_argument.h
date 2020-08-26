@@ -1,11 +1,13 @@
 #pragma once
 
 #include "framework/error.h"
+#include "framework/map_flags.h"
 #include "framework/string_utils.h"
 #include "framework/transfer_direction.h"
 
 #include <sstream>
 #include <string>
+#include <tuple>
 
 struct TestCaseArguments;
 
@@ -81,6 +83,10 @@ struct ByteSizeTestCaseArgument : PositiveIntegerTestCaseArgument {
     }
 
     std::string toStringValue() const override {
+        if (this->value == 0) {
+            return "0";
+        }
+
         const std::string units[] = {"", "KB", "MB", "GB"};
         const auto unitCount = sizeof(units) / sizeof(units[0]);
 
@@ -239,4 +245,117 @@ struct BooleanTestCaseArgument : TestCaseArgument {
     }
 
     int value = -1;
+};
+
+struct ThreeComponentUintTestCaseArgument : TestCaseArgument {
+    using TestCaseArgument::TestCaseArgument;
+    using TupleType = std::tuple<size_t, size_t, size_t>;
+
+    operator const size_t *() const {
+        return value;
+    }
+
+    ThreeComponentUintTestCaseArgument &operator=(TupleType value) {
+        assign(value);
+        return *this;
+    }
+
+  protected:
+    void assign(TupleType value) {
+        this->value[0] = std::get<0>(value);
+        this->value[1] = std::get<1>(value);
+        this->value[2] = std::get<2>(value);
+    }
+
+    std::string toStringValue() const override {
+        std::ostringstream result{};
+        result << value[0] << ":"
+               << value[1] << ":"
+               << value[2];
+        return result.str();
+    }
+
+    void parseImpl(const std::string &value) override {
+        ERROR(""); // TODO
+    }
+
+    size_t value[3] = {0, 0, 0};
+};
+
+struct ThreeComponentOffsetTestCaseArgument : ThreeComponentUintTestCaseArgument {
+    using ThreeComponentUintTestCaseArgument::ThreeComponentUintTestCaseArgument;
+
+    ThreeComponentOffsetTestCaseArgument &operator=(TupleType value) {
+        assign(value);
+        return *this;
+    }
+};
+
+struct ThreeComponentSizeTestCaseArgument : ThreeComponentUintTestCaseArgument {
+    using ThreeComponentUintTestCaseArgument::ThreeComponentUintTestCaseArgument;
+
+    ThreeComponentSizeTestCaseArgument &operator=(TupleType value) {
+        assign(value);
+        return *this;
+    }
+
+    virtual bool validate() const {
+        return value[0] > 0 &&
+               value[1] > 0 &&
+               value[2] > 0;
+    }
+};
+
+struct MapFlagsTestCaseArgument : TestCaseArgument {
+    MapFlagsTestCaseArgument(TestCaseArguments &parent, const std::string &key)
+        : TestCaseArgument(parent, key, "(read, write or writeInvalidate)") {}
+
+    operator MapFlags() const {
+        return value;
+    }
+
+    MapFlagsTestCaseArgument &operator=(MapFlags value) {
+        this->value = value;
+        return *this;
+    }
+
+    bool validate() const {
+        switch (value) {
+        case MapFlags::Read:
+        case MapFlags::Write:
+        case MapFlags::WriteInvalidate:
+            return true;
+        default:
+            return false;
+        }
+    }
+
+  protected:
+    std::string toStringValue() const override {
+        switch (value) {
+        case MapFlags::Read:
+            return "read";
+        case MapFlags::Write:
+            return "write";
+        case MapFlags::WriteInvalidate:
+            return "writeInvalidate";
+        default:
+            ERROR("Unknown map flag");
+        }
+    }
+
+    void parseImpl(const std::string &value) override {
+        const std::string valueLower = toLower(value);
+        if (valueLower == "read") {
+            this->value = MapFlags::Read;
+        } else if (valueLower == "write") {
+            this->value = MapFlags::Write;
+        } else if (valueLower == "writeinvalidate") {
+            this->value = MapFlags::WriteInvalidate;
+        } else {
+            this->value = MapFlags::Unknown;
+        }
+    }
+
+    MapFlags value = MapFlags::Unknown;
 };

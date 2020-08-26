@@ -17,3 +17,5 @@ inline std::string getBenchmarkFilename() {
 }
 
 std::string getMeasurmentsUnit();
+
+int getTestCaseNameColumnWidth();

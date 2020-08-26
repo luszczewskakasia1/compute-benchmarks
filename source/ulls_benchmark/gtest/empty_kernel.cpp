@@ -1,4 +1,4 @@
-#include "ulls_benchmark/empty_kernel.h"
+#include "ulls_benchmark/definitions/empty_kernel.h"
 
 #include <gtest/gtest.h>
 
