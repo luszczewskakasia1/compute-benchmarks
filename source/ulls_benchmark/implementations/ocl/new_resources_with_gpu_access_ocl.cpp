@@ -43,10 +43,9 @@ static TestResult run(const NewResourcesWithGpuAccessArguments &arguments, Stati
     ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 0, sizeof(buffer), &buffer));
     ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
-    ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));
-    ASSERT_CL_SUCCESS(retVal);
 
     // Benchmark
+    cl_mem previousBuffer = buffer;
     for (int i = 0; i < arguments.iterations; i++) {
         timer.measureStart();
         buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, sizeInBytes, nullptr, &retVal);
@@ -55,14 +54,16 @@ static TestResult run(const NewResourcesWithGpuAccessArguments &arguments, Stati
         retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr);
         retVal |= clFinish(opencl.commandQueue);
         timer.measureEnd();
-
         ASSERT_CL_SUCCESS(retVal);
-        ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));
-
         statistics.pushValue(timer.Get());
+
+        // Store buffer used in this iteration to avoid reuse
+        ASSERT_CL_SUCCESS(clReleaseMemObject(previousBuffer));
+        previousBuffer = buffer;
     }
 
     // Cleanup
+    ASSERT_CL_SUCCESS(clReleaseMemObject(previousBuffer));
     ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
     ASSERT_CL_SUCCESS(clReleaseProgram(program));
     return TestResult::Success;
