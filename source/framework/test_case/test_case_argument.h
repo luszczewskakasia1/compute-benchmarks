@@ -46,8 +46,32 @@ struct TestCaseArgument {
     const std::string extraHelp;
 };
 
-struct PositiveIntegerTestCaseArgument : TestCaseArgument {
+struct IntegerTestCaseArgument : TestCaseArgument {
     using TestCaseArgument::TestCaseArgument;
+
+    operator size_t() const {
+        return value;
+    }
+
+    IntegerTestCaseArgument &operator=(size_t value) {
+        this->value = value;
+        return *this;
+    }
+
+  protected:
+    std::string toStringValue() const override {
+        return std::to_string(this->value);
+    }
+
+    void parseImpl(const std::string &value) override {
+        this->value = std::atoi(value.c_str());
+    }
+
+    size_t value = 0u;
+};
+
+struct PositiveIntegerTestCaseArgument : IntegerTestCaseArgument {
+    using IntegerTestCaseArgument::IntegerTestCaseArgument;
 
     operator size_t() const {
         return value;
@@ -61,17 +85,6 @@ struct PositiveIntegerTestCaseArgument : TestCaseArgument {
     bool validate() const override {
         return this->value > 0;
     }
-
-  protected:
-    std::string toStringValue() const override {
-        return std::to_string(this->value);
-    }
-
-    void parseImpl(const std::string &value) override {
-        this->value = std::atoi(value.c_str());
-    }
-
-    size_t value = 0u;
 };
 
 struct ByteSizeTestCaseArgument : PositiveIntegerTestCaseArgument {
@@ -219,6 +232,8 @@ struct MemoryPlacementTestCaseArgument : TestCaseArgument {
 };
 
 struct BooleanTestCaseArgument : TestCaseArgument {
+    BooleanTestCaseArgument(TestCaseArguments &parent, const std::string &key, const std::string &extraHelp)
+        : TestCaseArgument(parent, key, extraHelp + " (0 or 1)") {}
     BooleanTestCaseArgument(TestCaseArguments &parent, const std::string &key)
         : TestCaseArgument(parent, key, "(0 or 1)") {}
 
