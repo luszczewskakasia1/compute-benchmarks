@@ -17,6 +17,7 @@ static void printDeviceInfoL0() {
     std::cout << "\t\tdeviceId:     0x" << std::hex << deviceProperties.deviceId << std::endl;
     std::cout << "\t\tclockFreq:    " << std::dec << deviceProperties.coreClockRate << std::endl;
     std::cout << "\t\tconfig:       " << deviceProperties.numSlices << "x" << deviceProperties.numSubslicesPerSlice << "x" << deviceProperties.numEUsPerSubslice << std::endl;
+    std::cout << "\t\teuCount:      " << deviceProperties.numSlices * deviceProperties.numSubslicesPerSlice * deviceProperties.numEUsPerSubslice << std::endl;
     std::cout << "\t\tthreadsPerEu: " << deviceProperties.numThreadsPerEU << std::endl;
 
     std::cout << std::endl;
