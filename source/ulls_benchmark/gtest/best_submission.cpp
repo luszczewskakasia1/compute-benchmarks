@@ -2,10 +2,10 @@
 
 #include <gtest/gtest.h>
 
-class BestrSubmissionTest : public ::testing::TestWithParam<Api> {
+class BestSubmissionTest : public ::testing::TestWithParam<Api> {
 };
 
-TEST_P(BestrSubmissionTest, Test) {
+TEST_P(BestSubmissionTest, Test) {
     BestSubmissionArguments args{};
     args.api = GetParam();
 
@@ -14,6 +14,6 @@ TEST_P(BestrSubmissionTest, Test) {
 }
 
 INSTANTIATE_TEST_SUITE_P(
-    BestrSubmissionTest,
-    BestrSubmissionTest,
+    BestSubmissionTest,
+    BestSubmissionTest,
     ::testing::Values(Api::OpenCL, Api::L0));
