@@ -19,7 +19,6 @@ static TestResult run(const FillBufferArguments &arguments, Statistics &statisti
     const cl_mem_flags compressionHint = Opencl::getCompressionFlags(arguments.compressed, arguments.noIntelExtensions);
     const cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE | compressionHint, arguments.size, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
-    auto cpuBuffer = std::make_unique<uint8_t[]>(arguments.size);
 
     // Check buffer compression
     const auto compressionStatus = Opencl::verifyCompression(buffer, arguments.compressed, arguments.noIntelExtensions);

@@ -22,7 +22,6 @@ static TestResult run(const CopyBufferArguments &arguments, Statistics &statisti
     ASSERT_CL_SUCCESS(retVal);
     const cl_mem destination = clCreateBuffer(opencl.context, memFlags, arguments.size, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
-    auto cpuBuffer = std::make_unique<uint8_t[]>(arguments.size);
 
     // Check buffers compression
     auto compressionStatus = Opencl::verifyCompression(source, arguments.compressed, arguments.noIntelExtensions);
