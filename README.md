@@ -6,7 +6,7 @@ A benchmark suite developed and maintained by NEO driver development team in ord
 ## Binary Releases
 Ulls Benchmark is released to gfx-assets.igk.intel.com. [Linux](https://gfx-assets.igk.intel.com/artifactory/webapp/#/artifacts/browse/tree/General/gfx-ocl-abn-assets-igk/linux/ulls_benchmark) [Windows](https://gfx-assets.igk.intel.com/artifactory/webapp/#/artifacts/browse/tree/General/gfx-ocl-abn-assets-igk/windows/ulls_benchmark)
 
-Pci Benchmark is currently not released in binary form.
+Pci Benchmark is released to gfx-assets.igk.intel.com. [Linux](https://gfx-assets.igk.intel.com/artifactory/webapp/#/artifacts/browse/tree/General/gfx-ocl-abn-assets-igk/linux/pci_benchmark) [Windows](https://gfx-assets.igk.intel.com/artifactory/webapp/#/artifacts/browse/tree/General/gfx-ocl-abn-assets-igk/windows/pci_benchmark)
 
 ## Building
 Internally ComputeBenchmarks uses googletest, which is referenced as a git submodule and has to be cloned separately. Cloning command is automatically performed by CMake, but Intel employees may have to properly set up proxy. If building hangs on cloning googletest, use [build.sh](build.sh) script, which sets up proxy or run the following commands:
