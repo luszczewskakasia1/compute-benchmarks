@@ -1,0 +1,27 @@
+#pragma once
+
+#include "framework/test_case/test_case.h"
+
+struct EnqueueNdrNullLwsArguments : TestCaseArguments {
+    PositiveIntegerTestCaseArgument gws;
+    BooleanTestCaseArgument useProfiling;
+    BooleanTestCaseArgument useEvent;
+
+    EnqueueNdrNullLwsArguments()
+        : gws(*this, "gws", "global work size"),
+          useProfiling(*this, "profiling", "creating a profiling queue"),
+          useEvent(*this, "event", "pass output event to the enqueue call") {}
+};
+
+class EnqueueNdrNullLws : public TestCase<EnqueueNdrNullLwsArguments> {
+  public:
+    using TestCase<EnqueueNdrNullLwsArguments>::TestCase;
+
+    std::string getHelp() const override {
+        return "measures time spent in clEnqueueNDRangeKernel on CPU. Null LWS is provided, which causes driver to calculate it";
+    }
+
+    std::string getTestCaseName() const override {
+        return "EnqueueNdrNullLws";
+    }
+};

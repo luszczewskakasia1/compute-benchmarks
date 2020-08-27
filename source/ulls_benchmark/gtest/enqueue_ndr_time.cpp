@@ -22,6 +22,6 @@ INSTANTIATE_TEST_SUITE_P(
     EnqueueNdrTimeTest,
     ::testing::Combine(
         ::testing::Values(1, 100, 1000),
-        ::testing::Values(0, 1, 32, 256),
+        ::testing::Values(1, 32, 256),
         ::testing::Values(false, true),
         ::testing::Values(false, true)));

@@ -1,11 +1,12 @@
+#include "ulls_benchmark/definitions/enqueue_ndr_null_lws.h"
+
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/timer.h"
-#include "ulls_benchmark/definitions/enqueue_ndr_time.h"
 
 #include <gtest/gtest.h>
 
-static TestResult run(const EnqueueNdrTimeArguments &arguments, Statistics &statistics) {
+static TestResult run(const EnqueueNdrNullLwsArguments &arguments, Statistics &statistics) {
     // Setup
     Opencl opencl(false);
     cl_int retVal{};
@@ -16,8 +17,7 @@ static TestResult run(const EnqueueNdrTimeArguments &arguments, Statistics &stat
     // Get parameters for the enqueue call
     cl_event event{};
     cl_event *eventForNdr = arguments.useEvent ? &event : nullptr;
-    const size_t gws = arguments.workgroupCount * arguments.workgroupSize;
-    const size_t lws = arguments.workgroupSize;
+    const size_t gws = arguments.gws;
 
     // Create kernel
     const char *source = "__kernel void empty() {}";
@@ -29,14 +29,13 @@ static TestResult run(const EnqueueNdrTimeArguments &arguments, Statistics &stat
     ASSERT_CL_SUCCESS(retVal);
 
     // Warmup, kernel
-    retVal |= clEnqueueNDRangeKernel(commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, eventForNdr);
-    retVal |= clFinish(commandQueue);
-    ASSERT_CL_SUCCESS(retVal);
+    ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, eventForNdr));
+    ASSERT_CL_SUCCESS(clFinish(commandQueue));
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
         timer.measureStart();
-        ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, eventForNdr));
+        ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, eventForNdr));
         timer.measureEnd();
         ASSERT_CL_SUCCESS(clFinish(commandQueue));
         statistics.pushValue(timer.Get());
@@ -53,4 +52,4 @@ static TestResult run(const EnqueueNdrTimeArguments &arguments, Statistics &stat
     return TestResult::Success;
 }
 
-static RegisterTestCase<EnqueueNdrTime> registerTestCase(run, Api::OpenCL);
+static RegisterTestCase<EnqueueNdrNullLws> registerTestCase(run, Api::OpenCL);
