@@ -31,12 +31,14 @@
         <int16>1026.33</int16>
       </integer_compute>
       <transfer_bandwidth unit="gbps">
-        <enqueuewritebuffer>39.91</enqueuewritebuffer>
-        <enqueuereadbuffer>14.23</enqueuereadbuffer>
-        <enqueuemapbuffer>330382.12</enqueuemapbuffer>
-        <memcpy_from_mapped_ptr>14.30</memcpy_from_mapped_ptr>
-        <enqueueunmap>421075.22</enqueueunmap>
-        <memcpy_to_mapped_ptr>14.35</memcpy_to_mapped_ptr>
+        <enqueuewritebuffer>11.25</enqueuewritebuffer>
+        <enqueuereadbuffer>11.14</enqueuereadbuffer>
+        <enqueueWriteBuffer non-blocking>11.25</enqueueWriteBuffer non-blocking>
+        <enqueueReadBuffer non-blocking>11.15</enqueueReadBuffer non-blocking>
+        <enqueueMapBuffer(for read)>395267.59</enqueueMapBuffer(for read)>
+        <memcpy_from_mapped_ptr>11.12</memcpy_from_mapped_ptr>
+        <enqueueUnmap(after write)>686124.81</enqueueUnmap(after write)>
+        <memcpy_to_mapped_ptr>11.22</memcpy_to_mapped_ptr>
       </transfer_bandwidth>
       <kernel_launch_latency unit="us">9.72</kernel_launch_latency>
     </device>
