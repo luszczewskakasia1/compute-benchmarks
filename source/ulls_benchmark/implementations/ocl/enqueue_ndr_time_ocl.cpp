@@ -16,8 +16,12 @@ static TestResult run(const EnqueueNdrTimeArguments &arguments, Statistics &stat
     // Get parameters for the enqueue call
     cl_event event{};
     cl_event *eventForNdr = arguments.useEvent ? &event : nullptr;
-    const size_t gws = arguments.workgroupCount * arguments.workgroupSize;
+    size_t gws = arguments.workgroupCount * arguments.workgroupSize;
     const size_t lws = arguments.workgroupSize;
+
+    if (gws == 0) {
+        gws = 1;
+    }
 
     // Create kernel
     const char *source = "__kernel void empty() {}";
