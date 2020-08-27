@@ -45,5 +45,5 @@ std::string getMeasurmentsUnit() {
 }
 
 int getTestCaseNameColumnWidth() {
-    return 49;
+    return 60;
 }

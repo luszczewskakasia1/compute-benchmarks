@@ -7,9 +7,11 @@
 
 static TestResult run(const EnqueueNdrTimeArguments &arguments, Statistics &statistics) {
     // Setup
-    Opencl opencl;
+    Opencl opencl(false);
+    cl_int retVal{};
+    cl_command_queue commandQueue = clCreateCommandQueueWithProperties(opencl.context, opencl.device, opencl.profilingQueueProperties, &retVal);
+    ASSERT_CL_SUCCESS(retVal);
     Timer timer;
-    cl_int retVal;
 
     // Get parameters for the enqueue call
     cl_event event{};
@@ -32,16 +34,16 @@ static TestResult run(const EnqueueNdrTimeArguments &arguments, Statistics &stat
     ASSERT_CL_SUCCESS(retVal);
 
     // Warmup, kernel
-    retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, lwsForNdr, 0, nullptr, eventForNdr);
-    retVal |= clFinish(opencl.commandQueue);
+    retVal |= clEnqueueNDRangeKernel(commandQueue, kernel, 1, nullptr, &gws, lwsForNdr, 0, nullptr, eventForNdr);
+    retVal |= clFinish(commandQueue);
     ASSERT_CL_SUCCESS(retVal);
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
         timer.measureStart();
-        ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, lwsForNdr, 0, nullptr, eventForNdr));
+        ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(commandQueue, kernel, 1, nullptr, &gws, lwsForNdr, 0, nullptr, eventForNdr));
         timer.measureEnd();
-        ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
+        ASSERT_CL_SUCCESS(clFinish(commandQueue));
         statistics.pushValue(timer.Get());
         if (eventForNdr) {
             ASSERT_CL_SUCCESS(clReleaseEvent(event));
@@ -52,6 +54,7 @@ static TestResult run(const EnqueueNdrTimeArguments &arguments, Statistics &stat
     // Cleanup
     ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
     ASSERT_CL_SUCCESS(clReleaseProgram(program));
+    ASSERT_CL_SUCCESS(clReleaseCommandQueue(commandQueue));
     return TestResult::Success;
 }
 
