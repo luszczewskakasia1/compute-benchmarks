@@ -9,7 +9,7 @@ static TestResult run(const EnqueueNdrTimeArguments &arguments, Statistics &stat
     // Setup
     Opencl opencl(false);
     cl_int retVal{};
-    cl_command_queue commandQueue = clCreateCommandQueueWithProperties(opencl.context, opencl.device, opencl.profilingQueueProperties, &retVal);
+    cl_command_queue commandQueue = clCreateCommandQueueWithProperties(opencl.context, opencl.device, arguments.useProfiling ? opencl.profilingQueueProperties : opencl.queueProperties, &retVal);
     ASSERT_CL_SUCCESS(retVal);
     Timer timer;
 
