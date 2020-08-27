@@ -1,0 +1,51 @@
+./ulls_benchmark
+Non-default value of debug variable: PrintDebugSettings = 1
+Non-default value of debug variable: EnableDirectSubmission = 1
+Non-default value of debug variable: BindAllAllocations = 1
+Non-default value of debug variable: ForceNonSystemMemoryPlacement = 53248
+Non-default value of debug variable: UseVmBind = 1
+OpenCL Platform: Intel(R) OpenCL HD Graphics
+        Device: Intel(R) Gen12HP HD Graphics NEO
+                driverVersion: 20.35.0
+                computeUnits:  256
+                clockFreq:     1150
+
+Running 10 iterations of each benchmark
+
+                                         TestCase      Mean [us]    Median [us]         StdDev       Min [us]       Max [us]
+                    BestWalkerSubmission(api=ocl)         11.482         10.553         32.02%          9.594         22.424
+                 EmptyKernel(api=ocl wgc=1 wgs=1)          9.502          8.733         28.14%          7.765         17.360
+                EmptyKernel(api=ocl wgc=1 wgs=16)          9.820          8.326         32.68%          8.038         18.922
+                EmptyKernel(api=ocl wgc=1 wgs=32)          9.794          8.826         31.40%          8.104         18.892
+               EmptyKernel(api=ocl wgc=1 wgs=256)          9.751          9.005         30.37%          7.768         18.507
+               EmptyKernel(api=ocl wgc=100 wgs=1)         10.695          8.566         34.72%          7.907         17.074
+              EmptyKernel(api=ocl wgc=100 wgs=16)          9.579          8.666         29.53%          7.819         17.909
+              EmptyKernel(api=ocl wgc=100 wgs=32)          9.660          8.965         24.80%          8.005         16.768
+             EmptyKernel(api=ocl wgc=100 wgs=256)          9.500          8.626         30.37%          7.870         17.990
+              EmptyKernel(api=ocl wgc=1000 wgs=1)         10.241          8.992         30.94%          8.013         18.785
+             EmptyKernel(api=ocl wgc=1000 wgs=16)         10.179          9.248         27.37%          8.267         18.346
+             EmptyKernel(api=ocl wgc=1000 wgs=32)          9.313          8.317         31.49%          7.712         18.017
+            EmptyKernel(api=ocl wgc=1000 wgs=256)         10.493          9.216         30.25%          8.834         19.852
+             EmptyKernel(api=ocl wgc=10000 wgs=1)         14.063         13.107         19.26%         12.602         22.112
+            EmptyKernel(api=ocl wgc=10000 wgs=16)         13.196         13.061          7.98%         12.078         15.838
+            EmptyKernel(api=ocl wgc=10000 wgs=32)         13.552         12.344         22.39%         12.087         22.444
+           EmptyKernel(api=ocl wgc=10000 wgs=256)         23.218         22.432          8.78%         21.493         28.559
+     NewResourcesSubmissionDevice(api=ocl size=1)       1035.909       1016.761         11.21%        853.189       1241.006
+  NewResourcesSubmissionDevice(api=ocl size=64KB)       1080.365       1064.568         15.93%        802.247       1428.613
+ NewResourcesSubmissionDevice(api=ocl size=512KB)       1039.185        998.689         13.97%        811.668       1277.053
+   NewResourcesSubmissionDevice(api=ocl size=1MB)       1118.085       1118.747          7.65%        990.028       1308.641
+  NewResourcesSubmissionDevice(api=ocl size=16MB)       1493.294       1531.031          6.43%       1340.482       1605.933
+  NewResourcesSubmissionDevice(api=ocl size=64MB)       2300.746       2290.537          4.83%       2151.819       2590.140
+ NewResourcesSubmissionDevice(api=ocl size=256MB)       5525.454       5484.942          4.09%       5167.479       6070.978
+   NewResourcesSubmissionDevice(api=ocl size=1GB)      19352.860      19755.512          3.61%      18099.876      19978.522
+       NewResourcesSubmissionHost(api=ocl size=1)        361.427        355.940         16.06%        283.253        477.313
+    NewResourcesSubmissionHost(api=ocl size=64KB)        310.554        295.759         19.24%        239.762        465.903
+   NewResourcesSubmissionHost(api=ocl size=512KB)        384.765        408.118         18.27%        249.588        492.781
+     NewResourcesSubmissionHost(api=ocl size=1MB)        386.008        404.778         23.31%        265.329        512.208
+    NewResourcesSubmissionHost(api=ocl size=16MB)        504.128        550.520         16.92%        356.036        604.303
+    NewResourcesSubmissionHost(api=ocl size=64MB)       9078.477       9340.735          5.41%       7909.620       9457.756
+   NewResourcesSubmissionHost(api=ocl size=256MB)      24195.933      20583.122         23.75%      20438.386      35156.854
+     NewResourcesSubmissionHost(api=ocl size=1GB)      77854.303      76683.573         18.38%      66586.514     116506.169
+                     RoundTripSubmission(api=ocl)         12.394         11.541         23.60%         10.588         21.072
+                 WalkerCompletionLatency(api=ocl)          2.273          2.299          5.06%          2.059          2.475
+                  WalkerSubmissionEvents(api=ocl)         17.424         16.760         17.01%         15.280         26.160
