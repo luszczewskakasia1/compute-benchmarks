@@ -1,13 +1,36 @@
-Running 20 iterations of each benchmark
+OpenCL Platform: NVIDIA CUDA
+        Device: Tesla V100-PCIE-16GB
+                driverVersion: 435.21
+                computeUnits:  80
+                clockFreq:     1380
+
+Running 10 iterations of each benchmark
 
                                                                                                   TestCase    Mean [GB/s]  Median [GB/s]         StdDev     Min [GB/s]     Max [GB/s]
-                                                               CopyBuffer(api=ocl size=128MB compressed=0)        385.088        385.042          0.12%        384.037        386.165
-                                                               CopyBuffer(api=ocl size=512MB compressed=0)        392.556        392.606          0.04%        392.199        392.754
-                                                FillBuffer(api=ocl size=128MB patternSize=16 compressed=0)        312.492        312.566          0.12%        311.196        313.052
-                                               FillBuffer(api=ocl size=128MB patternSize=128 compressed=0)         94.646         94.644          0.25%         94.201         95.122
-                                                FillBuffer(api=ocl size=512MB patternSize=16 compressed=0)        320.939        320.927          0.06%        320.500        321.299
-                                               FillBuffer(api=ocl size=512MB patternSize=128 compressed=0)         97.419         97.416          0.09%         97.297         97.608
+                                                               CopyBuffer(api=ocl size=128MB compressed=0)        384.307        384.373          0.19%        383.024        385.446
+                                                               CopyBuffer(api=ocl size=512MB compressed=0)        391.413        391.422          0.03%        391.129        391.656
+                                                FillBuffer(api=ocl size=128MB patternSize=16 compressed=0)        315.176        315.296          0.17%        313.876        315.913
+                                               FillBuffer(api=ocl size=128MB patternSize=128 compressed=0)         95.591         95.589          0.24%         95.142         95.966
+                                                FillBuffer(api=ocl size=512MB patternSize=16 compressed=0)        320.546        320.562          0.06%        320.176        320.777
+                                               FillBuffer(api=ocl size=512MB patternSize=128 compressed=0)         97.161         97.208          0.22%         96.611         97.411
                                                   MapBuffer(api=ocl size=128MB compressed=0 mapFlags=read)          0.825          0.825          0.00%          0.825          0.825
                                                  MapBuffer(api=ocl size=128MB compressed=0 mapFlags=write)          0.825          0.825          0.00%          0.825          0.825
-                                       MapBuffer(api=ocl size=128MB compressed=0 mapFlags=writeInvalidate)      69868.655      71244.766          7.26%      52062.734      75403.218
+                                       MapBuffer(api=ocl size=128MB compressed=0 mapFlags=writeInvalidate)      69839.694      70603.925          6.42%      57554.772      74235.469
                                                   MapBuffer(api=ocl size=512MB compressed=0 mapFlags=read)          0.825          0.825          0.00%          0.825          0.825
+                                                 MapBuffer(api=ocl size=512MB compressed=0 mapFlags=write)          0.825          0.825          0.00%          0.825          0.825
+                                       MapBuffer(api=ocl size=512MB compressed=0 mapFlags=writeInvalidate)     228676.470     236770.357         17.24%     173857.161     282414.998
+                                                               ReadBuffer(api=ocl size=128MB compressed=0)          0.816          0.816          0.02%          0.816          0.817
+                                                               ReadBuffer(api=ocl size=512MB compressed=0)          0.820          0.820          0.01%          0.820          0.820
+                                                UnmapBuffer(api=ocl size=128MB compressed=0 mapFlags=read)      22964.646      23088.805          3.46%      21679.491      24049.046
+                                               UnmapBuffer(api=ocl size=128MB compressed=0 mapFlags=write)          0.790          0.790          0.00%          0.790          0.790
+                                     UnmapBuffer(api=ocl size=128MB compressed=0 mapFlags=writeInvalidate)          0.790          0.790          0.00%          0.790          0.790
+                                                UnmapBuffer(api=ocl size=512MB compressed=0 mapFlags=read)      88021.051      87204.791          4.99%      82418.009      94719.639
+                                               UnmapBuffer(api=ocl size=512MB compressed=0 mapFlags=write)          0.790          0.790          0.00%          0.790          0.790
+                                     UnmapBuffer(api=ocl size=512MB compressed=0 mapFlags=writeInvalidate)          0.790          0.790          0.00%          0.790          0.790
+                                                              WriteBuffer(api=ocl size=128MB compressed=0)          0.706          0.706          0.19%          0.704          0.708
+                                                              WriteBuffer(api=ocl size=512MB compressed=0)          0.707          0.707          0.17%          0.704          0.708
+      WriteBufferRect(api=ocl size=16KB compressed=0 origin=0:0:0 region=128:128:1 rPitch=128 sPitch=16KB)          0.261          0.238         25.51%          0.124          0.351
+     WriteBufferRect(api=ocl size=2MB compressed=0 origin=0:0:0 region=128:128:128 rPitch=128 sPitch=16KB)          0.715          0.715          0.21%          0.714          0.719
+WriteBufferRect(api=ocl size=128MB compressed=0 origin=0:0:0 region=128:1024:1024 rPitch=128 sPitch=128KB)          0.702          0.702          0.33%          0.699          0.705
+   WriteBufferRect(api=ocl size=16MB compressed=0 origin=0:0:0 region=1024:16:1024 rPitch=1KB sPitch=16KB)          0.764          0.763          0.48%          0.762          0.775
+    WriteBufferRect(api=ocl size=16MB compressed=0 origin=0:0:0 region=1024:1024:16 rPitch=1KB sPitch=1MB)          0.711          0.711          0.08%          0.710          0.712
