@@ -1,0 +1,56 @@
+Non-default value of debug variable: PrintDebugSettings = 1
+Non-default value of debug variable: PrintDebugSettings = 1
+OpenCL Platform: Intel(R) OpenCL HD Graphics
+	Device: Intel(R) Gen12LP HD Graphics NEO
+		driverVersion: 20.35.0
+		computeUnits:  96
+		clockFreq:     1650
+
+Running 10 iterations of each benchmark
+
+                                                                                                  TestCase    Mean [GB/s]  Median [GB/s]         StdDev     Min [GB/s]     Max [GB/s]
+                                                               CopyBuffer(api=ocl size=128MB compressed=0)         29.305         29.305          0.12%         29.237         29.352
+                                                               CopyBuffer(api=ocl size=512MB compressed=0)         29.353         29.353          0.03%         29.341         29.376
+                                                FillBuffer(api=ocl size=128MB patternSize=16 compressed=0)         56.657         56.909          1.17%         54.785         57.129
+                                               FillBuffer(api=ocl size=128MB patternSize=128 compressed=0)         56.038         56.629          2.04%         54.490         57.117
+                                                FillBuffer(api=ocl size=512MB patternSize=16 compressed=0)         62.101         62.153          0.18%         61.920         62.206
+                                               FillBuffer(api=ocl size=512MB patternSize=128 compressed=0)         62.069         62.061          0.17%         61.947         62.216
+                                                  MapBuffer(api=ocl size=128MB compressed=0 mapFlags=read)          5.642          5.645          0.12%          5.631          5.650
+                                                 MapBuffer(api=ocl size=128MB compressed=0 mapFlags=write)          5.638          5.638          0.18%          5.609          5.647
+                                       MapBuffer(api=ocl size=128MB compressed=0 mapFlags=writeInvalidate)          5.640          5.642          0.12%          5.621          5.647
+                                                  MapBuffer(api=ocl size=512MB compressed=0 mapFlags=read)          5.666          5.670          0.23%          5.628          5.675
+                                                 MapBuffer(api=ocl size=512MB compressed=0 mapFlags=write)          5.668          5.671          0.11%          5.658          5.675
+                                       MapBuffer(api=ocl size=512MB compressed=0 mapFlags=writeInvalidate)          5.669          5.673          0.13%          5.656          5.676
+                                                               ReadBuffer(api=ocl size=128MB compressed=0)          5.086          5.090          0.32%          5.055          5.102
+                                                               ReadBuffer(api=ocl size=512MB compressed=0)          5.117          5.116          0.13%          5.107          5.127
+                                                UnmapBuffer(api=ocl size=128MB compressed=0 mapFlags=read)     128642.836     131393.066         10.10%      95596.672     140837.070
+                                               UnmapBuffer(api=ocl size=128MB compressed=0 mapFlags=write)          3.766          3.769          0.17%          3.751          3.771
+                                     UnmapBuffer(api=ocl size=128MB compressed=0 mapFlags=writeInvalidate)          3.768          3.769          0.15%          3.755          3.774
+                                                UnmapBuffer(api=ocl size=512MB compressed=0 mapFlags=read)     497364.259     519724.531         10.75%     366965.763     535265.117
+                                               UnmapBuffer(api=ocl size=512MB compressed=0 mapFlags=write)          3.782          3.783          0.10%          3.774          3.786
+                                     UnmapBuffer(api=ocl size=512MB compressed=0 mapFlags=writeInvalidate)          3.782          3.785          0.11%          3.772          3.786
+                                                             UsmCopy(api=ocl transfer=SysToDev size=128MB)          3.766          3.770          0.22%          3.749          3.772
+                                                             UsmCopy(api=ocl transfer=SysToDev size=512MB)          3.782          3.783          0.08%          3.777          3.786
+                                                             UsmCopy(api=ocl transfer=DevToSys size=128MB)          5.635          5.647          0.48%          5.557          5.650
+                                                             UsmCopy(api=ocl transfer=DevToSys size=512MB)          5.668          5.671          0.10%          5.658          5.674
+                                                             UsmCopy(api=ocl transfer=DevToDev size=128MB)         29.181         29.185          0.05%         29.156         29.194
+                                                             UsmCopy(api=ocl transfer=DevToDev size=512MB)         29.362         29.360          0.05%         29.342         29.380
+                                                    UsmFill(api=ocl memory=host size=128MB patternSize=16)          5.627          5.629          0.13%          5.607          5.634
+                                                   UsmFill(api=ocl memory=host size=128MB patternSize=256)          5.627          5.629          0.10%          5.611          5.630
+                                                    UsmFill(api=ocl memory=host size=512MB patternSize=16)          5.666          5.668          0.10%          5.653          5.672
+                                                   UsmFill(api=ocl memory=host size=512MB patternSize=256)          5.666          5.668          0.09%          5.656          5.671
+                                                  UsmFill(api=ocl memory=device size=128MB patternSize=16)         57.615         57.614          0.09%         57.502         57.695
+                                                 UsmFill(api=ocl memory=device size=128MB patternSize=256)         57.635         57.641          0.11%         57.514         57.736
+                                                  UsmFill(api=ocl memory=device size=512MB patternSize=16)         62.476         62.485          0.04%         62.413         62.510
+                                                 UsmFill(api=ocl memory=device size=512MB patternSize=256)         62.438         62.449          0.09%         62.320         62.515
+                                                                 UsmMemset(api=ocl memory=host size=128MB)          5.617          5.627          0.39%          5.557          5.635
+                                                                 UsmMemset(api=ocl memory=host size=512MB)          5.666          5.668          0.09%          5.655          5.672
+                                                               UsmMemset(api=ocl memory=device size=128MB)         57.634         57.653          0.11%         57.487         57.693
+                                                               UsmMemset(api=ocl memory=device size=512MB)         62.476         62.488          0.09%         62.363         62.531
+                                                              WriteBuffer(api=ocl size=128MB compressed=0)          3.488          3.488          0.11%          3.482          3.493
+                                                              WriteBuffer(api=ocl size=512MB compressed=0)          3.522          3.522          0.13%          3.515          3.529
+      WriteBufferRect(api=ocl size=16KB compressed=0 origin=0:0:0 region=128:128:1 rPitch=128 sPitch=16KB)          0.124          0.115         30.23%          0.076          0.203
+     WriteBufferRect(api=ocl size=2MB compressed=0 origin=0:0:0 region=128:128:128 rPitch=128 sPitch=16KB)          2.494          2.450          5.37%          2.352          2.707
+WriteBufferRect(api=ocl size=128MB compressed=0 origin=0:0:0 region=128:1024:1024 rPitch=128 sPitch=128KB)          3.495          3.495          0.25%          3.481          3.507
+   WriteBufferRect(api=ocl size=16MB compressed=0 origin=0:0:0 region=1024:16:1024 rPitch=1KB sPitch=16KB)          3.268          3.267          0.41%          3.241          3.292
+    WriteBufferRect(api=ocl size=16MB compressed=0 origin=0:0:0 region=1024:1024:16 rPitch=1KB sPitch=1MB)          3.257          3.259          0.28%          3.242          3.269

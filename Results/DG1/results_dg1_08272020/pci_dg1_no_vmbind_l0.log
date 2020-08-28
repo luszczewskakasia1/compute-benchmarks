@@ -1,0 +1,27 @@
+Non-default value of debug variable: PrintDebugSettings = 1
+LevelZero driver version: 0x1000000
+	Device: Intel(R) Gen12LP
+		vendorId:     0x8086
+		deviceId:     0x4905
+		clockFreq:    1650
+		config:       1x6x16
+		euCount:      96
+		threadsPerEu: 7
+
+Running 10 iterations of each benchmark
+
+                                                                                                  TestCase    Mean [GB/s]  Median [GB/s]         StdDev     Min [GB/s]     Max [GB/s]
+                                                              UsmCopy(api=l0 transfer=SysToDev size=128MB)          3.768          3.769          0.14%          3.753          3.773
+                                                              UsmCopy(api=l0 transfer=SysToDev size=512MB)          3.783          3.784          0.08%          3.777          3.786
+                                                              UsmCopy(api=l0 transfer=DevToSys size=128MB)          5.626          5.635          0.29%          5.593          5.640
+                                                              UsmCopy(api=l0 transfer=DevToSys size=512MB)          5.667          5.670          0.11%          5.651          5.672
+                                                              UsmCopy(api=l0 transfer=DevToDev size=128MB)         29.338         29.346          0.19%         29.243         29.411
+                                                              UsmCopy(api=l0 transfer=DevToDev size=512MB)         29.288         29.284          0.05%         29.269         29.316
+                                                     UsmFill(api=l0 memory=host size=128MB patternSize=16)          5.022          5.026          0.23%          5.004          5.039
+                                                    UsmFill(api=l0 memory=host size=128MB patternSize=256)          5.380          5.381          0.15%          5.358          5.388
+                                                     UsmFill(api=l0 memory=host size=512MB patternSize=16)          5.202          5.202          0.10%          5.193          5.211
+                                                    UsmFill(api=l0 memory=host size=512MB patternSize=256)          5.484          5.487          0.15%          5.463          5.491
+                                                   UsmFill(api=l0 memory=device size=128MB patternSize=16)         12.183         12.183          0.06%         12.164         12.193
+                                                  UsmFill(api=l0 memory=device size=128MB patternSize=256)         22.312         22.302          0.10%         22.288         22.353
+                                                   UsmFill(api=l0 memory=device size=512MB patternSize=16)         12.426         12.426          0.02%         12.424         12.430
+                                                  UsmFill(api=l0 memory=device size=512MB patternSize=256)         23.166         23.164          0.02%         23.160         23.175
