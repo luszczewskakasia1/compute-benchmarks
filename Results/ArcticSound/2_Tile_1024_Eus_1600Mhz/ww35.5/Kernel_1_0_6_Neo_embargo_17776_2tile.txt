@@ -1,0 +1,127 @@
+./ulls_benchmark
+Non-default value of debug variable: PrintDebugSettings = 1
+OpenCL Platform: Intel(R) OpenCL HD Graphics
+        Device: Intel(R) Gen12HP HD Graphics NEO
+                driverVersion: 20.35.0
+                computeUnits:  1024
+                clockFreq:     1600
+
+Running 10 iterations of each benchmark
+
+                                                    TestCase      Mean [us]    Median [us]         StdDev       Min [us]       Max [us]
+                               BestWalkerSubmission(api=ocl)         90.660         71.696         42.97%         69.872        168.875
+                            EmptyKernel(api=ocl wgc=1 wgs=1)        228.550        226.614          3.00%        219.706        245.072
+                           EmptyKernel(api=ocl wgc=1 wgs=16)        224.640        224.318          0.84%        222.249        228.027
+                           EmptyKernel(api=ocl wgc=1 wgs=32)        225.065        224.850          1.09%        220.572        230.513
+                          EmptyKernel(api=ocl wgc=1 wgs=256)        226.383        223.800          4.04%        218.261        252.839
+                          EmptyKernel(api=ocl wgc=100 wgs=1)        224.987        224.988          0.70%        222.597        228.020
+                         EmptyKernel(api=ocl wgc=100 wgs=16)        224.358        224.867          0.62%        221.053        226.057
+                         EmptyKernel(api=ocl wgc=100 wgs=32)        226.435        224.219          2.35%        221.911        237.182
+                        EmptyKernel(api=ocl wgc=100 wgs=256)        225.195        224.547          0.60%        223.655        227.629
+                         EmptyKernel(api=ocl wgc=1000 wgs=1)        218.763        224.558          8.16%        165.473        227.262
+                        EmptyKernel(api=ocl wgc=1000 wgs=16)        224.832        224.354          0.74%        222.498        227.513
+                        EmptyKernel(api=ocl wgc=1000 wgs=32)        226.047        225.012          1.41%        223.281        235.241
+                       EmptyKernel(api=ocl wgc=1000 wgs=256)        226.316        225.642          1.44%        222.848        232.973
+                        EmptyKernel(api=ocl wgc=10000 wgs=1)        226.165        224.076          1.94%        222.215        236.180
+                       EmptyKernel(api=ocl wgc=10000 wgs=16)        226.433        225.380          1.44%        222.010        233.962
+                       EmptyKernel(api=ocl wgc=10000 wgs=32)        220.386        224.781          8.25%        167.359        236.559
+                      EmptyKernel(api=ocl wgc=10000 wgs=256)        225.368        224.349          1.71%        222.068        236.137
+        EnqueueNdrNullLws(api=ocl gws=1 profiling=0 event=0)          2.218          2.152          8.77%          2.012          2.581
+        EnqueueNdrNullLws(api=ocl gws=1 profiling=0 event=1)          2.345          2.269          9.39%          2.099          2.855
+        EnqueueNdrNullLws(api=ocl gws=1 profiling=1 event=0)          3.295          2.102        108.82%          1.934         14.049
+        EnqueueNdrNullLws(api=ocl gws=1 profiling=1 event=1)         12.020         10.308         36.50%          9.925         24.916
+      EnqueueNdrNullLws(api=ocl gws=100 profiling=0 event=0)          2.750          2.059         74.89%          1.922          8.921
+      EnqueueNdrNullLws(api=ocl gws=100 profiling=0 event=1)          2.225          2.122         11.68%          2.076          2.985
+      EnqueueNdrNullLws(api=ocl gws=100 profiling=1 event=0)          3.285          2.043        107.55%          1.934         13.870
+      EnqueueNdrNullLws(api=ocl gws=100 profiling=1 event=1)         10.504         10.170          8.93%          9.889         13.198
+     EnqueueNdrNullLws(api=ocl gws=1000 profiling=0 event=0)          2.232          2.054         23.01%          1.981          3.763
+     EnqueueNdrNullLws(api=ocl gws=1000 profiling=0 event=1)          2.400          2.296         11.61%          2.178          2.972
+     EnqueueNdrNullLws(api=ocl gws=1000 profiling=1 event=0)          3.274          2.048        109.26%          1.951         13.999
+     EnqueueNdrNullLws(api=ocl gws=1000 profiling=1 event=1)         10.447         10.303          5.36%          9.838         11.437
+     EnqueueNdrTime(api=ocl wgc=1 wgs=1 profiling=0 event=0)          2.643          1.940         70.06%          1.838          8.142
+     EnqueueNdrTime(api=ocl wgc=1 wgs=1 profiling=0 event=1)          2.253          2.116         18.31%          2.052          3.483
+     EnqueueNdrTime(api=ocl wgc=1 wgs=1 profiling=1 event=0)          3.106          2.017         99.14%          1.912         12.330
+     EnqueueNdrTime(api=ocl wgc=1 wgs=1 profiling=1 event=1)         10.475          9.992         10.96%          9.745         13.671
+    EnqueueNdrTime(api=ocl wgc=1 wgs=32 profiling=0 event=0)          3.038          1.958        103.26%          1.862         12.443
+    EnqueueNdrTime(api=ocl wgc=1 wgs=32 profiling=0 event=1)          2.346          2.183         16.74%          2.091          3.359
+    EnqueueNdrTime(api=ocl wgc=1 wgs=32 profiling=1 event=0)          2.592          1.962         73.11%          1.861          8.273
+    EnqueueNdrTime(api=ocl wgc=1 wgs=32 profiling=1 event=1)         10.207          9.888          8.44%          9.558         12.678
+   EnqueueNdrTime(api=ocl wgc=1 wgs=256 profiling=0 event=0)          3.070          1.969        102.00%          1.914         12.454
+   EnqueueNdrTime(api=ocl wgc=1 wgs=256 profiling=0 event=1)          2.155          2.062         12.26%          1.987          2.920
+   EnqueueNdrTime(api=ocl wgc=1 wgs=256 profiling=1 event=0)          2.046          1.934         20.76%          1.816          3.309
+   EnqueueNdrTime(api=ocl wgc=1 wgs=256 profiling=1 event=1)         10.406          9.837         11.82%          9.584         13.472
+   EnqueueNdrTime(api=ocl wgc=100 wgs=1 profiling=0 event=0)          2.976          1.978         98.61%          1.852         11.772
+   EnqueueNdrTime(api=ocl wgc=100 wgs=1 profiling=0 event=1)          2.283          2.086         17.40%          2.002          3.248
+   EnqueueNdrTime(api=ocl wgc=100 wgs=1 profiling=1 event=0)          2.501          1.925         64.75%          1.805          7.339
+   EnqueueNdrTime(api=ocl wgc=100 wgs=1 profiling=1 event=1)         10.303          9.945         11.24%          9.588         13.650
+  EnqueueNdrTime(api=ocl wgc=100 wgs=32 profiling=0 event=0)          3.126          2.092         95.38%          1.903         12.057
+  EnqueueNdrTime(api=ocl wgc=100 wgs=32 profiling=0 event=1)          2.316          2.148         13.52%          2.102          3.032
+  EnqueueNdrTime(api=ocl wgc=100 wgs=32 profiling=1 event=0)          2.985          1.930        102.42%          1.790         12.146
+  EnqueueNdrTime(api=ocl wgc=100 wgs=32 profiling=1 event=1)         10.357          9.993          8.55%          9.673         12.721
+ EnqueueNdrTime(api=ocl wgc=100 wgs=256 profiling=0 event=0)          2.966          1.994         94.35%          1.946         11.356
+ EnqueueNdrTime(api=ocl wgc=100 wgs=256 profiling=0 event=1)          2.216          2.059         17.74%          1.965          3.357
+ EnqueueNdrTime(api=ocl wgc=100 wgs=256 profiling=1 event=0)          3.075          2.135         91.56%          1.950         11.513
+ EnqueueNdrTime(api=ocl wgc=100 wgs=256 profiling=1 event=1)         10.263          9.941          7.78%          9.624         12.445
+  EnqueueNdrTime(api=ocl wgc=1000 wgs=1 profiling=0 event=0)          2.901          1.949         97.72%          1.822         11.403
+  EnqueueNdrTime(api=ocl wgc=1000 wgs=1 profiling=0 event=1)          2.267          2.104         16.67%          2.028          3.310
+  EnqueueNdrTime(api=ocl wgc=1000 wgs=1 profiling=1 event=0)          2.947          1.992         91.45%          1.918         11.016
+  EnqueueNdrTime(api=ocl wgc=1000 wgs=1 profiling=1 event=1)         10.245          9.974          8.33%          9.490         12.296
+ EnqueueNdrTime(api=ocl wgc=1000 wgs=32 profiling=0 event=0)          2.960          2.018         91.67%          1.874         11.084
+ EnqueueNdrTime(api=ocl wgc=1000 wgs=32 profiling=0 event=1)          2.298          2.179         14.80%          2.106          3.299
+ EnqueueNdrTime(api=ocl wgc=1000 wgs=32 profiling=1 event=0)          2.065          1.911         20.26%          1.856          3.309
+ EnqueueNdrTime(api=ocl wgc=1000 wgs=32 profiling=1 event=1)         10.383          9.771         14.87%          9.543         14.727
+EnqueueNdrTime(api=ocl wgc=1000 wgs=256 profiling=0 event=0)          2.904          1.955         97.47%          1.869         11.392
+EnqueueNdrTime(api=ocl wgc=1000 wgs=256 profiling=0 event=1)          2.290          2.138         18.13%          2.061          3.516
+EnqueueNdrTime(api=ocl wgc=1000 wgs=256 profiling=1 event=0)          2.922          1.999         91.23%          1.850         10.908
+EnqueueNdrTime(api=ocl wgc=1000 wgs=256 profiling=1 event=1)         10.075          9.698          8.87%          9.374         12.501
+                      FlushTime(api=ocl wgc=1 wgs=0 event=0)         24.293         23.437          9.48%         22.909         30.479
+                      FlushTime(api=ocl wgc=1 wgs=0 event=1)         28.309         24.233         24.50%         23.433         44.811
+                      FlushTime(api=ocl wgc=1 wgs=1 event=0)         23.652         23.188          4.23%         23.031         26.063
+                      FlushTime(api=ocl wgc=1 wgs=1 event=1)         24.339         23.592          6.65%         22.946         28.047
+                     FlushTime(api=ocl wgc=1 wgs=32 event=0)         25.945         23.425         19.64%         23.029         39.974
+                     FlushTime(api=ocl wgc=1 wgs=32 event=1)         23.319         23.391          0.98%         22.913         23.643
+                    FlushTime(api=ocl wgc=1 wgs=256 event=0)         23.753         23.254          3.67%         22.996         25.809
+                    FlushTime(api=ocl wgc=1 wgs=256 event=1)         24.950         23.635         13.58%         22.563         34.174
+                    FlushTime(api=ocl wgc=100 wgs=0 event=0)         23.475         23.191          2.89%         23.050         25.273
+                    FlushTime(api=ocl wgc=100 wgs=0 event=1)         24.922         23.161         17.36%         22.837         37.294
+                    FlushTime(api=ocl wgc=100 wgs=1 event=0)         27.480         23.360         28.66%         22.923         44.893
+                    FlushTime(api=ocl wgc=100 wgs=1 event=1)         23.969         23.227         11.06%         22.629         31.851
+                   FlushTime(api=ocl wgc=100 wgs=32 event=0)         23.570         23.334          3.26%         22.763         25.585
+                   FlushTime(api=ocl wgc=100 wgs=32 event=1)         24.896         23.222         20.21%         22.814         39.969
+                  FlushTime(api=ocl wgc=100 wgs=256 event=0)         23.227         23.044          2.19%         22.774         24.667
+                  FlushTime(api=ocl wgc=100 wgs=256 event=1)         23.210         23.098          1.87%         22.692         24.097
+                   FlushTime(api=ocl wgc=1000 wgs=0 event=0)         25.514         23.026         25.69%         22.732         45.050
+                   FlushTime(api=ocl wgc=1000 wgs=0 event=1)         23.328         23.232          1.94%         22.829         24.437
+                   FlushTime(api=ocl wgc=1000 wgs=1 event=0)         25.024         23.147         19.13%         22.663         39.169
+                   FlushTime(api=ocl wgc=1000 wgs=1 event=1)         23.042         23.029          1.00%         22.707         23.542
+                  FlushTime(api=ocl wgc=1000 wgs=32 event=0)         37.844         37.612          2.48%         36.270         39.814
+                  FlushTime(api=ocl wgc=1000 wgs=32 event=1)         32.110         35.829         24.02%         22.860         44.496
+                 FlushTime(api=ocl wgc=1000 wgs=256 event=0)         23.577         23.137          5.19%         22.767         26.494
+                 FlushTime(api=ocl wgc=1000 wgs=256 event=1)         23.298         23.000          2.97%         22.712         25.084
+                NewResourcesSubmissionDevice(api=ocl size=1)        455.788        453.365         24.72%        309.836        699.131
+             NewResourcesSubmissionDevice(api=ocl size=64KB)        475.029        510.255         20.95%        320.592        630.814
+            NewResourcesSubmissionDevice(api=ocl size=512KB)        600.360        580.151         17.29%        458.362        853.755
+              NewResourcesSubmissionDevice(api=ocl size=1MB)        646.601        618.155          9.04%        570.179        759.329
+             NewResourcesSubmissionDevice(api=ocl size=16MB)       1300.144       1307.249          7.77%       1118.666       1515.900
+             NewResourcesSubmissionDevice(api=ocl size=64MB)       2790.153       2792.988          4.55%       2523.745       3003.594
+            NewResourcesSubmissionDevice(api=ocl size=256MB)       8225.883       8102.820          3.98%       7706.166       8793.132
+              NewResourcesSubmissionDevice(api=ocl size=1GB)      28713.625      28697.781          1.18%      28253.300      29240.823
+                  NewResourcesSubmissionHost(api=ocl size=1)        278.788        284.187         15.33%        157.566        327.551
+               NewResourcesSubmissionHost(api=ocl size=64KB)        287.684        284.001          4.21%        271.369        320.154
+              NewResourcesSubmissionHost(api=ocl size=512KB)        333.585        287.793         32.05%        239.019        562.507
+                NewResourcesSubmissionHost(api=ocl size=1MB)        357.817        297.620         32.03%        291.570        609.271
+               NewResourcesSubmissionHost(api=ocl size=16MB)        980.455        425.414        120.18%        359.500       3976.849
+               NewResourcesSubmissionHost(api=ocl size=64MB)       8487.238       8379.959          4.63%       8080.440       9326.516
+              NewResourcesSubmissionHost(api=ocl size=256MB)      31378.349      31331.099          0.44%      31257.443      31771.835
+                NewResourcesSubmissionHost(api=ocl size=1GB)     129477.321     129849.152          1.03%     125551.155     130287.422
+                 NewResourcesWithGpuAccess(api=ocl size=1KB)        576.705        577.874         13.43%        450.572        711.971
+                NewResourcesWithGpuAccess(api=ocl size=64KB)        504.069        493.679         13.28%        428.710        667.922
+               NewResourcesWithGpuAccess(api=ocl size=512KB)        683.230        683.094         23.38%        391.984        933.555
+                 NewResourcesWithGpuAccess(api=ocl size=1MB)        683.256        678.971         14.53%        530.496        857.251
+                NewResourcesWithGpuAccess(api=ocl size=16MB)       1265.545       1260.530          7.60%       1134.660       1439.016
+                NewResourcesWithGpuAccess(api=ocl size=64MB)       2965.427       2959.256          2.44%       2799.572       3074.177
+               NewResourcesWithGpuAccess(api=ocl size=256MB)       9272.661       9279.097          2.05%       8984.893       9626.289
+                 NewResourcesWithGpuAccess(api=ocl size=1GB)      34648.946      34643.027          0.93%      34009.366      35102.073
+                                RoundTripSubmission(api=ocl)        233.100        223.486         21.06%        168.094        371.303
+                            WalkerCompletionLatency(api=ocl)        171.325        172.593          4.77%        148.788        182.936
+                             WalkerSubmissionEvents(api=ocl)         66.792         65.280          6.72%         64.560         80.160
