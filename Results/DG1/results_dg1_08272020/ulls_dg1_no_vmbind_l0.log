@@ -1,0 +1,52 @@
+Non-default value of debug variable: PrintDebugSettings = 1
+LevelZero driver version: 0x1000000
+	Device: Intel(R) Gen12LP
+		vendorId:     0x8086
+		deviceId:     0x4905
+		clockFreq:    1650
+		config:       1x6x16
+		euCount:      96
+		threadsPerEu: 7
+
+Running 10 iterations of each benchmark
+
+                                                    TestCase      Mean [us]    Median [us]         StdDev       Min [us]       Max [us]
+                                      BestSubmission(api=l0)         24.710         23.877          8.19%         23.227         30.165
+                                BestWalkerSubmission(api=l0)         36.788         38.024         25.89%         25.835         48.567
+                       BestWalkerSubmissionImmediate(api=l0)         42.759         35.367         39.01%         28.268         74.163
+                                   CompletionLatency(api=l0)          2.197          0.773        227.77%          0.164         17.188
+                             EmptyKernel(api=l0 wgc=1 wgs=1)         38.598         33.258         38.06%         25.046         71.503
+                            EmptyKernel(api=l0 wgc=1 wgs=16)         37.064         36.330         30.48%         24.995         52.567
+                            EmptyKernel(api=l0 wgc=1 wgs=32)         36.270         36.389         30.38%         24.510         50.825
+                           EmptyKernel(api=l0 wgc=1 wgs=256)         42.037         32.942         44.26%         24.993         73.858
+                           EmptyKernel(api=l0 wgc=100 wgs=1)         41.711         34.387         42.76%         25.497         74.655
+                          EmptyKernel(api=l0 wgc=100 wgs=16)         43.402         51.582         29.86%         25.147         57.248
+                          EmptyKernel(api=l0 wgc=100 wgs=32)         45.151         54.126         33.04%         25.382         67.850
+                         EmptyKernel(api=l0 wgc=100 wgs=256)         38.031         38.243         27.05%         25.520         52.198
+                          EmptyKernel(api=l0 wgc=1000 wgs=1)         35.480         30.626         30.21%         26.158         55.332
+                         EmptyKernel(api=l0 wgc=1000 wgs=16)         37.377         37.489         27.80%         26.143         49.779
+                         EmptyKernel(api=l0 wgc=1000 wgs=32)         48.212         49.837         35.96%         26.792         71.435
+                        EmptyKernel(api=l0 wgc=1000 wgs=256)         33.060         30.585         16.74%         29.384         46.161
+                         EmptyKernel(api=l0 wgc=10000 wgs=1)         41.580         39.176         16.20%         35.837         55.318
+                        EmptyKernel(api=l0 wgc=10000 wgs=16)         43.534         41.094         13.97%         37.713         57.987
+                        EmptyKernel(api=l0 wgc=10000 wgs=32)         48.143         40.287         26.56%         36.602         68.093
+                       EmptyKernel(api=l0 wgc=10000 wgs=256)         86.729         82.073          9.50%         79.604        106.585
+                 NewResourcesSubmissionDevice(api=l0 size=1)        147.559        114.250         46.91%         77.950        251.666
+              NewResourcesSubmissionDevice(api=l0 size=64KB)        104.420         86.912         29.94%         71.340        155.027
+             NewResourcesSubmissionDevice(api=l0 size=512KB)        211.276        222.543         20.95%        122.438        251.726
+               NewResourcesSubmissionDevice(api=l0 size=1MB)        254.923        256.953         11.81%        171.492        285.604
+              NewResourcesSubmissionDevice(api=l0 size=16MB)       1321.530       1341.278          5.71%       1155.801       1462.518
+              NewResourcesSubmissionDevice(api=l0 size=64MB)       4603.627       4528.407         10.77%       4190.479       6038.728
+             NewResourcesSubmissionDevice(api=l0 size=256MB)      16328.046      16431.834          2.39%      15853.639      16719.243
+               NewResourcesSubmissionDevice(api=l0 size=1GB)      65895.554      65708.682          1.34%      63683.345      66785.596
+                   NewResourcesSubmissionHost(api=l0 size=1)        113.290        100.952         41.29%         56.949        199.938
+                NewResourcesSubmissionHost(api=l0 size=64KB)        151.545        149.462         34.79%         81.817        218.455
+               NewResourcesSubmissionHost(api=l0 size=512KB)        117.382        112.885         22.93%         74.874        158.268
+                 NewResourcesSubmissionHost(api=l0 size=1MB)        134.677        136.168         15.68%         85.228        162.078
+                NewResourcesSubmissionHost(api=l0 size=16MB)        512.571        510.333          7.69%        432.187        573.172
+                NewResourcesSubmissionHost(api=l0 size=64MB)       8474.662       8482.179          0.59%       8406.520       8551.081
+               NewResourcesSubmissionHost(api=l0 size=256MB)      32550.023      32485.467          0.68%      32276.052      32896.713
+                 NewResourcesSubmissionHost(api=l0 size=1GB)     128055.092     128036.165          0.22%     127626.634     128495.133
+                                 RoundTripSubmission(api=l0)         37.278         38.292         26.71%         25.862         49.698
+                             WalkerCompletionLatency(api=l0)          0.649          0.678         25.13%          0.186          0.827
+                                        WriteLatency(api=l0)          2.428          2.493         12.90%          1.529          2.729
