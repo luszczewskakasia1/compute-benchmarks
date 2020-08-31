@@ -53,18 +53,53 @@ function(add_subdirectories)
   endforeach()
 endfunction()
 
-function (add_benchmark TARGET_NAME)
+function (add_benchmark BASE_TARGET_NAME)
+    get_property(APIS GLOBAL PROPERTY APIS)
+    add_benchmark_for_api(${BASE_TARGET_NAME} OFF "${APIS}")
+    foreach(API ${APIS})
+        add_benchmark_for_api(${BASE_TARGET_NAME} ON ${API})
+    endforeach()
+endfunction()
+
+function (add_benchmark_for_api BASE_TARGET_NAME APPEND_API_TO_TARGET_NAME APIS)
+    # Get target name
+    if (APPEND_API_TO_TARGET_NAME)
+        set(TARGET_NAME "${BASE_TARGET_NAME}_${APIS}")
+    else()
+        set(TARGET_NAME "${BASE_TARGET_NAME}")
+    endif()
+
+    # Define target
     add_executable(${TARGET_NAME} CMakeLists.txt)
     link_to_framework(${TARGET_NAME} compute_benchmarks_framework)
+    target_link_libraries(${TARGET_NAME} PRIVATE ${APIS})
 
-    # Add sources
-    file(GLOB SOURCES *.cpp *.h)
-    target_sources(${TARGET_NAME} PRIVATE ${SOURCES})
-    add_subdirectories()
+    # API agnostic sources
+    set(API_AGNOSTIC_SOURCE_DIRECTORIES
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/gtest
+        ${CMAKE_CURRENT_SOURCE_DIR}/definitions
+    )
+    foreach(DIR ${API_AGNOSTIC_SOURCE_DIRECTORIES})
+        add_sources_to_benchmark(${TARGET_NAME} ${DIR})
+    endforeach()
+
+    # API specific sources
+    set(API_SPECIFIC_SOURCE_DIRECTORIES
+        ${SOURCE_ROOT}/common
+        ${CMAKE_CURRENT_SOURCE_DIR}/implementations
+    )
+    foreach(API ${APIS})
+        foreach(PARENT_DIR ${API_SPECIFIC_SOURCE_DIRECTORIES})
+            set(DIR ${PARENT_DIR}/${API})
+            add_sources_to_benchmark(${TARGET_NAME} ${DIR})
+            add_kernels_to_benchmark(${TARGET_NAME} ${DIR}/Kernels)
+        endforeach()
+    endforeach()
 
     # Ensure kernels reside inside benchmark's working directory
     copy_kernels_to_bin_directory(${TARGET_NAME})
 
     # Create directory structure in Visual Studio
-    setup_vs_folders(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
+    setup_vs_folders(${TARGET_NAME} ${SOURCE_ROOT})
 endfunction()

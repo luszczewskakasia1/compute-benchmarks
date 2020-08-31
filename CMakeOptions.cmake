@@ -7,5 +7,3 @@ endmacro()
 
 message(STATUS "Build options:")
 benchmark_option(OUTPUT_DIR "${CMAKE_BINARY_DIR}/bin")
-benchmark_option(TEST_OCL ON)
-benchmark_option(TEST_L0 ON)
