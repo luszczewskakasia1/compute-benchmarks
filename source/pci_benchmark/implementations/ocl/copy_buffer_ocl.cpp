@@ -36,6 +36,12 @@ static TestResult run(const CopyBufferArguments &arguments, Statistics &statisti
         return compressionStatus;
     }
 
+    // Fill buffers
+    const char pattern[] = {0};
+    ASSERT_CL_SUCCESS(clEnqueueFillBuffer(opencl.commandQueue, source, pattern, sizeof(pattern) / sizeof(pattern[0]), 0, arguments.size, 0, nullptr, nullptr));
+    ASSERT_CL_SUCCESS(clEnqueueFillBuffer(opencl.commandQueue, destination, pattern, sizeof(pattern) / sizeof(pattern[0]), 0, arguments.size, 0, nullptr, nullptr));
+    ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
+
     // Warmup
     ASSERT_CL_SUCCESS(clEnqueueCopyBuffer(opencl.commandQueue, source, destination, 0, 0, arguments.size, 0, nullptr, nullptr));
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));

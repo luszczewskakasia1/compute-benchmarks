@@ -28,6 +28,11 @@ static TestResult run(const UnmapBufferArguments &arguments, Statistics &statist
         return compressionStatus;
     }
 
+    // Fill buffers
+    const char pattern[] = {0};
+    ASSERT_CL_SUCCESS(clEnqueueFillBuffer(opencl.commandQueue, buffer, pattern, sizeof(pattern) / sizeof(pattern[0]), 0, arguments.size, 0, nullptr, nullptr));
+    ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
+
     // Warmup
     const auto mapFlags = convertMapFlags(arguments.mapFlags);
     void *ptr = clEnqueueMapBuffer(opencl.commandQueue, buffer, CL_BLOCKING, mapFlags, 0, arguments.size, 0, nullptr, nullptr, &retVal);

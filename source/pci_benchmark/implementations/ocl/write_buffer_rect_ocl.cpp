@@ -28,6 +28,11 @@ static TestResult run(const WriteBufferRectArguments &arguments, Statistics &sta
         return compressionStatus;
     }
 
+    // Fill buffers
+    const char pattern[] = {0};
+    ASSERT_CL_SUCCESS(clEnqueueFillBuffer(opencl.commandQueue, buffer, pattern, sizeof(pattern) / sizeof(pattern[0]), 0, arguments.size, 0, nullptr, nullptr));
+    ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
+
     // Warmup
     size_t bufferOffset[3] = {};
     ASSERT_CL_SUCCESS(clEnqueueWriteBufferRect(opencl.commandQueue, buffer, CL_BLOCKING,
