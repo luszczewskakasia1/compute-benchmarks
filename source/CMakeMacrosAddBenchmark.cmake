@@ -70,7 +70,7 @@ function (add_benchmark_for_api BASE_TARGET_NAME APPEND_API_TO_TARGET_NAME APIS)
         foreach(PARENT_DIR ${API_SPECIFIC_SOURCE_DIRECTORIES})
             set(DIR ${PARENT_DIR}/${API})
             add_sources_to_benchmark(${TARGET_NAME} ${DIR})
-            add_kernels_to_benchmark(${TARGET_NAME} ${DIR}/Kernels)
+            add_kernels_to_benchmark(${TARGET_NAME} ${DIR}/kernels)
         endforeach()
     endforeach()
 
