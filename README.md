@@ -27,9 +27,13 @@ export http_proxy="http://proxy-chain.intel.com:911"
 export https_proxy="htts://proxy-chain.intel.com:912"
 ```
 
-By default ComputeBenchmarks enables both OpenCL and LevelZero benchmarks. They can be disabled with commandline arguments to CMake. Example OpenCL-only build invocation:
+Each benchmark suite can be built as a single-api binary or as a an all-api binary.
+- Single-api binaries are named like `ulls_benchmark_ocl` and do not load libraries from not used APIs.
+- All-api binaries are named like `ulls_benchamrk` and contain every API supported by the benchmark, which makes them more convenient, but at a risk of introducing some overhead caused by loading unnecessary library.
+
+By default all benchmarks are compiled in all configurations. This can be changed with CMake arguments. For example, to disable all-api binaries, run:
 ```
-    cmake .. -DTEST_L0=OFF -DTEST_OCL=ON
+    cmake .. -DBUILD_ALL_API_BINARIES=OFF -DBUILD_SINGLE_API_BINARIES=ON
 ```
 
 ComputeBenchmarks will try to find SDKs for the APIs used. In case of inability to find those, it will use libraries contained in [third_party/opencl-sdk](third_party/opencl-sdk) and [third_party/level-zero-sdk](third_party/level-zero-sdk) directories. The libraries where compiled on Ubuntu 18.04 LTS with gcc 7.4.0 compiler. Using a different setup may result in build failures due to ABI incompatibility, so it's safest to have the SDK installed in your system.

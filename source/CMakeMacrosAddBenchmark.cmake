@@ -33,10 +33,16 @@ endfunction()
 
 function (add_benchmark BASE_TARGET_NAME)
     get_property(APIS GLOBAL PROPERTY APIS)
-    add_benchmark_for_api(${BASE_TARGET_NAME} OFF "${APIS}")
-    foreach(API ${APIS})
-        add_benchmark_for_api(${BASE_TARGET_NAME} ON ${API})
-    endforeach()
+
+    if (BUILD_ALL_API_BINARIES)
+        add_benchmark_for_api(${BASE_TARGET_NAME} OFF "${APIS}")
+    endif()
+
+    if (BUILD_SINGLE_API_BINARIES)
+        foreach(API ${APIS})
+            add_benchmark_for_api(${BASE_TARGET_NAME} ON ${API})
+        endforeach()
+    endif()
 endfunction()
 
 function (add_benchmark_for_api BASE_TARGET_NAME APPEND_API_TO_TARGET_NAME APIS)
