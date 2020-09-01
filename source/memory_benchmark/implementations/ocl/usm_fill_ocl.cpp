@@ -1,19 +1,19 @@
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/timer.h"
-#include "pci_benchmark/definitions/usm_memset.h"
+#include "memory_benchmark/definitions/usm_fill.h"
 
 #include <gtest/gtest.h>
 
-static TestResult run(const UsmMemsetArguments &arguments, Statistics &statistics) {
+static TestResult run(const UsmFillArguments &arguments, Statistics &statistics) {
     // Setup
     Opencl opencl;
     Timer timer;
     auto clHostMemAllocINTEL = (pfn_clHostMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clHostMemAllocINTEL");
     auto clDeviceMemAllocINTEL = (pfn_clDeviceMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clDeviceMemAllocINTEL");
     auto clMemFreeINTEL = (pfn_clMemFreeINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clMemFreeINTEL");
-    auto clEnqueueMemsetINTEL = (pfn_clEnqueueMemsetINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clEnqueueMemsetINTEL");
-    if (!clHostMemAllocINTEL || !clDeviceMemAllocINTEL || !clMemFreeINTEL || !clEnqueueMemsetINTEL) {
+    auto clEnqueueMemFillINTEL = (pfn_clEnqueueMemFillINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clEnqueueMemFillINTEL");
+    if (!clHostMemAllocINTEL || !clDeviceMemAllocINTEL || !clMemFreeINTEL || !clEnqueueMemFillINTEL) {
         return TestResult::DriverFunctionNotFound;
     }
     cl_int retVal;
@@ -27,15 +27,17 @@ static TestResult run(const UsmMemsetArguments &arguments, Statistics &statistic
     }
     ASSERT_CL_SUCCESS(retVal);
 
+    // Create pattern
+    const auto pattern = std::make_unique<uint8_t[]>(arguments.patternSize);
+
     // Warmup
-    const uint8_t memsetValue = 0x1;
-    ASSERT_CL_SUCCESS(clEnqueueMemsetINTEL(opencl.commandQueue, buffer, memsetValue, arguments.bufferSize, 0, nullptr, nullptr));
+    ASSERT_CL_SUCCESS(clEnqueueMemFillINTEL(opencl.commandQueue, buffer, pattern.get(), arguments.patternSize, arguments.bufferSize, 0, nullptr, nullptr));
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
         timer.measureStart();
-        ASSERT_CL_SUCCESS(clEnqueueMemsetINTEL(opencl.commandQueue, buffer, memsetValue, arguments.bufferSize, 0, nullptr, nullptr));
+        ASSERT_CL_SUCCESS(clEnqueueMemFillINTEL(opencl.commandQueue, buffer, pattern.get(), arguments.patternSize, arguments.bufferSize, 0, nullptr, nullptr));
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
         statistics.pushValue(timer.getBandwidth(arguments.bufferSize));
@@ -45,4 +47,4 @@ static TestResult run(const UsmMemsetArguments &arguments, Statistics &statistic
     return TestResult::Success;
 }
 
-static RegisterTestCase<UsmMemset> registerTestCase(run, Api::OpenCL, true);
+static RegisterTestCase<UsmFill> registerTestCase(run, Api::OpenCL, true);

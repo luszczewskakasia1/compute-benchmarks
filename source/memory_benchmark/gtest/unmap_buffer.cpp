@@ -1,4 +1,4 @@
-#include "pci_benchmark/definitions/unmap_buffer.h"
+#include "memory_benchmark/definitions/unmap_buffer.h"
 
 #include <gtest/gtest.h>
 

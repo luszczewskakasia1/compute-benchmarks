@@ -2,11 +2,11 @@
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/timer.h"
-#include "pci_benchmark/definitions/unmap_buffer.h"
+#include "memory_benchmark/definitions/map_buffer.h"
 
 #include <gtest/gtest.h>
 
-static TestResult run(const UnmapBufferArguments &arguments, Statistics &statistics) {
+static TestResult run(const MapBufferArguments &arguments, Statistics &statistics) {
     if (arguments.compressed && arguments.noIntelExtensions) {
         return TestResult::DeviceNotCapable;
     }
@@ -42,18 +42,20 @@ static TestResult run(const UnmapBufferArguments &arguments, Statistics &statist
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
-        ptr = clEnqueueMapBuffer(opencl.commandQueue, buffer, CL_BLOCKING, mapFlags, 0, arguments.size, 0, nullptr, nullptr, &retVal);
-
         timer.measureStart();
-        ASSERT_CL_SUCCESS(clEnqueueUnmapMemObject(opencl.commandQueue, buffer, ptr, 0, nullptr, nullptr));
+        ptr = clEnqueueMapBuffer(opencl.commandQueue, buffer, CL_NON_BLOCKING, mapFlags, 0, arguments.size, 0, nullptr, nullptr, &retVal);
+        ASSERT_CL_SUCCESS(retVal);
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
 
         statistics.pushValue(timer.getBandwidth(arguments.size));
+
+        ASSERT_CL_SUCCESS(clEnqueueUnmapMemObject(opencl.commandQueue, buffer, ptr, 0, nullptr, nullptr));
+        clFinish(opencl.commandQueue);
     }
 
     ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));
     return TestResult::Success;
 }
 
-static RegisterTestCase<UnmapBuffer> registerTestCase(run, Api::OpenCL);
+static RegisterTestCase<MapBuffer> registerTestCase(run, Api::OpenCL);

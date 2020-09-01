@@ -1,4 +1,4 @@
-#include "pci_benchmark/definitions/map_buffer.h"
+#include "memory_benchmark/definitions/map_buffer.h"
 
 #include <gtest/gtest.h>
 

@@ -1,4 +1,4 @@
-#include "pci_benchmark/definitions/usm_copy.h"
+#include "memory_benchmark/definitions/usm_copy.h"
 
 #include <gtest/gtest.h>
 

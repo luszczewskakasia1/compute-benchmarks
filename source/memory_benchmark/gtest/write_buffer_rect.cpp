@@ -1,4 +1,4 @@
-#include "pci_benchmark/definitions/write_buffer_rect.h"
+#include "memory_benchmark/definitions/write_buffer_rect.h"
 
 #include <gtest/gtest.h>
 

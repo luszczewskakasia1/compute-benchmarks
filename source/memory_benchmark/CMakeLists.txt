@@ -1,0 +1,1 @@
+add_benchmark(memory_benchmark)

@@ -1,7 +1,7 @@
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/timer.h"
-#include "pci_benchmark/definitions/copy_buffer.h"
+#include "memory_benchmark/definitions/copy_buffer.h"
 
 #include <gtest/gtest.h>
 

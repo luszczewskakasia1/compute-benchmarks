@@ -1,4 +1,4 @@
-#include "pci_benchmark/definitions/usm_memset.h"
+#include "memory_benchmark/definitions/usm_memset.h"
 
 #include <gtest/gtest.h>
 

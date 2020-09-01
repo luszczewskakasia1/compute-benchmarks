@@ -1,15 +1,15 @@
 #include "framework/benchmark_info.h"
 
-#include "pci_benchmark/definitions/copy_buffer.h"
-#include "pci_benchmark/definitions/fill_buffer.h"
-#include "pci_benchmark/definitions/map_buffer.h"
-#include "pci_benchmark/definitions/read_buffer.h"
-#include "pci_benchmark/definitions/unmap_buffer.h"
-#include "pci_benchmark/definitions/usm_copy.h"
-#include "pci_benchmark/definitions/usm_fill.h"
-#include "pci_benchmark/definitions/usm_memset.h"
-#include "pci_benchmark/definitions/write_buffer.h"
-#include "pci_benchmark/definitions/write_buffer_rect.h"
+#include "memory_benchmark/definitions/copy_buffer.h"
+#include "memory_benchmark/definitions/fill_buffer.h"
+#include "memory_benchmark/definitions/map_buffer.h"
+#include "memory_benchmark/definitions/read_buffer.h"
+#include "memory_benchmark/definitions/unmap_buffer.h"
+#include "memory_benchmark/definitions/usm_copy.h"
+#include "memory_benchmark/definitions/usm_fill.h"
+#include "memory_benchmark/definitions/usm_memset.h"
+#include "memory_benchmark/definitions/write_buffer.h"
+#include "memory_benchmark/definitions/write_buffer_rect.h"
 
 TestMap getTestMap() {
     TestMap testMap;
@@ -29,7 +29,7 @@ TestMap getTestMap() {
 }
 
 std::string getBenchmarkName() {
-    return "pci_benchmark";
+    return "memory_benchmark";
 }
 
 std::string getMeasurmentsUnit() {
