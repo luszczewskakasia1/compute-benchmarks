@@ -22,4 +22,4 @@ INSTANTIATE_TEST_SUITE_P(
     UsmSharedMigrateGpuTest,
     ::testing::Combine(
         ::testing::Values(Api::OpenCL, Api::L0),
-        ::testing::Values(64 * megaByte, 128 * megaByte)));
+        ::testing::Values(128 * megaByte, 256 * megaByte)));
