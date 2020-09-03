@@ -21,7 +21,7 @@ static TestResult run(const WalkerCompletionLatencyArguments &arguments, Statist
     volatile uint64_t *volatileBuffer = static_cast<uint64_t *>(buffer);
 
     // Create kernel
-    const auto kernelBinary = loadBinaryFile("write_one.spv");
+    const auto kernelBinary = loadBinaryFile("ulls_benchmark_write_one.spv");
     if (kernelBinary.size() == 0) {
         return TestResult::KernelNotFound;
     }

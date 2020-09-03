@@ -19,7 +19,7 @@ static TestResult run(const RoundTripSubmissionArguments &arguments, Statistics 
     ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, buffer, bufferSize));
 
     // Create kernel
-    const auto kernelBinary = loadBinaryFile("write_one.spv");
+    const auto kernelBinary = loadBinaryFile("ulls_benchmark_write_one.spv");
     if (kernelBinary.size() == 0) {
         return TestResult::KernelNotFound;
     }

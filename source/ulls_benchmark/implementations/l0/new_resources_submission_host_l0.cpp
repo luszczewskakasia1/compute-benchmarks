@@ -12,7 +12,7 @@ static TestResult run(const NewResourcesSubmissionHostArguments &arguments, Stat
     Timer timer;
 
     // Create kernel
-    auto kernelBinary = loadBinaryFile("write_one.spv");
+    auto kernelBinary = loadBinaryFile("ulls_benchmark_write_one.spv");
     if (kernelBinary.size() == 0) {
         return TestResult::KernelNotFound;
     }

@@ -13,7 +13,7 @@ static TestResult run(const EmptyKernelArguments &arguments, Statistics &statist
     Timer timer;
 
     // Create kernel
-    auto spirvModule = loadBinaryFile("empty_kernel.spv");
+    auto spirvModule = loadBinaryFile("ulls_benchmark_empty_kernel.spv");
     if (spirvModule.size() == 0) {
         return TestResult::KernelNotFound;
     }

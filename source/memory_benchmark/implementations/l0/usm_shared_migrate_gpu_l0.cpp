@@ -19,7 +19,7 @@ static TestResult run(const UsmSharedMigrateGpuArguments &arguments, Statistics 
     const size_t elementsCount = arguments.bufferSize / sizeof(uint32_t);
 
     // Create kernel
-    const auto kernelBinary = loadBinaryFile("fill_with_ones.spv");
+    const auto kernelBinary = loadBinaryFile("memory_benchmark_fill_with_ones.spv");
     if (kernelBinary.size() == 0) {
         return TestResult::KernelNotFound;
     }
