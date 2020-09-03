@@ -44,6 +44,14 @@ typedef CL_API_ENTRY void *(CL_API_CALL *pfn_clDeviceMemAllocINTEL)(
     cl_uint alignment,
     cl_int *errcode_ret);
 
+typedef CL_API_ENTRY void *(CL_API_CALL *pfn_clSharedMemAllocINTEL)(
+    cl_context context,
+    cl_device_id device,
+    const cl_mem_properties_intel *properties,
+    size_t size,
+    cl_uint alignment,
+    cl_int *errcodeRet);
+
 typedef CL_API_ENTRY cl_int(CL_API_CALL *pfn_clMemFreeINTEL)(
     cl_context context,
     const void *ptr);
