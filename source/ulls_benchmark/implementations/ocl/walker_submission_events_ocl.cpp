@@ -29,6 +29,7 @@ static TestResult run(const WalkerSubmissionEventsArguments &arguments, Statisti
     const size_t lws = 1;
     retVal |= clEnqueueNDRangeKernel(commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &profilingEvent);
     retVal |= clFinish(commandQueue);
+    ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
     ASSERT_CL_SUCCESS(retVal);
 
     // Benchmark
@@ -39,6 +40,7 @@ static TestResult run(const WalkerSubmissionEventsArguments &arguments, Statisti
         cl_ulong queued{}, start{};
         ASSERT_CL_SUCCESS(clGetEventProfilingInfo(profilingEvent, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, nullptr));
         ASSERT_CL_SUCCESS(clGetEventProfilingInfo(profilingEvent, CL_PROFILING_COMMAND_QUEUED, sizeof(cl_ulong), &queued, nullptr));
+        ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
         const auto timeNs = static_cast<Statistics::Value>(start - queued);
         const auto timeUs = timeNs / 1000;
 
@@ -46,7 +48,6 @@ static TestResult run(const WalkerSubmissionEventsArguments &arguments, Statisti
     }
 
     // Cleanup
-    ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
     ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
     ASSERT_CL_SUCCESS(clReleaseProgram(program));
     ASSERT_CL_SUCCESS(clReleaseCommandQueue(commandQueue));

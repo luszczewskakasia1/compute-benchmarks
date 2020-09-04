@@ -36,7 +36,6 @@ static TestResult run(const FlushTimeArguments &arguments, Statistics &statistic
     retVal |= clFinish(opencl.commandQueue);
     if (eventForNdr) {
         ASSERT_CL_SUCCESS(clReleaseEvent(event));
-        event = nullptr;
     }
     ASSERT_CL_SUCCESS(retVal);
 
@@ -50,7 +49,6 @@ static TestResult run(const FlushTimeArguments &arguments, Statistics &statistic
         statistics.pushValue(timer.Get());
         if (eventForNdr) {
             ASSERT_CL_SUCCESS(clReleaseEvent(event));
-            event = nullptr;
         }
     }
 

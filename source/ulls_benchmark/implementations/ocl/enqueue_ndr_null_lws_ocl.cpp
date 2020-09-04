@@ -33,7 +33,6 @@ static TestResult run(const EnqueueNdrNullLwsArguments &arguments, Statistics &s
     ASSERT_CL_SUCCESS(clFinish(commandQueue));
     if (eventForNdr) {
         ASSERT_CL_SUCCESS(clReleaseEvent(event));
-        event = nullptr;
     }
 
     // Benchmark
@@ -45,7 +44,6 @@ static TestResult run(const EnqueueNdrNullLwsArguments &arguments, Statistics &s
         statistics.pushValue(timer.Get());
         if (eventForNdr) {
             ASSERT_CL_SUCCESS(clReleaseEvent(event));
-            event = nullptr;
         }
     }
 
