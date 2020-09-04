@@ -31,6 +31,10 @@ static TestResult run(const EnqueueNdrNullLwsArguments &arguments, Statistics &s
     // Warmup, kernel
     ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, eventForNdr));
     ASSERT_CL_SUCCESS(clFinish(commandQueue));
+    if (eventForNdr) {
+        ASSERT_CL_SUCCESS(clReleaseEvent(event));
+        event = nullptr;
+    }
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {

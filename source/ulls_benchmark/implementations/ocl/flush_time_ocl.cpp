@@ -34,6 +34,10 @@ static TestResult run(const FlushTimeArguments &arguments, Statistics &statistic
     // Warmup, kernel
     retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, lwsForNdr, 0, nullptr, eventForNdr);
     retVal |= clFinish(opencl.commandQueue);
+    if (eventForNdr) {
+        ASSERT_CL_SUCCESS(clReleaseEvent(event));
+        event = nullptr;
+    }
     ASSERT_CL_SUCCESS(retVal);
 
     // Benchmark
@@ -44,14 +48,15 @@ static TestResult run(const FlushTimeArguments &arguments, Statistics &statistic
         timer.measureEnd();
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));        
         statistics.pushValue(timer.Get());
+        if (eventForNdr) {
+            ASSERT_CL_SUCCESS(clReleaseEvent(event));
+            event = nullptr;
+        }
     }
 
     // Cleanup
     ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
     ASSERT_CL_SUCCESS(clReleaseProgram(program));
-    if (eventForNdr) {
-        ASSERT_CL_SUCCESS(clReleaseEvent(event));
-    }
     return TestResult::Success;
 }
 
