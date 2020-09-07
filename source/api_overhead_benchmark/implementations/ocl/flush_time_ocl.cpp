@@ -1,23 +1,26 @@
-#include "ulls_benchmark/definitions/enqueue_ndr_null_lws.h"
-
+#include "api_overhead_benchmark/definitions/flush_time.h"
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/timer.h"
 
 #include <gtest/gtest.h>
 
-static TestResult run(const EnqueueNdrNullLwsArguments &arguments, Statistics &statistics) {
+static TestResult run(const FlushTimeArguments &arguments, Statistics &statistics) {
     // Setup
-    Opencl opencl(false);
-    cl_int retVal{};
-    cl_command_queue commandQueue = clCreateCommandQueueWithProperties(opencl.context, opencl.device, arguments.useProfiling ? opencl.profilingQueueProperties : opencl.queueProperties, &retVal);
-    ASSERT_CL_SUCCESS(retVal);
+    Opencl opencl;
     Timer timer;
+    cl_int retVal;
 
     // Get parameters for the enqueue call
     cl_event event{};
     cl_event *eventForNdr = arguments.useEvent ? &event : nullptr;
-    const size_t gws = arguments.gws;
+    size_t gws = arguments.workgroupCount * arguments.workgroupSize;
+    const size_t lws = arguments.workgroupSize;
+    const size_t *lwsForNdr = (lws != 0) ? &lws : nullptr;
+
+    if (gws == 0) {
+        gws = 1;
+    }
 
     // Create kernel
     const char *source = "__kernel void empty() {}";
@@ -29,18 +32,20 @@ static TestResult run(const EnqueueNdrNullLwsArguments &arguments, Statistics &s
     ASSERT_CL_SUCCESS(retVal);
 
     // Warmup, kernel
-    ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, eventForNdr));
-    ASSERT_CL_SUCCESS(clFinish(commandQueue));
+    retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, lwsForNdr, 0, nullptr, eventForNdr);
+    retVal |= clFinish(opencl.commandQueue);
     if (eventForNdr) {
         ASSERT_CL_SUCCESS(clReleaseEvent(event));
     }
+    ASSERT_CL_SUCCESS(retVal);
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
+        ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, lwsForNdr, 0, nullptr, eventForNdr));
         timer.measureStart();
-        ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, eventForNdr));
+        ASSERT_CL_SUCCESS(clFlush(opencl.commandQueue));
         timer.measureEnd();
-        ASSERT_CL_SUCCESS(clFinish(commandQueue));
+        ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         statistics.pushValue(timer.Get());
         if (eventForNdr) {
             ASSERT_CL_SUCCESS(clReleaseEvent(event));
@@ -50,8 +55,7 @@ static TestResult run(const EnqueueNdrNullLwsArguments &arguments, Statistics &s
     // Cleanup
     ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
     ASSERT_CL_SUCCESS(clReleaseProgram(program));
-    ASSERT_CL_SUCCESS(clReleaseCommandQueue(commandQueue));
     return TestResult::Success;
 }
 
-static RegisterTestCase<EnqueueNdrNullLws> registerTestCase(run, Api::OpenCL);
+static RegisterTestCase<FlushTime> registerTestCase(run, Api::OpenCL);
