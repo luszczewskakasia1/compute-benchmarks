@@ -8,6 +8,12 @@
 #include <gtest/gtest.h>
 #include <level_zero/zex_ddi.h>
 
+#define ADD_ENTER_SUPPORT 0
+
+#if ADD_ENTER_SUPPORT
+#include <iostream>
+#endif 
+
 static TestResult run(const WriteLatencyArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;
     zex_pfnCommandListAppendPipeControl_t zexCommandListAppendPipeControl{};
@@ -75,11 +81,22 @@ static TestResult run(const WriteLatencyArguments &arguments, Statistics &statis
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
         ASSERT_ZE_RESULT_SUCCESS(zeEventHostSynchronize(hEvent, std::numeric_limits<uint64_t>::max()));
 
+        #if ADD_ENTER_SUPPORT
+        printf("\n Welcome to minimized test reproducer, state is prepared at this point buffer2(on which cpu will wait) is at %p , press enter to continue", volatileBuffer);
+        std::cin.ignore();
+        #endif
+
         timer.measureStart();
         ASSERT_ZE_RESULT_SUCCESS(zeEventHostSignal(hEvent2));
         while (*volatileBuffer == timestampInitial) {
         }
         timer.measureEnd();
+
+        #if ADD_ENTER_SUPPORT
+        printf("\n RoundTrip completed press enter to continue");
+        std::cin.ignore();
+        #endif
+
         statistics.pushValue(timer.Get());
 
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
