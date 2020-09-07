@@ -7,7 +7,7 @@
 
 struct CopyBufferArguments : TestCaseArguments {
     ByteSizeTestCaseArgument size;
-    BooleanTestCaseArgument compressed;
+    CompressionBooleanTestCaseArgument compressed;
 
     CopyBufferArguments()
         : size(*this, "size"),

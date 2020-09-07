@@ -8,7 +8,7 @@
 
 struct UnmapBufferArguments : TestCaseArguments {
     ByteSizeTestCaseArgument size;
-    BooleanTestCaseArgument compressed;
+    CompressionBooleanTestCaseArgument compressed;
     MapFlagsTestCaseArgument mapFlags;
 
     UnmapBufferArguments()

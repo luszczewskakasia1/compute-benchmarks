@@ -7,7 +7,7 @@
 
 struct WriteBufferArguments : TestCaseArguments {
     ByteSizeTestCaseArgument size;
-    BooleanTestCaseArgument compressed;
+    CompressionBooleanTestCaseArgument compressed;
 
     WriteBufferArguments()
         : size(*this, "size"),

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "framework/configuration.h"
 #include "framework/error.h"
 #include "framework/map_flags.h"
 #include "framework/string_utils.h"
@@ -260,6 +261,23 @@ struct BooleanTestCaseArgument : TestCaseArgument {
     }
 
     int value = -1;
+};
+
+struct CompressionBooleanTestCaseArgument : BooleanTestCaseArgument {
+    using BooleanTestCaseArgument::BooleanTestCaseArgument;
+
+    CompressionBooleanTestCaseArgument &operator=(bool value) {
+        this->value = value;
+        return *this;
+    }
+
+  protected:
+    std::string toStringValue() const override {
+        if (::configuration.noIntelExtensions) {
+            return "?";
+        }
+        return BooleanTestCaseArgument::toStringValue();
+    }
 };
 
 struct ThreeComponentUintTestCaseArgument : TestCaseArgument {
