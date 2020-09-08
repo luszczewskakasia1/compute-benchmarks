@@ -8,7 +8,7 @@
 struct FillBufferArguments : TestCaseArguments {
     ByteSizeTestCaseArgument size;
     ByteSizeTestCaseArgument patternSize;
-    BooleanTestCaseArgument compressed;
+    CompressionBooleanTestCaseArgument compressed;
 
     FillBufferArguments()
         : size(*this, "size"),

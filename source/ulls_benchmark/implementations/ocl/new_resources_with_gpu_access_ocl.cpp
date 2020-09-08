@@ -22,8 +22,6 @@ static TestResult run(const NewResourcesWithGpuAccessArguments &arguments, Stati
     cl_kernel kernel = clCreateKernel(program, "write", &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
-    ERROR_IF(arguments.size % sizeof(cl_uint) != 0, "NOOOOOOO");
-
     // Get work size
     const size_t elements = arguments.size / sizeof(cl_uint);
     size_t lws{};

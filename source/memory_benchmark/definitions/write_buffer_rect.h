@@ -7,7 +7,7 @@
 
 struct WriteBufferRectArguments : TestCaseArguments {
     ByteSizeTestCaseArgument size;
-    BooleanTestCaseArgument compressed;
+    CompressionBooleanTestCaseArgument compressed;
     ThreeComponentOffsetTestCaseArgument origin;
     ThreeComponentSizeTestCaseArgument region;
     ByteSizeTestCaseArgument rPitch;

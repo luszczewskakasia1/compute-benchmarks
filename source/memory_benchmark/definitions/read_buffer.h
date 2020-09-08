@@ -7,7 +7,7 @@
 
 struct ReadBufferArguments : TestCaseArguments {
     ByteSizeTestCaseArgument size;
-    BooleanTestCaseArgument compressed;
+    CompressionBooleanTestCaseArgument compressed;
 
     ReadBufferArguments()
         : size(*this, "size"),

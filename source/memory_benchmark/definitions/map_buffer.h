@@ -8,7 +8,7 @@
 
 struct MapBufferArguments : TestCaseArguments {
     ByteSizeTestCaseArgument size;
-    BooleanTestCaseArgument compressed;
+    CompressionBooleanTestCaseArgument compressed;
     MapFlagsTestCaseArgument mapFlags;
 
     MapBufferArguments()
