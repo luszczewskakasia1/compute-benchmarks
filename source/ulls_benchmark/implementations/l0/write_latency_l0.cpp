@@ -51,7 +51,7 @@ static TestResult run(const WriteLatencyArguments &arguments, Statistics &statis
         nullptr,
         1,
         ZE_EVENT_SCOPE_FLAG_HOST,
-        ZE_EVENT_SCOPE_FLAG_DEVICE};
+        0u};
     ze_event_handle_t hEvent2;
     ASSERT_ZE_RESULT_SUCCESS(zeEventCreate(hEventPool, &eventDesc2, &hEvent2));
 
