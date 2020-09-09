@@ -10,6 +10,7 @@
 #include "ulls_benchmark/definitions/new_resources_with_gpu_access.h"
 #include "ulls_benchmark/definitions/round_trip_submission.h"
 #include "ulls_benchmark/definitions/usm_shared_first_cpu_access.h"
+#include "ulls_benchmark/definitions/usm_shared_first_gpu_access.h"
 #include "ulls_benchmark/definitions/walker_completion_latency.h"
 #include "ulls_benchmark/definitions/walker_submission_events.h"
 #include "ulls_benchmark/definitions/write_latency.h"
@@ -27,6 +28,7 @@ TestMap getTestMap() {
     TEST_CASE(RoundTripSubmission)
     TEST_CASE(CompletionLatency)
     TEST_CASE(UsmSharedFirstCpuAccess)
+    TEST_CASE(UsmSharedFirstGpuAccess)
     TEST_CASE(WalkerCompletionLatency)
     TEST_CASE(WalkerSubmissionEvents)
     TEST_CASE(WriteLatency)
