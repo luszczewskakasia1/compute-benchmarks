@@ -29,10 +29,10 @@ static TestResult run(const NewResourcesWithGpuAccessArguments &arguments, Stati
     ASSERT_ZE_RESULT_SUCCESS(zeKernelCreate(module, &kernelDesc, &kernel));
 
     // Get work size
-    const size_t elements = arguments.size / sizeof(uint32_t);
+    const uint32_t elements = static_cast<uint32_t>(arguments.size) / sizeof(uint32_t);
     uint32_t groupSizeX{}, groupSizeY{}, groupSizeZ{};
-    ASSERT_ZE_RESULT_SUCCESS(zeKernelSuggestGroupSize(kernel, arguments.size, 1, 1, &groupSizeX, &groupSizeY, &groupSizeZ));
-    size_t groupsCount = elements / groupSizeX; // may be rounded down, but that shouldn't matter for big buffers
+    ASSERT_ZE_RESULT_SUCCESS(zeKernelSuggestGroupSize(kernel, static_cast<uint32_t>(arguments.size), 1, 1, &groupSizeX, &groupSizeY, &groupSizeZ));
+    uint32_t groupsCount = elements / groupSizeX; // may be rounded down, but that shouldn't matter for big buffers
     if (groupsCount == 0) {
         // very small buffer
         groupSizeX = elements;
@@ -50,7 +50,7 @@ static TestResult run(const NewResourcesWithGpuAccessArguments &arguments, Stati
     ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, buffer, bufferSize));
 
     // Warmup
-    const ze_group_count_t dispatchTraits{groupsCount, 1, 1};
+    const ze_group_count_t dispatchTraits{groupsCount, 1u, 1u};
     ze_command_list_desc_t cmdListDesc{};
     cmdListDesc.commandQueueGroupOrdinal = levelzero.commandListCommandQueueGroupOrdinal;
     ze_command_list_handle_t cmdList;
