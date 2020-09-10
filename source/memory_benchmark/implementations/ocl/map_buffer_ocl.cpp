@@ -58,4 +58,4 @@ static TestResult run(const MapBufferArguments &arguments, Statistics &statistic
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<MapBuffer> RegisterTestCaseImplementation(run, Api::OpenCL);
+static RegisterTestCaseImplementation<MapBuffer> registerTestCase(run, Api::OpenCL);

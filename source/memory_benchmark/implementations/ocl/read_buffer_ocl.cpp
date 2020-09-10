@@ -50,4 +50,4 @@ static TestResult run(const ReadBufferArguments &arguments, Statistics &statisti
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<ReadBuffer> RegisterTestCaseImplementation(run, Api::OpenCL);
+static RegisterTestCaseImplementation<ReadBuffer> registerTestCase(run, Api::OpenCL);

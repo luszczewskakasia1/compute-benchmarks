@@ -53,4 +53,4 @@ static TestResult run(const CompletionLatencyArguments &arguments, Statistics &s
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<CompletionLatency> RegisterTestCaseImplementation(run, Api::L0);
+static RegisterTestCaseImplementation<CompletionLatency> registerTestCase(run, Api::L0);

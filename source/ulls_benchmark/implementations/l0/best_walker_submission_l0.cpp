@@ -77,4 +77,4 @@ static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<BestWalkerSubmission> RegisterTestCaseImplementation(run, Api::L0);
+static RegisterTestCaseImplementation<BestWalkerSubmission> registerTestCase(run, Api::L0);

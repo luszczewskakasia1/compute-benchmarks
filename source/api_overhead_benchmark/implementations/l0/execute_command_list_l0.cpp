@@ -74,4 +74,4 @@ static TestResult run(const ExecuteCommandListArguments &arguments, Statistics &
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<ExecuteCommandList> RegisterTestCaseImplementation(run, Api::L0);
+static RegisterTestCaseImplementation<ExecuteCommandList> registerTestCase(run, Api::L0);

@@ -54,4 +54,4 @@ static TestResult run(const BestSubmissionArguments &arguments, Statistics &stat
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<BestSubmission> RegisterTestCaseImplementation(run, Api::L0);
+static RegisterTestCaseImplementation<BestSubmission> registerTestCase(run, Api::L0);

@@ -61,4 +61,4 @@ static TestResult run(const CopyBufferArguments &arguments, Statistics &statisti
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<CopyBuffer> RegisterTestCaseImplementation(run, Api::OpenCL);
+static RegisterTestCaseImplementation<CopyBuffer> registerTestCase(run, Api::OpenCL);

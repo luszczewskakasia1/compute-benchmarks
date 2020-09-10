@@ -38,4 +38,4 @@ static TestResult run(const UsmSharedFirstCpuAccessArguments &arguments, Statist
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<UsmSharedFirstCpuAccess> RegisterTestCaseImplementation(run, Api::OpenCL, true);
+static RegisterTestCaseImplementation<UsmSharedFirstCpuAccess> registerTestCase(run, Api::OpenCL, true);

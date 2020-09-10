@@ -60,4 +60,4 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<UsmCopy> RegisterTestCaseImplementation(run, Api::L0);
+static RegisterTestCaseImplementation<UsmCopy> registerTestCase(run, Api::L0);

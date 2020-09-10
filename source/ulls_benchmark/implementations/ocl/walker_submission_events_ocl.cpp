@@ -54,4 +54,4 @@ static TestResult run(const WalkerSubmissionEventsArguments &arguments, Statisti
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<WalkerSubmissionEvents> RegisterTestCaseImplementation(run, Api::OpenCL);
+static RegisterTestCaseImplementation<WalkerSubmissionEvents> registerTestCase(run, Api::OpenCL);

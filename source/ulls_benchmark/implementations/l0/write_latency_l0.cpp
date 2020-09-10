@@ -112,4 +112,4 @@ static TestResult run(const WriteLatencyArguments &arguments, Statistics &statis
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<WriteLatency> RegisterTestCaseImplementation(run, Api::L0);
+static RegisterTestCaseImplementation<WriteLatency> registerTestCase(run, Api::L0);

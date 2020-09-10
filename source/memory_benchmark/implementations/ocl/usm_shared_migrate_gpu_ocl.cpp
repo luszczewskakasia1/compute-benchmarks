@@ -61,4 +61,4 @@ static TestResult run(const UsmSharedMigrateGpuArguments &arguments, Statistics 
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<UsmSharedMigrateGpu> RegisterTestCaseImplementation(run, Api::OpenCL, true);
+static RegisterTestCaseImplementation<UsmSharedMigrateGpu> registerTestCase(run, Api::OpenCL, true);

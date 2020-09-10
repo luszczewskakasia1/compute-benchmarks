@@ -56,4 +56,4 @@ static TestResult run(const UsmSharedFirstGpuAccessArguments &arguments, Statist
     return TestResult::Success;
 }
 
-static RegisterTestCase<UsmSharedFirstGpuAccess> registerTestCase(run, Api::OpenCL, true);
+static RegisterTestCaseImplementation<UsmSharedFirstGpuAccess> registerTestCase(run, Api::OpenCL, true);

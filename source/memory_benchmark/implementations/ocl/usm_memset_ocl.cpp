@@ -45,4 +45,4 @@ static TestResult run(const UsmMemsetArguments &arguments, Statistics &statistic
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<UsmMemset> RegisterTestCaseImplementation(run, Api::OpenCL, true);
+static RegisterTestCaseImplementation<UsmMemset> registerTestCase(run, Api::OpenCL, true);

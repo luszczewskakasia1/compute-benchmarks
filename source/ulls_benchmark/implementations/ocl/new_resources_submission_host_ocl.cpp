@@ -59,4 +59,4 @@ static TestResult run(const NewResourcesSubmissionHostArguments &arguments, Stat
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<NewResourcesSubmissionHost> RegisterTestCaseImplementation(run, Api::OpenCL, true);
+static RegisterTestCaseImplementation<NewResourcesSubmissionHost> registerTestCase(run, Api::OpenCL, true);

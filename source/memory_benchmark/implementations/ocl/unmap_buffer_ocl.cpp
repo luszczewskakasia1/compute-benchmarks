@@ -56,4 +56,4 @@ static TestResult run(const UnmapBufferArguments &arguments, Statistics &statist
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<UnmapBuffer> RegisterTestCaseImplementation(run, Api::OpenCL);
+static RegisterTestCaseImplementation<UnmapBuffer> registerTestCase(run, Api::OpenCL);

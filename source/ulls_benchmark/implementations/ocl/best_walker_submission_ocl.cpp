@@ -67,4 +67,4 @@ static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<BestWalkerSubmission> RegisterTestCaseImplementation(run, Api::OpenCL, true);
+static RegisterTestCaseImplementation<BestWalkerSubmission> registerTestCase(run, Api::OpenCL, true);

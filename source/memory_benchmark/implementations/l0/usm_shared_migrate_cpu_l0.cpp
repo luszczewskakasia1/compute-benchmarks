@@ -82,4 +82,4 @@ static TestResult run(const UsmSharedMigrateCpuArguments &arguments, Statistics 
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<UsmSharedMigrateCpu> RegisterTestCaseImplementation(run, Api::L0);
+static RegisterTestCaseImplementation<UsmSharedMigrateCpu> registerTestCase(run, Api::L0);

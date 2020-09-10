@@ -69,4 +69,4 @@ static TestResult run(const UsmSharedFirstGpuAccessArguments &arguments, Statist
     return TestResult::Success;
 }
 
-static RegisterTestCase<UsmSharedFirstGpuAccess> registerTestCase(run, Api::L0);
+static RegisterTestCaseImplementation<UsmSharedFirstGpuAccess> registerTestCase(run, Api::L0);

@@ -67,4 +67,4 @@ static TestResult run(const NewResourcesWithGpuAccessArguments &arguments, Stati
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<NewResourcesWithGpuAccess> RegisterTestCaseImplementation(run, Api::OpenCL);
+static RegisterTestCaseImplementation<NewResourcesWithGpuAccess> registerTestCase(run, Api::OpenCL);

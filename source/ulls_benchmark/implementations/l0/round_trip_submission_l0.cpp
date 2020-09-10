@@ -69,4 +69,4 @@ static TestResult run(const RoundTripSubmissionArguments &arguments, Statistics 
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<RoundTripSubmission> RegisterTestCaseImplementation(run, Api::L0);
+static RegisterTestCaseImplementation<RoundTripSubmission> registerTestCase(run, Api::L0);

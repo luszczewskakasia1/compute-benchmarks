@@ -91,4 +91,4 @@ static TestResult run(const NewResourcesSubmissionHostArguments &arguments, Stat
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<NewResourcesSubmissionHost> RegisterTestCaseImplementation(run, Api::L0);
+static RegisterTestCaseImplementation<NewResourcesSubmissionHost> registerTestCase(run, Api::L0);
