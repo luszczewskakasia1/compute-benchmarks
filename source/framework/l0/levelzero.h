@@ -50,6 +50,10 @@ struct LevelZero {
         EXPECT_ZE_RESULT_SUCCESS(zeDeviceGet(driver, &deviceCount, devices.get()));
         this->device = devices[deviceIndex];
 
+        // Get device info
+        this->deviceProperties.stype = {ZE_STRUCTURE_TYPE_DEVICE_PROPERTIES};
+        EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetProperties(this->device, &this->deviceProperties));
+
         // Create context
         const ze_context_desc_t contextDesc{ZE_STRUCTURE_TYPE_CONTEXT_DESC};
         EXPECT_ZE_RESULT_SUCCESS(zeContextCreate(driver, &contextDesc, &context));
@@ -92,4 +96,5 @@ struct LevelZero {
     ze_context_handle_t context{};
     ze_command_queue_handle_t commandQueue{};
     uint32_t commandListCommandQueueGroupOrdinal{};
+    ze_device_properties_t deviceProperties;
 };

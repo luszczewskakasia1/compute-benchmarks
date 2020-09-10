@@ -1,0 +1,20 @@
+#include "gpu_cmds_benchmark/definitions/write_timestamp.h"
+
+#include <gtest/gtest.h>
+
+class WriteTimestampTest : public ::testing::TestWithParam<size_t> {
+};
+
+TEST_P(WriteTimestampTest, Test) {
+    WriteTimestampArguments args{};
+    args.api = Api::L0;
+    args.measuredCommands = GetParam();
+
+    WriteTimestamp test;
+    test.run(args);
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    WriteTimestampTest,
+    WriteTimestampTest,
+    ::testing::Values(1, 10, 500));
