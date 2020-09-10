@@ -53,4 +53,4 @@ static TestResult run(const EnqueueNdrNullLwsArguments &arguments, Statistics &s
     return TestResult::Success;
 }
 
-static RegisterTestCase<EnqueueNdrNullLws> registerTestCase(run, Api::OpenCL);
+static RegisterTestCaseImplementation<EnqueueNdrNullLws> RegisterTestCaseImplementation(run, Api::OpenCL);

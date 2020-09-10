@@ -47,4 +47,4 @@ static TestResult run(const UsmFillArguments &arguments, Statistics &statistics)
     return TestResult::Success;
 }
 
-static RegisterTestCase<UsmFill> registerTestCase(run, Api::OpenCL, true);
+static RegisterTestCaseImplementation<UsmFill> RegisterTestCaseImplementation(run, Api::OpenCL, true);

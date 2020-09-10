@@ -48,4 +48,4 @@ static TestResult run(const FillBufferArguments &arguments, Statistics &statisti
     return TestResult::Success;
 }
 
-static RegisterTestCase<FillBuffer> registerTestCase(run, Api::OpenCL);
+static RegisterTestCaseImplementation<FillBuffer> RegisterTestCaseImplementation(run, Api::OpenCL);

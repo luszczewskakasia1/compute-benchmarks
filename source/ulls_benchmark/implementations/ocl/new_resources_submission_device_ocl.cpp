@@ -56,4 +56,4 @@ static TestResult run(const NewResourcesSubmissionDeviceArguments &arguments, St
     return TestResult::Success;
 }
 
-static RegisterTestCase<NewResourcesSubmissionDevice> registerTestCase(run, Api::OpenCL);
+static RegisterTestCaseImplementation<NewResourcesSubmissionDevice> RegisterTestCaseImplementation(run, Api::OpenCL);

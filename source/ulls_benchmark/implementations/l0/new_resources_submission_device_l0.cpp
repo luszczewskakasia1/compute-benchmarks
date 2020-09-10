@@ -91,4 +91,4 @@ static TestResult run(const NewResourcesSubmissionDeviceArguments &arguments, St
     return TestResult::Success;
 }
 
-static RegisterTestCase<NewResourcesSubmissionDevice> registerTestCase(run, Api::L0);
+static RegisterTestCaseImplementation<NewResourcesSubmissionDevice> RegisterTestCaseImplementation(run, Api::L0);

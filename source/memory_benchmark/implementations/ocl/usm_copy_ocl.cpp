@@ -49,4 +49,4 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
     return TestResult::Success;
 }
 
-static RegisterTestCase<UsmCopy> registerTestCase(run, Api::OpenCL, true);
+static RegisterTestCaseImplementation<UsmCopy> RegisterTestCaseImplementation(run, Api::OpenCL, true);

@@ -50,4 +50,4 @@ static TestResult run(const WriteBufferArguments &arguments, Statistics &statist
     return TestResult::Success;
 }
 
-static RegisterTestCase<WriteBuffer> registerTestCase(run, Api::OpenCL);
+static RegisterTestCaseImplementation<WriteBuffer> RegisterTestCaseImplementation(run, Api::OpenCL);

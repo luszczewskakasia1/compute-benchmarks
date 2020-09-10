@@ -57,4 +57,4 @@ static TestResult run(const WriteBufferRectArguments &arguments, Statistics &sta
     return TestResult::Success;
 }
 
-static RegisterTestCase<WriteBufferRect> registerTestCase(run, Api::OpenCL);
+static RegisterTestCaseImplementation<WriteBufferRect> RegisterTestCaseImplementation(run, Api::OpenCL);

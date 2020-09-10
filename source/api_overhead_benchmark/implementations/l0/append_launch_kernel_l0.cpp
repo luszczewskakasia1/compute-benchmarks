@@ -72,4 +72,4 @@ static TestResult run(const AppendLaunchKernelArguments &arguments, Statistics &
     return TestResult::Success;
 }
 
-static RegisterTestCase<AppendLaunchKernel> registerTestCase(run, Api::L0);
+static RegisterTestCaseImplementation<AppendLaunchKernel> RegisterTestCaseImplementation(run, Api::L0);

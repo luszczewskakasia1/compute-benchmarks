@@ -34,4 +34,4 @@ static TestResult run(const UsmSharedFirstCpuAccessArguments &arguments, Statist
     return TestResult::Success;
 }
 
-static RegisterTestCase<UsmSharedFirstCpuAccess> registerTestCase(run, Api::L0);
+static RegisterTestCaseImplementation<UsmSharedFirstCpuAccess> RegisterTestCaseImplementation(run, Api::L0);

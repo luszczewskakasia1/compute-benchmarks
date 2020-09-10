@@ -77,4 +77,4 @@ static TestResult run(const WalkerCompletionLatencyArguments &arguments, Statist
     return TestResult::Success;
 }
 
-static RegisterTestCase<WalkerCompletionLatency> registerTestCase(run, Api::L0);
+static RegisterTestCaseImplementation<WalkerCompletionLatency> RegisterTestCaseImplementation(run, Api::L0);

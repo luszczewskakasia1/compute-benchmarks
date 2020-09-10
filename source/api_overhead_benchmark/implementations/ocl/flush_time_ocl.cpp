@@ -58,4 +58,4 @@ static TestResult run(const FlushTimeArguments &arguments, Statistics &statistic
     return TestResult::Success;
 }
 
-static RegisterTestCase<FlushTime> registerTestCase(run, Api::OpenCL);
+static RegisterTestCaseImplementation<FlushTime> RegisterTestCaseImplementation(run, Api::OpenCL);

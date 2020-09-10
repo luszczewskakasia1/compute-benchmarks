@@ -59,4 +59,4 @@ static TestResult run(const EnqueueNdrTimeArguments &arguments, Statistics &stat
     return TestResult::Success;
 }
 
-static RegisterTestCase<EnqueueNdrTime> registerTestCase(run, Api::OpenCL);
+static RegisterTestCaseImplementation<EnqueueNdrTime> RegisterTestCaseImplementation(run, Api::OpenCL);

@@ -65,4 +65,4 @@ static TestResult run(const EmptyKernelArguments &arguments, Statistics &statist
     return TestResult::Success;
 }
 
-static RegisterTestCase<EmptyKernel> registerTestCase(run, Api::L0);
+static RegisterTestCaseImplementation<EmptyKernel> RegisterTestCaseImplementation(run, Api::L0);

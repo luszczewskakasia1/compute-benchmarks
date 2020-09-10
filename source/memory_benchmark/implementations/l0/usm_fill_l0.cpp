@@ -55,4 +55,4 @@ static TestResult run(const UsmFillArguments &arguments, Statistics &statistics)
     return TestResult::Success;
 }
 
-static RegisterTestCase<UsmFill> registerTestCase(run, Api::L0);
+static RegisterTestCaseImplementation<UsmFill> RegisterTestCaseImplementation(run, Api::L0);

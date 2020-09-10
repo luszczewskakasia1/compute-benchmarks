@@ -93,4 +93,4 @@ static TestResult run(const BestWalkerSubmissionImmediateArguments &arguments, S
     return TestResult::Success;
 }
 
-static RegisterTestCase<BestWalkerSubmissionImmediate> registerTestCase(run, Api::L0);
+static RegisterTestCaseImplementation<BestWalkerSubmissionImmediate> RegisterTestCaseImplementation(run, Api::L0);

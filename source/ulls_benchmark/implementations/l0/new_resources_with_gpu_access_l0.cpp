@@ -99,4 +99,4 @@ static TestResult run(const NewResourcesWithGpuAccessArguments &arguments, Stati
     return TestResult::Success;
 }
 
-static RegisterTestCase<NewResourcesWithGpuAccess> registerTestCase(run, Api::L0);
+static RegisterTestCaseImplementation<NewResourcesWithGpuAccess> RegisterTestCaseImplementation(run, Api::L0);
