@@ -17,4 +17,4 @@ TEST_P(WaitOnEventHotTest, Test) {
 INSTANTIATE_TEST_SUITE_P(
     WaitOnEventHotTest,
     WaitOnEventHotTest,
-    ::testing::Values(1, 10, 500));
+    ::testing::Values(500, 1000));
