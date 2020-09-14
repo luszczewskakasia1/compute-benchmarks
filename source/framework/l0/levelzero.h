@@ -23,6 +23,12 @@
         ERROR(std::string("Fatal LevelZero error occurred, retVal=") + std::to_string(retVal)); \
     }
 
+#define ZE_RESULT_SUCCESS_OR_RETURN_DEFAULT(retVal) \
+    if (retVal != ZE_RESULT_SUCCESS) {              \
+        EXPECT_EQ(ZE_RESULT_SUCCESS, retVal);       \
+        return {};                                  \
+    }
+
 struct LevelZero {
     LevelZero() : LevelZero(true) {}
     LevelZero(bool createCommandQueue) {
