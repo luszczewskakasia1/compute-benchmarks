@@ -1,0 +1,29 @@
+#pragma once
+
+#include "framework/test_case/test_case.h"
+
+struct KernelWithWorkArguments : TestCaseArguments {
+    WorkItemIdUsageTestCaseArgument usedIds;
+    PositiveIntegerTestCaseArgument measuredCommands;
+    PositiveIntegerTestCaseArgument workgroupCount;
+    PositiveIntegerTestCaseArgument workgroupSize;
+
+    KernelWithWorkArguments()
+        : usedIds(*this, "usedIds"),
+          measuredCommands(*this, "measuredCommands", "Number of commands being measured. Result is divided by this number."),
+          workgroupCount(*this, "wgc", "workgroup count"),
+          workgroupSize(*this, "wgs", "workgroup size (aka local work size)") {}
+};
+
+class KernelWithWork : public TestCase<KernelWithWorkArguments> {
+  public:
+    using TestCase<KernelWithWorkArguments>::TestCase;
+
+    std::string getHelp() const override {
+        return "measures time required to run an empty kernel on GPU.";
+    }
+
+    std::string getTestCaseName() const override {
+        return "KernelWithWork";
+    }
+};
