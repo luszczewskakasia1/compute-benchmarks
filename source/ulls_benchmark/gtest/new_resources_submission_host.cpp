@@ -1,6 +1,6 @@
 #include "ulls_benchmark/definitions/new_resources_submission_host.h"
 
-#include "framework/common_gtest_args.h"
+#include "framework/utility/common_gtest_args.h"
 
 #include <gtest/gtest.h>
 

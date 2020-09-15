@@ -1,8 +1,7 @@
-#include "ulls_benchmark/definitions/write_latency.h"
-
 #include "framework/l0/levelzero.h"
 #include "framework/test_case/register_test_case.h"
-#include "framework/timer.h"
+#include "framework/utility/timer.h"
+#include "ulls_benchmark/definitions/write_latency.h"
 
 #include <emmintrin.h>
 #include <gtest/gtest.h>
@@ -12,7 +11,7 @@
 
 #if ADD_ENTER_SUPPORT
 #include <iostream>
-#endif 
+#endif
 
 static TestResult run(const WriteLatencyArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;
@@ -81,10 +80,10 @@ static TestResult run(const WriteLatencyArguments &arguments, Statistics &statis
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
         ASSERT_ZE_RESULT_SUCCESS(zeEventHostSynchronize(hEvent, std::numeric_limits<uint64_t>::max()));
 
-        #if ADD_ENTER_SUPPORT
+#if ADD_ENTER_SUPPORT
         printf("\n Welcome to minimized test reproducer, state is prepared at this point buffer2(on which cpu will wait) is at %p , press enter to continue", volatileBuffer);
         std::cin.ignore();
-        #endif
+#endif
 
         timer.measureStart();
         ASSERT_ZE_RESULT_SUCCESS(zeEventHostSignal(hEvent2));
@@ -92,10 +91,10 @@ static TestResult run(const WriteLatencyArguments &arguments, Statistics &statis
         }
         timer.measureEnd();
 
-        #if ADD_ENTER_SUPPORT
+#if ADD_ENTER_SUPPORT
         printf("\n RoundTrip completed press enter to continue");
         std::cin.ignore();
-        #endif
+#endif
 
         statistics.pushValue(timer.Get());
 

@@ -2,10 +2,10 @@
 
 #include "framework/configuration.h"
 #include "framework/enum/api.h"
-#include "framework/error.h"
-#include "framework/statistics.h"
-#include "framework/string_utils.h"
 #include "framework/test_case_argument/test_case_arguments.h"
+#include "framework/utility/error.h"
+#include "framework/utility/statistics.h"
+#include "framework/utility/string_utils.h"
 
 #include <functional>
 #include <iostream>

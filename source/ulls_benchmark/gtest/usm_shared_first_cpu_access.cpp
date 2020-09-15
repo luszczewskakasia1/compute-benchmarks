@@ -1,6 +1,6 @@
 #include "ulls_benchmark/definitions/usm_shared_first_cpu_access.h"
 
-#include "framework/common_gtest_args.h"
+#include "framework/utility/common_gtest_args.h"
 
 #include <gtest/gtest.h>
 

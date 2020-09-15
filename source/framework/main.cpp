@@ -2,7 +2,7 @@
 #include "framework/configuration.h"
 #include "framework/gtest_event_listener.h"
 #include "framework/print_device_info.h"
-#include "framework/statistics.h"
+#include "framework/utility/statistics.h"
 
 #include <gtest/gtest.h>
 #include <iostream>

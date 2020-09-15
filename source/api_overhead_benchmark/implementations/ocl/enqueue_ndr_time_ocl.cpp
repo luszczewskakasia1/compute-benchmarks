@@ -1,7 +1,7 @@
 #include "api_overhead_benchmark/definitions/enqueue_ndr_time.h"
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
-#include "framework/timer.h"
+#include "framework/utility/timer.h"
 
 #include <gtest/gtest.h>
 

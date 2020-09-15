@@ -1,6 +1,6 @@
 #include "gpu_cmds_benchmark/definitions/empty_kernel.h"
 
-#include "framework/common_gtest_args.h"
+#include "framework/utility/common_gtest_args.h"
 
 #include <gtest/gtest.h>
 

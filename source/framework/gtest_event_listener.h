@@ -1,8 +1,8 @@
 #pragma once
 
-#include "framework/configuration.h"
-#include "framework/statistics.h"
 #include "framework/benchmark_info.h"
+#include "framework/configuration.h"
+#include "framework/utility/statistics.h"
 
 #include <gtest/gtest.h>
 #include <sstream>

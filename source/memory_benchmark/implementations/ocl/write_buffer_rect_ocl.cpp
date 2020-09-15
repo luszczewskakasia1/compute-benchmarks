@@ -1,6 +1,6 @@
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
-#include "framework/timer.h"
+#include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/write_buffer_rect.h"
 
 #include <gtest/gtest.h>

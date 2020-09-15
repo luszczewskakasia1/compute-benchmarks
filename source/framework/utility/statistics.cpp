@@ -1,7 +1,7 @@
 #include "statistics.h"
 
 #include "framework/benchmark_info.h"
-#include "framework/error.h"
+#include "framework/utility/error.h"
 
 #include <algorithm>
 #include <cmath>

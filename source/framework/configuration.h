@@ -1,7 +1,7 @@
 #pragma once
 
 #include "framework/enum/api.h"
-#include "framework/string_utils.h"
+#include "framework/utility/string_utils.h"
 
 struct Configuration {
     enum class PrintType {

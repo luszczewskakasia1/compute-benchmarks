@@ -1,8 +1,8 @@
 #pragma once
 
 #include "framework/enum/work_item_id_usage.h"
-#include "framework/string_utils.h"
 #include "framework/test_case_argument/test_case_argument.h"
+#include "framework/utility/string_utils.h"
 
 struct WorkItemIdUsageTestCaseArgument : TestCaseArgument {
     WorkItemIdUsageTestCaseArgument(TestCaseArguments &parent, const std::string &key)

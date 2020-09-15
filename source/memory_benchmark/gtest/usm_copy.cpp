@@ -1,6 +1,6 @@
 #include "memory_benchmark/definitions/usm_copy.h"
 
-#include "framework/common_gtest_args.h"
+#include "framework/utility/common_gtest_args.h"
 
 #include <gtest/gtest.h>
 

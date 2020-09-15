@@ -1,6 +1,6 @@
 #include "ulls_benchmark/definitions/new_resources_with_gpu_access.h"
 
-#include "framework/common_gtest_args.h"
+#include "framework/utility/common_gtest_args.h"
 
 #include <gtest/gtest.h>
 

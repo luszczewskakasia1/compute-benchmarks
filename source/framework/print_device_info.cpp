@@ -1,7 +1,7 @@
 #include "print_device_info.h"
 
 #include "framework/configuration.h"
-#include "framework/error.h"
+#include "framework/utility/error.h"
 
 PrintDeviceInfoFunction printDeviceInfoFunctions[static_cast<int>(Api::COUNT)];
 

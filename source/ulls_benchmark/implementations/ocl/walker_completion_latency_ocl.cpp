@@ -1,6 +1,6 @@
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
-#include "framework/timer.h"
+#include "framework/utility/timer.h"
 #include "ulls_benchmark/definitions/walker_completion_latency.h"
 
 #include <emmintrin.h>

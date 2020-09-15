@@ -1,7 +1,7 @@
 #pragma once
 
 #include "framework/configuration.h"
-#include "framework/error.h"
+#include "framework/utility/error.h"
 
 #include <gtest/gtest.h>
 #include <iostream>

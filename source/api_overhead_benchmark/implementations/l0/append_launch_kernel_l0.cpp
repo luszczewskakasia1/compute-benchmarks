@@ -1,8 +1,8 @@
 #include "api_overhead_benchmark/definitions/append_launch_kernel.h"
 #include "framework/l0/levelzero.h"
-#include "framework/load_binary_file.h"
 #include "framework/test_case/register_test_case.h"
-#include "framework/timer.h"
+#include "framework/utility/load_binary_file.h"
+#include "framework/utility/timer.h"
 
 #include <gtest/gtest.h>
 #include <level_zero/zex_ddi.h>

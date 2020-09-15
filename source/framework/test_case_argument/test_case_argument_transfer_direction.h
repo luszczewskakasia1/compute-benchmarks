@@ -1,8 +1,8 @@
 #pragma once
 
-#include "framework/string_utils.h"
-#include "framework/test_case_argument/test_case_argument.h"
 #include "framework/enum/transfer_direction.h"
+#include "framework/test_case_argument/test_case_argument.h"
+#include "framework/utility/string_utils.h"
 
 struct TransferDirectionTestCaseArgument : TestCaseArgument {
     TransferDirectionTestCaseArgument(TestCaseArguments &parent, const std::string &key)
