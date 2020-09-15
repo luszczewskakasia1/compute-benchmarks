@@ -1,0 +1,28 @@
+#include "ulls_benchmark/definitions/kernel_with_work.h"
+
+#include "framework/utility/common_gtest_args.h"
+
+#include <gtest/gtest.h>
+
+class KernelWithWorkSubmissionTest : public ::testing::TestWithParam<std::tuple<Api, WorkItemIdUsage, size_t, size_t>> {
+};
+
+TEST_P(KernelWithWorkSubmissionTest, Test) {
+    KernelWithWorkArguments args;
+    args.api = std::get<0>(GetParam());
+    args.usedIds = std::get<1>(GetParam());
+    args.workgroupCount = std::get<2>(GetParam());
+    args.workgroupSize = std::get<3>(GetParam());
+
+    KernelWithWork test;
+    test.run(args);
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    KernelWithWorkSubmissionTest,
+    KernelWithWorkSubmissionTest,
+    ::testing::Combine(
+        ::CommonGtestArgs::allApis(),
+        ::testing::Values(WorkItemIdUsage::None, WorkItemIdUsage::Global, WorkItemIdUsage::Local),
+        ::CommonGtestArgs::workgroupCount(),
+        ::CommonGtestArgs::workgroupSize()));

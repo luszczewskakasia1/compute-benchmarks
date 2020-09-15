@@ -5,6 +5,7 @@
 #include "ulls_benchmark/definitions/best_walker_submission_immediate.h"
 #include "ulls_benchmark/definitions/completion_latency.h"
 #include "ulls_benchmark/definitions/empty_kernel.h"
+#include "ulls_benchmark/definitions/kernel_with_work.h"
 #include "ulls_benchmark/definitions/new_resources_submission_device.h"
 #include "ulls_benchmark/definitions/new_resources_submission_host.h"
 #include "ulls_benchmark/definitions/new_resources_with_gpu_access.h"
@@ -22,6 +23,7 @@ TestMap getTestMap() {
     TEST_CASE(BestWalkerSubmissionImmediate)
     TEST_CASE(BestSubmission)
     TEST_CASE(EmptyKernel)
+    TEST_CASE(KernelWithWork)
     TEST_CASE(NewResourcesSubmissionDevice)
     TEST_CASE(NewResourcesSubmissionHost)
     TEST_CASE(NewResourcesWithGpuAccess)
