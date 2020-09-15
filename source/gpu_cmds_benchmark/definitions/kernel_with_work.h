@@ -22,7 +22,7 @@ class KernelWithWork : public TestCase<KernelWithWorkArguments> {
     using TestCase<KernelWithWorkArguments>::TestCase;
 
     std::string getHelp() const override {
-        return "measures time required to run an empty kernel on GPU.";
+        return "measures time required to run a GPU kernel which assigns values to elements of a buffer.";
     }
 
     std::string getTestCaseName() const override {
