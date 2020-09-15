@@ -1,5 +1,7 @@
 #include "ulls_benchmark/definitions/usm_shared_first_cpu_access.h"
 
+#include "framework/common_gtest_args.h"
+
 #include <gtest/gtest.h>
 
 class UsmSharedFirstCpuAccessTest : public ::testing::TestWithParam<std::tuple<Api, size_t>> {
@@ -21,5 +23,5 @@ INSTANTIATE_TEST_SUITE_P(
     UsmSharedFirstCpuAccessTest,
     UsmSharedFirstCpuAccessTest,
     ::testing::Combine(
-        ::testing::Values(Api::OpenCL, Api::L0),
+        ::CommonGtestArgs::allApis(),
         ::testing::Values(64 * megaByte, 128 * megaByte)));

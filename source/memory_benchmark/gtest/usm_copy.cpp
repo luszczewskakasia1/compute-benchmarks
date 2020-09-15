@@ -1,5 +1,7 @@
 #include "memory_benchmark/definitions/usm_copy.h"
 
+#include "framework/common_gtest_args.h"
+
 #include <gtest/gtest.h>
 
 class UsmCopyTest : public ::testing::TestWithParam<std::tuple<Api, TransferDirection, size_t>> {
@@ -22,6 +24,6 @@ INSTANTIATE_TEST_SUITE_P(
     UsmCopyTest,
     UsmCopyTest,
     ::testing::Combine(
-        ::testing::Values(Api::OpenCL, Api::L0),
+        ::CommonGtestArgs::allApis(),
         ::testing::Values(TransferDirection::SysToDev, TransferDirection::DevToSys, TransferDirection::DevToDev),
         ::testing::Values(128 * megaByte, 512 * megaByte)));

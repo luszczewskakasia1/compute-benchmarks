@@ -1,5 +1,7 @@
 #include "memory_benchmark/definitions/usm_shared_migrate_gpu.h"
 
+#include "framework/common_gtest_args.h"
+
 #include <gtest/gtest.h>
 
 class UsmSharedMigrateGpuTest : public ::testing::TestWithParam<std::tuple<Api, size_t>> {
@@ -21,5 +23,5 @@ INSTANTIATE_TEST_SUITE_P(
     UsmSharedMigrateGpuTest,
     UsmSharedMigrateGpuTest,
     ::testing::Combine(
-        ::testing::Values(Api::OpenCL, Api::L0),
+        ::CommonGtestArgs::allApis(),
         ::testing::Values(128 * megaByte, 256 * megaByte)));

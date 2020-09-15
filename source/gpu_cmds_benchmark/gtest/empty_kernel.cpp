@@ -1,5 +1,7 @@
 #include "gpu_cmds_benchmark/definitions/empty_kernel.h"
 
+#include "framework/common_gtest_args.h"
+
 #include <gtest/gtest.h>
 
 class EmptyKernelTest : public ::testing::TestWithParam<std::tuple<size_t, size_t, size_t>> {
@@ -21,5 +23,5 @@ INSTANTIATE_TEST_SUITE_P(
     EmptyKernelTest,
     ::testing::Combine(
         ::testing::Values(500),
-        ::testing::Values(1, 100, 1000, 10000),
-        ::testing::Values(1, 16, 32, 256)));
+        ::CommonGtestArgs::workgroupCount(),
+        ::CommonGtestArgs::workgroupSize()));

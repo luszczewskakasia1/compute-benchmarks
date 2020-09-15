@@ -1,5 +1,7 @@
 #include "memory_benchmark/definitions/usm_shared_migrate_cpu.h"
 
+#include "framework/common_gtest_args.h"
+
 #include <gtest/gtest.h>
 
 class UsmSharedMigrateCpuTest : public ::testing::TestWithParam<std::tuple<Api, bool, size_t>> {
@@ -22,6 +24,6 @@ INSTANTIATE_TEST_SUITE_P(
     UsmSharedMigrateCpuTest,
     UsmSharedMigrateCpuTest,
     ::testing::Combine(
-        ::testing::Values(Api::OpenCL, Api::L0),
+        ::CommonGtestArgs::allApis(),
         ::testing::Values(false, true),
         ::testing::Values(128 * megaByte, 256 * megaByte)));

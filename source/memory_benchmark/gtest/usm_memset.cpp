@@ -1,5 +1,7 @@
 #include "memory_benchmark/definitions/usm_memset.h"
 
+#include "framework/common_gtest_args.h"
+
 #include <gtest/gtest.h>
 
 class UsmMemsetTest : public ::testing::TestWithParam<std::tuple<Api, MemoryPlacement, size_t>> {
@@ -22,6 +24,6 @@ INSTANTIATE_TEST_SUITE_P(
     UsmMemsetTest,
     UsmMemsetTest,
     ::testing::Combine(
-        ::testing::Values(Api::OpenCL, Api::L0),
+        ::CommonGtestArgs::allApis(),
         ::testing::Values(MemoryPlacement::Host, MemoryPlacement::Device),
         ::testing::Values(128 * megaByte, 512 * megaByte)));

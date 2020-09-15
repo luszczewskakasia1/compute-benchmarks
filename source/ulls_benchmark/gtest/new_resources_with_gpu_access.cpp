@@ -1,5 +1,7 @@
 #include "ulls_benchmark/definitions/new_resources_with_gpu_access.h"
 
+#include "framework/common_gtest_args.h"
+
 #include <gtest/gtest.h>
 
 class NewResourcesWithGpuAccessTest : public ::testing::TestWithParam<std::tuple<Api, size_t>> {
@@ -22,5 +24,5 @@ INSTANTIATE_TEST_SUITE_P(
     NewResourcesWithGpuAccessTest,
     NewResourcesWithGpuAccessTest,
     ::testing::Combine(
-        ::testing::Values(Api::OpenCL, Api::L0),
+        ::CommonGtestArgs::allApis(),
         ::testing::Values(kiloByte, 64 * kiloByte, 512 * kiloByte, 1 * megaByte, 16 * megaByte, 64 * megaByte, 256 * megaByte, 1 * gigaByte)));

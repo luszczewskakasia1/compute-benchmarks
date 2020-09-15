@@ -1,5 +1,7 @@
 #include "memory_benchmark/definitions/write_buffer.h"
 
+#include "framework/common_gtest_args.h"
+
 #include <gtest/gtest.h>
 
 class WriteBufferTest : public ::testing::TestWithParam<std::tuple<Api, size_t, bool>> {
@@ -22,6 +24,6 @@ INSTANTIATE_TEST_SUITE_P(
     WriteBufferTest,
     WriteBufferTest,
     ::testing::Combine(
-        ::testing::Values(Api::OpenCL, Api::L0),
+        ::CommonGtestArgs::allApis(),
         ::testing::Values(128 * megaByte, 512 * megaByte),
         ::testing::Values(false, true)));

@@ -1,5 +1,7 @@
 #include "memory_benchmark/definitions/usm_fill.h"
 
+#include "framework/common_gtest_args.h"
+
 #include <gtest/gtest.h>
 
 class UsmFillTest : public ::testing::TestWithParam<std::tuple<Api, MemoryPlacement, size_t, size_t>> {
@@ -23,7 +25,7 @@ INSTANTIATE_TEST_SUITE_P(
     UsmFillTest,
     UsmFillTest,
     ::testing::Combine(
-        ::testing::Values(Api::OpenCL, Api::L0),
+        ::CommonGtestArgs::allApis(),
         ::testing::Values(MemoryPlacement::Host, MemoryPlacement::Device),
         ::testing::Values(128 * megaByte, 512 * megaByte),
         ::testing::Values(16, 256)));

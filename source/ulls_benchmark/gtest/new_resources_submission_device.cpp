@@ -1,5 +1,7 @@
 #include "ulls_benchmark/definitions/new_resources_submission_device.h"
 
+#include "framework/common_gtest_args.h"
+
 #include <gtest/gtest.h>
 
 class NewResourcesSubmissionDeviceTest : public ::testing::TestWithParam<std::tuple<Api, size_t>> {
@@ -22,5 +24,5 @@ INSTANTIATE_TEST_SUITE_P(
     NewResourcesSubmissionDeviceTest,
     NewResourcesSubmissionDeviceTest,
     ::testing::Combine(
-        ::testing::Values(Api::OpenCL, Api::L0),
+        ::CommonGtestArgs::allApis(),
         ::testing::Values(1, 64 * kiloByte, 512 * kiloByte, 1 * megaByte, 16 * megaByte, 64 * megaByte, 256 * megaByte, 1 * gigaByte)));

@@ -1,5 +1,7 @@
 #include "ulls_benchmark/definitions/walker_completion_latency.h"
 
+#include "framework/common_gtest_args.h"
+
 #include <gtest/gtest.h>
 
 class WalkerCompletionLatencyTest : public ::testing::TestWithParam<Api> {
@@ -16,4 +18,4 @@ TEST_P(WalkerCompletionLatencyTest, Test) {
 INSTANTIATE_TEST_SUITE_P(
     WalkerCompletionLatencyTest,
     WalkerCompletionLatencyTest,
-    ::testing::Values(Api::OpenCL, Api::L0));
+    ::CommonGtestArgs::allApis());

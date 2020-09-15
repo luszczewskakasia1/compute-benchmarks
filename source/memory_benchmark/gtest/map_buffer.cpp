@@ -1,5 +1,7 @@
 #include "memory_benchmark/definitions/map_buffer.h"
 
+#include "framework/common_gtest_args.h"
+
 #include <gtest/gtest.h>
 
 class MapBufferTest : public ::testing::TestWithParam<std::tuple<Api, size_t, bool, MapFlags>> {
@@ -23,7 +25,7 @@ INSTANTIATE_TEST_SUITE_P(
     MapBufferTest,
     MapBufferTest,
     ::testing::Combine(
-        ::testing::Values(Api::OpenCL, Api::L0),
+        ::CommonGtestArgs::allApis(),
         ::testing::Values(128 * megaByte, 512 * megaByte),
         ::testing::Values(false, true),
         ::testing::Values(MapFlags::Read, MapFlags::Write, MapFlags::WriteInvalidate)));

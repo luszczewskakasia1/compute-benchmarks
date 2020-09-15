@@ -1,5 +1,7 @@
 #include "ulls_benchmark/definitions/empty_kernel.h"
 
+#include "framework/common_gtest_args.h"
+
 #include <gtest/gtest.h>
 
 class EmptyKernelSubmissionTest : public ::testing::TestWithParam<std::tuple<Api, size_t, size_t>> {
@@ -19,6 +21,6 @@ INSTANTIATE_TEST_SUITE_P(
     EmptyKernelSubmissionTest,
     EmptyKernelSubmissionTest,
     ::testing::Combine(
-        ::testing::Values(Api::OpenCL, Api::L0),
-        ::testing::Values(1, 100, 1000, 10000),
-        ::testing::Values(1, 16, 32, 256)));
+        ::CommonGtestArgs::allApis(),
+        ::CommonGtestArgs::workgroupCount(),
+        ::CommonGtestArgs::workgroupSize()));
