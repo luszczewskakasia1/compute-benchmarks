@@ -1,8 +1,22 @@
-#include "transfer_direction.h"
+#pragma once
 
 #include "framework/error.h"
 
-bool isDeviceMemory(TransferDirection direction, TransferOperand operand) {
+enum class TransferDirection {
+    Unknown,
+    SysToSys,
+    SysToDev,
+    DevToSys,
+    DevToDev,
+};
+
+enum class TransferOperand {
+    Unknown,
+    Source,
+    Destination
+};
+
+inline bool isDeviceMemory(TransferDirection direction, TransferOperand operand) {
     ERROR_IF(direction == TransferDirection::Unknown, "Unknown direction");
     ERROR_IF(operand == TransferOperand::Unknown, "Unknown operand");
 
@@ -18,15 +32,4 @@ bool isDeviceMemory(TransferDirection direction, TransferOperand operand) {
     }
 
     ERROR("Unreachable code");
-}
-
-bool isDeviceMemory(MemoryPlacement placement) {
-    switch (placement) {
-    case MemoryPlacement::Device:
-        return true;
-    case MemoryPlacement::Host:
-        return false;
-    default:
-        ERROR("Unknown placement");
-    }
 }

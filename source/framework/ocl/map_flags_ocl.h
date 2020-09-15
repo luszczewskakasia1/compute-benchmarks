@@ -1,6 +1,6 @@
 #pragma once
 
-#include "framework/map_flags.h"
+#include "framework/enum/map_flags.h"
 #include "framework/ocl/opencl.h"
 
 inline cl_map_flags convertMapFlags(MapFlags mapFlags) {

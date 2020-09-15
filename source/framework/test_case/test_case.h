@@ -1,7 +1,7 @@
 #pragma once
 
-#include "framework/api.h"
 #include "framework/configuration.h"
+#include "framework/enum/api.h"
 #include "framework/error.h"
 #include "framework/statistics.h"
 #include "framework/string_utils.h"
@@ -9,6 +9,7 @@
 
 #include <functional>
 #include <iostream>
+#include <sstream>
 #include <type_traits>
 
 struct TestCaseInterface {

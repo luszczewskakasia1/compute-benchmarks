@@ -2,7 +2,7 @@
 
 #include "framework/string_utils.h"
 #include "framework/test_case_argument/test_case_argument.h"
-#include "framework/transfer_direction.h"
+#include "framework/enum/transfer_direction.h"
 
 struct TransferDirectionTestCaseArgument : TestCaseArgument {
     TransferDirectionTestCaseArgument(TestCaseArguments &parent, const std::string &key)

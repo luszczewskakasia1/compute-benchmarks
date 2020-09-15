@@ -1,6 +1,6 @@
 #pragma once
 
-#include "framework/api.h"
+#include "framework/enum/api.h"
 
 using PrintDeviceInfoFunction = void (*)();
 struct RegisterPrintDeviceInfoFunction {

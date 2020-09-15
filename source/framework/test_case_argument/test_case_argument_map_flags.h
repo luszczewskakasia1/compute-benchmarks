@@ -1,6 +1,6 @@
 #pragma once
 
-#include "framework/map_flags.h"
+#include "framework/enum/map_flags.h"
 #include "framework/string_utils.h"
 #include "framework/test_case_argument/test_case_argument.h"
 

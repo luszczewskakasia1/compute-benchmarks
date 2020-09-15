@@ -1,8 +1,8 @@
 #pragma once
 
+#include "framework/enum/memory_placement.h"
 #include "framework/string_utils.h"
 #include "framework/test_case_argument/test_case_argument.h"
-#include "framework/transfer_direction.h"
 
 struct MemoryPlacementTestCaseArgument : TestCaseArgument {
     MemoryPlacementTestCaseArgument(TestCaseArguments &parent, const std::string &key)
