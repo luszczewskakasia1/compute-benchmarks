@@ -1,5 +1,7 @@
 #include "test_case_arguments.h"
 
+#include "framework/test_case_argument/test_case_argument.h"
+
 #include <sstream>
 
 bool TestCaseArguments::parseArgument(const std::string &key, const std::string &value) {
