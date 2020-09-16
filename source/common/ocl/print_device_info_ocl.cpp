@@ -1,3 +1,4 @@
+#include "framework/intel_product/ocl/get_intel_product_ocl.h"
 #include "framework/ocl/opencl.h"
 #include "framework/print_device_info.h"
 
@@ -20,6 +21,10 @@ static void printDeviceInfoOcl() {
 
     CL_SUCCESS_OR_TERMINATE(clGetDeviceInfo(opencl.device, CL_DEVICE_MAX_CLOCK_FREQUENCY, sizeof(bufferUint), &bufferUint, nullptr));
     std::cout << "\t\tclockFreq:     " << bufferUint << std::endl;
+
+    IntelProduct intelProduct = getIntelProduct(opencl);
+    IntelGen intelGen = getIntelGen(intelProduct);
+    std::cout << "\t\tintelProduct:  " << std::to_string(intelProduct) << " (intelGen: " << std::to_string(intelGen) << ")\n";
 
     std::cout << std::endl;
 }
