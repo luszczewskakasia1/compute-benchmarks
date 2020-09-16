@@ -47,16 +47,18 @@ function (add_benchmark BASE_TARGET_NAME)
 endfunction()
 
 function (add_benchmark_for_api BASE_TARGET_NAME APPEND_API_TO_TARGET_NAME APIS)
-    # Get target name
+    # Get names
+    set(TARGET_NAME "${BASE_TARGET_NAME}")
+    set(TARGET_FOLDER_NAME "tests")
     if (APPEND_API_TO_TARGET_NAME)
-        set(TARGET_NAME "${BASE_TARGET_NAME}_${APIS}")
-    else()
-        set(TARGET_NAME "${BASE_TARGET_NAME}")
+        string(APPEND TARGET_NAME "_${APIS}")
+        string(APPEND TARGET_FOLDER_NAME "_${APIS}")
     endif()
 
     # Define target
     add_executable(${TARGET_NAME} CMakeLists.txt)
     target_link_libraries(${TARGET_NAME} PRIVATE compute_benchmarks_framework ${APIS})
+    set_target_properties(${TARGET_NAME} PROPERTIES FOLDER ${TARGET_FOLDER_NAME})
 
     # API agnostic sources
     set(API_AGNOSTIC_SOURCE_DIRECTORIES
