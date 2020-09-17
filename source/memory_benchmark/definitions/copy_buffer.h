@@ -8,10 +8,12 @@
 struct CopyBufferArguments : TestCaseArguments {
     ByteSizeTestCaseArgument size;
     CompressionBooleanTestCaseArgument compressed;
+    BooleanTestCaseArgument useEvents;
 
     CopyBufferArguments()
         : size(*this, "size"),
-          compressed(*this, "compressed") {}
+          compressed(*this, "compressed"),
+          useEvents(*this, "useEvents", "measure performance with events") {}
 };
 
 class CopyBuffer : public TestCase<CopyBufferArguments> {

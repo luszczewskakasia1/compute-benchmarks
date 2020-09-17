@@ -21,6 +21,10 @@ class Timer {
 
     double getBandwidth(size_t bufferSizeInBytes) const {
         const auto timeNs = Get() * 1000.0;
+        return getBandwidth(timeNs, bufferSizeInBytes);
+    }
+
+    static double getBandwidth(double timeNs, size_t bufferSizeInBytes) {
         return bufferSizeInBytes / timeNs; // Bytes/Nanoseconds = Gigabytes/Seconds
     }
 

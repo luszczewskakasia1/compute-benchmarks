@@ -11,9 +11,11 @@ static TestResult run(const CopyBufferArguments &arguments, Statistics &statisti
     }
 
     // Setup
-    Opencl opencl;
-    Timer timer;
     cl_int retVal;
+    Opencl opencl(false);
+    const auto queueProperties = arguments.useEvents ? opencl.profilingQueueProperties : opencl.queueProperties;
+    opencl.commandQueue = clCreateCommandQueueWithProperties(opencl.context, opencl.device, queueProperties, &retVal);
+    Timer timer;
 
     // Create buffer
     const cl_mem_flags compressionHint = Opencl::getCompressionFlags(arguments.compressed, arguments.noIntelExtensions);
@@ -48,12 +50,24 @@ static TestResult run(const CopyBufferArguments &arguments, Statistics &statisti
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
+        cl_event profilingEvent{};
+        cl_event *eventForEnqueue = arguments.useEvents ? &profilingEvent : nullptr;
+
         timer.measureStart();
-        ASSERT_CL_SUCCESS(clEnqueueCopyBuffer(opencl.commandQueue, source, destination, 0, 0, arguments.size, 0, nullptr, nullptr));
+        ASSERT_CL_SUCCESS(clEnqueueCopyBuffer(opencl.commandQueue, source, destination, 0, 0, arguments.size, 0, nullptr, eventForEnqueue));
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
 
-        statistics.pushValue(timer.getBandwidth(arguments.size));
+        if (eventForEnqueue) {
+            cl_ulong start{}, end{};
+            ASSERT_CL_SUCCESS(clGetEventProfilingInfo(profilingEvent, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, nullptr));
+            ASSERT_CL_SUCCESS(clGetEventProfilingInfo(profilingEvent, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, nullptr));
+            ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
+            const auto timeNs = static_cast<Statistics::Value>(end - start);
+            statistics.pushValue(Timer::getBandwidth(timeNs, arguments.size));
+        } else {
+            statistics.pushValue(timer.getBandwidth(arguments.size));
+        }
     }
 
     ASSERT_CL_SUCCESS(clReleaseMemObject(destination));
