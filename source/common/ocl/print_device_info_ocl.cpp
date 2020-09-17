@@ -24,7 +24,9 @@ static void printDeviceInfoOcl() {
 
     IntelProduct intelProduct = getIntelProduct(opencl);
     IntelGen intelGen = getIntelGen(intelProduct);
-    std::cout << "\t\tintelProduct:  " << std::to_string(intelProduct) << " (intelGen: " << std::to_string(intelGen) << ")\n";
+    if (intelProduct != IntelProduct::Unknown) {
+        std::cout << "\t\tintelProduct:  " << std::to_string(intelProduct) << " (intelGen: " << std::to_string(intelGen) << ")\n";
+    }
 
     std::cout << std::endl;
 }
