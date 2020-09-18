@@ -6,7 +6,7 @@
 #include <gtest/gtest.h>
 
 static TestResult run(const CopyBufferArguments &arguments, Statistics &statistics) {
-    if (arguments.compressed && arguments.noIntelExtensions) {
+    if ((arguments.compressedDestination || arguments.compressedSource) && arguments.noIntelExtensions) {
         return TestResult::DeviceNotCapable;
     }
 
@@ -18,20 +18,25 @@ static TestResult run(const CopyBufferArguments &arguments, Statistics &statisti
     Timer timer;
 
     // Create buffer
-    const cl_mem_flags compressionHint = Opencl::getCompressionFlags(arguments.compressed, arguments.noIntelExtensions);
-    const cl_mem_flags memFlags = CL_MEM_READ_WRITE | compressionHint;
-    const cl_mem source = clCreateBuffer(opencl.context, memFlags, arguments.size, nullptr, &retVal);
+    auto tryCompression = arguments.compressedDestination | arguments.compressedSource;
+    const cl_mem_flags compressionOnHint = Opencl::getCompressionFlags(true, arguments.noIntelExtensions);
+    const cl_mem_flags compressionOffHint = Opencl::getCompressionFlags(false, arguments.noIntelExtensions);
+
+    const cl_mem_flags memFlagsWithCompression = CL_MEM_READ_WRITE | compressionOnHint;
+    const cl_mem_flags memFlagsWithoutCompression = CL_MEM_READ_WRITE | compressionOffHint;
+
+    const cl_mem source = clCreateBuffer(opencl.context, arguments.compressedSource ? memFlagsWithCompression : memFlagsWithoutCompression, arguments.size, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
-    const cl_mem destination = clCreateBuffer(opencl.context, memFlags, arguments.size, nullptr, &retVal);
+    const cl_mem destination = clCreateBuffer(opencl.context, arguments.compressedDestination ? memFlagsWithCompression : memFlagsWithoutCompression, arguments.size, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
     // Check buffers compression
-    auto compressionStatus = Opencl::verifyCompression(source, arguments.compressed, arguments.noIntelExtensions);
+    auto compressionStatus = Opencl::verifyCompression(source, arguments.compressedSource, arguments.noIntelExtensions);
     if (compressionStatus != TestResult::Success) {
         ASSERT_CL_SUCCESS(clReleaseMemObject(source));
         return compressionStatus;
     }
-    compressionStatus = Opencl::verifyCompression(destination, arguments.compressed, arguments.noIntelExtensions);
+    compressionStatus = Opencl::verifyCompression(destination, arguments.compressedDestination, arguments.noIntelExtensions);
     if (compressionStatus != TestResult::Success) {
         ASSERT_CL_SUCCESS(clReleaseMemObject(source));
         ASSERT_CL_SUCCESS(clReleaseMemObject(destination));

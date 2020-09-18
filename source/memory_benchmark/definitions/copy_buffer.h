@@ -7,12 +7,15 @@
 
 struct CopyBufferArguments : TestCaseArguments {
     ByteSizeTestCaseArgument size;
-    CompressionBooleanTestCaseArgument compressed;
+    CompressionBooleanTestCaseArgument compressedSource;
+    CompressionBooleanTestCaseArgument compressedDestination;
+
     BooleanTestCaseArgument useEvents;
 
     CopyBufferArguments()
         : size(*this, "size"),
-          compressed(*this, "compressed"),
+          compressedSource(*this, "compressedSource"),
+          compressedDestination(*this, "compressedDestination"),
           useEvents(*this, "useEvents", "measure performance with events") {}
 };
 
