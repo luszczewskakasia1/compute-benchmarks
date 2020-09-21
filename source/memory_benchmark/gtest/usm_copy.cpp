@@ -25,5 +25,5 @@ INSTANTIATE_TEST_SUITE_P(
     UsmCopyTest,
     ::testing::Combine(
         ::CommonGtestArgs::allApis(),
-        ::testing::Values(TransferDirection::SysToDev, TransferDirection::DevToSys, TransferDirection::DevToDev),
+        ::testing::Values(TransferDirection::SysToSys, TransferDirection::SysToDev, TransferDirection::DevToSys, TransferDirection::DevToDev),
         ::testing::Values(128 * megaByte, 512 * megaByte)));
