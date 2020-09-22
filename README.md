@@ -4,6 +4,7 @@ A benchmark suite developed and maintained by NEO driver development team in ord
 2. memory_benchmark - benchmarks for bandwidth of different memory transfer operations using various APIs
 3. api_overhead_benchmark - benchmarks for duration of various API calls
 4. gpu_cmds_benchmark - benchmark for duration of various commands on the GPU
+5. overlap_benchmark - benchmark for testing possible operation overlapping
 
 ## Binary Releases
 Ulls Benchmark is released to gfx-assets.igk.intel.com. [Linux](https://gfx-assets.igk.intel.com/artifactory/webapp/#/artifacts/browse/tree/General/gfx-ocl-abn-assets-igk/linux/ulls_benchmark) [Windows](https://gfx-assets.igk.intel.com/artifactory/webapp/#/artifacts/browse/tree/General/gfx-ocl-abn-assets-igk/windows/ulls_benchmark)
@@ -13,6 +14,8 @@ Memory Benchmark is released to gfx-assets.igk.intel.com. [Linux](https://gfx-as
 Api Overhead Benchmark is currently not released in binary form.
 
 Gpu Commands Benchmark is currently not released in binary form.
+
+Overlap Benchmakr is currently not released in binary form
 
 ## Building
 Standard building procedure for CMake projects should be enough to build the benchmark. Example command sequence below (of course the last line can be substituted with platform-specific command, e.g. make).

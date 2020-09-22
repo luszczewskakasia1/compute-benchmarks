@@ -1,0 +1,115 @@
+#include "framework/ocl/opencl.h"
+#include "framework/test_case/register_test_case.h"
+#include "framework/utility/load_binary_file.h"
+#include "framework/utility/timer.h"
+#include "overlap_benchmark/definitions/kernel_and_copy.h"
+
+#include <gtest/gtest.h>
+
+static TestResult run(const KernelAndCopyArguments &arguments, Statistics &statistics) {
+    // Setup
+    Opencl opencl(false);
+    Timer timer{};
+    cl_int retVal{};
+
+    // Create queues
+    cl_command_queue queues[2] = {};
+    queues[0] = clCreateCommandQueueWithProperties(opencl.context, opencl.device, opencl.queueProperties, &retVal);
+    ASSERT_CL_SUCCESS(retVal);
+    if (arguments.twoQueues) {
+        queues[1] = clCreateCommandQueueWithProperties(opencl.context, opencl.device, opencl.queueProperties, &retVal);
+        ASSERT_CL_SUCCESS(retVal);
+    }
+    cl_command_queue &queueForKernel = queues[0];
+    cl_command_queue &queueForCopy = arguments.twoQueues ? queues[1] : queues[0];
+
+    // Create buffers
+    const size_t bufferForKernelSize = 1024 * 600;
+    const size_t bufferForCopySize = 1024 * 1024 * 512;
+    cl_mem bufferForCopy1{};
+    cl_mem bufferForCopy2{};
+    cl_mem bufferForKernel{};
+    if (arguments.runKernel) {
+        bufferForKernel = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, bufferForKernelSize, nullptr, &retVal);
+    }
+    if (arguments.runCopy) {
+        bufferForCopy1 = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, bufferForCopySize, nullptr, &retVal);
+        bufferForCopy2 = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, bufferForCopySize, nullptr, &retVal);
+    }
+
+    // Create kernel
+    const char *source = "__kernel void fill_with_ones(__global char *buffer, int size) { "
+                         "    for(int i=0; i < size; i++) {"
+                         "        buffer[i] = 1;"
+                         "    }"
+                         "}";
+    const auto sourceLength = strlen(source);
+    cl_program program = clCreateProgramWithSource(opencl.context, 1, &source, &sourceLength, &retVal);
+    ASSERT_CL_SUCCESS(retVal);
+    ASSERT_CL_SUCCESS(clBuildProgram(program, 1, &opencl.device, nullptr, nullptr, nullptr));
+    cl_kernel kernel = clCreateKernel(program, "fill_with_ones", &retVal);
+    ASSERT_CL_SUCCESS(retVal);
+
+    // Warmup
+    const size_t lws = 1;
+    const size_t gws = 1;
+    if (arguments.runKernel) {
+        ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 0, sizeof(bufferForKernel), &bufferForKernel));
+        ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 1, sizeof(bufferForKernelSize), &bufferForKernelSize));
+        ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(queueForKernel, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
+        ASSERT_CL_SUCCESS(clFinish(queueForKernel));
+    }
+    if (arguments.runCopy) {
+        ASSERT_CL_SUCCESS(clEnqueueCopyBuffer(queueForCopy, bufferForCopy1, bufferForCopy2, 0, 0, bufferForCopySize, 0, nullptr, nullptr));
+        ASSERT_CL_SUCCESS(clFinish(queueForCopy));
+    }
+
+    // Benchmark
+    for (int i = 0; i < arguments.iterations; i++) {
+        // Enqueue
+        if (arguments.runKernel) {
+            ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(queueForKernel, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
+        }
+        if (arguments.runCopy) {
+            ASSERT_CL_SUCCESS(clEnqueueCopyBuffer(queueForCopy, bufferForCopy1, bufferForCopy2, 0, 0, bufferForCopySize, 0, nullptr, nullptr));
+        }
+
+        // Flush
+        if (arguments.runKernel) {
+            ASSERT_CL_SUCCESS(clFlush(queueForKernel));
+        }
+        if (arguments.runCopy) {
+            ASSERT_CL_SUCCESS(clFlush(queueForCopy));
+        }
+
+        // Measure finish
+        timer.measureStart();
+        if (arguments.runKernel) {
+            ASSERT_CL_SUCCESS(clFinish(queueForKernel));
+        }
+        if (arguments.runCopy) {
+            ASSERT_CL_SUCCESS(clFinish(queueForCopy));
+        }
+        timer.measureEnd();
+        statistics.pushValue(timer.Get());
+    }
+
+    // Cleanup
+    ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
+    ASSERT_CL_SUCCESS(clReleaseProgram(program));
+    if (arguments.runKernel) {
+        ASSERT_CL_SUCCESS(clReleaseMemObject(bufferForKernel));
+    }
+    if (arguments.runCopy) {
+        ASSERT_CL_SUCCESS(clReleaseMemObject(bufferForCopy1));
+        ASSERT_CL_SUCCESS(clReleaseMemObject(bufferForCopy2));
+    }
+    ASSERT_CL_SUCCESS(clReleaseCommandQueue(queues[0]));
+    if (arguments.twoQueues) {
+        ASSERT_CL_SUCCESS(clReleaseCommandQueue(queues[1]));
+    }
+
+    return TestResult::Success;
+}
+
+static RegisterTestCaseImplementation<KernelAndCopy> registerTestCase(run, Api::OpenCL);
