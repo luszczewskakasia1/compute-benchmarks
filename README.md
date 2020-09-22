@@ -1,21 +1,13 @@
 # Compute Benchmarks
 A benchmark suite developed and maintained by NEO driver development team in order to provide a stable environment which allows checking and reproducing performance for various parts of the driver. The benchmark suite is divided into multiple executables, each of which tests a different aspect of the driver. Each executable contained in ComputeBechmarks consists of multiple test cases with a set of predefined configurations (parameters like buffer sizes, workgroup sizes, etc.) along with a possibility to run them with any desired parameters. They support both OpenCL and LevelZero APIs. Current set of exectuables:
-1. ulls_benchmark - benchmarks measuring performance impact of Ultra Low Latency Submission implemented in NEO Driver.
-2. memory_benchmark - benchmarks for bandwidth of different memory transfer operations using various APIs
-3. api_overhead_benchmark - benchmarks for duration of various API calls
-4. gpu_cmds_benchmark - benchmark for duration of various commands on the GPU
-5. overlap_benchmark - benchmark for testing possible operation overlapping
 
-## Binary Releases
-Ulls Benchmark is released to gfx-assets.igk.intel.com. [Linux](https://gfx-assets.igk.intel.com/artifactory/webapp/#/artifacts/browse/tree/General/gfx-ocl-abn-assets-igk/linux/ulls_benchmark) [Windows](https://gfx-assets.igk.intel.com/artifactory/webapp/#/artifacts/browse/tree/General/gfx-ocl-abn-assets-igk/windows/ulls_benchmark)
-
-Memory Benchmark is released to gfx-assets.igk.intel.com. [Linux](https://gfx-assets.igk.intel.com/artifactory/webapp/#/artifacts/browse/tree/General/gfx-ocl-abn-assets-igk/linux/pci_benchmark) [Windows](https://gfx-assets.igk.intel.com/artifactory/webapp/#/artifacts/browse/tree/General/gfx-ocl-abn-assets-igk/windows/pci_benchmark)
-
-Api Overhead Benchmark is currently not released in binary form.
-
-Gpu Commands Benchmark is currently not released in binary form.
-
-Overlap Benchmakr is currently not released in binary form
+|Executable |Measured aspect |Binaries |
+|-----------|----------------|--------:|
+ulls_benchmark |performance impact of Ultra Low Latency Submission implemented in NEO Driver |[Linux](https://gfx-assets.igk.intel.com/artifactory/webapp/#/artifacts/browse/tree/General/gfx-ocl-abn-assets-igk/linux/ulls_benchmark) [Windows](https://gfx-assets.igk.intel.com/artifactory/webapp/#/artifacts/browse/tree/General/gfx-ocl-abn-assets-igk/windows/ulls_benchmark) |
+memory_benchmark |bandwidth of different memory transfer operations using various APIs |[Linux](https://gfx-assets.igk.intel.com/artifactory/webapp/#/artifacts/browse/tree/General/gfx-ocl-abn-assets-igk/linux/memory_benchmark) [Windows](https://gfx-assets.igk.intel.com/artifactory/webapp/#/artifacts/browse/tree/General/gfx-ocl-abn-assets-igk/windows/memory_benchmark) |
+api_overhead_benchmark | duration of various API calls | N/a | N/a |
+gpu_cmds_benchmark | duration of various commands on the GPU | N/a | N/a |
+overlap_benchmark | GPU operations overlapping | N/a | N/a |
 
 ## Building
 Standard building procedure for CMake projects should be enough to build the benchmark. Example command sequence below (of course the last line can be substituted with platform-specific command, e.g. make).
