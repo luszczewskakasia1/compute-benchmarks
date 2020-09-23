@@ -33,7 +33,22 @@ struct ThreeComponentUintTestCaseArgument : TestCaseArgument {
     }
 
     void parseImpl(const std::string &value) override {
-        ERROR(""); // TODO
+        const auto colonPos1 = value.find(":");
+        const auto colonPos2 = value.find(":", colonPos1 + 1);
+        const auto colonPos3 = value.find(":", colonPos2 + 1);
+        ERROR_IF(colonPos1 == std::string::npos, "Too few colons specified for a 3-component vector");
+        ERROR_IF(colonPos2 == std::string::npos, "Too few colons specified for a 3-component vector");
+        ERROR_IF(colonPos3 != std::string::npos, "Too many colons specified for a 3-component vector");
+
+        const std::string componentsString[3] = {
+            value.substr(0, colonPos1),
+            value.substr(colonPos1 + 1, colonPos2 - colonPos1 - 1),
+            value.substr(colonPos2 + 1),
+        };
+
+        this->value[0] = std::atoi(componentsString[0].c_str());
+        this->value[1] = std::atoi(componentsString[1].c_str());
+        this->value[2] = std::atoi(componentsString[2].c_str());
     }
 
     size_t value[3] = {0, 0, 0};
