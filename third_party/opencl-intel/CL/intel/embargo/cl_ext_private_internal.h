@@ -52,6 +52,7 @@
 #define CL_QUEUE_FAMILY_TYPE_CCS1_INTEL                0x2u
 #define CL_QUEUE_FAMILY_TYPE_CCS2_INTEL                0x3u
 #define CL_QUEUE_FAMILY_TYPE_CCS3_INTEL                0x4u
+#define CL_QUEUE_FAMILY_TYPE_BCS_INTEL                 0x5u
 
 // cl_device_info
 #define CL_DEVICE_NUM_TILES_INTEL                      0x10000

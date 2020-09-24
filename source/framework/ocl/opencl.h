@@ -31,6 +31,7 @@
 struct Opencl {
     static const inline cl_command_queue_properties queueProperties[3] = {CL_QUEUE_PROPERTIES, 0, 0};
     static const inline cl_command_queue_properties profilingQueueProperties[3] = {CL_QUEUE_PROPERTIES, CL_QUEUE_PROFILING_ENABLE, 0};
+    static const inline cl_command_queue_properties copyQueueProperties[5] = {CL_QUEUE_PROPERTIES, 0, CL_QUEUE_FAMILY_INTEL, CL_QUEUE_FAMILY_TYPE_BCS_INTEL, 0};
 
     Opencl() : Opencl(Opencl::queueProperties) {}
     Opencl(const cl_command_queue_properties *queueProperties) {

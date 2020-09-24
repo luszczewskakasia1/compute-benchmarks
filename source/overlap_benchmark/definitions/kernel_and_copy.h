@@ -7,14 +7,25 @@ struct KernelAndCopyArguments : TestCaseArguments {
     BooleanTestCaseArgument twoQueues;
     BooleanTestCaseArgument runKernel;
     BooleanTestCaseArgument runCopy;
+    BooleanTestCaseArgument useCopyQueue;
 
     KernelAndCopyArguments()
-        : twoQueues(*this, "twoQueues", "enables using separate queues for both operations"),
+        : twoQueues(*this, "twoQueues", "enables using separate queues for both operations. Must be used with runCopy and runKernel"),
           runKernel(*this, "runKernel", "enqueue kernel during each iteration"),
-          runCopy(*this, "runCopy", "enqueue buffer to buffer copy during each iteration") {}
+          runCopy(*this, "runCopy", "enqueue buffer to buffer copy during each iteration"),
+          useCopyQueue(*this, "useCopyQueue", "use a specialized copy queue for the copy operation. Must be used with runCopy") {}
 
     bool validateArgumentsExtra() const override {
+        if (!runKernel && !runCopy) {
+            return false;
+        }
         if ((!runCopy || !runKernel) && twoQueues) {
+            return false;
+        }
+        if (!runCopy && useCopyQueue) {
+            return false;
+        }
+        if (runCopy && runKernel && !twoQueues && useCopyQueue) {
             return false;
         }
         return true;

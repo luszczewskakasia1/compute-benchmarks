@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-class KernelAndCopyTest : public ::testing::TestWithParam<std::tuple<bool, bool, bool>> {
+class KernelAndCopyTest : public ::testing::TestWithParam<std::tuple<bool, bool, bool, bool>> {
 };
 
 TEST_P(KernelAndCopyTest, Test) {
@@ -11,6 +11,7 @@ TEST_P(KernelAndCopyTest, Test) {
     args.twoQueues = std::get<0>(GetParam());
     args.runKernel = std::get<1>(GetParam());
     args.runCopy = std::get<2>(GetParam());
+    args.useCopyQueue = std::get<3>(GetParam());
 
     KernelAndCopy test;
     test.run(args);
@@ -20,8 +21,13 @@ INSTANTIATE_TEST_SUITE_P(
     KernelAndCopyTest,
     KernelAndCopyTest,
     ::testing::Values(
-        std::make_tuple(false, true, false), // only kernel
-        std::make_tuple(false, false, true), // only copy
-        std::make_tuple(false, true, true),  // kernel+copy on same queue
-        std::make_tuple(true, true, true)    // kernel+copy on different queues
+        // Without copy queue
+        std::make_tuple(false, true, false, false), // only kernel
+        std::make_tuple(false, false, true, false), // only copy
+        std::make_tuple(false, true, true, false),  // kernel+copy on same queue
+        std::make_tuple(true, true, true, false),   // kernel+copy on different queues
+
+        // With copy queue
+        std::make_tuple(false, false, true, true), // only copy
+        std::make_tuple(true, true, true, true)    // kernel+copy on different queues
         ));

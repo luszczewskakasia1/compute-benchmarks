@@ -7,21 +7,42 @@
 #include <gtest/gtest.h>
 
 static TestResult run(const KernelAndCopyArguments &arguments, Statistics &statistics) {
+    if (arguments.noIntelExtensions && arguments.useCopyQueue) {
+        return TestResult::DeviceNotCapable;
+    }
+
     // Setup
     Opencl opencl(nullptr);
     Timer timer{};
     cl_int retVal{};
 
     // Create queues
+    const auto &queueForCopyProperties = arguments.useCopyQueue ? opencl.copyQueueProperties : opencl.queueProperties;
+    cl_command_queue queueForKernel{};
+    cl_command_queue queueForCopy{};
     cl_command_queue queues[2] = {};
-    queues[0] = clCreateCommandQueueWithProperties(opencl.context, opencl.device, opencl.queueProperties, &retVal);
-    ASSERT_CL_SUCCESS(retVal);
+    size_t queueCount = 0;
     if (arguments.twoQueues) {
-        queues[1] = clCreateCommandQueueWithProperties(opencl.context, opencl.device, opencl.queueProperties, &retVal);
+        queues[0] = queueForKernel = clCreateCommandQueueWithProperties(opencl.context, opencl.device, opencl.queueProperties, &retVal);
         ASSERT_CL_SUCCESS(retVal);
+        queues[1] = queueForCopy = clCreateCommandQueueWithProperties(opencl.context, opencl.device, queueForCopyProperties, &retVal);
+        queueCount = 2;
+        ASSERT_CL_SUCCESS(retVal);
+    } else {
+        if (arguments.runKernel) {
+            queues[0] = queueForKernel = clCreateCommandQueueWithProperties(opencl.context, opencl.device, opencl.queueProperties, &retVal);
+            ASSERT_CL_SUCCESS(retVal);
+            if (arguments.runCopy) {
+                ERROR_IF(arguments.useCopyQueue, "Configuration (runKernel && useCopyQueue && !twoQueues) is invalid");
+                queueForCopy = queueForKernel;
+            }
+        } else if (arguments.runCopy) {
+            queueForCopy = clCreateCommandQueueWithProperties(opencl.context, opencl.device, queueForCopyProperties, &retVal);
+            ASSERT_CL_SUCCESS(retVal);
+        } else {
+            ERROR("Either runCopy or runKernel must be active");
+        }
     }
-    cl_command_queue &queueForKernel = queues[0];
-    cl_command_queue &queueForCopy = arguments.twoQueues ? queues[1] : queues[0];
 
     // Create buffers
     const size_t bufferForKernelSize = 1024 * 600;
@@ -104,9 +125,10 @@ static TestResult run(const KernelAndCopyArguments &arguments, Statistics &stati
         ASSERT_CL_SUCCESS(clReleaseMemObject(bufferForCopy1));
         ASSERT_CL_SUCCESS(clReleaseMemObject(bufferForCopy2));
     }
-    ASSERT_CL_SUCCESS(clReleaseCommandQueue(queues[0]));
-    if (arguments.twoQueues) {
-        ASSERT_CL_SUCCESS(clReleaseCommandQueue(queues[1]));
+    for (auto i = 0u; i < sizeof(queues) / sizeof(queues[0]); i++) {
+        if (queues[i] != nullptr) {
+            ASSERT_CL_SUCCESS(clReleaseCommandQueue(queues[i]));
+        }
     }
 
     return TestResult::Success;
