@@ -4,12 +4,11 @@
 
 #define CL_TARGET_OPENCL_VERSION 220
 #include <CL/cl.h>
-#include <CL/embargo/cl_ext_private_internal.h>
+#include <CL/intel/cl_ext_private.h>
+#include <CL/intel/embargo/cl_ext_private_internal.h>
 #include <exception>
 #include <gtest/gtest.h>
 #include <iostream>
-
-#define CL_MEM_USES_COMPRESSION_INTEL (0x10051)
 
 #define ASSERT_CL_SUCCESS(retVal)      \
     if (retVal != CL_SUCCESS) {        \
@@ -26,8 +25,6 @@
     if (retVal != CL_SUCCESS) {                                                              \
         ERROR(std::string("Fatal OpenCL error occurred, retVal=") + std::to_string(retVal)); \
     }
-
-using cl_mem_properties_intel = cl_bitfield;
 
 typedef CL_API_ENTRY void *(CL_API_CALL *pfn_clHostMemAllocINTEL)(
     cl_context context,
