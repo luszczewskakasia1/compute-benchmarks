@@ -5,7 +5,6 @@
 #include "gpu_cmds_benchmark/definitions/wait_on_event_cold.h"
 
 #include <gtest/gtest.h>
-#include <level_zero/zex_ddi.h>
 
 struct TestResources {
     TestResources(LevelZero &levelzero, size_t eventsCount, uint64_t *beginTimestamp, uint64_t *endTimestamp)

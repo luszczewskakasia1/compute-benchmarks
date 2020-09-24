@@ -5,11 +5,9 @@
 
 #include <emmintrin.h>
 #include <gtest/gtest.h>
-#include <level_zero/zex_ddi.h>
 
 static TestResult run(const BestSubmissionArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;
-    zex_pfnCommandListAppendPipeControl_t zexCommandListAppendPipeControl{};
     constexpr static auto bufferSize = 4096u;
     constexpr uint64_t timestampInitial = 0xffffffffu;
     Timer timer;

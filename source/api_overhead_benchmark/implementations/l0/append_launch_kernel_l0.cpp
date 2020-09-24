@@ -5,7 +5,6 @@
 #include "framework/utility/timer.h"
 
 #include <gtest/gtest.h>
-#include <level_zero/zex_ddi.h>
 
 static TestResult run(const AppendLaunchKernelArguments &arguments, Statistics &statistics) {
     // Setup

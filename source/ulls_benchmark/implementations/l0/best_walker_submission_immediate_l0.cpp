@@ -6,7 +6,6 @@
 
 #include <emmintrin.h>
 #include <gtest/gtest.h>
-#include <level_zero/zex_ddi.h>
 
 static TestResult run(const BestWalkerSubmissionImmediateArguments &arguments, Statistics &statistics) {
     LevelZero levelzero{false};

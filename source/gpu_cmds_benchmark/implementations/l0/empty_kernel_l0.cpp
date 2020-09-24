@@ -5,7 +5,6 @@
 #include "gpu_cmds_benchmark/definitions/empty_kernel.h"
 
 #include <gtest/gtest.h>
-#include <level_zero/zex_ddi.h>
 
 static TestResult run(const EmptyKernelArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;

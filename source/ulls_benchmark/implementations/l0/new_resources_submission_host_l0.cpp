@@ -5,7 +5,6 @@
 #include "ulls_benchmark/definitions/new_resources_submission_host.h"
 
 #include <gtest/gtest.h>
-#include <level_zero/zex_ddi.h>
 
 static TestResult run(const NewResourcesSubmissionHostArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;

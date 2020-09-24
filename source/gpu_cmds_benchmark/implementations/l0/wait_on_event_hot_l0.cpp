@@ -5,7 +5,6 @@
 #include "gpu_cmds_benchmark/definitions/wait_on_event_hot.h"
 
 #include <gtest/gtest.h>
-#include <level_zero/zex_ddi.h>
 
 static TestResult run(const WaitOnEventHotArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;

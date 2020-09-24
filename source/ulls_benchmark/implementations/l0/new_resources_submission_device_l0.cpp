@@ -5,7 +5,6 @@
 #include "ulls_benchmark/definitions/new_resources_submission_device.h"
 
 #include <gtest/gtest.h>
-#include <level_zero/zex_ddi.h>
 
 static TestResult run(const NewResourcesSubmissionDeviceArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;

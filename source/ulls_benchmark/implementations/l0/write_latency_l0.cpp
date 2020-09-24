@@ -5,7 +5,6 @@
 
 #include <emmintrin.h>
 #include <gtest/gtest.h>
-#include <level_zero/zex_ddi.h>
 
 #define ADD_ENTER_SUPPORT 0
 
@@ -15,7 +14,6 @@
 
 static TestResult run(const WriteLatencyArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;
-    zex_pfnCommandListAppendPipeControl_t zexCommandListAppendPipeControl{};
     constexpr static auto bufferSize = 4096u;
     constexpr uint64_t timestampInitial = 0xffffffffu;
     Timer timer;

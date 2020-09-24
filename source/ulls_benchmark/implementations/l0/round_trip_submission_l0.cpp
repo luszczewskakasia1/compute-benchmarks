@@ -5,7 +5,6 @@
 #include "ulls_benchmark/definitions/round_trip_submission.h"
 
 #include <gtest/gtest.h>
-#include <level_zero/zex_ddi.h>
 
 static TestResult run(const RoundTripSubmissionArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;

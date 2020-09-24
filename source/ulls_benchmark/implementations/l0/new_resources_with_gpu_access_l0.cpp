@@ -5,7 +5,6 @@
 #include "ulls_benchmark/definitions/new_resources_with_gpu_access.h"
 
 #include <gtest/gtest.h>
-#include <level_zero/zex_ddi.h>
 
 static TestResult run(const NewResourcesWithGpuAccessArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;

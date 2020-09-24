@@ -5,7 +5,6 @@
 #include "gpu_cmds_benchmark/definitions/kernel_with_work.h"
 
 #include <gtest/gtest.h>
-#include <level_zero/zex_ddi.h>
 
 static auto selectKernel(WorkItemIdUsage usedIds) {
     switch (usedIds) {
