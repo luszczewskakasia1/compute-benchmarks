@@ -25,6 +25,21 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
         ASSERT_ZE_RESULT_SUCCESS(zeMemAllocHost(levelzero.context, &hostAllocationDesc, arguments.size, 0, &destination));
     }
 
+    // Create event
+    ze_event_pool_handle_t eventPool{};
+    ze_event_handle_t event{};
+    if (arguments.useEvents) {
+        ze_event_pool_desc_t eventPoolDesc{ZE_STRUCTURE_TYPE_EVENT_POOL_DESC};
+        eventPoolDesc.flags = ZE_EVENT_POOL_FLAG_KERNEL_TIMESTAMP;
+        eventPoolDesc.count = 1;
+        ASSERT_ZE_RESULT_SUCCESS(zeEventPoolCreate(levelzero.context, &eventPoolDesc, 1, &levelzero.device, &eventPool));
+        ze_event_desc_t eventDesc{ZE_STRUCTURE_TYPE_EVENT_DESC};
+        eventDesc.index = 0;
+        eventDesc.signal = ZE_EVENT_SCOPE_FLAG_DEVICE;
+        eventDesc.wait = ZE_EVENT_SCOPE_FLAG_HOST;
+        ASSERT_ZE_RESULT_SUCCESS(zeEventCreate(eventPool, &eventDesc, &event));
+    }
+
     // Make buffers resident
     ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, source, arguments.size));
     ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, destination, arguments.size));
@@ -34,7 +49,7 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
     cmdListDesc.commandQueueGroupOrdinal = levelzero.commandQueueDescCopy->ordinal;
     ze_command_list_handle_t cmdList{};
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.context, levelzero.device, &cmdListDesc, &cmdList));
-    ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendMemoryCopy(cmdList, destination, source, arguments.size, nullptr, 0, nullptr));
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendMemoryCopy(cmdList, destination, source, arguments.size, event, 0, nullptr));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListClose(cmdList));
 
     // Warmup
@@ -47,7 +62,16 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
         timer.measureEnd();
-        statistics.pushValue(timer.getBandwidth(arguments.size));
+
+        if (arguments.useEvents) {
+            ze_kernel_timestamp_result_t timestampResult{};
+            ASSERT_ZE_RESULT_SUCCESS(zeEventQueryKernelTimestamp(event, &timestampResult));
+            auto commandTime = static_cast<Statistics::Value>(timestampResult.global.kernelEnd - timestampResult.global.kernelStart);
+            commandTime *= levelzero.deviceProperties.timerResolution;
+            statistics.pushValue(Timer::getBandwidth(commandTime, arguments.size));
+        } else {
+            statistics.pushValue(timer.getBandwidth(arguments.size));
+        }
     }
 
     // Evict buffers
@@ -56,6 +80,10 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
 
     // Cleanup
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));
+    if (arguments.useEvents) {
+        ASSERT_ZE_RESULT_SUCCESS(zeEventPoolDestroy(eventPool));
+        ASSERT_ZE_RESULT_SUCCESS(zeEventDestroy(event));
+    }
     ASSERT_ZE_RESULT_SUCCESS(zeMemFree(levelzero.context, destination));
     ASSERT_ZE_RESULT_SUCCESS(zeMemFree(levelzero.context, source));
     return TestResult::Success;

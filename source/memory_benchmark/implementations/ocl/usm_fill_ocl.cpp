@@ -7,7 +7,11 @@
 
 static TestResult run(const UsmFillArguments &arguments, Statistics &statistics) {
     // Setup
-    Opencl opencl;
+    cl_int retVal{};
+    Opencl opencl(false);
+    const auto queueProperties = arguments.useEvents ? opencl.profilingQueueProperties : opencl.queueProperties;
+    opencl.commandQueue = clCreateCommandQueueWithProperties(opencl.context, opencl.device, queueProperties, &retVal);
+    ASSERT_CL_SUCCESS(retVal);
     Timer timer;
     auto clHostMemAllocINTEL = (pfn_clHostMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clHostMemAllocINTEL");
     auto clDeviceMemAllocINTEL = (pfn_clDeviceMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clDeviceMemAllocINTEL");
@@ -16,7 +20,6 @@ static TestResult run(const UsmFillArguments &arguments, Statistics &statistics)
     if (!clHostMemAllocINTEL || !clDeviceMemAllocINTEL || !clMemFreeINTEL || !clEnqueueMemFillINTEL) {
         return TestResult::DriverFunctionNotFound;
     }
-    cl_int retVal;
 
     // Create buffers
     void *buffer{};
@@ -36,11 +39,24 @@ static TestResult run(const UsmFillArguments &arguments, Statistics &statistics)
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
+        cl_event profilingEvent{};
+        cl_event *eventForEnqueue = arguments.useEvents ? &profilingEvent : nullptr;
+
         timer.measureStart();
-        ASSERT_CL_SUCCESS(clEnqueueMemFillINTEL(opencl.commandQueue, buffer, pattern.get(), arguments.patternSize, arguments.bufferSize, 0, nullptr, nullptr));
+        ASSERT_CL_SUCCESS(clEnqueueMemFillINTEL(opencl.commandQueue, buffer, pattern.get(), arguments.patternSize, arguments.bufferSize, 0, nullptr, eventForEnqueue));
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
-        statistics.pushValue(timer.getBandwidth(arguments.bufferSize));
+
+        if (eventForEnqueue) {
+            cl_ulong start{}, end{};
+            ASSERT_CL_SUCCESS(clGetEventProfilingInfo(profilingEvent, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, nullptr));
+            ASSERT_CL_SUCCESS(clGetEventProfilingInfo(profilingEvent, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, nullptr));
+            ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
+            const auto timeNs = static_cast<Statistics::Value>(end - start);
+            statistics.pushValue(Timer::getBandwidth(timeNs, arguments.bufferSize));
+        } else {
+            statistics.pushValue(timer.getBandwidth(arguments.bufferSize));
+        }
     }
 
     ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, buffer));

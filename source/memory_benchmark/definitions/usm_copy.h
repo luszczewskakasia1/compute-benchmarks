@@ -9,10 +9,12 @@
 struct UsmCopyArguments : TestCaseArguments {
     TransferDirectionTestCaseArgument transferDirection;
     ByteSizeTestCaseArgument size;
+    BooleanTestCaseArgument useEvents;
 
     UsmCopyArguments()
         : transferDirection(*this, "transfer"),
-          size(*this, "size") {}
+          size(*this, "size"),
+          useEvents(*this, "useEvents") {}
 };
 
 class UsmCopy : public TestCase<UsmCopyArguments> {

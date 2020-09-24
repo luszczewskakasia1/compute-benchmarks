@@ -10,11 +10,13 @@ struct UsmFillArguments : TestCaseArguments {
     MemoryPlacementTestCaseArgument memoryPlacement;
     ByteSizeTestCaseArgument bufferSize;
     ByteSizeTestCaseArgument patternSize;
+    BooleanTestCaseArgument useEvents;
 
     UsmFillArguments()
         : memoryPlacement(*this, "memory"),
           bufferSize(*this, "size", "size of the buffer to be filled"),
-          patternSize(*this, "patternSize") {}
+          patternSize(*this, "patternSize"),
+          useEvents(*this, "useEvents") {}
 };
 
 class UsmFill : public TestCase<UsmFillArguments> {

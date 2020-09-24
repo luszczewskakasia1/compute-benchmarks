@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 
-class UsmCopyTest : public ::testing::TestWithParam<std::tuple<Api, TransferDirection, size_t>> {
+class UsmCopyTest : public ::testing::TestWithParam<std::tuple<Api, TransferDirection, size_t, bool>> {
 };
 
 TEST_P(UsmCopyTest, Test) {
@@ -12,6 +12,7 @@ TEST_P(UsmCopyTest, Test) {
     args.api = std::get<0>(GetParam());
     args.transferDirection = std::get<1>(GetParam());
     args.size = std::get<2>(GetParam());
+    args.useEvents = std::get<3>(GetParam());
 
     UsmCopy test;
     test.run(args);
@@ -26,4 +27,5 @@ INSTANTIATE_TEST_SUITE_P(
     ::testing::Combine(
         ::CommonGtestArgs::allApis(),
         ::testing::Values(TransferDirection::SysToSys, TransferDirection::SysToDev, TransferDirection::DevToSys, TransferDirection::DevToDev),
-        ::testing::Values(128 * megaByte, 512 * megaByte)));
+        ::testing::Values(128 * megaByte, 512 * megaByte),
+        ::testing::Values(false, true)));

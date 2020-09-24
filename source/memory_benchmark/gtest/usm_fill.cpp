@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 
-class UsmFillTest : public ::testing::TestWithParam<std::tuple<Api, MemoryPlacement, size_t, size_t>> {
+class UsmFillTest : public ::testing::TestWithParam<std::tuple<Api, MemoryPlacement, size_t, size_t, bool>> {
 };
 
 TEST_P(UsmFillTest, Test) {
@@ -13,6 +13,7 @@ TEST_P(UsmFillTest, Test) {
     args.memoryPlacement = std::get<1>(GetParam());
     args.bufferSize = std::get<2>(GetParam());
     args.patternSize = std::get<3>(GetParam());
+    args.useEvents = std::get<4>(GetParam());
 
     UsmFill test;
     test.run(args);
@@ -28,4 +29,5 @@ INSTANTIATE_TEST_SUITE_P(
         ::CommonGtestArgs::allApis(),
         ::testing::Values(MemoryPlacement::Host, MemoryPlacement::Device),
         ::testing::Values(128 * megaByte, 512 * megaByte),
-        ::testing::Values(16, 256)));
+        ::testing::Values(16, 256),
+        ::testing::Values(false, true)));
