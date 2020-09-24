@@ -23,7 +23,7 @@ static TestResult run(const CompletionLatencyArguments &arguments, Statistics &s
 
     // Create command list writing 1 to the buffer
     ze_command_list_desc_t cmdListDesc{};
-    cmdListDesc.commandQueueGroupOrdinal = levelzero.commandListCommandQueueGroupOrdinal;
+    cmdListDesc.commandQueueGroupOrdinal = levelzero.commandQueueDescCompute->ordinal;
     ze_command_list_handle_t cmdList;
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.context, levelzero.device, &cmdListDesc, &cmdList));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendWriteGlobalTimestamp(cmdList, static_cast<uint64_t *>(buffer), nullptr, 0, nullptr));

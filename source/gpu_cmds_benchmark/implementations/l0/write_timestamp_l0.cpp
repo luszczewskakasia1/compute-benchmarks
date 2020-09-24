@@ -22,7 +22,7 @@ static TestResult run(const WriteTimestampArguments &arguments, Statistics &stat
 
     // Create command list
     ze_command_list_desc_t cmdListDesc{};
-    cmdListDesc.commandQueueGroupOrdinal = levelzero.commandListCommandQueueGroupOrdinal;
+    cmdListDesc.commandQueueGroupOrdinal = levelzero.commandQueueDescCompute->ordinal;
     ze_command_list_handle_t cmdList;
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.context, levelzero.device, &cmdListDesc, &cmdList));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendWriteGlobalTimestamp(cmdList, beginTimestamp, nullptr, 0, nullptr));

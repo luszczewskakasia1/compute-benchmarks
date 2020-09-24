@@ -64,29 +64,63 @@ struct LevelZero {
         const ze_context_desc_t contextDesc{ZE_STRUCTURE_TYPE_CONTEXT_DESC};
         EXPECT_ZE_RESULT_SUCCESS(zeContextCreate(driver, &contextDesc, &context));
 
+        // Get queue ordinals
+        uint32_t numQueueGroups = 0;
+        EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetCommandQueueGroupProperties(device, &numQueueGroups, nullptr));
+        ERROR_IF(numQueueGroups == 0, "No queue groups found!");
+        std::vector<ze_command_queue_group_properties_t> queueProperties(numQueueGroups);
+        EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetCommandQueueGroupProperties(device, &numQueueGroups, queueProperties.data()));
+        uint32_t commandQueueOrdinalCompute{};
+        uint32_t commandQueueOrdinalCopy{};
+        uint32_t commandQueueOrdinalCopyOnly{};
+        bool commandQueueHasCompute = false;
+        bool commandQueueHasCopy = false;
+        bool commandQueueHasCopyOnly = false;
+        for (uint32_t i = 0; i < numQueueGroups; i++) {
+            const bool isCompute = queueProperties[i].flags & ZE_COMMAND_QUEUE_GROUP_PROPERTY_FLAG_COMPUTE;
+            const bool isCopy = queueProperties[i].flags & ZE_COMMAND_QUEUE_GROUP_PROPERTY_FLAG_COPY;
+            const bool isCopyOnly = !isCompute && isCopy;
+
+            if (isCopyOnly) {
+                commandQueueOrdinalCopyOnly = i;
+                commandQueueHasCopyOnly = true;
+
+                commandQueueOrdinalCopy = i;
+                commandQueueHasCopy = true;
+            }
+            if (isCompute) {
+                commandQueueOrdinalCompute = i;
+                commandQueueHasCompute = true;
+            }
+            if (isCopy && !commandQueueHasCopyOnly) {
+                commandQueueOrdinalCopy = i;
+                commandQueueHasCopy = true;
+            }
+        }
+
+        // Prepare queue descriptions
+        if (commandQueueHasCompute) {
+            this->commandQueueDescCompute = std::make_unique<ze_command_queue_desc_t>();
+            this->commandQueueDescCompute->stype = ZE_STRUCTURE_TYPE_COMMAND_QUEUE_DESC;
+            this->commandQueueDescCompute->mode = ZE_COMMAND_QUEUE_MODE_ASYNCHRONOUS;
+            this->commandQueueDescCompute->ordinal = commandQueueOrdinalCompute;
+        }
+        if (commandQueueHasCopy) {
+            this->commandQueueDescCopy = std::make_unique<ze_command_queue_desc_t>();
+            this->commandQueueDescCopy->stype = ZE_STRUCTURE_TYPE_COMMAND_QUEUE_DESC;
+            this->commandQueueDescCopy->mode = ZE_COMMAND_QUEUE_MODE_ASYNCHRONOUS;
+            this->commandQueueDescCopy->ordinal = commandQueueOrdinalCopy;
+        }
+        if (commandQueueHasCopyOnly) {
+            this->commandQueueDescCopyOnly = std::make_unique<ze_command_queue_desc_t>();
+            this->commandQueueDescCopyOnly->stype = ZE_STRUCTURE_TYPE_COMMAND_QUEUE_DESC;
+            this->commandQueueDescCopyOnly->mode = ZE_COMMAND_QUEUE_MODE_ASYNCHRONOUS;
+            this->commandQueueDescCopyOnly->ordinal = commandQueueOrdinalCopyOnly;
+        }
+
         // Create queue
         if (createCommandQueue) {
-            uint32_t numQueueGroups = 0;
-            EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetCommandQueueGroupProperties(device, &numQueueGroups, nullptr));
-            if (numQueueGroups == 0) {
-                ERROR("No queue groups found!");
-            }
-
-            std::vector<ze_command_queue_group_properties_t> queueProperties(numQueueGroups);
-            EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetCommandQueueGroupProperties(device, &numQueueGroups, queueProperties.data()));
-
-            ze_command_queue_desc_t commandQueueDesc{ZE_STRUCTURE_TYPE_COMMAND_QUEUE_DESC};
-            for (uint32_t i = 0; i < numQueueGroups; i++) {
-                if (queueProperties[i].flags & ZE_COMMAND_QUEUE_GROUP_PROPERTY_FLAG_COMPUTE) {
-                    commandQueueDesc.ordinal = i;
-                    break;
-                }
-            }
-            commandQueueDesc.index = 0;
-            commandQueueDesc.mode = ZE_COMMAND_QUEUE_MODE_ASYNCHRONOUS;
-            EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueCreate(context, device, &commandQueueDesc, &commandQueue));
-
-            this->commandListCommandQueueGroupOrdinal = commandQueueDesc.ordinal;
+            EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueCreate(context, device, commandQueueDescCompute.get(), &commandQueue));
         }
     }
 
@@ -101,6 +135,9 @@ struct LevelZero {
     ze_device_handle_t device{};
     ze_context_handle_t context{};
     ze_command_queue_handle_t commandQueue{};
-    uint32_t commandListCommandQueueGroupOrdinal{};
     ze_device_properties_t deviceProperties;
+
+    std::unique_ptr<ze_command_queue_desc_t> commandQueueDescCompute{};
+    std::unique_ptr<ze_command_queue_desc_t> commandQueueDescCopy{};
+    std::unique_ptr<ze_command_queue_desc_t> commandQueueDescCopyOnly{};
 };

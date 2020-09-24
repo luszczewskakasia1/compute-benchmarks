@@ -45,7 +45,7 @@ static TestResult run(const AppendLaunchKernelArguments &arguments, Statistics &
     // Create command list and warmup
     const ze_group_count_t dispatchTraits{static_cast<uint32_t>(arguments.workgroupCount), 1u, 1u};
     ze_command_list_desc_t cmdListDesc{};
-    cmdListDesc.commandQueueGroupOrdinal = levelzero.commandListCommandQueueGroupOrdinal;
+    cmdListDesc.commandQueueGroupOrdinal = levelzero.commandQueueDescCompute->ordinal;
     ze_command_list_handle_t cmdList;
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.context, levelzero.device, &cmdListDesc, &cmdList));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &dispatchTraits, event, 0, nullptr));

@@ -44,7 +44,7 @@ static TestResult run(const WalkerCompletionLatencyArguments &arguments, Statist
     // Create a command list writing 1 to the buffer
     const ze_group_count_t groupCount{1, 1, 1};
     ze_command_list_desc_t cmdListDesc{};
-    cmdListDesc.commandQueueGroupOrdinal = levelzero.commandListCommandQueueGroupOrdinal;
+    cmdListDesc.commandQueueGroupOrdinal = levelzero.commandQueueDescCompute->ordinal;
     ze_command_list_handle_t cmdList;
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.context, levelzero.device, &cmdListDesc, &cmdList));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, nullptr, 0, nullptr));

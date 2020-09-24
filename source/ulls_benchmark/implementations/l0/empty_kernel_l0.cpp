@@ -40,7 +40,7 @@ static TestResult run(const EmptyKernelArguments &arguments, Statistics &statist
 
     // Create command list and append empty kernel
     ze_command_list_desc_t cmdListDesc{};
-    cmdListDesc.commandQueueGroupOrdinal = levelzero.commandListCommandQueueGroupOrdinal;
+    cmdListDesc.commandQueueGroupOrdinal = levelzero.commandQueueDescCompute->ordinal;
     ze_command_list_handle_t cmdList;
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.context, levelzero.device, &cmdListDesc, &cmdList));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &dispatchTraits, nullptr, 0, nullptr));
