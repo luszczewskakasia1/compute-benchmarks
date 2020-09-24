@@ -12,6 +12,13 @@ struct KernelAndCopyArguments : TestCaseArguments {
         : twoQueues(*this, "twoQueues", "enables using separate queues for both operations"),
           runKernel(*this, "runKernel", "enqueue kernel during each iteration"),
           runCopy(*this, "runCopy", "enqueue buffer to buffer copy during each iteration") {}
+
+    bool validateArgumentsExtra() const override {
+        if ((!runCopy || !runKernel) && twoQueues) {
+            return false;
+        }
+        return true;
+    }
 };
 
 class KernelAndCopy : public TestCase<KernelAndCopyArguments> {

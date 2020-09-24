@@ -17,4 +17,7 @@ struct TestCaseArguments {
     Api api = Api::Unknown;
     int iterations = 0;
     bool noIntelExtensions = false;
+
+  protected:
+    virtual bool validateArgumentsExtra() const { return true; } // This is optional. Use this for validating dependencies between arguments if any.
 };

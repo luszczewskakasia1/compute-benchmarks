@@ -18,6 +18,10 @@ bool TestCaseArguments::validateArguments() const {
         }
     }
 
+    if (!validateArgumentsExtra()) {
+        return false;
+    }
+
     if (!validateApi(api)) {
         return false;
     }
