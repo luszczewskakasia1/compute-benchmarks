@@ -72,18 +72,23 @@ struct ByteSizeTestCaseArgument : PositiveIntegerTestCaseArgument {
     }
 
     void parseImpl(const std::string &value) override {
-        const std::string units[] = {"KB", "MB", "GB", "B", ""};
+        const std::string units[] = {"kb", "mb", "gb", "b", ""};
         const size_t unitMultipliers[] = {1024, 1024 * 1024, 1024 * 1024 * 1024, 1, 1};
         const auto unitCount = sizeof(units) / sizeof(units[0]);
         static_assert(unitCount == sizeof(unitMultipliers) / sizeof(unitMultipliers[0]));
 
-        std::string valueWithoutUnit;
+        const std::string valueLower = toLower(value);
+        std::string valueWithoutUnit{};
         auto currentUnit = 0u;
         for (; currentUnit < unitCount; currentUnit++) {
-            const auto unitPosition = value.rfind(units[currentUnit]);
-            const auto expectedUnitPosition = value.length() - units[currentUnit].length();
+            if (valueLower.length() < units[currentUnit].length()) {
+                continue;
+            }
+
+            const auto unitPosition = valueLower.rfind(units[currentUnit]);
+            const auto expectedUnitPosition = valueLower.length() - units[currentUnit].length();
             if (unitPosition == expectedUnitPosition) {
-                valueWithoutUnit = value.substr(0, unitPosition);
+                valueWithoutUnit = valueLower.substr(0, unitPosition);
                 break;
             }
         }
