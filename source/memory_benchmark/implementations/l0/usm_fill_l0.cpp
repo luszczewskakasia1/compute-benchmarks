@@ -6,7 +6,8 @@
 #include <gtest/gtest.h>
 
 static TestResult run(const UsmFillArguments &arguments, Statistics &statistics) {
-    LevelZero levelzero;
+    LevelZero levelzero(false);
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueCreate(levelzero.context, levelzero.device, levelzero.commandQueueDescCopy.get(), &levelzero.commandQueue));
     Timer timer;
 
     // Create buffers
@@ -27,7 +28,7 @@ static TestResult run(const UsmFillArguments &arguments, Statistics &statistics)
 
     // Create command list
     ze_command_list_desc_t cmdListDesc{};
-    cmdListDesc.commandQueueGroupOrdinal = levelzero.commandQueueDescCompute->ordinal;
+    cmdListDesc.commandQueueGroupOrdinal = levelzero.commandQueueDescCopy->ordinal;
     ze_command_list_handle_t cmdList{};
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.context, levelzero.device, &cmdListDesc, &cmdList));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendMemoryFill(cmdList, buffer, pattern.get(), arguments.patternSize, arguments.bufferSize, nullptr, 0, nullptr));
