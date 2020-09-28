@@ -1,5 +1,6 @@
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
+#include "framework/utility/ocl/profiling_helper.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/usm_copy.h"
 
@@ -48,12 +49,10 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
         timer.measureEnd();
 
         if (eventForEnqueue) {
-            cl_ulong start{}, end{};
-            ASSERT_CL_SUCCESS(clGetEventProfilingInfo(profilingEvent, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, nullptr));
-            ASSERT_CL_SUCCESS(clGetEventProfilingInfo(profilingEvent, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, nullptr));
+            cl_ulong timeNs{};
+            ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
             ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
-            const auto timeNs = static_cast<Statistics::Value>(end - start);
-            statistics.pushValue(Timer::getBandwidth(timeNs, arguments.size));
+            statistics.pushValue(Timer::getBandwidth(static_cast<Statistics::Value>(timeNs), arguments.size));
         } else {
             statistics.pushValue(timer.getBandwidth(arguments.size));
         }
