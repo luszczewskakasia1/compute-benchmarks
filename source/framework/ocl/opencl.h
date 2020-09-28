@@ -76,9 +76,9 @@ struct Opencl {
 
     cl_int createQueue(const cl_command_queue_properties *queueProperties) {
         // Make a local copy of the properties
-        int propertiesCount = 2;
-        for (auto it = queueProperties; *it != 0; it++) {
-            propertiesCount++;
+        int propertiesCount = 1;
+        for (auto it = queueProperties; *it != 0; it += 2) {
+            propertiesCount += 2;
         }
         auto localQueueProperties = std::make_unique<cl_command_queue_properties[]>(propertiesCount);
         std::copy_n(queueProperties, propertiesCount, localQueueProperties.get());
