@@ -9,10 +9,8 @@
 
 static TestResult run(const WalkerSubmissionEventsArguments &arguments, Statistics &statistics) {
     // Setup
-    Opencl opencl(nullptr);
+    Opencl opencl(Opencl::profilingQueueProperties);
     cl_int retVal{};
-    cl_command_queue commandQueue = clCreateCommandQueueWithProperties(opencl.context, opencl.device, opencl.profilingQueueProperties, &retVal);
-    EXPECT_CL_SUCCESS(retVal);
     cl_event profilingEvent{};
 
     // Create kernel
@@ -27,14 +25,14 @@ static TestResult run(const WalkerSubmissionEventsArguments &arguments, Statisti
     // Warmup run
     const size_t gws = 1;
     const size_t lws = 1;
-    retVal |= clEnqueueNDRangeKernel(commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &profilingEvent);
-    retVal |= clFinish(commandQueue);
+    retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &profilingEvent);
+    retVal |= clFinish(opencl.commandQueue);
     ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
     ASSERT_CL_SUCCESS(retVal);
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
-        ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &profilingEvent));
+        ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &profilingEvent));
         ASSERT_CL_SUCCESS(clWaitForEvents(1, &profilingEvent));
 
         cl_ulong queued{}, start{};
@@ -50,7 +48,7 @@ static TestResult run(const WalkerSubmissionEventsArguments &arguments, Statisti
     // Cleanup
     ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
     ASSERT_CL_SUCCESS(clReleaseProgram(program));
-    ASSERT_CL_SUCCESS(clReleaseCommandQueue(commandQueue));
+    ASSERT_CL_SUCCESS(clReleaseCommandQueue(opencl.commandQueue));
     return TestResult::Success;
 }
 

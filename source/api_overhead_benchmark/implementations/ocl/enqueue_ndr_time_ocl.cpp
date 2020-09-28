@@ -7,10 +7,9 @@
 
 static TestResult run(const EnqueueNdrTimeArguments &arguments, Statistics &statistics) {
     // Setup
-    Opencl opencl(nullptr);
+    const auto queueProperties = arguments.useProfiling ? Opencl::profilingQueueProperties : Opencl::queueProperties;
+    Opencl opencl(queueProperties);
     cl_int retVal{};
-    cl_command_queue commandQueue = clCreateCommandQueueWithProperties(opencl.context, opencl.device, arguments.useProfiling ? opencl.profilingQueueProperties : opencl.queueProperties, &retVal);
-    ASSERT_CL_SUCCESS(retVal);
     Timer timer;
 
     // Get parameters for the enqueue call
@@ -33,8 +32,8 @@ static TestResult run(const EnqueueNdrTimeArguments &arguments, Statistics &stat
     ASSERT_CL_SUCCESS(retVal);
 
     // Warmup, kernel
-    retVal |= clEnqueueNDRangeKernel(commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, eventForNdr);
-    retVal |= clFinish(commandQueue);
+    retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, eventForNdr);
+    retVal |= clFinish(opencl.commandQueue);
     if (eventForNdr) {
         ASSERT_CL_SUCCESS(clReleaseEvent(event));
     }
@@ -43,9 +42,9 @@ static TestResult run(const EnqueueNdrTimeArguments &arguments, Statistics &stat
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
         timer.measureStart();
-        ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, eventForNdr));
+        ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, eventForNdr));
         timer.measureEnd();
-        ASSERT_CL_SUCCESS(clFinish(commandQueue));
+        ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         statistics.pushValue(timer.Get());
         if (eventForNdr) {
             ASSERT_CL_SUCCESS(clReleaseEvent(event));
@@ -55,7 +54,6 @@ static TestResult run(const EnqueueNdrTimeArguments &arguments, Statistics &stat
     // Cleanup
     ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
     ASSERT_CL_SUCCESS(clReleaseProgram(program));
-    ASSERT_CL_SUCCESS(clReleaseCommandQueue(commandQueue));
     return TestResult::Success;
 }
 
