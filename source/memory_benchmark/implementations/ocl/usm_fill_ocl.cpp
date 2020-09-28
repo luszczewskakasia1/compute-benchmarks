@@ -9,7 +9,7 @@
 static TestResult run(const UsmFillArguments &arguments, Statistics &statistics) {
     // Setup
     cl_int retVal{};
-    Opencl opencl(false);
+    Opencl opencl(nullptr);
     const auto queueProperties = arguments.useEvents ? opencl.profilingQueueProperties : opencl.queueProperties;
     opencl.commandQueue = clCreateCommandQueueWithProperties(opencl.context, opencl.device, queueProperties, &retVal);
     ASSERT_CL_SUCCESS(retVal);

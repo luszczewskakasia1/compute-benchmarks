@@ -8,7 +8,7 @@
 
 static TestResult run(const KernelAndCopyArguments &arguments, Statistics &statistics) {
     // Setup
-    Opencl opencl(false);
+    Opencl opencl(nullptr);
     Timer timer{};
     cl_int retVal{};
 

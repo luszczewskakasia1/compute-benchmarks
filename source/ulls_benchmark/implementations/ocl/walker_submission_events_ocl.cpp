@@ -9,7 +9,7 @@
 
 static TestResult run(const WalkerSubmissionEventsArguments &arguments, Statistics &statistics) {
     // Setup
-    Opencl opencl(false);
+    Opencl opencl(nullptr);
     cl_int retVal{};
     cl_command_queue commandQueue = clCreateCommandQueueWithProperties(opencl.context, opencl.device, opencl.profilingQueueProperties, &retVal);
     EXPECT_CL_SUCCESS(retVal);

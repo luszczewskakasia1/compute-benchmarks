@@ -7,7 +7,7 @@
 
 static TestResult run(const EnqueueNdrNullLwsArguments &arguments, Statistics &statistics) {
     // Setup
-    Opencl opencl(false);
+    Opencl opencl(nullptr);
     cl_int retVal{};
     cl_command_queue commandQueue = clCreateCommandQueueWithProperties(opencl.context, opencl.device, arguments.useProfiling ? opencl.profilingQueueProperties : opencl.queueProperties, &retVal);
     ASSERT_CL_SUCCESS(retVal);

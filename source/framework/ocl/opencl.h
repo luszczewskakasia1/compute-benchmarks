@@ -29,8 +29,11 @@
     }
 
 struct Opencl {
-    Opencl() : Opencl(true) {}
-    Opencl(bool createQueue) {
+    static const inline cl_command_queue_properties queueProperties[3] = {CL_QUEUE_PROPERTIES, 0, 0};
+    static const inline cl_command_queue_properties profilingQueueProperties[3] = {CL_QUEUE_PROPERTIES, CL_QUEUE_PROFILING_ENABLE, 0};
+
+    Opencl() : Opencl(Opencl::queueProperties) {}
+    Opencl(const cl_command_queue_properties *queueProperties) {
         // Get Platform
         cl_uint numPlatforms;
         EXPECT_CL_SUCCESS(clGetPlatformIDs(0, nullptr, &numPlatforms));
@@ -58,18 +61,9 @@ struct Opencl {
         context = clCreateContext(nullptr, 1, &device, nullptr, nullptr, &retVal);
         EXPECT_CL_SUCCESS(retVal);
 
-        // Get command queue properties
-        cl_command_queue_properties supportedProperties{};
-        EXPECT_CL_SUCCESS(clGetDeviceInfo(device, CL_DEVICE_QUEUE_ON_HOST_PROPERTIES, sizeof(supportedProperties), &supportedProperties, nullptr));
-        if (::configuration.oclUseOOQ && (supportedProperties & CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE)) {
-            this->queueProperties[1] |= CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
-            this->profilingQueueProperties[1] |= CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
-        }
-
-        // Create command queue
-        if (createQueue) {
-            commandQueue = clCreateCommandQueueWithProperties(context, device, this->queueProperties, &retVal);
-            EXPECT_CL_SUCCESS(retVal);
+        // Create queueProperties
+        if (queueProperties != nullptr) {
+            EXPECT_CL_SUCCESS(createQueue(queueProperties));
         }
     }
 
@@ -80,11 +74,31 @@ struct Opencl {
         EXPECT_CL_SUCCESS(clReleaseContext(context));
     }
 
+    cl_int createQueue(const cl_command_queue_properties *queueProperties) {
+        // Make a local copy of the properties
+        int propertiesCount = 2;
+        for (auto it = queueProperties; *it != 0; it++) {
+            propertiesCount++;
+        }
+        auto localQueueProperties = std::make_unique<cl_command_queue_properties[]>(propertiesCount);
+        std::copy_n(queueProperties, propertiesCount, localQueueProperties.get());
+
+        // Enable OOQ if enabled in configuration
+        cl_command_queue_properties supportedProperties{};
+        EXPECT_CL_SUCCESS(clGetDeviceInfo(device, CL_DEVICE_QUEUE_ON_HOST_PROPERTIES, sizeof(supportedProperties), &supportedProperties, nullptr));
+        if (::configuration.oclUseOOQ && (supportedProperties & CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE)) {
+            ERROR_IF(localQueueProperties[0] != CL_QUEUE_PROPERTIES, "Invalid queue properties specified")
+            localQueueProperties[1] |= CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
+        }
+
+        cl_int retVal{};
+        this->commandQueue = clCreateCommandQueueWithProperties(context, device, localQueueProperties.get(), &retVal);
+        return retVal;
+    }
+
     cl_platform_id platform{};
     cl_device_id device{};
     cl_context context{};
-    cl_command_queue_properties queueProperties[3] = {CL_QUEUE_PROPERTIES, 0, 0};
-    cl_command_queue_properties profilingQueueProperties[3] = {CL_QUEUE_PROPERTIES, CL_QUEUE_PROFILING_ENABLE, 0};
     cl_command_queue commandQueue{};
 
     static cl_mem_flags getCompressionFlags(bool compression, bool noIntelExtensions) {
