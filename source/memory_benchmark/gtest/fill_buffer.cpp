@@ -27,5 +27,5 @@ INSTANTIATE_TEST_SUITE_P(
     ::testing::Combine(
         ::CommonGtestArgs::allApis(),
         ::testing::Values(128 * megaByte, 512 * megaByte),
-        ::testing::Values(16, 128),
+        ::testing::Values(1, 16, 128),
         ::testing::Values(false, true)));
