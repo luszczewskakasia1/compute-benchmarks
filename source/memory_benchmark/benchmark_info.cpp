@@ -7,6 +7,7 @@
 #include "memory_benchmark/definitions/unmap_buffer.h"
 #include "memory_benchmark/definitions/usm_copy.h"
 #include "memory_benchmark/definitions/usm_fill.h"
+#include "memory_benchmark/definitions/usm_fill_specific_pattern.h"
 #include "memory_benchmark/definitions/usm_memset.h"
 #include "memory_benchmark/definitions/usm_shared_migrate_cpu.h"
 #include "memory_benchmark/definitions/usm_shared_migrate_gpu.h"
@@ -23,6 +24,7 @@ TestMap getTestMap() {
     TEST_CASE(UnmapBuffer)
     TEST_CASE(UsmCopy)
     TEST_CASE(UsmFill)
+    TEST_CASE(UsmFillSpecificPattern)
     TEST_CASE(UsmMemset)
     TEST_CASE(UsmSharedMigrateCpu)
     TEST_CASE(UsmSharedMigrateGpu)
