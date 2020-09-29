@@ -1,5 +1,6 @@
 #include "framework/l0/levelzero.h"
 #include "framework/test_case/register_test_case.h"
+#include "framework/utility/random_helper.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/usm_fill.h"
 
@@ -40,6 +41,9 @@ static TestResult run(const UsmFillArguments &arguments, Statistics &statistics)
 
     // Create pattern
     const auto pattern = std::make_unique<uint8_t[]>(arguments.patternSize);
+    if (arguments.patternContents == BufferContents::Random) {
+        RandomHelper::fillWithRandomBytes(pattern.get(), arguments.patternSize);
+    }
 
     // Create command list
     ze_command_list_desc_t cmdListDesc{};
