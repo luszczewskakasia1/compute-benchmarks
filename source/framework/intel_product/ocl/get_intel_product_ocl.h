@@ -2,8 +2,15 @@
 
 #include "framework/intel_product/get_intel_product.h"
 #include "framework/ocl/opencl.h"
+#ifdef USE_PCIACCESS
+#include <pciaccess/pciaccess.h>
+#endif
+
 
 inline IntelProduct getIntelProduct(cl_device_id device) {
+#ifdef USE_PCIACCESS
+    pci_system_init();
+#endif
     return IntelProduct::Unknown;
 }
 

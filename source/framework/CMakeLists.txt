@@ -21,5 +21,14 @@ endfunction()
 tryLinkTo(OclInterface)
 tryLinkTo(LevelZeroInterface)
 
+# Link to PciAccess
+if (USE_PCIACCESS)
+    message(STATUS "Linking to libpciaccess.so")
+    set(PCIACCESS_ROOT "${CMAKE_SOURCE_DIR}/third_party/pciaccess")
+    target_link_libraries(${TARGET_NAME} PUBLIC "${PCIACCESS_ROOT}/lib/x64/libpciaccess.so.0")
+    target_include_directories(${TARGET_NAME} PUBLIC "${PCIACCESS_ROOT}/include")
+    target_compile_definitions(${TARGET_NAME} PUBLIC USE_PCIACCESS)
+endif()
+
 # Create directory structure in Visual Studio
 setup_vs_folders(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
