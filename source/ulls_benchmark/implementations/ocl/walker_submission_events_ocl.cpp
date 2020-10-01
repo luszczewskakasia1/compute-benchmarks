@@ -48,7 +48,6 @@ static TestResult run(const WalkerSubmissionEventsArguments &arguments, Statisti
     // Cleanup
     ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
     ASSERT_CL_SUCCESS(clReleaseProgram(program));
-    ASSERT_CL_SUCCESS(clReleaseCommandQueue(opencl.commandQueue));
     return TestResult::Success;
 }
 
