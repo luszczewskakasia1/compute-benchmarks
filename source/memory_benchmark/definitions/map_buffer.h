@@ -10,11 +10,13 @@ struct MapBufferArguments : TestCaseArguments {
     ByteSizeTestCaseArgument size;
     CompressionBooleanTestCaseArgument compressed;
     MapFlagsTestCaseArgument mapFlags;
+    BooleanTestCaseArgument useEvents;
 
     MapBufferArguments()
         : size(*this, "size"),
           compressed(*this, "compressed"),
-          mapFlags(*this, "mapFlags") {}
+          mapFlags(*this, "mapFlags"),
+          useEvents(*this, "useEvents") {}
 };
 
 class MapBuffer : public TestCase<MapBufferArguments> {

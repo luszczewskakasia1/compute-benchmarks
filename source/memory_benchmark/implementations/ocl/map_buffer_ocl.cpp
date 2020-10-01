@@ -1,6 +1,7 @@
 #include "framework/ocl/map_flags_ocl.h"
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
+#include "framework/utility/ocl/profiling_helper.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/map_buffer.h"
 
@@ -12,7 +13,8 @@ static TestResult run(const MapBufferArguments &arguments, Statistics &statistic
     }
 
     // Setup
-    Opencl opencl;
+    const auto queueProperties = arguments.useEvents ? Opencl::profilingQueueProperties : Opencl::queueProperties;
+    Opencl opencl{queueProperties};
     Timer timer;
     cl_int retVal;
 
@@ -42,16 +44,26 @@ static TestResult run(const MapBufferArguments &arguments, Statistics &statistic
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
+        cl_event profilingEvent{};
+        cl_event *eventForEnqueue = arguments.useEvents ? &profilingEvent : nullptr;
+
         timer.measureStart();
-        ptr = clEnqueueMapBuffer(opencl.commandQueue, buffer, CL_NON_BLOCKING, mapFlags, 0, arguments.size, 0, nullptr, nullptr, &retVal);
+        ptr = clEnqueueMapBuffer(opencl.commandQueue, buffer, CL_NON_BLOCKING, mapFlags, 0, arguments.size, 0, nullptr, eventForEnqueue, &retVal);
         ASSERT_CL_SUCCESS(retVal);
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
 
-        statistics.pushValue(timer.getBandwidth(arguments.size));
+        if (eventForEnqueue) {
+            cl_ulong timeNs{};
+            ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
+            ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
+            statistics.pushValue(Timer::getBandwidth(static_cast<Statistics::Value>(timeNs), arguments.size));
+        } else {
+            statistics.pushValue(timer.getBandwidth(arguments.size));
+        }
 
         ASSERT_CL_SUCCESS(clEnqueueUnmapMemObject(opencl.commandQueue, buffer, ptr, 0, nullptr, nullptr));
-        clFinish(opencl.commandQueue);
+        ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
     }
 
     ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));

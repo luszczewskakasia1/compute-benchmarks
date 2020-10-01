@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 
-class MapBufferTest : public ::testing::TestWithParam<std::tuple<Api, size_t, bool, MapFlags>> {
+class MapBufferTest : public ::testing::TestWithParam<std::tuple<Api, size_t, bool, MapFlags, bool>> {
 };
 
 TEST_P(MapBufferTest, Test) {
@@ -13,6 +13,7 @@ TEST_P(MapBufferTest, Test) {
     args.size = std::get<1>(GetParam());
     args.compressed = std::get<2>(GetParam());
     args.mapFlags = std::get<3>(GetParam());
+    args.useEvents = std::get<4>(GetParam());
 
     MapBuffer test;
     test.run(args);
@@ -28,4 +29,5 @@ INSTANTIATE_TEST_SUITE_P(
         ::CommonGtestArgs::allApis(),
         ::testing::Values(128 * megaByte, 512 * megaByte),
         ::testing::Values(false, true),
-        ::testing::Values(MapFlags::Read, MapFlags::Write, MapFlags::WriteInvalidate)));
+        ::testing::Values(MapFlags::Read, MapFlags::Write, MapFlags::WriteInvalidate),
+        ::testing::Values(false, true)));

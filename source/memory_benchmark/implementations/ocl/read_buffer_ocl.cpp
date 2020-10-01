@@ -1,5 +1,6 @@
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
+#include "framework/utility/ocl/profiling_helper.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/read_buffer.h"
 
@@ -11,7 +12,8 @@ static TestResult run(const ReadBufferArguments &arguments, Statistics &statisti
     }
 
     // Setup
-    Opencl opencl;
+    const auto queueProperties = arguments.useEvents ? Opencl::profilingQueueProperties : Opencl::queueProperties;
+    Opencl opencl{queueProperties};
     Timer timer;
     cl_int retVal;
 
@@ -38,12 +40,22 @@ static TestResult run(const ReadBufferArguments &arguments, Statistics &statisti
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
+        cl_event profilingEvent{};
+        cl_event *eventForEnqueue = arguments.useEvents ? &profilingEvent : nullptr;
+
         timer.measureStart();
-        ASSERT_CL_SUCCESS(clEnqueueReadBuffer(opencl.commandQueue, buffer, CL_NON_BLOCKING, 0, arguments.size, cpuBuffer.get(), 0, nullptr, nullptr));
+        ASSERT_CL_SUCCESS(clEnqueueReadBuffer(opencl.commandQueue, buffer, CL_NON_BLOCKING, 0, arguments.size, cpuBuffer.get(), 0, nullptr, eventForEnqueue));
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue))
         timer.measureEnd();
 
-        statistics.pushValue(timer.getBandwidth(arguments.size));
+        if (eventForEnqueue) {
+            cl_ulong timeNs{};
+            ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
+            ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
+            statistics.pushValue(Timer::getBandwidth(static_cast<Statistics::Value>(timeNs), arguments.size));
+        } else {
+            statistics.pushValue(timer.getBandwidth(arguments.size));
+        }
     }
 
     ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));

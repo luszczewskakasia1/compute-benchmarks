@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 
-class ReadBufferTest : public ::testing::TestWithParam<std::tuple<Api, size_t, bool>> {
+class ReadBufferTest : public ::testing::TestWithParam<std::tuple<Api, size_t, bool, bool>> {
 };
 
 TEST_P(ReadBufferTest, Test) {
@@ -12,6 +12,7 @@ TEST_P(ReadBufferTest, Test) {
     args.api = std::get<0>(GetParam());
     args.size = std::get<1>(GetParam());
     args.compressed = std::get<2>(GetParam());
+    args.useEvents = std::get<3>(GetParam());
 
     ReadBuffer test;
     test.run(args);
@@ -26,4 +27,5 @@ INSTANTIATE_TEST_SUITE_P(
     ::testing::Combine(
         ::CommonGtestArgs::allApis(),
         ::testing::Values(128 * megaByte, 512 * megaByte),
+        ::testing::Values(false, true),
         ::testing::Values(false, true)));
