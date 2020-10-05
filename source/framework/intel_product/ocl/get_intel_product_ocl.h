@@ -58,7 +58,7 @@ inline IntelProduct getIntelProduct(cl_device_id device) {
        }
        else {
           if (devPci->vendor_id == 0x8086) {
-             std::cout <<  "INTEL Vendor id " << std::to_string(devPci->vendor_id) << std::endl;
+             //std::cout <<  "INTEL Vendor id " << std::to_string(devPci->vendor_id) << std::endl;
              const auto product = getIntelProduct(static_cast<uint32_t>(devPci->device_id));
              pci_system_cleanup();
              return product;
