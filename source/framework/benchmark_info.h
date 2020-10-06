@@ -1,5 +1,6 @@
 #pragma once
 
+#include "framework/configuration.h"
 #include "framework/test_case/test_case.h"
 
 #include <unordered_map>
@@ -19,3 +20,8 @@ inline std::string getBenchmarkFilename() {
 std::string getMeasurmentsUnit();
 
 int getTestCaseNameColumnWidth();
+
+struct BenchmarkSpecificConfigurationBase {
+    static std::unique_ptr<BenchmarkSpecificConfigurationBase> create();
+    virtual bool parseArgument(const std::string &key, const std::string &value) { return true; }
+};

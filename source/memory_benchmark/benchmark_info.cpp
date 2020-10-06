@@ -1,5 +1,4 @@
-#include "framework/benchmark_info.h"
-
+#include "memory_benchmark/benchmark_specific_configuration.h"
 #include "memory_benchmark/definitions/copy_buffer.h"
 #include "memory_benchmark/definitions/fill_buffer.h"
 #include "memory_benchmark/definitions/map_buffer.h"
@@ -39,9 +38,18 @@ std::string getBenchmarkName() {
 }
 
 std::string getMeasurmentsUnit() {
-    return "GB/s";
+    auto configuration = static_cast<BenchmarkSpecificConfiguration *>(::configuration.benchmarkSpecificConfiguration.get());
+    if (configuration->printBandwidth) {
+        return "GB/s";
+    } else {
+        return "us";
+    }
 }
 
 int getTestCaseNameColumnWidth() {
     return 106;
+}
+
+std::unique_ptr<BenchmarkSpecificConfigurationBase> BenchmarkSpecificConfigurationBase::create() {
+    return std::unique_ptr<BenchmarkSpecificConfigurationBase>{new BenchmarkSpecificConfiguration()};
 }

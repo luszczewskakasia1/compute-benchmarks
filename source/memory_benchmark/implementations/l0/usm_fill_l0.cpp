@@ -4,6 +4,7 @@
 #include "framework/utility/random_helper.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/usm_fill.h"
+#include "memory_benchmark/timer_helper.h"
 
 #include <gtest/gtest.h>
 
@@ -64,9 +65,9 @@ static TestResult run(const UsmFillArguments &arguments, Statistics &statistics)
             ASSERT_ZE_RESULT_SUCCESS(zeEventQueryKernelTimestamp(event, &timestampResult));
             auto commandTime = static_cast<Statistics::Value>(timestampResult.global.kernelEnd - timestampResult.global.kernelStart);
             commandTime *= levelzero.deviceProperties.timerResolution;
-            statistics.pushValue(Timer::getBandwidth(commandTime, arguments.bufferSize));
+            TimerHelper::pushValue(statistics, commandTime, arguments.bufferSize);
         } else {
-            statistics.pushValue(timer.getBandwidth(arguments.bufferSize));
+            TimerHelper::pushValueFromTimer(statistics, timer, arguments.bufferSize);
         }
     }
 

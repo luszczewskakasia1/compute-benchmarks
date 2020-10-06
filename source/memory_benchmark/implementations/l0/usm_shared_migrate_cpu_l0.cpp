@@ -3,6 +3,7 @@
 #include "framework/utility/load_binary_file.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/usm_shared_migrate_cpu.h"
+#include "memory_benchmark/timer_helper.h"
 
 #include <gtest/gtest.h>
 
@@ -72,7 +73,7 @@ static TestResult run(const UsmSharedMigrateCpuArguments &arguments, Statistics 
         }
         timer.measureEnd();
 
-        statistics.pushValue(timer.getBandwidth(arguments.bufferSize));
+        TimerHelper::pushValueFromTimer(statistics, timer, arguments.bufferSize);
     }
 
     ASSERT_ZE_RESULT_SUCCESS(zeKernelDestroy(kernel));

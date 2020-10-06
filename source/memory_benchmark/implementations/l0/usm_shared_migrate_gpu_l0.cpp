@@ -3,6 +3,7 @@
 #include "framework/utility/load_binary_file.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/usm_shared_migrate_gpu.h"
+#include "memory_benchmark/timer_helper.h"
 
 #include <gtest/gtest.h>
 
@@ -68,7 +69,7 @@ static TestResult run(const UsmSharedMigrateGpuArguments &arguments, Statistics 
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
         timer.measureEnd();
 
-        statistics.pushValue(timer.getBandwidth(arguments.bufferSize));
+        TimerHelper::pushValueFromTimer(statistics, timer, arguments.bufferSize);
     }
 
     ASSERT_ZE_RESULT_SUCCESS(zeKernelDestroy(kernel));

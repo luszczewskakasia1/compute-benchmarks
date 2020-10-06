@@ -19,6 +19,12 @@ class Timer {
         return microsecondTime;
     }
 
+    double getNs() const {
+        std::chrono::duration<double> diffTime = std::chrono::duration_cast<std::chrono::duration<double>>(endTime - startTime);
+        double nanosecondTime = diffTime.count() * 1e9;
+        return nanosecondTime;
+    }
+
     double getBandwidth(size_t bufferSizeInBytes) const {
         const auto timeNs = Get() * 1000.0;
         return getBandwidth(timeNs, bufferSizeInBytes);

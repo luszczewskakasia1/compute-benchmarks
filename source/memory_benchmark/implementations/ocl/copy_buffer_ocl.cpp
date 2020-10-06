@@ -3,6 +3,7 @@
 #include "framework/utility/ocl/profiling_helper.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/copy_buffer.h"
+#include "memory_benchmark/timer_helper.h"
 
 #include <gtest/gtest.h>
 
@@ -67,9 +68,9 @@ static TestResult run(const CopyBufferArguments &arguments, Statistics &statisti
             cl_ulong timeNs{};
             ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
             ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
-            statistics.pushValue(Timer::getBandwidth(static_cast<Statistics::Value>(timeNs), arguments.size));
+            TimerHelper::pushValue(statistics, timeNs, arguments.size);
         } else {
-            statistics.pushValue(timer.getBandwidth(arguments.size));
+            TimerHelper::pushValueFromTimer(statistics, timer, arguments.size);
         }
     }
 

@@ -1,5 +1,7 @@
 #include "framework/configuration.h"
 
+#include "framework/benchmark_info.h"
+
 Configuration configuration;
 
 #define FAIL_IF_VALUE_WAS_PASSED \
@@ -8,6 +10,9 @@ Configuration configuration;
     }
 
 bool parseArgumentsForConfiguration(int argc, char **argv) {
+    ::configuration.benchmarkSpecificConfiguration = BenchmarkSpecificConfigurationBase::create();
+    const auto benchmarkSpecificConfiguration = ::configuration.benchmarkSpecificConfiguration.get();
+
     for (int i = 1; i < argc; i++) {
         const auto argument = std::string{argv[i]};
         std::string key, value;
@@ -53,6 +58,9 @@ bool parseArgumentsForConfiguration(int argc, char **argv) {
             if (::configuration.selectedApi == Api::Unknown) {
                 return false;
             }
+        }
+        if (benchmarkSpecificConfiguration && !benchmarkSpecificConfiguration->parseArgument(key, value)) {
+            return false;
         }
     }
     return true;

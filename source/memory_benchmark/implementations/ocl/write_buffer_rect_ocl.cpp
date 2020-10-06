@@ -2,6 +2,7 @@
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/write_buffer_rect.h"
+#include "memory_benchmark/timer_helper.h"
 
 #include <gtest/gtest.h>
 
@@ -50,7 +51,7 @@ static TestResult run(const WriteBufferRectArguments &arguments, Statistics &sta
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue))
         timer.measureEnd();
 
-        statistics.pushValue(timer.getBandwidth(arguments.size));
+        TimerHelper::pushValueFromTimer(statistics, timer, arguments.size);
     }
 
     ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));

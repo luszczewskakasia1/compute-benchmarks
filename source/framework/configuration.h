@@ -3,6 +3,10 @@
 #include "framework/enum/api.h"
 #include "framework/utility/string_utils.h"
 
+#include <memory>
+
+struct BenchmarkSpecificConfigurationBase;
+
 struct Configuration {
     enum class PrintType {
         Default,
@@ -14,6 +18,7 @@ struct Configuration {
     bool oclUseOOQ = true;
     size_t l0DriverIndex = 0;
     size_t l0DeviceIndex = 0;
+    std::unique_ptr<BenchmarkSpecificConfigurationBase> benchmarkSpecificConfiguration = {};
 
     int iterations = 10;
     Api selectedApi = Api::All;

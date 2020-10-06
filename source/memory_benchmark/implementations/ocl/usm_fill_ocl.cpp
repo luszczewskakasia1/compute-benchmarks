@@ -5,6 +5,7 @@
 #include "framework/utility/random_helper.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/usm_fill.h"
+#include "memory_benchmark/timer_helper.h"
 
 #include <gtest/gtest.h>
 
@@ -50,9 +51,9 @@ static TestResult run(const UsmFillArguments &arguments, Statistics &statistics)
             cl_ulong timeNs{};
             ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
             ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
-            statistics.pushValue(Timer::getBandwidth(static_cast<Statistics::Value>(timeNs), arguments.bufferSize));
+            TimerHelper::pushValue(statistics, timeNs, arguments.bufferSize);
         } else {
-            statistics.pushValue(timer.getBandwidth(arguments.bufferSize));
+            TimerHelper::pushValueFromTimer(statistics, timer, arguments.bufferSize);
         }
     }
 
