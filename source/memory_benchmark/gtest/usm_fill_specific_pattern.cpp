@@ -27,7 +27,7 @@ INSTANTIATE_TEST_SUITE_P(
     UsmFillSpecificPatternTest,
     ::testing::Combine(
         ::CommonGtestArgs::allApis(),
-        ::testing::Values(MemoryPlacement::Host, MemoryPlacement::Device),
+        ::testing::Values(MemoryPlacement::Host, MemoryPlacement::Device, MemoryPlacement::Shared),
         ::testing::Values(128 * megaByte, 512 * megaByte),
         ::testing::Values("0x01AA0BCCF0023044"),
         ::testing::Values(false, true)));

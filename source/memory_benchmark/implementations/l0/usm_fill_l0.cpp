@@ -1,4 +1,5 @@
 #include "framework/l0/levelzero.h"
+#include "framework/l0/memory_placement_helper_l0.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/random_helper.h"
 #include "framework/utility/timer.h"
@@ -11,15 +12,9 @@ static TestResult run(const UsmFillArguments &arguments, Statistics &statistics)
     ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueCreate(levelzero.context, levelzero.device, levelzero.commandQueueDescCopy.get(), &levelzero.commandQueue));
     Timer timer;
 
-    // Create buffers
-    const ze_host_mem_alloc_desc_t hostAllocationDesc{ZE_STRUCTURE_TYPE_HOST_MEM_ALLOC_DESC};
-    const ze_device_mem_alloc_desc_t deviceAllocationDesc{ZE_STRUCTURE_TYPE_DEVICE_MEM_ALLOC_DESC};
+    // Create buffer
     void *buffer{};
-    if (isDeviceMemory(arguments.memoryPlacement)) {
-        ASSERT_ZE_RESULT_SUCCESS(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, arguments.bufferSize, 0, levelzero.device, &buffer));
-    } else {
-        ASSERT_ZE_RESULT_SUCCESS(zeMemAllocHost(levelzero.context, &hostAllocationDesc, arguments.bufferSize, 0, &buffer));
-    }
+    ASSERT_ZE_RESULT_SUCCESS(zeMemAllocHostOrDeviceOrShared(arguments.memoryPlacement, levelzero.context, levelzero.device, arguments.bufferSize, &buffer));
 
     // Create event
     ze_event_pool_handle_t eventPool{};

@@ -1,3 +1,4 @@
+#include "framework/ocl/memory_placement_helper_ocl.h"
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/ocl/profiling_helper.h"
@@ -21,13 +22,8 @@ static TestResult run(const UsmFillSpecificPatternArguments &arguments, Statisti
         return TestResult::DriverFunctionNotFound;
     }
 
-    // Create buffers
-    void *buffer{};
-    if (isDeviceMemory(arguments.memoryPlacement)) {
-        buffer = clDeviceMemAllocINTEL(opencl.context, opencl.device, nullptr, arguments.bufferSize, 0u, &retVal);
-    } else {
-        buffer = clHostMemAllocINTEL(opencl.context, nullptr, arguments.bufferSize, 0u, &retVal);
-    }
+    // Create buffer
+    void *buffer = clHostOrDeviceOrSharedAllocINTEL(arguments.memoryPlacement, opencl.platform, opencl.context, opencl.device, arguments.bufferSize, &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
     // Warmup

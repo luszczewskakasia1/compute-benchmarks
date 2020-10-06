@@ -12,6 +12,6 @@ struct MemoryPlacementTestCaseArgument : EnumTestCaseArgument<MemoryPlacementTes
 
     const static inline std::string enumName = "memory placement";
     const static inline EnumType invalidEnumValue = EnumType::Unknown;
-    const static inline EnumType enumValues[2] = {EnumType::Device, EnumType::Host};
-    const static inline std::string enumValuesNames[2] = {"Device", "Host"};
+    const static inline EnumType enumValues[3] = {EnumType::Device, EnumType::Host, EnumType::Shared};
+    const static inline std::string enumValuesNames[3] = {"Device", "Host", "Shared"};
 };

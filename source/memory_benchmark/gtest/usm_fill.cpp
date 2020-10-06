@@ -28,7 +28,7 @@ INSTANTIATE_TEST_SUITE_P(
     UsmFillTest,
     ::testing::Combine(
         ::CommonGtestArgs::allApis(),
-        ::testing::Values(MemoryPlacement::Host, MemoryPlacement::Device),
+        ::testing::Values(MemoryPlacement::Host, MemoryPlacement::Device, MemoryPlacement::Shared),
         ::testing::Values(128 * megaByte, 512 * megaByte),
         ::testing::Values(1, 16, 256),
         ::testing::Values(false, true),

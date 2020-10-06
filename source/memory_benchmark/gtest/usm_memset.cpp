@@ -25,5 +25,5 @@ INSTANTIATE_TEST_SUITE_P(
     UsmMemsetTest,
     ::testing::Combine(
         ::CommonGtestArgs::allApis(),
-        ::testing::Values(MemoryPlacement::Host, MemoryPlacement::Device),
+        ::testing::Values(MemoryPlacement::Host, MemoryPlacement::Device, MemoryPlacement::Shared),
         ::testing::Values(128 * megaByte, 512 * megaByte)));
