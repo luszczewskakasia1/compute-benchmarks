@@ -85,6 +85,7 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     const auto programSrcLen = strlen(reinterpret_cast<const char *>(programSrc.data()));
     cl_program program = clCreateProgramWithSource(opencl.context, 1, &pProgramSrc, &programSrcLen, &retVal);
     retVal |= clBuildProgram(program, 1, &opencl.device, buildOptions.c_str(), nullptr, nullptr);
+#if 0
     if (retVal) {
         size_t numBytes = 0;
         retVal |= clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, 0, NULL, &numBytes);
@@ -92,6 +93,7 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
         retVal |= clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, numBytes, buffer.get(), &numBytes  );
         std::cout << buffer.get() << std::endl;
     }
+#endif
     ASSERT_CL_SUCCESS(retVal);
 
     cl_kernel kernel = clCreateKernel(program, "ReadOnly", &retVal);
@@ -155,7 +157,6 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
-        // Enqueue empty kernel and measure it
         cl_event evt;
         cl_ulong enqstart = 0;
         cl_ulong enqend = 0;
@@ -165,8 +166,6 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
         retVal |= clWaitForEvents(1, &evt);
         timer.measureEnd();
         ASSERT_CL_SUCCESS(retVal);
-
-        //statistics.pushValue(timer.Get());
 
 	retVal |= clGetEventProfilingInfo(evt, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &enqstart, NULL);
         retVal |= clGetEventProfilingInfo(evt, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &enqend, NULL);

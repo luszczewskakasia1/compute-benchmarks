@@ -39,7 +39,7 @@ __kernel void ReadOnly (__global float4* const pSrcBuffer,
 	unsigned int slotMask)
 {
 	const uint	gid			= get_global_id(0); 
-	const uint 	sid			= ((get_group_id(0) * get_num_sub_groups() ) + get_sub_group_id()) % slotMask ;
+	const uint      sid			= ((get_group_id(0) * get_num_sub_groups() ) + get_sub_group_id()) % slotMask ;
 	uint		startOffset	=  0;
 
 	float4 _out_data = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -61,34 +61,9 @@ __kernel void ReadOnly (__global float4* const pSrcBuffer,
 		}
 		while(++i < NUM_SENDS );
 	}
-#if 0
-	//if(gid == 0 )	
-	//if(gid == 0 || gid == ((1024*1024)-8) || gid == (1024*1024) || gid == ((1024*1024)+8) || ( sid == 167 && (gid % 8 ) == 0  && gid < 4006 )  )	
-	//if(gid == 0 || gid == 8 || gid == 64 || gid == 56  || gid == 1336 || gid == 1344 || gid == 16376 )
-	if(gid %8 == 0 )
-	//if(gid == 0 || gid == 7 || gid == 8 || gid == 15 )	
+	if (_out_data.x < 0.0f)
+	// Prevent compiler optimization from throwing away read
 	{
-		j = 0;
-		uint slotOffset = sliceSize * ( j & sliceMask);
-		startOffset	=  (((THREAD_TILE_SIZE * sid)  + slotOffset ) / ( sizeof(float) * 4 ) );
-		//(get_group_id(0) * 2 + get_sub_group_id()) * 8 * 4;
-		printf("\n  gid %d, sid %d ,group %d, sub %d, sliceM %x, sSize %x, iterMask %x, i = %d, j=%d, numS = %d, numL = %d, Odata %f, Odata[3] %f, inD %f, inD %f, Offset %x\n",  gid, sid,get_group_id(0), get_sub_group_id()  , 
-			sliceMask, sliceSize, slotMask,i, j, NUM_SENDS, KERNEL_LOOP_ITERATIONS, _out_data[0], _out_data[3], _input_data[0], _input_data[3], startOffset );
-		
-		//printf("Size %X, num groups %x, max Size %x", get_sub_group_size(), get_num_sub_groups(), get_max_sub_group_size() );
-		//startOffset += (SEND_SIZE/sizeof(float));
-		//printf("new off %x  ", startOffset);
-		//startOffset += (SEND_SIZE/sizeof(float));
-		//printf("new off %x  \n", startOffset);
-		j++; slotOffset = sliceSize * ( j & sliceMask);  startOffset	=  (((THREAD_TILE_SIZE * sid)  + slotOffset ) / ( sizeof(float) * 4 ) ); printf("gid %d ,j %d,  new off %x  \n", gid, j,startOffset);
-		_input_data = as_float4(intel_sub_group_block_read4((__global const uint *)((__global uint* const)(&pSrcBuffer[startOffset]) )));
-		printf("gid %d , j %d, new off %x  inD[0] = %f, inD[3] = %f \n", gid, j,startOffset, _input_data[0], _input_data[3]);
-		j=15;slotOffset = sliceSize * ( j & sliceMask);  startOffset	=  (((THREAD_TILE_SIZE * sid)  + slotOffset ) / ( sizeof(float) * 4 ) ); printf("gid %d , j %d, new off %x  \n", gid, j,startOffset);
-		j=16;slotOffset = sliceSize * ( j & sliceMask);  startOffset	=  (((THREAD_TILE_SIZE * sid)  + slotOffset ) / ( sizeof(float) * 4 ) ); printf("gid %d , j %d, new off %x  \n", gid, j,startOffset);
-	}
-#endif
-	if (_out_data.x < 0.0f)											// Prevent compiler optimization from throwing away read
-	{
-		pDstBuffer[gid] = _out_data;									// Write data out	
+	    pDstBuffer[gid] = _out_data;
 	}	
 }
