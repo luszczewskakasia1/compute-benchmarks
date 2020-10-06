@@ -9,9 +9,13 @@ Configuration configuration;
         return false;            \
     }
 
+Configuration::~Configuration() {
+    delete benchmarkSpecificConfiguration;
+}
+
 bool parseArgumentsForConfiguration(int argc, char **argv) {
-    ::configuration.benchmarkSpecificConfiguration = BenchmarkSpecificConfigurationBase::create();
-    const auto benchmarkSpecificConfiguration = ::configuration.benchmarkSpecificConfiguration.get();
+    ::configuration.benchmarkSpecificConfiguration = BenchmarkSpecificConfigurationBase::create().release();
+    const auto benchmarkSpecificConfiguration = ::configuration.benchmarkSpecificConfiguration;
 
     for (int i = 1; i < argc; i++) {
         const auto argument = std::string{argv[i]};

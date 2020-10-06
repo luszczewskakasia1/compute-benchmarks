@@ -8,6 +8,8 @@
 struct BenchmarkSpecificConfigurationBase;
 
 struct Configuration {
+    ~Configuration();
+
     enum class PrintType {
         Default,
         Csv,
@@ -18,7 +20,7 @@ struct Configuration {
     bool oclUseOOQ = true;
     size_t l0DriverIndex = 0;
     size_t l0DeviceIndex = 0;
-    std::unique_ptr<BenchmarkSpecificConfigurationBase> benchmarkSpecificConfiguration = {};
+    BenchmarkSpecificConfigurationBase *benchmarkSpecificConfiguration = nullptr;
 
     int iterations = 10;
     Api selectedApi = Api::All;
