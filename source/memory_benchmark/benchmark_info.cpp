@@ -38,7 +38,7 @@ std::string getBenchmarkName() {
 }
 
 std::string getMeasurmentsUnit() {
-    auto configuration = static_cast<BenchmarkSpecificConfiguration *>(::configuration.benchmarkSpecificConfiguration.get());
+    auto configuration = static_cast<BenchmarkSpecificConfiguration *>(::configuration.benchmarkSpecificConfiguration);
     if (configuration->printBandwidth) {
         return "GB/s";
     } else {

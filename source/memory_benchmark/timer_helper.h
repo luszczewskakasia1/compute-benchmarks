@@ -6,7 +6,7 @@
 
 namespace TimerHelper {
 inline void pushValue(Statistics &statistics, Statistics::Value timeNs, size_t bufferSize) {
-    auto configuration = static_cast<BenchmarkSpecificConfiguration *>(::configuration.benchmarkSpecificConfiguration.get());
+    auto configuration = static_cast<BenchmarkSpecificConfiguration *>(::configuration.benchmarkSpecificConfiguration);
     if (configuration->printBandwidth) {
         statistics.pushValue(Timer::getBandwidth(timeNs, bufferSize));
     } else {
