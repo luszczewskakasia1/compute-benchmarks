@@ -1,3 +1,4 @@
+#include "framework/ocl/memory_placement_helper_ocl.h"
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/ocl/profiling_helper.h"
@@ -13,6 +14,7 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
     Timer timer;
     auto clHostMemAllocINTEL = (pfn_clHostMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clHostMemAllocINTEL");
     auto clDeviceMemAllocINTEL = (pfn_clDeviceMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clDeviceMemAllocINTEL");
+    auto clSharedMemAllocINTEL = (pfn_clSharedMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clSharedMemAllocINTEL");
     auto clMemFreeINTEL = (pfn_clMemFreeINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clMemFreeINTEL");
     auto clEnqueueMemcpyINTEL = (pfn_clEnqueueMemcpyINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clEnqueueMemcpyINTEL");
     if (!clHostMemAllocINTEL || !clDeviceMemAllocINTEL || !clMemFreeINTEL || !clEnqueueMemcpyINTEL) {
@@ -20,17 +22,10 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
     }
 
     // Create buffers
-    void *source{}, *destination{};
-    if (isDeviceMemory(arguments.transferDirection, TransferOperand::Source)) {
-        source = clDeviceMemAllocINTEL(opencl.context, opencl.device, nullptr, arguments.size, 0u, &retVal);
-    } else {
-        source = clHostMemAllocINTEL(opencl.context, nullptr, arguments.size, 0u, &retVal);
-    }
-    if (isDeviceMemory(arguments.transferDirection, TransferOperand::Destination)) {
-        destination = clDeviceMemAllocINTEL(opencl.context, opencl.device, nullptr, arguments.size, 0u, &retVal);
-    } else {
-        destination = clHostMemAllocINTEL(opencl.context, nullptr, arguments.size, 0u, &retVal);
-    }
+    void *source = clHostOrDeviceOrSharedAllocINTEL(arguments.sourcePlacement, opencl.platform, opencl.context, opencl.device, arguments.size, &retVal);
+    ASSERT_CL_SUCCESS(retVal);
+    void *destination = clHostOrDeviceOrSharedAllocINTEL(arguments.destinationPlacement, opencl.platform, opencl.context, opencl.device, arguments.size, &retVal);
+    ASSERT_CL_SUCCESS(retVal);
 
     // Warmup
     ASSERT_CL_SUCCESS(clEnqueueMemcpyINTEL(opencl.commandQueue, CL_FALSE, destination, source, arguments.size, 0, nullptr, nullptr));

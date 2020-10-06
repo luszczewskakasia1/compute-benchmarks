@@ -1,18 +1,20 @@
 #pragma once
 
 #include "framework/test_case/test_case.h"
-#include "framework/test_case_argument/test_case_argument_transfer_direction.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
+#include "framework/test_case_argument/test_case_argument_memory_placement.h"
 
 #include <sstream>
 
 struct UsmCopyArguments : TestCaseArguments {
-    TransferDirectionTestCaseArgument transferDirection;
+    MemoryPlacementTestCaseArgument sourcePlacement;
+    MemoryPlacementTestCaseArgument destinationPlacement;
     ByteSizeTestCaseArgument size;
     BooleanTestCaseArgument useEvents;
 
     UsmCopyArguments()
-        : transferDirection(*this, "transfer"),
+        : sourcePlacement(*this, "src"),
+          destinationPlacement(*this, "dst"),
           size(*this, "size"),
           useEvents(*this, "useEvents") {}
 };

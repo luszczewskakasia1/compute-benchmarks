@@ -1,4 +1,5 @@
 #include "framework/l0/levelzero.h"
+#include "framework/l0/memory_placement_helper_l0.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/usm_copy.h"
@@ -11,19 +12,9 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
     Timer timer;
 
     // Create buffers
-    const ze_host_mem_alloc_desc_t hostAllocationDesc{ZE_STRUCTURE_TYPE_HOST_MEM_ALLOC_DESC};
-    const ze_device_mem_alloc_desc_t deviceAllocationDesc{ZE_STRUCTURE_TYPE_DEVICE_MEM_ALLOC_DESC};
     void *source{}, *destination{};
-    if (isDeviceMemory(arguments.transferDirection, TransferOperand::Source)) {
-        ASSERT_ZE_RESULT_SUCCESS(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, arguments.size, 0, levelzero.device, &source));
-    } else {
-        ASSERT_ZE_RESULT_SUCCESS(zeMemAllocHost(levelzero.context, &hostAllocationDesc, arguments.size, 0, &source));
-    }
-    if (isDeviceMemory(arguments.transferDirection, TransferOperand::Destination)) {
-        ASSERT_ZE_RESULT_SUCCESS(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, arguments.size, 0, levelzero.device, &destination));
-    } else {
-        ASSERT_ZE_RESULT_SUCCESS(zeMemAllocHost(levelzero.context, &hostAllocationDesc, arguments.size, 0, &destination));
-    }
+    ASSERT_ZE_RESULT_SUCCESS(zeMemAllocHostOrDeviceOrShared(arguments.sourcePlacement, levelzero.context, levelzero.device, arguments.size, &source));
+    ASSERT_ZE_RESULT_SUCCESS(zeMemAllocHostOrDeviceOrShared(arguments.destinationPlacement, levelzero.context, levelzero.device, arguments.size, &destination));
 
     // Create event
     ze_event_pool_handle_t eventPool{};
