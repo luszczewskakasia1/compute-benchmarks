@@ -15,6 +15,7 @@ Configuration::Configuration()
       iterations(*this, "iterations", "select how many times each test will be run"),
       selectedApi(*this, "api"),
       noIntelExtensions(*this, "no-intel-extensions", "do not run benchmark requiring Intel specific extensions"),
+      dumpCommandLines(*this, "dumpCommandLines", "output commandline arguments to run the each test"),
       benchmarkSpecificConfiguration(BenchmarkSpecificConfigurationBase::create(*this).release()) {
 
     // OCL params
@@ -32,6 +33,7 @@ Configuration::Configuration()
     iterations = 10;
     selectedApi = Api::All;
     noIntelExtensions = false;
+    dumpCommandLines = false;
 }
 
 Configuration::~Configuration() {

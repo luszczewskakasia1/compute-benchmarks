@@ -20,7 +20,7 @@ struct TestCaseArgumentsBase {
 
 struct TestCaseArguments : TestCaseArgumentsBase {
 
-    std::string getCurrentConfig() const;
+    std::string getCurrentConfig(bool commandLine) const;
     bool validateArguments() const override;
 
     Api api = Api::Unknown;

@@ -36,9 +36,12 @@ std::string TestCaseArgumentsBase::getHelp(size_t indent) const {
     return result.str();
 }
 
-std::string TestCaseArguments::getCurrentConfig() const {
+std::string TestCaseArguments::getCurrentConfig(bool commandLine) const {
     std::ostringstream result;
     for (auto i = 0; i < arguments.size(); i++) {
+        if (commandLine) {
+            result << "--";
+        }
         result << arguments[i]->toString();
         if (i != arguments.size() - 1) {
             result << " ";

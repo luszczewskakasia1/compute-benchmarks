@@ -1,6 +1,5 @@
 #pragma once
 
-#include "framework/enum/api.h"
 #include "framework/test_case_argument/test_case_argument_api.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
 #include "framework/test_case_argument/test_case_argument_boolean_flag.h"
@@ -38,6 +37,7 @@ struct Configuration : TestCaseArgumentsBase {
     PositiveIntegerTestCaseArgument iterations;
     ApiTestCaseArgument selectedApi;
     BooleanFlagTestCaseArgument noIntelExtensions;
+    BooleanFlagTestCaseArgument dumpCommandLines;
 
     BenchmarkSpecificConfigurationBase *benchmarkSpecificConfiguration = nullptr;
 };

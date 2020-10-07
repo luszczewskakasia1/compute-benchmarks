@@ -68,7 +68,7 @@ class TestCase : public TestCaseInterface {
         arguments.noIntelExtensions = ::configuration.noIntelExtensions;
 
         // Create statistics object
-        const auto testCaseNameWithConfig = getTestCaseNameWithConfig(arguments);
+        const auto testCaseNameWithConfig = getTestCaseNameWithConfig(arguments, ::configuration.dumpCommandLines);
         Statistics statistics{arguments.iterations, ::configuration.printType};
 
         // Validate arguments
@@ -136,16 +136,24 @@ class TestCase : public TestCaseInterface {
         return true;
     }
 
-    std::string getTestCaseNameWithConfig(const Arguments &arguments) const {
+    std::string getTestCaseNameWithConfig(const Arguments &arguments, bool commandLine) const {
         std::ostringstream result{};
-        result << getTestCaseName() << "(api=" << std::to_string(arguments.api);
 
-        const auto config = arguments.getCurrentConfig();
+        if (commandLine) {
+            result << "--test=" << getTestCaseName() << " --api=" << std::to_string(arguments.api);
+        } else {
+            result << getTestCaseName() << "(api=" << std::to_string(arguments.api);
+        }
+
+        const auto config = arguments.getCurrentConfig(commandLine);
         if (config.size() > 0) {
             result << " " << config;
         }
 
-        result << ")";
+        if (!commandLine) {
+            result << ")";
+        }
+
         return result.str();
     }
 };
