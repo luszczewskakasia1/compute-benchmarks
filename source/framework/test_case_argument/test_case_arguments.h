@@ -7,17 +7,22 @@
 
 struct TestCaseArgument;
 
-struct TestCaseArguments {
+struct TestCaseArgumentsBase {
     bool parseArgument(const std::string &key, const std::string &value);
-    bool validateArguments() const;
-    std::string getHelp() const;
-    std::string getCurrentConfig() const;
+    virtual bool validateArguments() const;
 
     std::vector<TestCaseArgument *> arguments;
-    Api api = Api::Unknown;
-    int iterations = 0;
-    bool noIntelExtensions = false;
 
   protected:
     virtual bool validateArgumentsExtra() const { return true; } // This is optional. Use this for validating dependencies between arguments if any.
+};
+
+struct TestCaseArguments : TestCaseArgumentsBase {
+    std::string getHelp() const;
+    std::string getCurrentConfig() const;
+    bool validateArguments() const override;
+
+    Api api = Api::Unknown;
+    size_t iterations = 0;
+    bool noIntelExtensions = false;
 };

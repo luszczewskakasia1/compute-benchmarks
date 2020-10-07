@@ -9,7 +9,7 @@
 #include <iostream>
 #include <numeric>
 
-Statistics::Statistics(int maxSamplesCount, Configuration::PrintType printType)
+Statistics::Statistics(size_t maxSamplesCount, Configuration::PrintType printType)
     : maxSamplesCount(maxSamplesCount),
       printType(printType),
       samples(std::make_unique<Value[]>(maxSamplesCount)) {

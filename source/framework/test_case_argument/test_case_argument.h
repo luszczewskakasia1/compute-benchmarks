@@ -5,11 +5,11 @@
 #include <sstream>
 #include <string>
 
-struct TestCaseArguments;
+struct TestCaseArgumentsBase;
 
 struct TestCaseArgument {
-    TestCaseArgument(TestCaseArguments &parent, const std::string &key) : TestCaseArgument(parent, key, "") {}
-    TestCaseArgument(TestCaseArguments &parent, const std::string &key, const std::string &extraHelp);
+    TestCaseArgument(TestCaseArgumentsBase &parent, const std::string &key) : TestCaseArgument(parent, key, "") {}
+    TestCaseArgument(TestCaseArgumentsBase &parent, const std::string &key, const std::string &extraHelp);
 
     std::string getHelp() const {
         std::ostringstream result;

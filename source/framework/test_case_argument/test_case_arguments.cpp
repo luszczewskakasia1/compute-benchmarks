@@ -4,14 +4,14 @@
 
 #include <sstream>
 
-bool TestCaseArguments::parseArgument(const std::string &key, const std::string &value) {
+bool TestCaseArgumentsBase::parseArgument(const std::string &key, const std::string &value) {
     for (auto &argument : arguments) {
         argument->parse(key, value);
     }
     return true;
 }
 
-bool TestCaseArguments::validateArguments() const {
+bool TestCaseArgumentsBase::validateArguments() const {
     for (const auto &argument : arguments) {
         if (!argument->validate()) {
             return false;
@@ -19,14 +19,6 @@ bool TestCaseArguments::validateArguments() const {
     }
 
     if (!validateArgumentsExtra()) {
-        return false;
-    }
-
-    if (!validateApi(api)) {
-        return false;
-    }
-
-    if (iterations <= 0) {
         return false;
     }
 
@@ -50,4 +42,20 @@ std::string TestCaseArguments::getCurrentConfig() const {
         }
     }
     return result.str();
+}
+
+bool TestCaseArguments::validateArguments() const {
+    if (!TestCaseArgumentsBase::validateArguments()) {
+        return false;
+    }
+
+    if (!validateApi(api)) {
+        return false;
+    }
+
+    if (iterations <= 0) {
+        return false;
+    }
+
+    return true;
 }

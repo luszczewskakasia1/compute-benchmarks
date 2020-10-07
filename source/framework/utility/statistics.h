@@ -9,7 +9,7 @@ class Statistics {
   public:
     using Value = double;
 
-    explicit Statistics(int maxSamplesCount, Configuration::PrintType printType);
+    explicit Statistics(size_t maxSamplesCount, Configuration::PrintType printType);
     void pushValue(Value value);
     bool isEmpty();
     bool isFull();
@@ -25,8 +25,8 @@ class Statistics {
     Value median();
     double standardDeviation();
 
-    const int maxSamplesCount;
+    const size_t maxSamplesCount;
     const Configuration::PrintType printType;
     const std::unique_ptr<Value[]> samples;
-    int samplesCount = 0;
+    size_t samplesCount = 0;
 };

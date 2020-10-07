@@ -116,9 +116,9 @@ struct ByteSizeTestCaseArgument : PositiveIntegerTestCaseArgument {
 };
 
 struct BooleanTestCaseArgument : TestCaseArgument {
-    BooleanTestCaseArgument(TestCaseArguments &parent, const std::string &key, const std::string &extraHelp)
+    BooleanTestCaseArgument(TestCaseArgumentsBase &parent, const std::string &key, const std::string &extraHelp)
         : TestCaseArgument(parent, key, extraHelp + " (0 or 1)") {}
-    BooleanTestCaseArgument(TestCaseArguments &parent, const std::string &key)
+    BooleanTestCaseArgument(TestCaseArgumentsBase &parent, const std::string &key)
         : TestCaseArgument(parent, key, "(0 or 1)") {}
 
     operator bool() const {

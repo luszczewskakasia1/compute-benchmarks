@@ -8,7 +8,7 @@ struct EnumTestCaseArgument : TestCaseArgument {
     using EnumType = _EnumType;
     using ThisType = DerivedType;
 
-    EnumTestCaseArgument(TestCaseArguments &parent, const std::string &key)
+    EnumTestCaseArgument(TestCaseArgumentsBase &parent, const std::string &key)
         : TestCaseArgument(parent, key, composeHelpMessage()) {
         static_assert(sizeof(DerivedType::enumValues) / sizeof(DerivedType::enumValues[0]) ==
                       sizeof(DerivedType::enumValuesNames) / sizeof(DerivedType::enumValuesNames[0]));
