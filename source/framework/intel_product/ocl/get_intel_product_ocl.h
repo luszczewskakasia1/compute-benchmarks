@@ -22,7 +22,7 @@
 
 inline IntelProduct getIntelProduct(cl_device_id device) {
 #ifdef USE_PCIACCESS
-    int                     status = 0;
+    int status = 0;
 
     status = pci_system_init();
     if (status != 0) {
@@ -30,14 +30,14 @@ inline IntelProduct getIntelProduct(cl_device_id device) {
     }
     else {
        // check explicit slot without enumeration
-       struct pci_device       *devPci;
+       struct pci_device       *devPci = NULL;
        devPci  = pci_device_find_by_slot(
                         0, // pci domain
                         3, // pci bus
                         0, // gfx
                         0); //pci function 0
 
-       if (devPci == NULL) {
+       if (devPci == NULL || devPci->vendor_id != 0x8086 ) {
           struct pci_device_iterator *iter = NULL;
           struct pci_slot_match match = {
                  PCI_MATCH_ANY, PCI_MATCH_ANY, PCI_MATCH_ANY, PCI_MATCH_ANY, 0 };
@@ -46,23 +46,23 @@ inline IntelProduct getIntelProduct(cl_device_id device) {
 
           if(iter != NULL ) {
              while ((devPci = pci_device_next(iter)) != NULL) {
-                if (PCIINFOCLASSES(devPci->device_class)) {
-                   //std::cout << "\tVendor " << std::to_string(devPci->vendor_id) << " DevID " << std::to_string(devPci->device_id) << std::endl;
-                   //std::cout << "\tBus " << std::to_string(devPci->bus) << " Dev " << std::to_string(devPci->dev) << " Func " << std::to_string(devPci->func)  << std::endl;
-                   const auto product = getIntelProduct(static_cast<uint32_t>(devPci->device_id));
-                   pci_system_cleanup();
-                   return product;
+                if (PCIINFOCLASSES(devPci->device_class))
+                {
+                   if (devPci->vendor_id == 0x8086) {
+                      //std::cout << "\tVendor " << std::to_string(devPci->vendor_id) << " DevID " << std::to_string(devPci->device_id) << std::endl;
+                      //std::cout << "\tBus " << std::to_string(devPci->bus) << " Dev " << std::to_string(devPci->dev) << " Func " << std::to_string(devPci->func)  << std::endl;
+                      const auto product = getIntelProduct(static_cast<uint32_t>(devPci->device_id));
+                      pci_system_cleanup();
+                      return product;
+                   }
                 }
              }
           }
        }
        else {
-          if (devPci->vendor_id == 0x8086) {
-             //std::cout <<  "INTEL Vendor id " << std::to_string(devPci->vendor_id) << std::endl;
-             const auto product = getIntelProduct(static_cast<uint32_t>(devPci->device_id));
-             pci_system_cleanup();
-             return product;
-          }
+          const auto product = getIntelProduct(static_cast<uint32_t>(devPci->device_id));
+          pci_system_cleanup();
+          return product;
        }
 
     }
