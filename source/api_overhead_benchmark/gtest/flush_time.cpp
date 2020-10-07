@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-class FlushTimeTest : public ::testing::TestWithParam<std::tuple<size_t, size_t, bool>> {
+class FlushTimeTest : public ::testing::TestWithParam<std::tuple<size_t, size_t, bool, bool>> {
 };
 
 TEST_P(FlushTimeTest, Test) {
@@ -10,7 +10,8 @@ TEST_P(FlushTimeTest, Test) {
     args.api = Api::OpenCL;
     args.workgroupCount = std::get<0>(GetParam());
     args.workgroupSize = std::get<1>(GetParam());
-    args.useEvent = std::get<2>(GetParam());
+    args.useOoq = std::get<2>(GetParam());
+    args.useEvent = std::get<3>(GetParam());
 
     FlushTime test;
     test.run(args);
@@ -22,4 +23,5 @@ INSTANTIATE_TEST_SUITE_P(
     ::testing::Combine(
         ::testing::Values(1, 100, 1000),
         ::testing::Values(0, 1, 32, 256),
+        ::testing::Values(false, true),
         ::testing::Values(false, true)));

@@ -52,8 +52,6 @@ struct QueueProperties {
         return create(false, false, ooq);
     }
 
-  private:
-    QueueProperties() = default;
     static QueueProperties create(bool profiling, bool bcs, int ooq) {
         QueueProperties result{};
         if (profiling) {

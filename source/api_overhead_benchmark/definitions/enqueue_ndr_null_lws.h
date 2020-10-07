@@ -5,11 +5,13 @@
 
 struct EnqueueNdrNullLwsArguments : TestCaseArguments {
     PositiveIntegerTestCaseArgument gws;
+    BooleanTestCaseArgument useOoq;
     BooleanTestCaseArgument useProfiling;
     BooleanTestCaseArgument useEvent;
 
     EnqueueNdrNullLwsArguments()
         : gws(*this, "gws", "global work size"),
+          useOoq(*this, "ooq", "use out of order queue"),
           useProfiling(*this, "profiling", "creating a profiling queue"),
           useEvent(*this, "event", "pass output event to the enqueue call") {}
 };

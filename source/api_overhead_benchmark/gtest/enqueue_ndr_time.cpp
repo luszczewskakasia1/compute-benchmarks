@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-class EnqueueNdrTimeTest : public ::testing::TestWithParam<std::tuple<size_t, size_t, bool, bool>> {
+class EnqueueNdrTimeTest : public ::testing::TestWithParam<std::tuple<size_t, size_t, bool, bool, bool>> {
 };
 
 TEST_P(EnqueueNdrTimeTest, Test) {
@@ -10,8 +10,9 @@ TEST_P(EnqueueNdrTimeTest, Test) {
     args.api = Api::OpenCL;
     args.workgroupCount = std::get<0>(GetParam());
     args.workgroupSize = std::get<1>(GetParam());
-    args.useProfiling = std::get<2>(GetParam());
-    args.useEvent = std::get<3>(GetParam());
+    args.useOoq = std::get<2>(GetParam());
+    args.useProfiling = std::get<3>(GetParam());
+    args.useEvent = std::get<4>(GetParam());
 
     EnqueueNdrTime test;
     test.run(args);
@@ -23,5 +24,6 @@ INSTANTIATE_TEST_SUITE_P(
     ::testing::Combine(
         ::testing::Values(1, 100, 1000),
         ::testing::Values(1, 32, 256),
+        ::testing::Values(false, true),
         ::testing::Values(false, true),
         ::testing::Values(false, true)));

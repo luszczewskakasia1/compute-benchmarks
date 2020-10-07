@@ -6,12 +6,14 @@
 struct EnqueueNdrTimeArguments : TestCaseArguments {
     PositiveIntegerTestCaseArgument workgroupCount;
     PositiveIntegerTestCaseArgument workgroupSize;
+    BooleanTestCaseArgument useOoq;
     BooleanTestCaseArgument useProfiling;
     BooleanTestCaseArgument useEvent;
 
     EnqueueNdrTimeArguments()
         : workgroupCount(*this, "wgc", "workgroup count"),
           workgroupSize(*this, "wgs", "workgroup size"),
+          useOoq(*this, "ooq", "use out of order queue"),
           useProfiling(*this, "profiling", "creating a profiling queue"),
           useEvent(*this, "event", "pass output event to the enqueue call") {}
 };
