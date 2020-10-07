@@ -11,11 +11,7 @@ struct TestCaseArgument {
     TestCaseArgument(TestCaseArgumentsBase &parent, const std::string &key) : TestCaseArgument(parent, key, "") {}
     TestCaseArgument(TestCaseArgumentsBase &parent, const std::string &key, const std::string &extraHelp);
 
-    std::string getHelp() const {
-        std::ostringstream result;
-        result << "--" << key << "=X " << extraHelp;
-        return result.str();
-    }
+    std::string getHelp() const;
 
     virtual std::string toString() const {
         std::ostringstream result;
@@ -36,6 +32,7 @@ struct TestCaseArgument {
   protected:
     virtual void parseImpl(const std::string &value) = 0;
     virtual std::string toStringValue() const = 0;
+    virtual std::string getHelpEntry(const std::string &key) const;
 
   private:
     const std::string key;
