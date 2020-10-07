@@ -17,20 +17,21 @@ static TestResult run(const KernelAndCopyArguments &arguments, Statistics &stati
     cl_int retVal{};
 
     // Create queues
-    const auto &queueForCopyProperties = arguments.useCopyQueue ? opencl.copyQueueProperties : opencl.queueProperties;
+    const auto &queueForCopyProperties = QueueProperties::createBcsOrNot(arguments.useCopyQueue);
+    const auto &queueForKernelPropertes = QueueProperties::create();
     cl_command_queue queueForKernel{};
     cl_command_queue queueForCopy{};
     cl_command_queue queues[2] = {};
     size_t queueCount = 0;
     if (arguments.twoQueues) {
-        queues[0] = queueForKernel = clCreateCommandQueueWithProperties(opencl.context, opencl.device, opencl.queueProperties, &retVal);
+        queues[0] = queueForKernel = clCreateCommandQueueWithProperties(opencl.context, opencl.device, queueForKernelPropertes, &retVal);
         ASSERT_CL_SUCCESS(retVal);
         queues[1] = queueForCopy = clCreateCommandQueueWithProperties(opencl.context, opencl.device, queueForCopyProperties, &retVal);
         queueCount = 2;
         ASSERT_CL_SUCCESS(retVal);
     } else {
         if (arguments.runKernel) {
-            queues[0] = queueForKernel = clCreateCommandQueueWithProperties(opencl.context, opencl.device, opencl.queueProperties, &retVal);
+            queues[0] = queueForKernel = clCreateCommandQueueWithProperties(opencl.context, opencl.device, queueForKernelPropertes, &retVal);
             ASSERT_CL_SUCCESS(retVal);
             if (arguments.runCopy) {
                 ERROR_IF(arguments.useCopyQueue, "Configuration (runKernel && useCopyQueue && !twoQueues) is invalid");

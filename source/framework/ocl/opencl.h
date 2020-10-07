@@ -28,13 +28,53 @@
         ERROR(std::string("Fatal OpenCL error occurred, retVal=") + std::to_string(retVal)); \
     }
 
-struct Opencl {
-    static const inline cl_command_queue_properties queueProperties[3] = {CL_QUEUE_PROPERTIES, 0, 0};
-    static const inline cl_command_queue_properties profilingQueueProperties[3] = {CL_QUEUE_PROPERTIES, CL_QUEUE_PROFILING_ENABLE, 0};
-    static const inline cl_command_queue_properties copyQueueProperties[5] = {CL_QUEUE_PROPERTIES, 0, CL_QUEUE_FAMILY_INTEL, CL_QUEUE_FAMILY_TYPE_BCS_INTEL, 0};
+struct QueueProperties {
+    cl_command_queue_properties properties[5] = {CL_QUEUE_PROPERTIES, 0, 0, 0, 0};
 
-    Opencl() : Opencl(Opencl::queueProperties) {}
-    Opencl(const cl_command_queue_properties *queueProperties) {
+    operator const cl_command_queue_properties *() const {
+        return &properties[0];
+    }
+
+    static QueueProperties create() {
+        return create(false, false, -1);
+    }
+
+    static QueueProperties createProfilingOrNot(bool profiling) {
+        return create(profiling, false, -1);
+    }
+
+    static QueueProperties createBcsOrNot(bool bcs) {
+        return create(false, bcs, -1);
+    }
+
+    static QueueProperties createOoqOrNot(bool ooqArg) {
+        const int ooq = ooqArg ? 1 : 0;
+        return create(false, false, ooq);
+    }
+
+  private:
+    QueueProperties() = default;
+    static QueueProperties create(bool profiling, bool bcs, int ooq) {
+        QueueProperties result{};
+        if (profiling) {
+            result.properties[1] |= CL_QUEUE_PROFILING_ENABLE;
+        }
+        if (bcs) {
+            result.properties[2] = CL_QUEUE_FAMILY_INTEL;
+            result.properties[3] = CL_QUEUE_FAMILY_TYPE_BCS_INTEL;
+        }
+        if (ooq == 1 || (ooq == -1 && ::configuration.oclUseOOQ)) {
+            result.properties[1] |= CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
+        }
+
+        return result;
+    }
+};
+
+struct Opencl {
+    Opencl() : Opencl(QueueProperties::create()) {}
+    Opencl(const QueueProperties &queueProperties) : Opencl(&queueProperties) {}
+    Opencl(const QueueProperties *queueProperties) {
         // Get Platform
         cl_uint numPlatforms;
         EXPECT_CL_SUCCESS(clGetPlatformIDs(0, nullptr, &numPlatforms));
@@ -64,7 +104,7 @@ struct Opencl {
 
         // Create queueProperties
         if (queueProperties != nullptr) {
-            EXPECT_CL_SUCCESS(createQueue(queueProperties));
+            EXPECT_CL_SUCCESS(createQueue(*queueProperties));
         }
     }
 
@@ -75,25 +115,9 @@ struct Opencl {
         EXPECT_CL_SUCCESS(clReleaseContext(context));
     }
 
-    cl_int createQueue(const cl_command_queue_properties *queueProperties) {
-        // Make a local copy of the properties
-        int propertiesCount = 1;
-        for (auto it = queueProperties; *it != 0; it += 2) {
-            propertiesCount += 2;
-        }
-        auto localQueueProperties = std::make_unique<cl_command_queue_properties[]>(propertiesCount);
-        std::copy_n(queueProperties, propertiesCount, localQueueProperties.get());
-
-        // Enable OOQ if enabled in configuration
-        cl_command_queue_properties supportedProperties{};
-        EXPECT_CL_SUCCESS(clGetDeviceInfo(device, CL_DEVICE_QUEUE_ON_HOST_PROPERTIES, sizeof(supportedProperties), &supportedProperties, nullptr));
-        if (::configuration.oclUseOOQ && (supportedProperties & CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE)) {
-            ERROR_IF(localQueueProperties[0] != CL_QUEUE_PROPERTIES, "Invalid queue properties specified")
-            localQueueProperties[1] |= CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
-        }
-
+    cl_int createQueue(const QueueProperties &queueProperties) {
         cl_int retVal{};
-        this->commandQueue = clCreateCommandQueueWithProperties(context, device, localQueueProperties.get(), &retVal);
+        this->commandQueue = clCreateCommandQueueWithProperties(context, device, queueProperties, &retVal);
         return retVal;
     }
 

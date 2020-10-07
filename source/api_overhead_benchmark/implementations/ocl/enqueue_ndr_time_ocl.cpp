@@ -7,8 +7,7 @@
 
 static TestResult run(const EnqueueNdrTimeArguments &arguments, Statistics &statistics) {
     // Setup
-    const auto queueProperties = arguments.useProfiling ? Opencl::profilingQueueProperties : Opencl::queueProperties;
-    Opencl opencl(queueProperties);
+    Opencl opencl(QueueProperties::createProfilingOrNot(arguments.useProfiling));
     cl_int retVal{};
     Timer timer;
 

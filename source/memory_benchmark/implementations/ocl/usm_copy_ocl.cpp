@@ -10,8 +10,7 @@
 
 static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics) {
     cl_int retVal{};
-    const auto queueProperties = arguments.useEvents ? Opencl::profilingQueueProperties : Opencl::queueProperties;
-    Opencl opencl(queueProperties);
+    Opencl opencl(QueueProperties::createProfilingOrNot(arguments.useEvents));
     Timer timer;
     auto clHostMemAllocINTEL = (pfn_clHostMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clHostMemAllocINTEL");
     auto clDeviceMemAllocINTEL = (pfn_clDeviceMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clDeviceMemAllocINTEL");

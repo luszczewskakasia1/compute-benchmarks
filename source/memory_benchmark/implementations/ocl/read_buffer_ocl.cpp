@@ -13,8 +13,7 @@ static TestResult run(const ReadBufferArguments &arguments, Statistics &statisti
     }
 
     // Setup
-    const auto queueProperties = arguments.useEvents ? Opencl::profilingQueueProperties : Opencl::queueProperties;
-    Opencl opencl{queueProperties};
+    Opencl opencl(QueueProperties::createProfilingOrNot(arguments.useEvents));
     Timer timer;
     cl_int retVal;
 
