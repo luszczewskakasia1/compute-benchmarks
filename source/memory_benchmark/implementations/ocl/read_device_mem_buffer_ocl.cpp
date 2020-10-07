@@ -1,0 +1,199 @@
+#include "framework/intel_product/ocl/get_intel_product_ocl.h"
+#include "framework/ocl/opencl.h"
+#include "framework/test_case/register_test_case.h"
+#include "framework/utility/load_binary_file.h"
+#include "framework/utility/timer.h"
+#include "memory_benchmark/definitions/read_device_mem_buffer.h"
+
+#include <gtest/gtest.h>
+
+#ifdef USE_PCIACCESS
+#include <pciaccess.h>
+#endif
+
+static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics &statistics) {
+    if (arguments.compressed && arguments.noIntelExtensions) {
+        return TestResult::DeviceNotCapable;
+    }
+
+    // Setup
+    cl_int retVal;
+
+    const auto queueProperties = Opencl::profilingQueueProperties ;
+    Opencl opencl(queueProperties);
+
+    const size_t singleSendSizeInBytes = 128U;
+    const size_t numOfSends = 16U;      // per 128Byte in send, 2k-4k tiles in one loop iteration
+    const size_t numOfLoops = 500U; //500
+    const auto threadTileSizeInSubgroup = singleSendSizeInBytes * numOfSends;
+    size_t euNum = 0;
+
+    CL_SUCCESS_OR_TERMINATE(clGetDeviceInfo(opencl.device, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(euNum), &euNum, nullptr ));
+
+    IntelProduct intelProduct = getIntelProduct(opencl);
+    IntelGen gpuGen = getIntelGen(intelProduct);
+
+    const bool useLargeGRF = gpuGen == IntelGen::Gen12hp ? true : false;
+    const std::string largeGrfOpt = useLargeGRF?" -cl-intel-256-GRF-per-thread ":" ";
+    const std::string buildOptions = "-cl-std=CL2.0 -cl-mad-enable -cl-fast-relaxed-math " + std::string(" -D NUM_SENDS=") + std::to_string(numOfSends)
+          + std::string(" -D KERNEL_LOOP_ITERATIONS=") + std::to_string(numOfLoops) + largeGrfOpt + std::string(" ");
+
+
+    // Create buffer
+    const cl_mem_flags compressionHint = Opencl::getCompressionFlags(arguments.compressed, arguments.noIntelExtensions);
+    const cl_mem_flags memFlags = CL_MEM_READ_WRITE | compressionHint;
+
+    auto srcCpuBuffer = std::make_unique<float[]>(arguments.size/sizeof(float));
+    float *pBuff = srcCpuBuffer.get();
+    float floatVal1 = 0.0f;
+    for (size_t i = 0; i < arguments.size / sizeof(float);) {
+        for (size_t j = 0; j < 8; j++) {
+            *(pBuff++) = floatVal1+ (float)j;
+        }
+        floatVal1 += 10.0f;
+        i += 8;
+    }
+    const cl_mem source = clCreateBuffer(opencl.context, memFlags | CL_MEM_COPY_HOST_PTR, arguments.size, srcCpuBuffer.get(), &retVal);
+
+    const cl_mem destination = clCreateBuffer(opencl.context, memFlags, arguments.size, nullptr, &retVal);
+    ASSERT_CL_SUCCESS(retVal);
+
+    const uint32_t clearGpuBuffSize = 16*megaByte;
+    const cl_mem clearGpuBuff = clCreateBuffer(opencl.context, memFlags, clearGpuBuffSize, nullptr, &retVal);
+    ASSERT_CL_SUCCESS(retVal);
+
+    // Check buffers compression
+    auto compressionStatus = Opencl::verifyCompression(source, arguments.compressed, arguments.noIntelExtensions);
+    if (compressionStatus != TestResult::Success) {
+        ASSERT_CL_SUCCESS(clReleaseMemObject(source));
+        return compressionStatus;
+    }
+    compressionStatus = Opencl::verifyCompression(destination, arguments.compressed, arguments.noIntelExtensions);
+    if (compressionStatus != TestResult::Success) {
+        ASSERT_CL_SUCCESS(clReleaseMemObject(source));
+        ASSERT_CL_SUCCESS(clReleaseMemObject(destination));
+        return compressionStatus;
+    }
+
+        // Create kernel
+    const auto programSrc = loadBinaryFile("read_device_mem_buffer.cl");
+    if (programSrc.size() == 0) {
+        return TestResult::KernelNotFound;
+    }
+
+    const char *pProgramSrc = reinterpret_cast<const char *>(programSrc.data());
+
+    // Create kernel
+    const auto programSrcLen = strlen(reinterpret_cast<const char *>(programSrc.data()));
+    cl_program program = clCreateProgramWithSource(opencl.context, 1, &pProgramSrc, &programSrcLen, &retVal);
+    retVal |= clBuildProgram(program, 1, &opencl.device, buildOptions.c_str(), nullptr, nullptr);
+#if 0
+    if (retVal) {
+        size_t numBytes = 0;
+        retVal |= clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, 0, NULL, &numBytes);
+        auto buffer = std::make_unique<char[]>(numBytes);
+        retVal |= clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, numBytes, buffer.get(), &numBytes  );
+        std::cout << buffer.get() << std::endl;
+    }
+#endif
+    ASSERT_CL_SUCCESS(retVal);
+
+    cl_kernel kernel = clCreateKernel(program, "ReadOnly", &retVal);
+    ASSERT_CL_SUCCESS(retVal);
+    cl_kernel clearCacheKernel = clCreateKernel(program, "ClearCaches", &retVal);
+    ASSERT_CL_SUCCESS(retVal);
+
+    // Clear L3$ Cache kernel
+    const size_t clearGws = 1;
+    const size_t buffSizeInInts = clearGpuBuffSize / sizeof(cl_uint);
+    retVal |= clSetKernelArg(clearCacheKernel, 0, sizeof(clearGpuBuff), &clearGpuBuff);
+    retVal |= clSetKernelArg(clearCacheKernel, 1, sizeof(buffSizeInInts), &buffSizeInInts );
+    retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, clearCacheKernel, 1, nullptr, &clearGws, NULL, 0, nullptr, nullptr);
+    retVal |= clFinish(opencl.commandQueue);
+    ASSERT_CL_SUCCESS(retVal);
+
+    cl_uint sliceSize = 0, sliceMask = 1, slotMask = 1;
+    const cl_uint numThreadsPerEu = (gpuGen == IntelGen::Gen12hp) ? 8 : 7;
+    const cl_uint numHwThreads = (useLargeGRF ? numThreadsPerEu/2 : 7) * static_cast<cl_uint>(euNum);
+
+    const size_t lws = 8;
+    const size_t subgroupSize = 8;
+    size_t gws = numHwThreads*subgroupSize;
+
+    if (intelProduct != IntelProduct::Unknown) {
+        const cl_uint atsThreasLargeGRFMode = 4;
+        // check if surface can be covered with more than one slice
+        if ( (2 *numHwThreads * threadTileSizeInSubgroup) < static_cast<cl_uint>(arguments.size) )
+        {
+            slotMask = numHwThreads;
+            sliceSize = numHwThreads*threadTileSizeInSubgroup;
+            const auto numMaxSlices = static_cast<cl_uint>(arguments.size) / sliceSize;
+            // can cover with more than one slice for all threads
+            sliceMask = 1;
+            do
+            {
+                sliceMask *= 2;
+            } while (sliceMask <= numMaxSlices);
+
+            sliceMask /= 2;
+            sliceMask -= 1;
+        }
+        else {
+            slotMask = static_cast<cl_uint>(arguments.size)/threadTileSizeInSubgroup;
+            slotMask -= 1;
+        }
+    } else {
+        //tbd for comp
+        ASSERT_CL_SUCCESS(-1);
+    }
+
+    retVal |= clSetKernelArg(kernel, 0, sizeof(source), &source);
+    retVal |= clSetKernelArg(kernel, 1, sizeof(destination), &destination);
+    retVal |= clSetKernelArg(kernel, 2, sizeof(sliceMask), &sliceMask);
+    retVal |= clSetKernelArg(kernel, 3, sizeof(sliceSize), &sliceSize);
+    retVal |= clSetKernelArg(kernel, 4, sizeof(slotMask), &slotMask);
+    ASSERT_CL_SUCCESS(retVal);
+
+    //warmup
+    retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr);
+    retVal |= clFinish(opencl.commandQueue);
+    ASSERT_CL_SUCCESS(retVal);
+
+    // Benchmark
+    for (int i = 0; i < arguments.iterations; i++) {
+        cl_event evt;
+        cl_ulong enqstart = 0;
+        cl_ulong enqend = 0;
+
+        retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, clearCacheKernel, 1, nullptr, &clearGws, NULL, 0, nullptr, nullptr);
+        retVal |= clFinish(opencl.commandQueue);
+        ASSERT_CL_SUCCESS(retVal);
+
+        retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &evt);
+        retVal |= clWaitForEvents(1, &evt);
+        ASSERT_CL_SUCCESS(retVal);
+
+	retVal |= clGetEventProfilingInfo(evt, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &enqstart, NULL);
+        retVal |= clGetEventProfilingInfo(evt, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &enqend, NULL);
+        ASSERT_CL_SUCCESS(retVal);
+
+        const auto timeNs = static_cast<Statistics::Value>(enqend - enqstart);
+        const size_t groupsExed = gws / subgroupSize;
+        const size_t totalAccessedMemory = (groupsExed * threadTileSizeInSubgroup * numOfLoops);
+
+        statistics.pushValue(Timer::getBandwidth(timeNs, totalAccessedMemory));
+        ASSERT_CL_SUCCESS(clReleaseEvent(evt));
+    }
+
+    // Cleanup
+    ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
+    ASSERT_CL_SUCCESS(clReleaseKernel(clearCacheKernel));
+    ASSERT_CL_SUCCESS(clReleaseProgram(program));
+    ASSERT_CL_SUCCESS(clReleaseMemObject(destination));
+    ASSERT_CL_SUCCESS(clReleaseMemObject(source));
+    ASSERT_CL_SUCCESS(clReleaseMemObject(clearGpuBuff));
+
+    return TestResult::Success;
+}
+
+static RegisterTestCaseImplementation<ReadDeviceMemBuffer> registerTestCase(run, Api::OpenCL);
