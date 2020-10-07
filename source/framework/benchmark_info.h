@@ -22,6 +22,5 @@ std::string getMeasurmentsUnit();
 int getTestCaseNameColumnWidth();
 
 struct BenchmarkSpecificConfigurationBase {
-    static std::unique_ptr<BenchmarkSpecificConfigurationBase> create();
-    virtual bool parseArgument(const std::string &key, const std::string &value) { return true; }
+    static std::unique_ptr<BenchmarkSpecificConfigurationBase> create(TestCaseArgumentsBase &testCaseArguments);
 };

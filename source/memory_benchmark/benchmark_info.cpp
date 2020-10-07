@@ -50,6 +50,6 @@ int getTestCaseNameColumnWidth() {
     return 106;
 }
 
-std::unique_ptr<BenchmarkSpecificConfigurationBase> BenchmarkSpecificConfigurationBase::create() {
-    return std::unique_ptr<BenchmarkSpecificConfigurationBase>{new BenchmarkSpecificConfiguration()};
+std::unique_ptr<BenchmarkSpecificConfigurationBase> BenchmarkSpecificConfigurationBase::create(TestCaseArgumentsBase &testCaseArguments) {
+    return std::unique_ptr<BenchmarkSpecificConfigurationBase>{new BenchmarkSpecificConfiguration(testCaseArguments)};
 }
