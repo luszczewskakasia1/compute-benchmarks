@@ -11,7 +11,7 @@
 
 struct BenchmarkSpecificConfigurationBase;
 
-struct Configuration {
+struct Configuration : TestCaseArgumentsBase {
     Configuration();
     ~Configuration();
 
@@ -21,7 +21,7 @@ struct Configuration {
         Verbose,
     } printType = PrintType::Default;
 
-    TestCaseArgumentsBase arguments;
+    bool validateArgumentsExtra() const override;
 
     // OCL params
     NonNegativeIntegerTestCaseArgument oclPlatformIndex;

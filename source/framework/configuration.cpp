@@ -5,17 +5,17 @@
 Configuration configuration;
 
 Configuration::Configuration()
-    : oclPlatformIndex(arguments, "oclPlatformIndex"),
-      oclDeviceIndex(arguments, "oclDeviceIndex"),
-      oclUseOOQ(arguments, "oclUseOOQ"),
-      l0DriverIndex(arguments, "l0DriverIndex"),
-      l0DeviceIndex(arguments, "l0DeviceIndex"),
-      csv(arguments, "csv"),
-      verbose(arguments, "verbose"),
-      iterations(arguments, "iterations"),
-      selectedApi(arguments, "api"),
-      noIntelExtensions(arguments, "no-intel-extensions"),
-      benchmarkSpecificConfiguration(BenchmarkSpecificConfigurationBase::create(::configuration.arguments).release()) {
+    : oclPlatformIndex(*this, "oclPlatformIndex"),
+      oclDeviceIndex(*this, "oclDeviceIndex"),
+      oclUseOOQ(*this, "oclUseOOQ"),
+      l0DriverIndex(*this, "l0DriverIndex"),
+      l0DeviceIndex(*this, "l0DeviceIndex"),
+      csv(*this, "csv"),
+      verbose(*this, "verbose"),
+      iterations(*this, "iterations"),
+      selectedApi(*this, "api"),
+      noIntelExtensions(*this, "no-intel-extensions"),
+      benchmarkSpecificConfiguration(BenchmarkSpecificConfigurationBase::create(*this).release()) {
 
     // OCL params
     oclPlatformIndex = 0;
@@ -46,14 +46,15 @@ bool parseArgumentsForConfiguration(int argc, char **argv) {
             return false;
         }
 
-        if (!::configuration.arguments.parseArgument(key, value)) {
+        if (!::configuration.parseArgument(key, value)) {
             return false;
         }
     }
 
-    if (::configuration.csv && ::configuration.verbose) {
+    if (!::configuration.validateArguments()) {
         return false;
     }
+
     if (::configuration.csv) {
         ::configuration.printType = Configuration::PrintType::Csv;
     }
@@ -61,9 +62,12 @@ bool parseArgumentsForConfiguration(int argc, char **argv) {
         ::configuration.printType = Configuration::PrintType::Verbose;
     }
 
-    if (!::configuration.arguments.validateArguments()) {
+    return true;
+}
+
+bool Configuration::validateArgumentsExtra() const {
+    if (csv && verbose) {
         return false;
     }
-
     return true;
 }
