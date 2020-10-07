@@ -40,25 +40,28 @@ int executeAllTests(int argc, char **argv) {
 int printHelp() {
     const auto filename = getBenchmarkFilename();
     // clang-format off
-    std::cout << "UllsBenchmark is a set of tests aimed at measuring Ultra Low Latency Submission (ULLS) performance impact. "
-                 "It works in two modes described below. Parameters applicable for both modes:\n"
-                  << ::configuration.getHelp(1u) << "\n"
-                 "Example invocations:\n"
-                 "\t" << filename << "\n"
-                 "\t" << filename << " --api=l0\n"
-                 "\t" << filename << " --iterations=100 --csv\n"
-                 "\t" << filename << " --gtest_filter=*NewResourcesSubmissionHost*\n"
-                 "\t" << filename << " --test=EmptyKernel --workgroupSize=64 --workgroupCount=30\n"
-                 "\t" << filename << " --test=EmptyKernel --api=ocl --workgroupSize=64 --workgroupCount=30\n"
-                 "\t" << filename << " --test=EmptyKernel --api=ocl --workgroupSize=64 --workgroupCount=30 --iterations=100\n"
+    std::cout << getBenchmarkDescription() << "\n"
+                 "\n"
+                 "The benchmark works in two modes - all-tests mode and single-test mode. They are further described below. "
+                 "Global parameters applicable for both modes:\n"
+                 << ::configuration.getHelp(1u) << "\n"
                  "\n"
                  "First mode is the default and it runs all available benchmarks in many predefined configurations. Underlying test engine "
                  "is googletest, so standard googletest arguments like --gtest_filter can be used, if necessary.\n"
                  "\n"
                  "Second mode runs one specific benchmark with custom parameter values. Running benchmarks in this fashion requires "
                  "using --test argument, along with benchmark-specific parameters. All parameters have to be specified, there are no "
-                 "default values. Available test cases:\n"
-                 "\n";
+                 "default values.\n"
+                 "\n"
+                 "Example invocations:\n"
+                 "\t" << filename << "                                                runs all possible tests\n"
+                 "\t" << filename << " --api=ocl                                      runs all possible OpenCL tests\n"
+                 "\t" << filename << " --iterations=100 --csv                         runs all possible tests with 100 iterations and dumps results as CSV\n"
+                 "\t" << filename << " --gtest_filter=<regex>                         runs all tests matching a regular expression\n"
+                 "\t" << filename << " --gtest_filter=*TestName*                      runs a test named \"TestName\" in all predefined configurations\n"
+                 "\t" << filename << " --test=TestName --someParam=1 --otherParam=30  runs a test named \"TestName\" with specified parameters\n"
+                 "\n"
+                "All available test cases with their parameters:\n";
     // clang-format on
     for (const auto &entry : getTestMap()) {
         TestCaseInterface &testCase = *entry.second.get();

@@ -22,6 +22,10 @@ std::string getBenchmarkName() {
     return "api_overhead_benchmark";
 }
 
+std::string getBenchmarkDescription() {
+    return "Api Overhead Benchmark is a set of tests aimed at measuring CPU-side execution duration of compute API calls.";
+}
+
 std::string getMeasurmentsUnit() {
     return "us";
 }
