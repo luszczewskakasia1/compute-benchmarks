@@ -43,6 +43,23 @@ struct PositiveIntegerTestCaseArgument : IntegerTestCaseArgument {
     }
 };
 
+struct NonNegativeIntegerTestCaseArgument : IntegerTestCaseArgument {
+    using IntegerTestCaseArgument::IntegerTestCaseArgument;
+
+    operator size_t() const {
+        return value;
+    }
+
+    NonNegativeIntegerTestCaseArgument &operator=(size_t value) {
+        this->value = value;
+        return *this;
+    }
+
+    bool validate() const override {
+        return this->value >= 0;
+    }
+};
+
 struct ByteSizeTestCaseArgument : PositiveIntegerTestCaseArgument {
     using PositiveIntegerTestCaseArgument::PositiveIntegerTestCaseArgument;
 

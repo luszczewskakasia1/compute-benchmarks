@@ -1,0 +1,17 @@
+#pragma once
+
+#include "framework/enum/api.h"
+#include "framework/test_case_argument/test_case_argument_enum.h"
+
+struct ApiTestCaseArgument : EnumTestCaseArgument<ApiTestCaseArgument, Api> {
+    using EnumTestCaseArgument::EnumTestCaseArgument;
+    ThisType &operator=(EnumType value) {
+        this->value = value;
+        return *this;
+    }
+
+    const static inline std::string enumName = "api";
+    const static inline EnumType invalidEnumValue = EnumType::Unknown;
+    const static inline EnumType enumValues[3] = {EnumType::OpenCL, EnumType::L0, EnumType::All};
+    const static inline std::string enumValuesNames[3] = {"ocl", "l0", "all"};
+};
