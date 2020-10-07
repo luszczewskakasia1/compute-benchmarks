@@ -28,6 +28,10 @@ struct BooleanFlagTestCaseArgument : TestCaseArgument {
         this->isValid = value.empty();
     }
 
+    std::string getHelpEntry(const std::string &key) const override {
+        return std::string("--") + key;
+    }
+
     bool value = false;
     bool isValid = true;
 };
