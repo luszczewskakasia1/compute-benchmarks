@@ -19,5 +19,5 @@ INSTANTIATE_TEST_SUITE_P(
     ReadBufferDevMemTest,
     ReadBufferDevMemTest,
     ::testing::Combine(
-        ::testing::Values(64*kiloByte, 128*kiloByte, 512*kiloByte, 4*megaByte, 8*megaByte, 32*megaByte, 128*megaByte),
-        ::testing::Values(false, true)));
+    ::testing::Values( 64*kiloByte, 128*kiloByte, 512*kiloByte, 1*megaByte, 4*megaByte, 32*megaByte, 64*megaByte, 128*megaByte, 256*megaByte),
+    ::testing::Values(false, true)));

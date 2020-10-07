@@ -17,7 +17,6 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     }
 
     // Setup
-    Timer timer;
     cl_int retVal;
 
     const auto queueProperties = Opencl::profilingQueueProperties ;
@@ -27,15 +26,18 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     const size_t numOfSends = 16U;      // per 128Byte in send, 2k-4k tiles in one loop iteration
     const size_t numOfLoops = 500U; //500
     const auto threadTileSizeInSubgroup = singleSendSizeInBytes * numOfSends;
-    const std::string buildOptions = "-cl-std=CL2.0 -cl-mad-enable -cl-fast-relaxed-math " + std::string(" -D NUM_SENDS=") + std::to_string(numOfSends) 
-        + std::string(" -D KERNEL_LOOP_ITERATIONS=") + std::to_string(numOfLoops) + std::string(" ");
-
     size_t euNum = 0;
 
     CL_SUCCESS_OR_TERMINATE(clGetDeviceInfo(opencl.device, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(euNum), &euNum, nullptr ));
 
     IntelProduct intelProduct = getIntelProduct(opencl);
     IntelGen gpuGen = getIntelGen(intelProduct);
+
+    const bool useLargeGRF = gpuGen == IntelGen::Gen12hp ? true : false;
+    const std::string largeGrfOpt = useLargeGRF?" -cl-intel-256-GRF-per-thread ":" ";
+    const std::string buildOptions = "-cl-std=CL2.0 -cl-mad-enable -cl-fast-relaxed-math " + std::string(" -D NUM_SENDS=") + std::to_string(numOfSends)
+          + std::string(" -D KERNEL_LOOP_ITERATIONS=") + std::to_string(numOfLoops) + largeGrfOpt + std::string(" ");
+
 
     // Create buffer
     const cl_mem_flags compressionHint = Opencl::getCompressionFlags(arguments.compressed, arguments.noIntelExtensions);
@@ -56,7 +58,7 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     const cl_mem destination = clCreateBuffer(opencl.context, memFlags, arguments.size, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
-    const uint32_t clearGpuBuffSize = 16 * 1024 * 1024;
+    const uint32_t clearGpuBuffSize = 16*megaByte;
     const cl_mem clearGpuBuff = clCreateBuffer(opencl.context, memFlags, clearGpuBuffSize, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
@@ -110,18 +112,20 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     retVal |= clFinish(opencl.commandQueue);
     ASSERT_CL_SUCCESS(retVal);
 
-    cl_uint sliceSize = 0, sliceMask = 1, slotMask = 1, numHwThreads = (cl_uint)euNum;
+    cl_uint sliceSize = 0, sliceMask = 1, slotMask = 1;
+    const cl_uint numThreadsPerEu = (gpuGen == IntelGen::Gen12hp) ? 8 : 7;
+    const cl_uint numHwThreads = (useLargeGRF ? numThreadsPerEu/2 : 7) * static_cast<cl_uint>(euNum);
 
-    size_t gws = 64 * 1024;
     const size_t lws = 8;
     const size_t subgroupSize = 8;
+    size_t gws = numHwThreads*subgroupSize;
 
     if (intelProduct != IntelProduct::Unknown) {
         const cl_uint atsThreasLargeGRFMode = 4;
         // check if surface can be covered with more than one slice
         if ( (2 *numHwThreads * threadTileSizeInSubgroup) < static_cast<cl_uint>(arguments.size) )
         {
-            slotMask = numHwThreads = ((gpuGen == IntelGen::Gen12hp) ? atsThreasLargeGRFMode : 7) * static_cast<cl_uint>(euNum);
+            slotMask = numHwThreads;
             sliceSize = numHwThreads*threadTileSizeInSubgroup;
             const auto numMaxSlices = static_cast<cl_uint>(arguments.size) / sliceSize;
             // can cover with more than one slice for all threads
@@ -133,9 +137,9 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
 
             sliceMask /= 2;
             sliceMask -= 1;
-
-        } else {
-            slotMask = (cl_uint)arguments.size / (cl_uint)threadTileSizeInSubgroup;
+        }
+        else {
+            slotMask = static_cast<cl_uint>(arguments.size)/threadTileSizeInSubgroup;
             slotMask -= 1;
         }
     } else {
@@ -161,10 +165,12 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
         cl_ulong enqstart = 0;
         cl_ulong enqend = 0;
 
-        timer.measureStart();
+        retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, clearCacheKernel, 1, nullptr, &clearGws, NULL, 0, nullptr, nullptr);
+        retVal |= clFinish(opencl.commandQueue);
+        ASSERT_CL_SUCCESS(retVal);
+
         retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &evt);
         retVal |= clWaitForEvents(1, &evt);
-        timer.measureEnd();
         ASSERT_CL_SUCCESS(retVal);
 
 	retVal |= clGetEventProfilingInfo(evt, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &enqstart, NULL);
@@ -176,7 +182,6 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
         const size_t totalAccessedMemory = (groupsExed * threadTileSizeInSubgroup * numOfLoops);
 
         statistics.pushValue(Timer::getBandwidth(timeNs, totalAccessedMemory));
-
         ASSERT_CL_SUCCESS(clReleaseEvent(evt));
     }
 
