@@ -39,7 +39,7 @@ class TestCase : public TestCaseInterface {
     };
     static inline BenchmarkImplementation implementations[(int)Api::COUNT];
 
-    std::string getHelpParameters() const override { return Arguments{}.getHelp(); }
+    std::string getHelpParameters() const override { return Arguments{}.getHelp(2u); }
 
     bool runFromCommandLine(int argc, char **argv) override {
         // Parse test-specific parameters

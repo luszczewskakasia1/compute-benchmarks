@@ -5,16 +5,16 @@
 Configuration configuration;
 
 Configuration::Configuration()
-    : oclPlatformIndex(*this, "oclPlatformIndex"),
-      oclDeviceIndex(*this, "oclDeviceIndex"),
-      oclUseOOQ(*this, "oclUseOOQ"),
-      l0DriverIndex(*this, "l0DriverIndex"),
-      l0DeviceIndex(*this, "l0DeviceIndex"),
-      csv(*this, "csv"),
-      verbose(*this, "verbose"),
-      iterations(*this, "iterations"),
+    : oclPlatformIndex(*this, "oclPlatformIndex", "OpenCL platform index"),
+      oclDeviceIndex(*this, "oclDeviceIndex", "OpenCL device index inside the platform"),
+      oclUseOOQ(*this, "oclUseOOQ", "Use out of order queue if it is supported"),
+      l0DriverIndex(*this, "l0DriverIndex", "LevelZero driver index"),
+      l0DeviceIndex(*this, "l0DeviceIndex", "LevelZero device index inside the driver"),
+      csv(*this, "csv", "dump results in CSV format for easy imports to spreadsheets"),
+      verbose(*this, "verbose", "dump results from all iterations"),
+      iterations(*this, "iterations", "select how many times each test will be run"),
       selectedApi(*this, "api"),
-      noIntelExtensions(*this, "no-intel-extensions"),
+      noIntelExtensions(*this, "no-intel-extensions", "do not run benchmark requiring Intel specific extensions"),
       benchmarkSpecificConfiguration(BenchmarkSpecificConfigurationBase::create(*this).release()) {
 
     // OCL params

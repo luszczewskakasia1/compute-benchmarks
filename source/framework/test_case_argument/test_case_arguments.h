@@ -10,6 +10,7 @@ struct TestCaseArgument;
 struct TestCaseArgumentsBase {
     bool parseArgument(const std::string &key, const std::string &value);
     virtual bool validateArguments() const;
+    std::string getHelp(size_t indent) const;
 
     std::vector<TestCaseArgument *> arguments;
 
@@ -18,7 +19,7 @@ struct TestCaseArgumentsBase {
 };
 
 struct TestCaseArguments : TestCaseArgumentsBase {
-    std::string getHelp() const;
+
     std::string getCurrentConfig() const;
     bool validateArguments() const override;
 

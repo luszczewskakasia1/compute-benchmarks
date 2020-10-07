@@ -25,10 +25,13 @@ bool TestCaseArgumentsBase::validateArguments() const {
     return true;
 }
 
-std::string TestCaseArguments::getHelp() const {
+std::string TestCaseArgumentsBase::getHelp(size_t indent) const {
     std::ostringstream result;
     for (const auto &argument : arguments) {
-        result << "\t\t" << argument->getHelp() << '\n';
+        for (auto i = 0u; i < indent; i++) {
+            result << '\t';
+        }
+        result << argument->getHelp() << '\n';
     }
     return result.str();
 }
