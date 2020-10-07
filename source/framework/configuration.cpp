@@ -4,10 +4,34 @@
 
 Configuration configuration;
 
-#define FAIL_IF_VALUE_WAS_PASSED \
-    if (value != "") {           \
-        return false;            \
-    }
+Configuration::Configuration()
+    : oclPlatformIndex(arguments, "oclPlatformIndex"),
+      oclDeviceIndex(arguments, "oclDeviceIndex"),
+      oclUseOOQ(arguments, "oclUseOOQ"),
+      l0DriverIndex(arguments, "l0DriverIndex"),
+      l0DeviceIndex(arguments, "l0DeviceIndex"),
+      csv(arguments, "csv"),
+      verbose(arguments, "verbose"),
+      iterations(arguments, "iterations"),
+      selectedApi(arguments, "api"),
+      noIntelExtensions(arguments, "no-intel-extensions") {
+
+    // OCL params
+    oclPlatformIndex = 0;
+    oclDeviceIndex = 0;
+    oclUseOOQ = true;
+
+    // L0 params
+    l0DriverIndex = 0;
+    l0DeviceIndex = 0;
+
+    // Api agnostic params
+    csv = false;
+    verbose = false;
+    iterations = 10;
+    selectedApi = Api::All;
+    noIntelExtensions = false;
+}
 
 Configuration::~Configuration() {
     delete benchmarkSpecificConfiguration;
@@ -24,48 +48,28 @@ bool parseArgumentsForConfiguration(int argc, char **argv) {
             return false;
         }
 
-        if (key == "oclPlatform") {
-            ::configuration.oclPlatformIndex = std::atoi(value.c_str());
+        if (!::configuration.arguments.parseArgument(key, value)) {
+            return false;
         }
-        if (key == "oclDevice") {
-            ::configuration.oclDeviceIndex = std::atoi(value.c_str());
-        }
-        if (key == "oclUseOOQ") {
-            ::configuration.oclUseOOQ = std::atoi(value.c_str());
-        }
-        if (key == "l0Driver") {
-            ::configuration.l0DriverIndex = std::atoi(value.c_str());
-        }
-        if (key == "l0Device") {
-            ::configuration.l0DeviceIndex = std::atoi(value.c_str());
-        }
-        if (key == "iterations") {
-            ::configuration.iterations = std::atoi(value.c_str());
-            if (::configuration.iterations == 0) {
-                return false;
-            }
-        }
-        if (key == "csv") {
-            FAIL_IF_VALUE_WAS_PASSED
-            ::configuration.printType = Configuration::PrintType::Csv;
-        }
-        if (key == "verbose") {
-            FAIL_IF_VALUE_WAS_PASSED
-            ::configuration.printType = Configuration::PrintType::Verbose;
-        }
-        if (key == "no-intel-extensions") {
-            FAIL_IF_VALUE_WAS_PASSED
-            ::configuration.noIntelExtensions = true;
-        }
-        if (key == "api") {
-            ::configuration.selectedApi = parseApi(value);
-            if (::configuration.selectedApi == Api::Unknown) {
-                return false;
-            }
-        }
+
         if (benchmarkSpecificConfiguration && !benchmarkSpecificConfiguration->parseArgument(key, value)) {
             return false;
         }
     }
+
+    if (::configuration.csv && ::configuration.verbose) {
+        return false;
+    }
+    if (::configuration.csv) {
+        ::configuration.printType = Configuration::PrintType::Csv;
+    }
+    if (::configuration.verbose) {
+        ::configuration.printType = Configuration::PrintType::Verbose;
+    }
+
+    if (!::configuration.arguments.validateArguments()) {
+        return false;
+    }
+
     return true;
 }

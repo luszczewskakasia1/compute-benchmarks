@@ -1,6 +1,10 @@
 #pragma once
 
 #include "framework/enum/api.h"
+#include "framework/test_case_argument/test_case_argument_api.h"
+#include "framework/test_case_argument/test_case_argument_basic.h"
+#include "framework/test_case_argument/test_case_argument_boolean_flag.h"
+#include "framework/test_case_argument/test_case_arguments.h"
 #include "framework/utility/string_utils.h"
 
 #include <memory>
@@ -8,6 +12,7 @@
 struct BenchmarkSpecificConfigurationBase;
 
 struct Configuration {
+    Configuration();
     ~Configuration();
 
     enum class PrintType {
@@ -15,16 +20,26 @@ struct Configuration {
         Csv,
         Verbose,
     } printType = PrintType::Default;
-    size_t oclPlatformIndex = 0;
-    size_t oclDeviceIndex = 0;
-    bool oclUseOOQ = true;
-    size_t l0DriverIndex = 0;
-    size_t l0DeviceIndex = 0;
-    BenchmarkSpecificConfigurationBase *benchmarkSpecificConfiguration = nullptr;
 
-    int iterations = 10;
-    Api selectedApi = Api::All;
-    bool noIntelExtensions = false;
+    TestCaseArgumentsBase arguments;
+
+    // OCL params
+    NonNegativeIntegerTestCaseArgument oclPlatformIndex;
+    NonNegativeIntegerTestCaseArgument oclDeviceIndex;
+    BooleanTestCaseArgument oclUseOOQ;
+
+    // L0 params
+    NonNegativeIntegerTestCaseArgument l0DriverIndex;
+    NonNegativeIntegerTestCaseArgument l0DeviceIndex;
+
+    // Api agnostic params
+    BooleanFlagTestCaseArgument csv;
+    BooleanFlagTestCaseArgument verbose;
+    PositiveIntegerTestCaseArgument iterations;
+    ApiTestCaseArgument selectedApi;
+    BooleanFlagTestCaseArgument noIntelExtensions;
+
+    BenchmarkSpecificConfigurationBase *benchmarkSpecificConfiguration = nullptr;
 };
 
 extern Configuration configuration;
