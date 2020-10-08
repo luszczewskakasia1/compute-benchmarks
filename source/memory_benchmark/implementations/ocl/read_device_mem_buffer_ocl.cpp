@@ -19,13 +19,13 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     // Setup
     cl_int retVal;
 
-    const auto queueProperties = Opencl::profilingQueueProperties ;
-    Opencl opencl(queueProperties);
+    Opencl opencl(QueueProperties::createProfilingOrNot(true));
 
     const size_t singleSendSizeInBytes = 128U;
     const size_t numOfSends = 16U;      // per 128Byte in send, 2k-4k tiles in one loop iteration
-    const size_t numOfLoops = 500U; //500
+    const size_t numOfLoops = 500U;
     const auto threadTileSizeInSubgroup = singleSendSizeInBytes * numOfSends;
+    const size_t subgroupSize = 8;
     size_t euNum = 0;
 
     CL_SUCCESS_OR_TERMINATE(clGetDeviceInfo(opencl.device, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(euNum), &euNum, nullptr ));
@@ -36,8 +36,8 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     const bool useLargeGRF = gpuGen == IntelGen::Gen12hp ? true : false;
     const std::string largeGrfOpt = useLargeGRF?" -cl-intel-256-GRF-per-thread ":" ";
     const std::string buildOptions = "-cl-std=CL2.0 -cl-mad-enable -cl-fast-relaxed-math " + std::string(" -D NUM_SENDS=") + std::to_string(numOfSends)
-          + std::string(" -D KERNEL_LOOP_ITERATIONS=") + std::to_string(numOfLoops) + largeGrfOpt + std::string(" ");
-
+          + std::string(" -D KERNEL_LOOP_ITERATIONS=") + std::to_string(numOfLoops) + " -D THREAD_TILE_SIZE="+ std::to_string(threadTileSizeInSubgroup)
+          + " -D SUBGROUP_SIZE=" + std::to_string(subgroupSize) + largeGrfOpt + std::string(" ");
 
     // Create buffer
     const cl_mem_flags compressionHint = Opencl::getCompressionFlags(arguments.compressed, arguments.noIntelExtensions);
@@ -75,19 +75,43 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
         return compressionStatus;
     }
 
-        // Create kernel
-    const auto programSrc = loadBinaryFile("read_device_mem_buffer.cl");
-    if (programSrc.size() == 0) {
-        return TestResult::KernelNotFound;
-    }
-
-    const char *pProgramSrc = reinterpret_cast<const char *>(programSrc.data());
+    const char *programSrc = {
+        "__kernel void ClearCaches(__global unsigned int *pBuffer, unsigned int buffSize) {"
+        "   unsigned int i = 0;"
+        "   while (i++ < buffSize) {"
+        "   *(pBuffer++) = 0xDEADBEAF;"
+        "   }"
+        "}"
+        "\n#define VECTOR_SIZE 4"
+        "\n#define SEND_SIZE (sizeof(float) * VECTOR_SIZE)"
+        "\n__attribute__((intel_reqd_sub_group_size(SUBGROUP_SIZE)))"
+        "\n__kernel void ReadOnly(__global float4 *const pSrcBuffer, __global float4 *pDstBuffer,"
+        "        unsigned int sliceMask, unsigned int sliceSize, unsigned int slotMask) {"
+        "   const uint gid = get_global_id(0);"
+        "   const uint sid = ((get_group_id(0) * get_num_sub_groups()) + get_sub_group_id()) % slotMask;"
+        "   uint startOffset = 0;"
+        "   float4 _out_data = {0.0f, 0.0f, 0.0f, 0.0f};"
+        "   float4 _input_data; uint j = 0, i = 0;"
+        "   for (j = 0; j < KERNEL_LOOP_ITERATIONS; j++) {"
+        "       i = 0; uint slotOffset = sliceSize * (j & sliceMask);"
+        "       startOffset = (((THREAD_TILE_SIZE * sid) + slotOffset) / SEND_SIZE);"
+        "       __attribute__((opencl_unroll_hint(NUM_SENDS)))"
+        "       do {"
+        "           _input_data = as_float4(intel_sub_group_block_read4((__global const uint *)((__global uint *const)(&pSrcBuffer[startOffset]))));"
+        "           _out_data += _input_data; startOffset += SUBGROUP_SIZE;"
+        "       } while (++i < NUM_SENDS);"
+        "   }"
+        "   if (_out_data.x < 0.0f) {"
+        "       pDstBuffer[gid] = _out_data;"
+        "   }"
+        "}"
+    };
 
     // Create kernel
-    const auto programSrcLen = strlen(reinterpret_cast<const char *>(programSrc.data()));
-    cl_program program = clCreateProgramWithSource(opencl.context, 1, &pProgramSrc, &programSrcLen, &retVal);
+    const auto programSrcLen = strlen(programSrc);
+    cl_program program = clCreateProgramWithSource(opencl.context, 1, &programSrc, &programSrcLen, &retVal);
     retVal |= clBuildProgram(program, 1, &opencl.device, buildOptions.c_str(), nullptr, nullptr);
-#if 0
+#if 1
     if (retVal) {
         size_t numBytes = 0;
         retVal |= clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, 0, NULL, &numBytes);
@@ -117,7 +141,6 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     const cl_uint numHwThreads = (useLargeGRF ? numThreadsPerEu/2 : 7) * static_cast<cl_uint>(euNum);
 
     const size_t lws = 8;
-    const size_t subgroupSize = 8;
     size_t gws = numHwThreads*subgroupSize;
 
     if (intelProduct != IntelProduct::Unknown) {
