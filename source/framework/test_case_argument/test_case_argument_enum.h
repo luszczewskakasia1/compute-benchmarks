@@ -18,7 +18,7 @@ struct EnumTestCaseArgument : TestCaseArgument {
         return value;
     }
 
-    bool validate() const {
+    bool validate() const override {
         const auto valuesCount = sizeof(DerivedType::enumValues) / sizeof(DerivedType::enumValues[0]);
         for (auto valueIndex = 0; valueIndex < valuesCount; valueIndex++) {
             if (this->value == DerivedType::enumValues[valueIndex]) {

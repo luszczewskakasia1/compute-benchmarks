@@ -13,6 +13,7 @@
 #include <type_traits>
 
 struct TestCaseInterface {
+    virtual ~TestCaseInterface() = default;
     virtual bool runFromCommandLine(int argc, char **argv) = 0;
     virtual std::string getHelp() const = 0;
     virtual std::string getHelpParameters() const = 0;

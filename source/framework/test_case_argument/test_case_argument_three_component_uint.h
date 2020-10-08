@@ -71,7 +71,7 @@ struct ThreeComponentSizeTestCaseArgument : ThreeComponentUintTestCaseArgument {
         return *this;
     }
 
-    virtual bool validate() const {
+    bool validate() const override {
         return value[0] > 0 &&
                value[1] > 0 &&
                value[2] > 0;
