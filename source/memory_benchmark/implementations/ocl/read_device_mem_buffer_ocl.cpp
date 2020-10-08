@@ -111,7 +111,7 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     const auto programSrcLen = strlen(programSrc);
     cl_program program = clCreateProgramWithSource(opencl.context, 1, &programSrc, &programSrcLen, &retVal);
     retVal |= clBuildProgram(program, 1, &opencl.device, buildOptions.c_str(), nullptr, nullptr);
-#if 1
+#if 0
     if (retVal) {
         size_t numBytes = 0;
         retVal |= clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, 0, NULL, &numBytes);
