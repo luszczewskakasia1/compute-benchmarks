@@ -7,10 +7,6 @@
 
 #include <gtest/gtest.h>
 
-#ifdef USE_PCIACCESS
-#include <pciaccess.h>
-#endif
-
 static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics &statistics) {
     if (arguments.compressed && arguments.noIntelExtensions) {
         return TestResult::DeviceNotCapable;
