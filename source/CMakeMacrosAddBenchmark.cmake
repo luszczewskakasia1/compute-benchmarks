@@ -59,6 +59,9 @@ function (add_benchmark_for_api BASE_TARGET_NAME APPEND_API_TO_TARGET_NAME APIS)
     add_executable(${TARGET_NAME} CMakeLists.txt)
     target_link_libraries(${TARGET_NAME} PRIVATE compute_benchmarks_framework ${APIS})
     set_target_properties(${TARGET_NAME} PROPERTIES FOLDER ${TARGET_FOLDER_NAME})
+    if (OUTPUT_IN_SUBDIRS)
+        set_target_properties(${TARGET_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${BASE_TARGET_NAME})
+    endif()
 
     # API agnostic sources
     set(API_AGNOSTIC_SOURCE_DIRECTORIES
