@@ -47,7 +47,7 @@ static TestResult run(const UsmFillArguments &arguments, Statistics &statistics)
 
     // Create command list
     ze_command_list_desc_t cmdListDesc{};
-    cmdListDesc.commandQueueGroupOrdinal = levelzero.commandQueueDescCopy->ordinal;
+    cmdListDesc.commandQueueGroupOrdinal = queueDesc->ordinal;
     ze_command_list_handle_t cmdList{};
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.context, levelzero.device, &cmdListDesc, &cmdList));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendMemoryFill(cmdList, buffer, pattern.get(), arguments.patternSize, arguments.bufferSize, event, 0, nullptr));
