@@ -73,12 +73,6 @@ class TestCase : public TestCaseInterface {
         const auto testCaseNameWithConfig = getTestCaseNameWithConfig(arguments, ::configuration.dumpCommandLines);
         Statistics statistics{arguments.iterations, ::configuration.printType};
 
-        // Validate arguments
-        if (!arguments.validateArguments()) {
-            statistics.printStatisticsString(testCaseNameWithConfig, "INVALID_ARGS");
-            return;
-        }
-
         // Get API
         const auto selectedApi = ::configuration.selectedApi; // Api selected by the user via the --api argument
         if (arguments.api != selectedApi && selectedApi != Api::All) {
@@ -94,6 +88,12 @@ class TestCase : public TestCaseInterface {
 
         // Silently skip benchmarks requiring Intel extensions if they were disabled
         if (arguments.noIntelExtensions && benchmarkImplementation.requiresIntelExtensions) {
+            return;
+        }
+
+        // Validate arguments
+        if (!arguments.validateArguments()) {
+            statistics.printStatisticsString(testCaseNameWithConfig, "INVALID_ARGS");
             return;
         }
 
