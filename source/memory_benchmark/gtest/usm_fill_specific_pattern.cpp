@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 
-class UsmFillSpecificPatternTest : public ::testing::TestWithParam<std::tuple<Api, MemoryPlacement, size_t, std::string, bool>> {
+class UsmFillSpecificPatternTest : public ::testing::TestWithParam<std::tuple<Api, MemoryPlacement, size_t, std::string, bool, bool>> {
 };
 
 TEST_P(UsmFillSpecificPatternTest, Test) {
@@ -13,7 +13,8 @@ TEST_P(UsmFillSpecificPatternTest, Test) {
     args.memoryPlacement = std::get<1>(GetParam());
     args.bufferSize = std::get<2>(GetParam());
     args.pattern = std::get<3>(GetParam());
-    args.useEvents = std::get<4>(GetParam());
+    args.copyQueue = std::get<4>(GetParam());
+    args.useEvents = std::get<5>(GetParam());
 
     UsmFillSpecificPattern test;
     test.run(args);
@@ -30,4 +31,5 @@ INSTANTIATE_TEST_SUITE_P(
         ::testing::Values(MemoryPlacement::Host, MemoryPlacement::Device, MemoryPlacement::Shared),
         ::testing::Values(128 * megaByte, 512 * megaByte),
         ::testing::Values("0x01AA0BCCF0023044"),
+        ::testing::Values(false, true),
         ::testing::Values(false, true)));

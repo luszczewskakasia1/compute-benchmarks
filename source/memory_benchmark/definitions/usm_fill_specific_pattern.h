@@ -12,12 +12,14 @@ struct UsmFillSpecificPatternArguments : TestCaseArguments {
     MemoryPlacementTestCaseArgument memoryPlacement;
     ByteSizeTestCaseArgument bufferSize;
     LongHexTestCaseArgument pattern;
+    BooleanTestCaseArgument copyQueue;
     BooleanTestCaseArgument useEvents;
 
     UsmFillSpecificPatternArguments()
         : memoryPlacement(*this, "memory"),
           bufferSize(*this, "size", "size of the buffer to be filled"),
           pattern(*this, "pattern"),
+          copyQueue(*this, "copyQueue"),
           useEvents(*this, "useEvents") {}
 };
 

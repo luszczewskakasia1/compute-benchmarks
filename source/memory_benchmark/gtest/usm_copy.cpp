@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 
-class UsmCopyTest : public ::testing::TestWithParam<std::tuple<Api, MemoryPlacement, MemoryPlacement, size_t, bool>> {
+class UsmCopyTest : public ::testing::TestWithParam<std::tuple<Api, MemoryPlacement, MemoryPlacement, size_t, bool, bool>> {
 };
 
 TEST_P(UsmCopyTest, Test) {
@@ -13,7 +13,8 @@ TEST_P(UsmCopyTest, Test) {
     args.sourcePlacement = std::get<1>(GetParam());
     args.destinationPlacement = std::get<2>(GetParam());
     args.size = std::get<3>(GetParam());
-    args.useEvents = std::get<4>(GetParam());
+    args.copyQueue = std::get<4>(GetParam());
+    args.useEvents = std::get<5>(GetParam());
 
     UsmCopy test;
     test.run(args);
@@ -30,4 +31,5 @@ INSTANTIATE_TEST_SUITE_P(
         ::testing::Values(MemoryPlacement::Device, MemoryPlacement::Host, MemoryPlacement::Shared),
         ::testing::Values(MemoryPlacement::Device, MemoryPlacement::Host, MemoryPlacement::Shared),
         ::testing::Values(128 * megaByte, 512 * megaByte),
+        ::testing::Values(false, true),
         ::testing::Values(false, true)));

@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 
-class UsmMemsetTest : public ::testing::TestWithParam<std::tuple<Api, MemoryPlacement, size_t>> {
+class UsmMemsetTest : public ::testing::TestWithParam<std::tuple<Api, MemoryPlacement, size_t, bool>> {
 };
 
 TEST_P(UsmMemsetTest, Test) {
@@ -12,6 +12,7 @@ TEST_P(UsmMemsetTest, Test) {
     args.api = std::get<0>(GetParam());
     args.memoryPlacement = std::get<1>(GetParam());
     args.bufferSize = std::get<2>(GetParam());
+    args.copyQueue = std::get<3>(GetParam());
 
     UsmMemset test;
     test.run(args);
@@ -26,4 +27,5 @@ INSTANTIATE_TEST_SUITE_P(
     ::testing::Combine(
         ::CommonGtestArgs::allApis(),
         ::testing::Values(MemoryPlacement::Host, MemoryPlacement::Device, MemoryPlacement::Shared),
-        ::testing::Values(128 * megaByte, 512 * megaByte)));
+        ::testing::Values(128 * megaByte, 512 * megaByte),
+        ::testing::Values(false, true)));

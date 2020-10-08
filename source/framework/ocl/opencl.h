@@ -26,8 +26,8 @@
 
 struct Opencl {
     Opencl() : Opencl(QueueProperties::create()) {}
-    Opencl(const QueueProperties &queueProperties) : Opencl(&queueProperties) {}
-    Opencl(const QueueProperties *queueProperties) {
+    Opencl(const QueueProperties &queueProperties, bool requireQueueCreationSuccess = true) : Opencl(&queueProperties, requireQueueCreationSuccess) {}
+    Opencl(const QueueProperties *queueProperties, bool requireQueueCreationSuccess) {
         // Get Platform
         cl_uint numPlatforms;
         EXPECT_CL_SUCCESS(clGetPlatformIDs(0, nullptr, &numPlatforms));
@@ -55,9 +55,12 @@ struct Opencl {
         context = clCreateContext(nullptr, 1, &device, nullptr, nullptr, &retVal);
         EXPECT_CL_SUCCESS(retVal);
 
-        // Create queueProperties
+        // Create command queue
         if (queueProperties != nullptr) {
-            EXPECT_CL_SUCCESS(createQueue(*queueProperties));
+            retVal = createQueue(*queueProperties);
+            if (requireQueueCreationSuccess) {
+                EXPECT_CL_SUCCESS(retVal);
+            }
         }
     }
 

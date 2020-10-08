@@ -12,7 +12,7 @@ static TestResult run(const KernelAndCopyArguments &arguments, Statistics &stati
     }
 
     // Setup
-    Opencl opencl(nullptr);
+    Opencl opencl(nullptr, false);
     Timer timer{};
     cl_int retVal{};
 

@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 
-class FillBufferTest : public ::testing::TestWithParam<std::tuple<Api, size_t, size_t, bool>> {
+class FillBufferTest : public ::testing::TestWithParam<std::tuple<Api, size_t, size_t, bool, bool>> {
 };
 
 TEST_P(FillBufferTest, Test) {
@@ -13,6 +13,7 @@ TEST_P(FillBufferTest, Test) {
     args.size = std::get<1>(GetParam());
     args.patternSize = std::get<2>(GetParam());
     args.compressed = std::get<3>(GetParam());
+    args.copyQueue = std::get<4>(GetParam());
 
     FillBuffer test;
     test.run(args);
@@ -28,4 +29,5 @@ INSTANTIATE_TEST_SUITE_P(
         ::CommonGtestArgs::allApis(),
         ::testing::Values(128 * megaByte, 512 * megaByte),
         ::testing::Values(1, 16, 128),
+        ::testing::Values(false, true),
         ::testing::Values(false, true)));

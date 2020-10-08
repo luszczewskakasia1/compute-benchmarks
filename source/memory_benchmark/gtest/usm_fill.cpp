@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 
-class UsmFillTest : public ::testing::TestWithParam<std::tuple<Api, MemoryPlacement, size_t, size_t, bool, BufferContents>> {
+class UsmFillTest : public ::testing::TestWithParam<std::tuple<Api, MemoryPlacement, size_t, size_t, bool, bool, BufferContents>> {
 };
 
 TEST_P(UsmFillTest, Test) {
@@ -13,8 +13,9 @@ TEST_P(UsmFillTest, Test) {
     args.memoryPlacement = std::get<1>(GetParam());
     args.bufferSize = std::get<2>(GetParam());
     args.patternSize = std::get<3>(GetParam());
-    args.useEvents = std::get<4>(GetParam());
-    args.patternContents = std::get<5>(GetParam());
+    args.copyQueue = std::get<4>(GetParam());
+    args.useEvents = std::get<5>(GetParam());
+    args.patternContents = std::get<6>(GetParam());
 
     UsmFill test;
     test.run(args);
@@ -31,5 +32,6 @@ INSTANTIATE_TEST_SUITE_P(
         ::testing::Values(MemoryPlacement::Host, MemoryPlacement::Device, MemoryPlacement::Shared),
         ::testing::Values(128 * megaByte, 512 * megaByte),
         ::testing::Values(1, 16, 256),
+        ::testing::Values(false, true),
         ::testing::Values(false, true),
         ::testing::Values(BufferContents::Zeros, BufferContents::Random)));

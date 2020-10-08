@@ -131,6 +131,11 @@ struct LevelZero {
         EXPECT_ZE_RESULT_SUCCESS(zeContextDestroy(context));
     }
 
+    ze_command_queue_desc_t *getCommandQueueDescCopyOrNot(bool copy) {
+        auto &result = copy ? commandQueueDescCopyOnly : commandQueueDescCompute;
+        return result.get();
+    }
+
     ze_driver_handle_t driver{};
     ze_device_handle_t device{};
     ze_context_handle_t context{};

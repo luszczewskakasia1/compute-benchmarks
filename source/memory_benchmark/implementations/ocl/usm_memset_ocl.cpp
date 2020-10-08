@@ -9,7 +9,10 @@
 
 static TestResult run(const UsmMemsetArguments &arguments, Statistics &statistics) {
     // Setup
-    Opencl opencl;
+    Opencl opencl(QueueProperties::createBcsOrNot(arguments.copyQueue));
+    if (opencl.commandQueue == nullptr) {
+        return TestResult::DeviceNotCapable;
+    }
     Timer timer;
     auto clHostMemAllocINTEL = (pfn_clHostMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clHostMemAllocINTEL");
     auto clDeviceMemAllocINTEL = (pfn_clDeviceMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clDeviceMemAllocINTEL");

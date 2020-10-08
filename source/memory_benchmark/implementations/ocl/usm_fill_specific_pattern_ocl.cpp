@@ -12,7 +12,10 @@
 static TestResult run(const UsmFillSpecificPatternArguments &arguments, Statistics &statistics) {
     // Setup
     cl_int retVal{};
-    Opencl opencl(QueueProperties::createProfilingOrNot(arguments.useEvents));
+    Opencl opencl(QueueProperties::create(arguments.useEvents, arguments.copyQueue, -1));
+    if (opencl.commandQueue == nullptr) {
+        return TestResult::DeviceNotCapable;
+    }
     Timer timer;
     auto clHostMemAllocINTEL = (pfn_clHostMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clHostMemAllocINTEL");
     auto clDeviceMemAllocINTEL = (pfn_clDeviceMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clDeviceMemAllocINTEL");

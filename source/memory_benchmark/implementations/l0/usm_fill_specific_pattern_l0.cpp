@@ -10,7 +10,11 @@
 
 static TestResult run(const UsmFillSpecificPatternArguments &arguments, Statistics &statistics) {
     LevelZero levelzero(false);
-    ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueCreate(levelzero.context, levelzero.device, levelzero.commandQueueDescCopy.get(), &levelzero.commandQueue));
+    const auto queueDesc = levelzero.getCommandQueueDescCopyOrNot(arguments.copyQueue);
+    if (queueDesc == nullptr) {
+        return TestResult::DeviceNotCapable;
+    }
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueCreate(levelzero.context, levelzero.device, queueDesc, &levelzero.commandQueue));
     Timer timer;
 
     // Create buffer

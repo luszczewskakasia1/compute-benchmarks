@@ -9,11 +9,13 @@ struct FillBufferArguments : TestCaseArguments {
     ByteSizeTestCaseArgument size;
     ByteSizeTestCaseArgument patternSize;
     CompressionBooleanTestCaseArgument compressed;
+    BooleanTestCaseArgument copyQueue;
 
     FillBufferArguments()
         : size(*this, "size"),
           patternSize(*this, "patternSize"),
-          compressed(*this, "compressed") {}
+          compressed(*this, "compressed"),
+          copyQueue(*this, "copyQueue") {}
 };
 
 class FillBuffer : public TestCase<FillBufferArguments> {
