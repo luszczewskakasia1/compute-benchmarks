@@ -11,7 +11,7 @@
 int executeSingleTest(const std::string &testName, int argc, char **argv) {
     printDeviceInfo();
 
-    const TestMap testMap = getTestMap();
+    const TestMap &testMap = getTestMap();
     auto it = testMap.find(testName);
     if (it == testMap.end()) {
         std::cerr << "Unknown test case\n";

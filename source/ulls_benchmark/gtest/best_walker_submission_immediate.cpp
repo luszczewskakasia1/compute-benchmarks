@@ -1,6 +1,10 @@
 #include "ulls_benchmark/definitions/best_walker_submission_immediate.h"
 
+#include "framework/test_case/register_test_case.h"
+
 #include <gtest/gtest.h>
+
+static const inline RegisterTestCase<BestWalkerSubmissionImmediate> registerTestCase{};
 
 class BestWalkerSubmissionImmediateTest : public ::testing::TestWithParam<Api> {
 };

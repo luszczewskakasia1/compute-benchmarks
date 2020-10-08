@@ -1,6 +1,10 @@
 #include "api_overhead_benchmark/definitions/execute_command_list.h"
 
+#include "framework/test_case/register_test_case.h"
+
 #include <gtest/gtest.h>
+
+static const inline RegisterTestCase<ExecuteCommandList> registerTestCase{};
 
 class ExecuteCommandListTest : public ::testing::TestWithParam<bool> {
 };

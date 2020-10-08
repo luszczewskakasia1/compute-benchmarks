@@ -1,8 +1,11 @@
 #include "ulls_benchmark/definitions/new_resources_with_gpu_access.h"
 
+#include "framework/test_case/register_test_case.h"
 #include "framework/utility/common_gtest_args.h"
 
 #include <gtest/gtest.h>
+
+static const inline RegisterTestCase<NewResourcesWithGpuAccess> registerTestCase{};
 
 class NewResourcesWithGpuAccessTest : public ::testing::TestWithParam<std::tuple<Api, size_t>> {
 };

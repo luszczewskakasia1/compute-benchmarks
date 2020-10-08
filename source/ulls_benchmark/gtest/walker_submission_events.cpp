@@ -1,8 +1,11 @@
 #include "ulls_benchmark/definitions/walker_submission_events.h"
 
+#include "framework/test_case/register_test_case.h"
 #include "framework/utility/common_gtest_args.h"
 
 #include <gtest/gtest.h>
+
+static const inline RegisterTestCase<WalkerSubmissionEvents> registerTestCase{};
 
 class WalkerSubmissionEventsTest : public ::testing::TestWithParam<Api> {
 };

@@ -1,8 +1,10 @@
 #include "ulls_benchmark/definitions/empty_kernel.h"
-
+#include "framework/test_case/register_test_case.h"
 #include "framework/utility/common_gtest_args.h"
 
 #include <gtest/gtest.h>
+
+static const inline RegisterTestCase<EmptyKernel> registerTestCase{};
 
 class EmptyKernelSubmissionTest : public ::testing::TestWithParam<std::tuple<Api, size_t, size_t>> {
 };

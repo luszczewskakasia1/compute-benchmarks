@@ -1,6 +1,10 @@
 #include "memory_benchmark/definitions/read_device_mem_buffer.h"
 
+#include "framework/test_case/register_test_case.h"
+
 #include <gtest/gtest.h>
+
+static const inline RegisterTestCase<ReadDeviceMemBuffer> registerTestCase{};
 
 class ReadBufferDevMemTest : public ::testing::TestWithParam<std::tuple<size_t, bool>> {
 };
@@ -19,5 +23,5 @@ INSTANTIATE_TEST_SUITE_P(
     ReadBufferDevMemTest,
     ReadBufferDevMemTest,
     ::testing::Combine(
-    ::testing::Values( 64*kiloByte, 128*kiloByte, 512*kiloByte, 1*megaByte, 4*megaByte, 32*megaByte, 64*megaByte, 128*megaByte, 256*megaByte),
-    ::testing::Values(false, true)));
+        ::testing::Values(64 * kiloByte, 128 * kiloByte, 512 * kiloByte, 1 * megaByte, 4 * megaByte, 32 * megaByte, 64 * megaByte, 128 * megaByte, 256 * megaByte),
+        ::testing::Values(false, true)));

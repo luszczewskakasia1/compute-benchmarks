@@ -1,9 +1,12 @@
 #include "memory_benchmark/definitions/write_buffer_rect.h"
 
+#include "framework/test_case/register_test_case.h"
+
 #include <gtest/gtest.h>
 
-using Tuple = ThreeComponentUintTestCaseArgument::TupleType;
+static const inline RegisterTestCase<WriteBufferRect> registerTestCase{};
 
+using Tuple = ThreeComponentUintTestCaseArgument::TupleType;
 class WriteBufferRectTestEntireBuffer : public ::testing::TestWithParam<std::tuple<bool, Tuple>> {
 };
 

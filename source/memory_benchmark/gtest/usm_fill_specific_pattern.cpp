@@ -1,8 +1,11 @@
 #include "memory_benchmark/definitions/usm_fill_specific_pattern.h"
 
+#include "framework/test_case/register_test_case.h"
 #include "framework/utility/common_gtest_args.h"
 
 #include <gtest/gtest.h>
+
+static const inline RegisterTestCase<UsmFillSpecificPattern> registerTestCase{};
 
 class UsmFillSpecificPatternTest : public ::testing::TestWithParam<std::tuple<Api, MemoryPlacement, size_t, std::string, bool, bool>> {
 };

@@ -28,11 +28,12 @@ enum class TestResult {
     KernelNotFound,         // binary kernel was not found in working directory
 };
 
-template <typename Arguments>
+template <typename _Arguments>
 class TestCase : public TestCaseInterface {
+  public:
+    using Arguments = _Arguments;
     static_assert(std::is_base_of_v<TestCaseArguments, Arguments>, "Arguments class should derive from TestCaseArguments");
 
-  public:
     struct BenchmarkImplementation {
         using Function = std::function<TestResult(Arguments, Statistics &)>;
         Function function = {};

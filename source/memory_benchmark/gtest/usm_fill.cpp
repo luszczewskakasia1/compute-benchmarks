@@ -1,8 +1,11 @@
 #include "memory_benchmark/definitions/usm_fill.h"
 
+#include "framework/test_case/register_test_case.h"
 #include "framework/utility/common_gtest_args.h"
 
 #include <gtest/gtest.h>
+
+static const inline RegisterTestCase<UsmFill> registerTestCase{};
 
 class UsmFillTest : public ::testing::TestWithParam<std::tuple<Api, MemoryPlacement, size_t, size_t, bool, bool, BufferContents>> {
 };

@@ -1,8 +1,11 @@
 #include "ulls_benchmark/definitions/kernel_with_work.h"
 
+#include "framework/test_case/register_test_case.h"
 #include "framework/utility/common_gtest_args.h"
 
 #include <gtest/gtest.h>
+
+static const inline RegisterTestCase<KernelWithWork> registerTestCase{};
 
 class KernelWithWorkSubmissionTest : public ::testing::TestWithParam<std::tuple<Api, WorkItemIdUsage, size_t, size_t>> {
 };

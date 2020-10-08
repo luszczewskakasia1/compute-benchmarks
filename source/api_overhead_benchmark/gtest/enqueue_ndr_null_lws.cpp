@@ -1,6 +1,10 @@
 #include "api_overhead_benchmark/definitions/enqueue_ndr_null_lws.h"
 
+#include "framework/test_case/register_test_case.h"
+
 #include <gtest/gtest.h>
+
+static const inline RegisterTestCase<EnqueueNdrNullLws> registerTestCase{};
 
 class EnqueueNdrNullLwsTest : public ::testing::TestWithParam<std::tuple<size_t, bool, bool, bool>> {
 };

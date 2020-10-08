@@ -1,6 +1,10 @@
 #include "gpu_cmds_benchmark/definitions/wait_on_event_cold.h"
 
+#include "framework/test_case/register_test_case.h"
+
 #include <gtest/gtest.h>
+
+static const inline RegisterTestCase<WaitOnEventCold> registerTestCase{};
 
 class WaitOnEventColdTest : public ::testing::TestWithParam<size_t> {
 };

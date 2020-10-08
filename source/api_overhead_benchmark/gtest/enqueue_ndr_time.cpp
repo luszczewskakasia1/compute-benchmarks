@@ -1,6 +1,10 @@
 #include "api_overhead_benchmark/definitions/enqueue_ndr_time.h"
 
+#include "framework/test_case/register_test_case.h"
+
 #include <gtest/gtest.h>
+
+static const inline RegisterTestCase<EnqueueNdrTime> registerTestCase{};
 
 class EnqueueNdrTimeTest : public ::testing::TestWithParam<std::tuple<size_t, size_t, bool, bool, bool>> {
 };

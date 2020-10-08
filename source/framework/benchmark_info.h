@@ -6,7 +6,10 @@
 #include <unordered_map>
 
 using TestMap = std::unordered_map<std::string, std::unique_ptr<TestCaseInterface>>;
-TestMap getTestMap();
+inline TestMap &getTestMap() {
+    static TestMap testMap = {};
+    return testMap;
+}
 
 std::string getBenchmarkName();
 inline std::string getBenchmarkFilename() {

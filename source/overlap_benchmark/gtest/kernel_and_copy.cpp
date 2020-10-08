@@ -1,6 +1,10 @@
 #include "overlap_benchmark/definitions/kernel_and_copy.h"
 
+#include "framework/test_case/register_test_case.h"
+
 #include <gtest/gtest.h>
+
+static const inline RegisterTestCase<KernelAndCopy> registerTestCase{};
 
 class KernelAndCopyTest : public ::testing::TestWithParam<std::tuple<bool, bool, bool, bool>> {
 };
