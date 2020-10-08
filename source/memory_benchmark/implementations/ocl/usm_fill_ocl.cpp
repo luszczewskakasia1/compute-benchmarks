@@ -12,7 +12,7 @@
 static TestResult run(const UsmFillArguments &arguments, Statistics &statistics) {
     // Setup
     cl_int retVal{};
-    Opencl opencl(QueueProperties::create(arguments.useEvents, arguments.copyQueue, -1));
+    Opencl opencl(QueueProperties::create(arguments.useEvents, arguments.copyQueue, -1), false);
     if (opencl.commandQueue == nullptr) {
         return TestResult::DeviceNotCapable;
     }
