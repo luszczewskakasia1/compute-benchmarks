@@ -97,6 +97,11 @@ class TestCase : public TestCaseInterface {
             return;
         }
 
+        // Verify if current test case is added to the test map
+        if (getTestMap().find(getTestCaseName()) == getTestMap().end()) {
+            printTestMapWarning();
+        }
+
         // Run test
         const TestResult testResult = benchmarkImplementation.function(arguments, statistics);
         switch (testResult) {
@@ -157,5 +162,15 @@ class TestCase : public TestCaseInterface {
         }
 
         return result.str();
+    }
+
+    void printTestMapWarning() const {
+        static bool printed = false;
+        if (printed) {
+            return;
+        }
+        printed = true;
+
+        std::cerr << "WARNING: \"" << getTestCaseName() << "\" is not added to the test map. This is an issue in the benchmark causing single-test mode to not work.\n";
     }
 };
