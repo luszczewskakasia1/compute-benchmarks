@@ -44,7 +44,7 @@ static TestResult run(const EnqueueNdrTimeArguments &arguments, Statistics &stat
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, eventForNdr));
         timer.measureEnd();
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
-        statistics.pushValue(timer.Get());
+        statistics.pushValue(timer.getUs());
         if (eventForNdr) {
             ASSERT_CL_SUCCESS(clReleaseEvent(event));
         }

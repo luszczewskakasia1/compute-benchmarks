@@ -50,7 +50,7 @@ static TestResult run(const NewResourcesSubmissionHostArguments &arguments, Stat
         ASSERT_CL_SUCCESS(retVal);
         ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, hostMemory));
 
-        statistics.pushValue(timer.Get());
+        statistics.pushValue(timer.getUs());
     }
 
     // Cleanup

@@ -59,7 +59,7 @@ static TestResult run(const ExecuteCommandListArguments &arguments, Statistics &
         timer.measureStart();
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, fence));
         timer.measureEnd();
-        statistics.pushValue(timer.Get());
+        statistics.pushValue(timer.getUs());
 
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
     }

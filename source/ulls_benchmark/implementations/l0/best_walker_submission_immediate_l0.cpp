@@ -79,7 +79,7 @@ static TestResult run(const BestWalkerSubmissionImmediateArguments &arguments, S
         ASSERT_ZE_RESULT_SUCCESS(zeEventHostSynchronize(event, std::numeric_limits<uint32_t>::max()));
         ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(event));
 
-        statistics.pushValue(timer.Get());
+        statistics.pushValue(timer.getUs());
     }
 
     ASSERT_ZE_RESULT_SUCCESS(zeContextEvictMemory(levelzero.context, levelzero.device, buffer, bufferSize));

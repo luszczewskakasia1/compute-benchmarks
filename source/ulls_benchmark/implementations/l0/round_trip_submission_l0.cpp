@@ -57,7 +57,7 @@ static TestResult run(const RoundTripSubmissionArguments &arguments, Statistics 
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
         timer.measureEnd();
 
-        statistics.pushValue(timer.Get());
+        statistics.pushValue(timer.getUs());
     }
 
     ASSERT_ZE_RESULT_SUCCESS(zeContextEvictMemory(levelzero.context, levelzero.device, buffer, bufferSize));

@@ -47,7 +47,7 @@ static TestResult run(const NewResourcesSubmissionDeviceArguments &arguments, St
         ASSERT_CL_SUCCESS(retVal);
         ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));
 
-        statistics.pushValue(timer.Get());
+        statistics.pushValue(timer.getUs());
     }
 
     // Cleanup

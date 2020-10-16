@@ -41,7 +41,7 @@ static TestResult run(const BestSubmissionArguments &arguments, Statistics &stat
         while (*volatileBuffer == timestampInitial) {
         }
         timer.measureEnd();
-        statistics.pushValue(timer.Get());
+        statistics.pushValue(timer.getUs());
 
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
     }

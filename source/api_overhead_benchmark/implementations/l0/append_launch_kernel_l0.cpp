@@ -57,7 +57,7 @@ static TestResult run(const AppendLaunchKernelArguments &arguments, Statistics &
         timer.measureStart();
         ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &dispatchTraits, event, 0, nullptr));
         timer.measureEnd();
-        statistics.pushValue(timer.Get());
+        statistics.pushValue(timer.getUs());
 
         ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));
     }

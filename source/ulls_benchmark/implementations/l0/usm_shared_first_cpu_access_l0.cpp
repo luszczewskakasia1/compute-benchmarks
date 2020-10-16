@@ -27,7 +27,7 @@ static TestResult run(const UsmSharedFirstCpuAccessArguments &arguments, Statist
         static_cast<uint32_t *>(buffer)[0] = 0;
         timer.measureEnd();
 
-        statistics.pushValue(timer.Get());
+        statistics.pushValue(timer.getUs());
         ASSERT_ZE_RESULT_SUCCESS(zeMemFree(levelzero.context, buffer));
     }
 

@@ -35,7 +35,7 @@ static TestResult run(const EmptyKernelArguments &arguments, Statistics &statist
         retVal |= clFinish(opencl.commandQueue);
         timer.measureEnd();
         ASSERT_CL_SUCCESS(retVal);
-        statistics.pushValue(timer.Get());
+        statistics.pushValue(timer.getUs());
     }
 
     // Cleanup

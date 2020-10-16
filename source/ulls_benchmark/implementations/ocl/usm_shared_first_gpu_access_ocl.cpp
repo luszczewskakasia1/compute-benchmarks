@@ -47,7 +47,7 @@ static TestResult run(const UsmSharedFirstGpuAccessArguments &arguments, Statist
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
         ASSERT_CL_SUCCESS(clFlush(opencl.commandQueue));
         timer.measureEnd();
-        statistics.pushValue(timer.Get());
+        statistics.pushValue(timer.getUs());
 
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, buffer));

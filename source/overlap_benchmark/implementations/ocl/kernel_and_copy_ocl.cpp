@@ -113,7 +113,7 @@ static TestResult run(const KernelAndCopyArguments &arguments, Statistics &stati
             ASSERT_CL_SUCCESS(clFinish(queueForCopy));
         }
         timer.measureEnd();
-        statistics.pushValue(timer.Get());
+        statistics.pushValue(timer.getUs());
     }
 
     // Cleanup
