@@ -10,7 +10,7 @@ inline void pushValue(Statistics &statistics, Statistics::Value timeNs, size_t b
     if (configuration->printBandwidth) {
         statistics.pushValue(Timer::getBandwidth(timeNs, bufferSize));
     } else {
-        statistics.pushValue(timeNs);
+        statistics.pushValue(timeNs / 1000);
     }
 }
 
