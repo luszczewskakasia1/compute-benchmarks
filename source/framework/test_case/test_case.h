@@ -1,8 +1,9 @@
 #pragma once
 
+#include "framework/benchmark_info.h"
 #include "framework/configuration.h"
 #include "framework/enum/api.h"
-#include "framework/test_case_argument/test_case_arguments.h"
+#include "framework/test_case/test_case_interface.h"
 #include "framework/utility/error.h"
 #include "framework/utility/statistics.h"
 #include "framework/utility/string_utils.h"
@@ -11,14 +12,6 @@
 #include <iostream>
 #include <sstream>
 #include <type_traits>
-
-struct TestCaseInterface {
-    virtual ~TestCaseInterface() = default;
-    virtual bool runFromCommandLine(int argc, char **argv) = 0;
-    virtual std::string getHelp() const = 0;
-    virtual std::string getHelpParameters() const = 0;
-    virtual std::string getTestCaseName() const = 0;
-};
 
 enum class TestResult {
     Success,                // should be returned after a successful run

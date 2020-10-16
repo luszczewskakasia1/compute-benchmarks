@@ -1,7 +1,8 @@
 #pragma once
 
 #include "framework/configuration.h"
-#include "framework/test_case/test_case.h"
+#include "framework/test_case/test_case_interface.h"
+#include "framework/test_case_argument/test_case_arguments.h"
 
 #include <unordered_map>
 
