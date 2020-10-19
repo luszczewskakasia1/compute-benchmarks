@@ -8,6 +8,7 @@
 struct QueueProperties {
     cl_command_queue_properties properties[5] = {CL_QUEUE_PROPERTIES, 0, 0, 0, 0};
     bool createQueue = true;
+    bool requireCreationSuccess = true;
 
     operator const cl_command_queue_properties *() const {
         return &properties[0];
@@ -44,6 +45,11 @@ struct QueueProperties {
 
     QueueProperties &disable() {
         createQueue = false;
+        return *this;
+    }
+
+    QueueProperties &allowCreationFail() {
+        requireCreationSuccess = false;
         return *this;
     }
 };

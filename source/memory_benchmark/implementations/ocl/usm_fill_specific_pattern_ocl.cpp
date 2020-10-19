@@ -12,8 +12,8 @@
 static TestResult run(const UsmFillSpecificPatternArguments &arguments, Statistics &statistics) {
     // Setup
     cl_int retVal{};
-    QueueProperties queueProperties = QueueProperties::create().setProfiling(arguments.useEvents).setBcs(arguments.copyQueue);
-    Opencl opencl(queueProperties, false);
+    QueueProperties queueProperties = QueueProperties::create().setProfiling(arguments.useEvents).setBcs(arguments.copyQueue).allowCreationFail();
+    Opencl opencl(queueProperties);
     if (opencl.commandQueue == nullptr) {
         return TestResult::DeviceNotCapable;
     }
