@@ -45,7 +45,7 @@ struct LevelZero {
         EXPECT_ZE_RESULT_SUCCESS(zeDriverGet(&driverCount, drivers.get()));
         this->driver = drivers[driverIndex];
 
-        // Get device
+        // Create root device
         uint32_t deviceCount = 0;
         EXPECT_ZE_RESULT_SUCCESS(zeDeviceGet(driver, &deviceCount, nullptr));
         const auto deviceIndex = ::configuration.l0DeviceIndex;
@@ -54,7 +54,21 @@ struct LevelZero {
         }
         auto devices = std::make_unique<ze_device_handle_t[]>(deviceCount);
         EXPECT_ZE_RESULT_SUCCESS(zeDeviceGet(driver, &deviceCount, devices.get()));
+        this->rootDevice = devices[deviceIndex];
         this->device = devices[deviceIndex];
+
+        // Create subDevices if needed
+        const auto subDeviceSelection = ::configuration.subDeviceSelection;
+        if (subDeviceSelection != DeviceSelection::Root) {
+            createSubDevices();
+
+            const auto subDeviceIndex = getSubDeviceIndexFromDeviceSelection(subDeviceSelection);
+            if (subDeviceIndex >= subDevices.size()) {
+                ERROR("Invalid subDevice selected");
+            }
+
+            this->device = this->subDevices[subDeviceIndex];
+        }
 
         // Get device info
         this->deviceProperties.stype = {ZE_STRUCTURE_TYPE_DEVICE_PROPERTIES};
@@ -131,13 +145,26 @@ struct LevelZero {
         EXPECT_ZE_RESULT_SUCCESS(zeContextDestroy(context));
     }
 
+    void createSubDevices() {
+        uint32_t numSubDevices{};
+        EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetSubDevices(this->rootDevice, &numSubDevices, nullptr));
+        if (numSubDevices == 0) {
+            ERROR("SubDevice was selected, but device has 0 subDevices");
+        }
+
+        subDevices.resize(numSubDevices);
+        EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetSubDevices(this->rootDevice, &numSubDevices, subDevices.data()));
+    }
+
     ze_command_queue_desc_t *getCommandQueueDescCopyOrNot(bool copy) {
         auto &result = copy ? commandQueueDescCopyOnly : commandQueueDescCompute;
         return result.get();
     }
 
     ze_driver_handle_t driver{};
+    ze_device_handle_t rootDevice{};
     ze_device_handle_t device{};
+    std::vector<ze_device_handle_t> subDevices{};
     ze_context_handle_t context{};
     ze_command_queue_handle_t commandQueue{};
     ze_device_properties_t deviceProperties;
