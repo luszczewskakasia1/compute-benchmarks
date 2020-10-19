@@ -14,7 +14,8 @@ static TestResult run(const CopyBufferArguments &arguments, Statistics &statisti
 
     // Setup
     cl_int retVal;
-    Opencl opencl(QueueProperties::createProfilingOrNot(arguments.useEvents));
+    QueueProperties queueProperties = QueueProperties::create().setProfiling(arguments.useEvents);
+    Opencl opencl(queueProperties);
     Timer timer;
 
     // Create buffer

@@ -14,7 +14,8 @@ static TestResult run(const MapBufferArguments &arguments, Statistics &statistic
     }
 
     // Setup
-    Opencl opencl(QueueProperties::createProfilingOrNot(arguments.useEvents));
+    QueueProperties queueProperties = QueueProperties::create().setProfiling(arguments.useEvents);
+    Opencl opencl(queueProperties);
     Timer timer;
     cl_int retVal;
 

@@ -9,7 +9,8 @@
 
 static TestResult run(const WalkerSubmissionEventsArguments &arguments, Statistics &statistics) {
     // Setup
-    Opencl opencl(QueueProperties::createProfilingOrNot(true));
+    QueueProperties queueProperties = QueueProperties::create().setProfiling(true);
+    Opencl opencl(queueProperties);
     cl_int retVal{};
     cl_event profilingEvent{};
 

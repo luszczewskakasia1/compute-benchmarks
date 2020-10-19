@@ -16,10 +16,6 @@ struct QueueProperties {
         return create(false, false, -1);
     }
 
-    static QueueProperties createProfilingOrNot(bool profiling) {
-        return create(profiling, false, -1);
-    }
-
     static QueueProperties createBcsOrNot(bool bcs) {
         return create(false, bcs, -1);
     }
