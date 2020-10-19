@@ -115,13 +115,6 @@ struct Opencl {
         EXPECT_CL_SUCCESS(clCreateSubDevices(this->rootDevice, properties, numSubDevices, this->subDevices.data(), nullptr));
     }
 
-    cl_platform_id platform{};
-    cl_device_id rootDevice;
-    cl_device_id device{};
-    std::vector<cl_device_id> subDevices{};
-    cl_context context{};
-    cl_command_queue commandQueue{};
-
     static cl_mem_flags getCompressionFlags(bool compression, bool noIntelExtensions) {
         if (noIntelExtensions) {
             return 0;
@@ -151,4 +144,13 @@ struct Opencl {
         }
         return TestResult::Success;
     }
+
+    cl_platform_id platform{};
+    cl_device_id device{};
+    cl_context context{};
+    cl_command_queue commandQueue{};
+
+  private:
+    cl_device_id rootDevice;
+    std::vector<cl_device_id> subDevices{};
 };

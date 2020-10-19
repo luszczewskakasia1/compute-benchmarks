@@ -162,9 +162,7 @@ struct LevelZero {
     }
 
     ze_driver_handle_t driver{};
-    ze_device_handle_t rootDevice{};
     ze_device_handle_t device{};
-    std::vector<ze_device_handle_t> subDevices{};
     ze_context_handle_t context{};
     ze_command_queue_handle_t commandQueue{};
     ze_device_properties_t deviceProperties;
@@ -172,4 +170,8 @@ struct LevelZero {
     std::unique_ptr<ze_command_queue_desc_t> commandQueueDescCompute{};
     std::unique_ptr<ze_command_queue_desc_t> commandQueueDescCopy{};
     std::unique_ptr<ze_command_queue_desc_t> commandQueueDescCopyOnly{};
+
+  private:
+    ze_device_handle_t rootDevice{};
+    std::vector<ze_device_handle_t> subDevices{};
 };
