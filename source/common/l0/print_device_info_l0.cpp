@@ -5,7 +5,7 @@
 #include <iomanip>
 
 static void printDeviceInfoL0() {
-    LevelZero levelzero;
+    LevelZero levelzero(false);
 
     ze_driver_properties_t driverProperties{ZE_STRUCTURE_TYPE_DRIVER_PROPERTIES};
     ZE_RESULT_SUCCESS_OR_TERMINATE(zeDriverGetProperties(levelzero.driver, &driverProperties));

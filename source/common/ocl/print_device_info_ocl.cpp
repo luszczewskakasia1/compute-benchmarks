@@ -3,7 +3,7 @@
 #include "framework/print_device_info.h"
 
 static void printDeviceInfoOcl() {
-    Opencl opencl;
+    Opencl opencl(nullptr, false);
     char bufferString[4096];
     cl_uint bufferUint;
 
