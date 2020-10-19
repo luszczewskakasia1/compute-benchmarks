@@ -13,14 +13,10 @@ struct QueueProperties {
     }
 
     static QueueProperties create() {
-        return create(false, false, -1);
-    }
-
-    static QueueProperties create(bool profiling, bool bcs, int ooq) {
         return QueueProperties()
-            .setProfiling(profiling)
-            .setBcs(bcs)
-            .setOoq(ooq);
+            .setProfiling(false)
+            .setBcs(false)
+            .setOoq(-1);
     }
 
     QueueProperties &setProfiling(bool profiling) {
