@@ -14,11 +14,15 @@
 #include <type_traits>
 
 enum class TestResult {
-    Success,                // should be returned after a successful run
-    Error,                  // an error was returned by the compute API
-    DriverFunctionNotFound, // extension function was not found and test is skipped
-    DeviceNotCapable,       // device does not support some functionality needed in test (e.g. compression)
-    KernelNotFound,         // binary kernel was not found in working directory
+    Success,                 // should be returned after a successful run
+    Error,                   // an error was returned by the compute API
+    DriverFunctionNotFound,  // extension function was not found and test is skipped
+    DeviceNotCapable,        // device does not support some functionality needed in test (e.g. compression)
+    KernelNotFound,          // binary kernel was not found in working directory
+    SkippedApi,              // selected API should not be run
+    NoImplementation,        // Test is not implemented in current API
+    IntelExtensionsRequired, // Intel extensions are required, but they are disabled
+    InvalidArgs,             // Invalid arguments specific to the test case were supplied
 };
 
 template <typename _Arguments>
@@ -58,36 +62,73 @@ class TestCase : public TestCaseInterface {
                       << ::configuration.iterations << ".\n";
         }
         arguments.iterations = ::configuration.iterations;
-
-        // Set if Intel extensions can be used from global configuration
         arguments.noIntelExtensions = ::configuration.noIntelExtensions;
 
         // Create statistics object
         const auto testCaseNameWithConfig = getTestCaseNameWithConfig(arguments, ::configuration.dumpCommandLines);
         Statistics statistics{arguments.iterations, ::configuration.printType};
 
+        // Run test
+        const auto testResult = runImpl(statistics, arguments);
+        switch (testResult) {
+        case TestResult::Success:
+            ERROR_UNLESS(statistics.isFull(), "test did not generate as many values as expected");
+            statistics.printStatistics(testCaseNameWithConfig);
+            break;
+
+        case TestResult::Error:
+            statistics.printStatisticsString(testCaseNameWithConfig, "ERROR");
+            break;
+
+        case TestResult::InvalidArgs:
+            statistics.printStatisticsString(testCaseNameWithConfig, "INVALID_ARGS");
+            break;
+
+        case TestResult::SkippedApi:
+        case TestResult::NoImplementation:
+        case TestResult::DeviceNotCapable:
+        case TestResult::IntelExtensionsRequired:
+            ERROR_UNLESS(statistics.isEmpty(), "test was skipped but generated some values");
+            break;
+
+        case TestResult::DriverFunctionNotFound:
+            ERROR_UNLESS(statistics.isEmpty(), "test was skipped but generated some values");
+            statistics.printStatisticsString(testCaseNameWithConfig, "SKIPPED");
+            break;
+
+        case TestResult::KernelNotFound:
+            ERROR_UNLESS(statistics.isEmpty(), "test was skipped but generated some values");
+            statistics.printStatisticsString(testCaseNameWithConfig, "MISSING_KERNEL");
+            break;
+
+        default:
+            ERROR("unknown result was returned by test");
+        }
+    }
+
+  private:
+    TestResult runImpl(Statistics &statistics, const Arguments &arguments) const {
         // Get API
-        const auto selectedApi = ::configuration.selectedApi; // Api selected by the user via the --api argument
+        const auto selectedApi = ::configuration.selectedApi;
         if (arguments.api != selectedApi && selectedApi != Api::All) {
-            return;
+            return TestResult::SkippedApi;
         }
 
         // Get implementation
         const auto apiIndex = static_cast<int>(arguments.api);
         const auto &benchmarkImplementation = implementations[apiIndex];
         if (benchmarkImplementation.function == nullptr) {
-            return;
+            return TestResult::NoImplementation;
         }
 
-        // Silently skip benchmarks requiring Intel extensions if they were disabled
+        // Check if test needs Intel extensions
         if (arguments.noIntelExtensions && benchmarkImplementation.requiresIntelExtensions) {
-            return;
+            return TestResult::IntelExtensionsRequired;
         }
 
         // Validate arguments
         if (!arguments.validateArguments()) {
-            statistics.printStatisticsString(testCaseNameWithConfig, "INVALID_ARGS");
-            return;
+            return TestResult::InvalidArgs;
         }
 
         // Verify if current test case is added to the test map
@@ -95,31 +136,10 @@ class TestCase : public TestCaseInterface {
             printTestMapWarning();
         }
 
-        // Run test
-        const TestResult testResult = benchmarkImplementation.function(arguments, statistics);
-        switch (testResult) {
-        case TestResult::Success:
-            ERROR_UNLESS(statistics.isFull(), "test did not generate as many values as expected");
-            statistics.printStatistics(testCaseNameWithConfig);
-            break;
-        case TestResult::Error:
-            statistics.printStatisticsString(testCaseNameWithConfig, "ERROR");
-            break;
-        case TestResult::DeviceNotCapable:
-            ERROR_UNLESS(statistics.isEmpty(), "test was skipped but generated some values");
-            break;
-        case TestResult::DriverFunctionNotFound:
-            ERROR_UNLESS(statistics.isEmpty(), "test was skipped but generated some values");
-            statistics.printStatisticsString(testCaseNameWithConfig, "SKIPPED");
-            break;
-        case TestResult::KernelNotFound:
-            ERROR("binary kernel was not found. Kernels should be located in working directory");
-        default:
-            ERROR("unknown result was returned by test");
-        }
+        // Run the test
+        return benchmarkImplementation.function(arguments, statistics);
     }
 
-  private:
     static bool parseArguments(Arguments &arguments, int argc, char **argv) {
         for (int i = 2; i < argc; i++) {
             const auto argument = std::string{argv[i]};
