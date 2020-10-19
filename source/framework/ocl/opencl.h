@@ -1,5 +1,6 @@
 #pragma once
 
+#include "framework/ocl/device_properties.h"
 #include "framework/ocl/function_signatures_ocl.h"
 #include "framework/ocl/queue_properties.h"
 #include "framework/test_case/test_case.h"
@@ -26,7 +27,8 @@
 
 struct Opencl {
     Opencl() : Opencl(QueueProperties::create()) {}
-    Opencl(const QueueProperties &queueProperties) {
+    Opencl(const QueueProperties &queueProperties) : Opencl(queueProperties, DeviceProperties::create()) {}
+    Opencl(const QueueProperties &queueProperties, const DeviceProperties &deviceProperties) {
         // Get Platform
         cl_uint numPlatforms;
         EXPECT_CL_SUCCESS(clGetPlatformIDs(0, nullptr, &numPlatforms));
@@ -51,16 +53,17 @@ struct Opencl {
         this->device = this->rootDevice;
 
         // Create subDevices if needed
-        const auto subDeviceSelection = ::configuration.subDeviceSelection;
-        if (subDeviceSelection != DeviceSelection::Root) {
-            createSubDevices();
+        if (deviceProperties.subDeviceSelection != DeviceSelection::Root) {
+            createSubDevices(deviceProperties.requireSubDeviceCreationSuccess);
 
-            const auto subDeviceIndex = getSubDeviceIndexFromDeviceSelection(subDeviceSelection);
+            const auto subDeviceIndex = getSubDeviceIndexFromDeviceSelection(deviceProperties.subDeviceSelection);
             if (subDeviceIndex >= subDevices.size()) {
-                ERROR("Invalid subDevice selected");
+                ERROR_IF(deviceProperties.requireSubDeviceCreationSuccess, "Invalid subDevice selected");
+                this->device = nullptr;
+                return;
+            } else {
+                this->device = this->subDevices[subDeviceIndex];
             }
-
-            this->device = this->subDevices[subDeviceIndex];
         }
 
         // Create context
@@ -76,7 +79,9 @@ struct Opencl {
         if (commandQueue != nullptr) {
             EXPECT_CL_SUCCESS(clReleaseCommandQueue(commandQueue));
         }
-        EXPECT_CL_SUCCESS(clReleaseContext(context));
+        if (context != nullptr) {
+            EXPECT_CL_SUCCESS(clReleaseContext(context));
+        }
         for (auto &subDevice : subDevices) {
             EXPECT_CL_SUCCESS(clReleaseDevice(subDevice));
         }
@@ -92,23 +97,21 @@ struct Opencl {
         }
     }
 
-    void createSubDevices() {
+    void createSubDevices(bool requireSuccess) {
         cl_device_affinity_domain domain{};
         EXPECT_CL_SUCCESS(clGetDeviceInfo(device, CL_DEVICE_PARTITION_AFFINITY_DOMAIN, sizeof(domain), &domain, NULL));
         if ((domain & CL_DEVICE_AFFINITY_DOMAIN_NEXT_PARTITIONABLE) == 0) {
-            ERROR("SubDevice was selected, but device is not partitionable");
+            ERROR_IF(requireSuccess, "SubDevice was selected, but device is not partitionable");
+            return;
         }
         if ((domain & CL_DEVICE_AFFINITY_DOMAIN_NUMA) == 0) {
-            ERROR("SubDevice was selected, but device is not CL_DEVICE_AFFINITY_DOMAIN_NUMA");
+            ERROR_IF(requireSuccess, "SubDevice was selected, but device is not CL_DEVICE_AFFINITY_DOMAIN_NUMA");
+            return;
         }
 
         const cl_device_partition_property properties[] = {CL_DEVICE_PARTITION_BY_AFFINITY_DOMAIN, CL_DEVICE_AFFINITY_DOMAIN_NUMA, 0};
         cl_uint numSubDevices{};
         EXPECT_CL_SUCCESS(clCreateSubDevices(this->rootDevice, properties, 0, nullptr, &numSubDevices));
-        if (numSubDevices == 0) {
-            ERROR("SubDevice was selected, but device has 0 subDevices");
-        }
-
         this->subDevices.resize(numSubDevices);
         EXPECT_CL_SUCCESS(clCreateSubDevices(this->rootDevice, properties, numSubDevices, this->subDevices.data(), nullptr));
     }
