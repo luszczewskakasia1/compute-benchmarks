@@ -30,18 +30,31 @@ struct QueueProperties {
     }
 
     static QueueProperties create(bool profiling, bool bcs, int ooq) {
-        QueueProperties result{};
-        if (profiling) {
-            result.properties[1] |= CL_QUEUE_PROFILING_ENABLE;
-        }
-        if (bcs) {
-            result.properties[2] = CL_QUEUE_FAMILY_INTEL;
-            result.properties[3] = CL_QUEUE_FAMILY_TYPE_BCS_INTEL;
-        }
-        if (ooq == 1 || (ooq == -1 && ::configuration.oclUseOOQ)) {
-            result.properties[1] |= CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
-        }
+        return QueueProperties()
+            .setProfiling(profiling)
+            .setBcs(bcs)
+            .setOoq(ooq);
+    }
 
-        return result;
+    QueueProperties &setProfiling(bool profiling) {
+        if (profiling) {
+            properties[1] |= CL_QUEUE_PROFILING_ENABLE;
+        }
+        return *this;
+    }
+
+    QueueProperties &setBcs(bool bcs) {
+        if (bcs) {
+            properties[2] = CL_QUEUE_FAMILY_INTEL;
+            properties[3] = CL_QUEUE_FAMILY_TYPE_BCS_INTEL;
+        }
+        return *this;
+    }
+
+    QueueProperties &setOoq(int ooq) {
+        if (ooq == 1 || (ooq == -1 && ::configuration.oclUseOOQ)) {
+            properties[1] |= CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
+        }
+        return *this;
     }
 };
