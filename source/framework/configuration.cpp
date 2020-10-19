@@ -10,6 +10,7 @@ Configuration::Configuration()
       oclUseOOQ(*this, "oclUseOOQ", "Use out of order queue if it is supported"),
       l0DriverIndex(*this, "l0DriverIndex", "LevelZero driver index"),
       l0DeviceIndex(*this, "l0DeviceIndex", "LevelZero device index inside the driver"),
+      subDeviceSelection(*this, "subDeviceSelection"),
       csv(*this, "csv", "dump results in CSV format for easy imports to spreadsheets"),
       verbose(*this, "verbose", "dump results from all iterations"),
       iterations(*this, "iterations", "select how many times each test will be run"),
@@ -34,6 +35,7 @@ Configuration::Configuration()
     selectedApi = Api::All;
     noIntelExtensions = false;
     dumpCommandLines = false;
+    subDeviceSelection = DeviceSelection::Root;
 }
 
 Configuration::~Configuration() {

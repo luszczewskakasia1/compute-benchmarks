@@ -39,7 +39,7 @@ struct Opencl {
         EXPECT_CL_SUCCESS(clGetPlatformIDs(numPlatforms, platforms.get(), nullptr));
         this->platform = platforms[platformIndex];
 
-        // Get Device
+        // Create root device
         cl_uint numDevices;
         EXPECT_CL_SUCCESS(clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 0, nullptr, &numDevices));
         const auto deviceIndex = ::configuration.oclDeviceIndex;
@@ -48,7 +48,21 @@ struct Opencl {
         }
         auto devices = std::make_unique<cl_device_id[]>(numDevices);
         EXPECT_CL_SUCCESS(clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, numDevices, devices.get(), nullptr));
-        this->device = devices[deviceIndex];
+        this->rootDevice = devices[deviceIndex];
+        this->device = this->rootDevice;
+
+        // Create subDevices if needed
+        const auto subDeviceSelection = ::configuration.subDeviceSelection;
+        if (subDeviceSelection != DeviceSelection::Root) {
+            createSubDevices();
+
+            const auto subDeviceIndex = getSubDeviceIndexFromDeviceSelection(subDeviceSelection);
+            if (subDeviceIndex >= subDevices.size()) {
+                ERROR("Invalid subDevice selected");
+            }
+
+            this->device = this->subDevices[subDeviceIndex];
+        }
 
         // Create context
         cl_int retVal{};
@@ -69,6 +83,9 @@ struct Opencl {
             EXPECT_CL_SUCCESS(clReleaseCommandQueue(commandQueue));
         }
         EXPECT_CL_SUCCESS(clReleaseContext(context));
+        for (auto &subDevice : subDevices) {
+            EXPECT_CL_SUCCESS(clReleaseDevice(subDevice));
+        }
     }
 
     cl_int createQueue(const QueueProperties &queueProperties) {
@@ -77,8 +94,31 @@ struct Opencl {
         return retVal;
     }
 
+    void createSubDevices() {
+        cl_device_affinity_domain domain{};
+        EXPECT_CL_SUCCESS(clGetDeviceInfo(device, CL_DEVICE_PARTITION_AFFINITY_DOMAIN, sizeof(domain), &domain, NULL));
+        if ((domain & CL_DEVICE_AFFINITY_DOMAIN_NEXT_PARTITIONABLE) == 0) {
+            ERROR("SubDevice was selected, but device is not partitionable");
+        }
+        if ((domain & CL_DEVICE_AFFINITY_DOMAIN_NUMA) == 0) {
+            ERROR("SubDevice was selected, but device is not CL_DEVICE_AFFINITY_DOMAIN_NUMA");
+        }
+
+        const cl_device_partition_property properties[] = {CL_DEVICE_PARTITION_BY_AFFINITY_DOMAIN, CL_DEVICE_AFFINITY_DOMAIN_NUMA, 0};
+        cl_uint numSubDevices{};
+        EXPECT_CL_SUCCESS(clCreateSubDevices(this->rootDevice, properties, 0, nullptr, &numSubDevices));
+        if (numSubDevices == 0) {
+            ERROR("SubDevice was selected, but device has 0 subDevices");
+        }
+
+        this->subDevices.resize(numSubDevices);
+        EXPECT_CL_SUCCESS(clCreateSubDevices(this->rootDevice, properties, numSubDevices, this->subDevices.data(), nullptr));
+    }
+
     cl_platform_id platform{};
+    cl_device_id rootDevice;
     cl_device_id device{};
+    std::vector<cl_device_id> subDevices{};
     cl_context context{};
     cl_command_queue commandQueue{};
 
