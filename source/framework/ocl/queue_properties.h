@@ -16,11 +16,6 @@ struct QueueProperties {
         return create(false, false, -1);
     }
 
-    static QueueProperties createOoqOrNot(bool ooqArg) {
-        const int ooq = ooqArg ? 1 : 0;
-        return create(false, false, ooq);
-    }
-
     static QueueProperties create(bool profiling, bool bcs, int ooq) {
         return QueueProperties()
             .setProfiling(profiling)

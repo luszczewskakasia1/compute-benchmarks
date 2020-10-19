@@ -7,7 +7,8 @@
 
 static TestResult run(const FlushTimeArguments &arguments, Statistics &statistics) {
     // Setup
-    Opencl opencl(QueueProperties::createOoqOrNot(arguments.useOoq));
+    QueueProperties queueProperties = QueueProperties::create().setOoq(arguments.useOoq);
+    Opencl opencl(queueProperties);
     Timer timer;
     cl_int retVal;
 
