@@ -4,6 +4,7 @@
 #include "framework/utility/load_binary_file.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/read_device_mem_buffer.h"
+#include "memory_benchmark/timer_helper.h"
 
 #include <gtest/gtest.h>
 
@@ -200,7 +201,7 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
         const size_t groupsExed = gws / subgroupSize;
         const size_t totalAccessedMemory = (groupsExed * threadTileSizeInSubgroup * numOfLoops);
 
-        statistics.pushValue(Timer::getBandwidth(timeNs, totalAccessedMemory));
+        TimerHelper::pushValue(statistics, timeNs, totalAccessedMemory);
         ASSERT_CL_SUCCESS(clReleaseEvent(evt));
     }
 
