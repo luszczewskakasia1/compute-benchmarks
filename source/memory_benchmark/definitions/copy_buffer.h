@@ -2,10 +2,12 @@
 
 #include "framework/test_case/test_case.h"
 #include "framework/test_case_argument/test_case_argument_compression.h"
+#include "framework/test_case_argument/test_case_argument_device_selection.h"
 
 #include <sstream>
 
 struct CopyBufferArguments : TestCaseArguments {
+    DeviceSelectionTestCaseArgument device;
     ByteSizeTestCaseArgument size;
     CompressionBooleanTestCaseArgument compressedSource;
     CompressionBooleanTestCaseArgument compressedDestination;
@@ -13,7 +15,8 @@ struct CopyBufferArguments : TestCaseArguments {
     BooleanTestCaseArgument useEvents;
 
     CopyBufferArguments()
-        : size(*this, "size"),
+        : device(*this, "device"),
+          size(*this, "size"),
           compressedSource(*this, "compressedSource"),
           compressedDestination(*this, "compressedDestination"),
           useEvents(*this, "useEvents", "measure performance with events") {}

@@ -15,7 +15,11 @@ static TestResult run(const CopyBufferArguments &arguments, Statistics &statisti
     // Setup
     cl_int retVal;
     QueueProperties queueProperties = QueueProperties::create().setProfiling(arguments.useEvents);
-    Opencl opencl(queueProperties);
+    DeviceProperties devicePropertes = DeviceProperties::create().setDeviceSelection(arguments.device).allowSubDeviceCreationFail();
+    Opencl opencl(queueProperties, devicePropertes);
+    if (opencl.device == nullptr) {
+        return TestResult::DeviceNotCapable;
+    }
     Timer timer;
 
     // Create buffer
