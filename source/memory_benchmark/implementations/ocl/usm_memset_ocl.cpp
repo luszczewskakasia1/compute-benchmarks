@@ -9,7 +9,8 @@
 
 static TestResult run(const UsmMemsetArguments &arguments, Statistics &statistics) {
     // Setup
-    Opencl opencl(QueueProperties::createBcsOrNot(arguments.copyQueue), false);
+    QueueProperties queueProperties = QueueProperties::create().setBcs(arguments.copyQueue);
+    Opencl opencl(queueProperties, false);
     if (opencl.commandQueue == nullptr) {
         return TestResult::DeviceNotCapable;
     }

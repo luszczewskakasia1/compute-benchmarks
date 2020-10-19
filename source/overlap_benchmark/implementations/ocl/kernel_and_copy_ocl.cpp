@@ -17,7 +17,7 @@ static TestResult run(const KernelAndCopyArguments &arguments, Statistics &stati
     cl_int retVal{};
 
     // Create queues
-    const auto &queueForCopyProperties = QueueProperties::createBcsOrNot(arguments.useCopyQueue);
+    const auto &queueForCopyProperties = QueueProperties::create().setBcs(arguments.useCopyQueue);
     const auto &queueForKernelPropertes = QueueProperties::create();
     cl_command_queue queueForKernel{};
     cl_command_queue queueForCopy{};
