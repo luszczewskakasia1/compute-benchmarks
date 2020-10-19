@@ -3,7 +3,8 @@
 #include "framework/print_device_info.h"
 
 static void printDeviceInfoOcl() {
-    Opencl opencl(nullptr, false);
+    QueueProperties queueProperties = QueueProperties::create().disable();
+    Opencl opencl(queueProperties);
     char bufferString[4096];
     cl_uint bufferUint;
 

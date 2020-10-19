@@ -7,6 +7,7 @@
 
 struct QueueProperties {
     cl_command_queue_properties properties[5] = {CL_QUEUE_PROPERTIES, 0, 0, 0, 0};
+    bool createQueue = true;
 
     operator const cl_command_queue_properties *() const {
         return &properties[0];
@@ -38,6 +39,11 @@ struct QueueProperties {
         if (ooq == 1 || (ooq == -1 && ::configuration.oclUseOOQ)) {
             properties[1] |= CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
         }
+        return *this;
+    }
+
+    QueueProperties &disable() {
+        createQueue = false;
         return *this;
     }
 };

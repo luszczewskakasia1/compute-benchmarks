@@ -90,7 +90,9 @@ struct Opencl {
 
     cl_int createQueue(const QueueProperties &queueProperties) {
         cl_int retVal{};
-        this->commandQueue = clCreateCommandQueueWithProperties(context, device, queueProperties, &retVal);
+        if (queueProperties.createQueue) {
+            this->commandQueue = clCreateCommandQueueWithProperties(context, device, queueProperties, &retVal);
+        }
         return retVal;
     }
 

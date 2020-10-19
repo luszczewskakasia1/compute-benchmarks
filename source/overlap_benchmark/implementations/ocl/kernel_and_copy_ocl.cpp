@@ -12,13 +12,14 @@ static TestResult run(const KernelAndCopyArguments &arguments, Statistics &stati
     }
 
     // Setup
-    Opencl opencl(nullptr, false);
+    QueueProperties queueProperties = QueueProperties::create().disable();
+    Opencl opencl(queueProperties);
     Timer timer{};
     cl_int retVal{};
 
     // Create queues
-    const auto &queueForCopyProperties = QueueProperties::create().setBcs(arguments.useCopyQueue);
-    const auto &queueForKernelPropertes = QueueProperties::create();
+    const auto queueForCopyProperties = QueueProperties::create().setBcs(arguments.useCopyQueue);
+    const auto queueForKernelPropertes = QueueProperties::create();
     cl_command_queue queueForKernel{};
     cl_command_queue queueForCopy{};
     cl_command_queue queues[2] = {};
