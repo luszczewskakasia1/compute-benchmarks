@@ -6,10 +6,10 @@
 
 static const inline RegisterTestCase<ReadDeviceMemBuffer> registerTestCase{};
 
-class ReadBufferDevMemTest : public ::testing::TestWithParam<std::tuple<size_t, bool>> {
+class ReadDeviceMemBufferTest : public ::testing::TestWithParam<std::tuple<size_t, bool>> {
 };
 
-TEST_P(ReadBufferDevMemTest, Test) {
+TEST_P(ReadDeviceMemBufferTest, Test) {
     ReadDeviceMemBufferArguments args;
     args.api = Api::OpenCL;
     args.size = std::get<0>(GetParam());
@@ -20,8 +20,8 @@ TEST_P(ReadBufferDevMemTest, Test) {
 }
 
 INSTANTIATE_TEST_SUITE_P(
-    ReadBufferDevMemTest,
-    ReadBufferDevMemTest,
+    ReadDeviceMemBufferTest,
+    ReadDeviceMemBufferTest,
     ::testing::Combine(
         ::testing::Values(64 * kiloByte, 128 * kiloByte, 512 * kiloByte, 1 * megaByte, 4 * megaByte, 32 * megaByte, 64 * megaByte, 128 * megaByte, 256 * megaByte),
         ::testing::Values(false, true)));
