@@ -89,25 +89,6 @@ struct Opencl {
         }
     }
 
-    void createSubDevices(bool requireSuccess) {
-        cl_device_affinity_domain domain{};
-        EXPECT_CL_SUCCESS(clGetDeviceInfo(this->rootDevice, CL_DEVICE_PARTITION_AFFINITY_DOMAIN, sizeof(domain), &domain, NULL));
-        if ((domain & CL_DEVICE_AFFINITY_DOMAIN_NEXT_PARTITIONABLE) == 0) {
-            ERROR_IF(requireSuccess, "SubDevice was selected, but device is not partitionable");
-            return;
-        }
-        if ((domain & CL_DEVICE_AFFINITY_DOMAIN_NUMA) == 0) {
-            ERROR_IF(requireSuccess, "SubDevice was selected, but device is not CL_DEVICE_AFFINITY_DOMAIN_NUMA");
-            return;
-        }
-
-        const cl_device_partition_property properties[] = {CL_DEVICE_PARTITION_BY_AFFINITY_DOMAIN, CL_DEVICE_AFFINITY_DOMAIN_NUMA, 0};
-        cl_uint numSubDevices{};
-        EXPECT_CL_SUCCESS(clCreateSubDevices(this->rootDevice, properties, 0, nullptr, &numSubDevices));
-        this->subDevices.resize(numSubDevices);
-        EXPECT_CL_SUCCESS(clCreateSubDevices(this->rootDevice, properties, numSubDevices, this->subDevices.data(), nullptr));
-    }
-
     cl_context createContext(DeviceSelection subDeviceSelection) {
         cl_device_id deviceForContext = getDevice(subDeviceSelection, false);
         if (deviceForContext == nullptr) {
@@ -144,6 +125,25 @@ struct Opencl {
         }
 
         return subDevices[subDeviceIndex];
+    }
+
+    void createSubDevices(bool requireSuccess) {
+        cl_device_affinity_domain domain{};
+        EXPECT_CL_SUCCESS(clGetDeviceInfo(this->rootDevice, CL_DEVICE_PARTITION_AFFINITY_DOMAIN, sizeof(domain), &domain, NULL));
+        if ((domain & CL_DEVICE_AFFINITY_DOMAIN_NEXT_PARTITIONABLE) == 0) {
+            ERROR_IF(requireSuccess, "SubDevice was selected, but device is not partitionable");
+            return;
+        }
+        if ((domain & CL_DEVICE_AFFINITY_DOMAIN_NUMA) == 0) {
+            ERROR_IF(requireSuccess, "SubDevice was selected, but device is not CL_DEVICE_AFFINITY_DOMAIN_NUMA");
+            return;
+        }
+
+        const cl_device_partition_property properties[] = {CL_DEVICE_PARTITION_BY_AFFINITY_DOMAIN, CL_DEVICE_AFFINITY_DOMAIN_NUMA, 0};
+        cl_uint numSubDevices{};
+        EXPECT_CL_SUCCESS(clCreateSubDevices(this->rootDevice, properties, 0, nullptr, &numSubDevices));
+        this->subDevices.resize(numSubDevices);
+        EXPECT_CL_SUCCESS(clCreateSubDevices(this->rootDevice, properties, numSubDevices, this->subDevices.data(), nullptr));
     }
 
     cl_device_id rootDevice;
