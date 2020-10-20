@@ -50,26 +50,20 @@ struct Opencl {
         auto devices = std::make_unique<cl_device_id[]>(numDevices);
         EXPECT_CL_SUCCESS(clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, numDevices, devices.get(), nullptr));
         this->rootDevice = devices[deviceIndex];
-        this->device = this->rootDevice;
 
-        // Create subDevices if needed
-        if (deviceProperties.subDeviceSelection != DeviceSelection::Root) {
-            createSubDevices(deviceProperties.requireSubDeviceCreationSuccess);
-
-            const auto subDeviceIndex = getSubDeviceIndexFromDeviceSelection(deviceProperties.subDeviceSelection);
-            if (subDeviceIndex >= subDevices.size()) {
-                ERROR_IF(deviceProperties.requireSubDeviceCreationSuccess, "Invalid subDevice selected");
-                this->device = nullptr;
-                return;
-            } else {
-                this->device = this->subDevices[subDeviceIndex];
-            }
+        // Create a default device (either a root device or one of the subDevices)
+        this->device = getDevice(deviceProperties.subDeviceSelection, deviceProperties.requireSubDeviceCreationSuccess);
+        if (this->device == nullptr) {
+            return;
         }
 
-        // Create context on default device
+        // Create context on the default device
         this->context = createContext(deviceProperties.subDeviceSelection);
+        if (this->context == nullptr) {
+            return;
+        }
 
-        // Create command queue
+        // Create command queue on the default
         createQueue(queueProperties);
     }
 
@@ -97,7 +91,7 @@ struct Opencl {
 
     void createSubDevices(bool requireSuccess) {
         cl_device_affinity_domain domain{};
-        EXPECT_CL_SUCCESS(clGetDeviceInfo(device, CL_DEVICE_PARTITION_AFFINITY_DOMAIN, sizeof(domain), &domain, NULL));
+        EXPECT_CL_SUCCESS(clGetDeviceInfo(this->rootDevice, CL_DEVICE_PARTITION_AFFINITY_DOMAIN, sizeof(domain), &domain, NULL));
         if ((domain & CL_DEVICE_AFFINITY_DOMAIN_NEXT_PARTITIONABLE) == 0) {
             ERROR_IF(requireSuccess, "SubDevice was selected, but device is not partitionable");
             return;
