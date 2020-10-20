@@ -22,24 +22,18 @@ static TestResult run(const KernelAndCopyArguments &arguments, Statistics &stati
     const auto queueForKernelPropertes = QueueProperties::create();
     cl_command_queue queueForKernel{};
     cl_command_queue queueForCopy{};
-    cl_command_queue queues[2] = {};
-    size_t queueCount = 0;
     if (arguments.twoQueues) {
-        queues[0] = queueForKernel = clCreateCommandQueueWithProperties(opencl.context, opencl.device, queueForKernelPropertes, &retVal);
-        ASSERT_CL_SUCCESS(retVal);
-        queues[1] = queueForCopy = clCreateCommandQueueWithProperties(opencl.context, opencl.device, queueForCopyProperties, &retVal);
-        queueCount = 2;
-        ASSERT_CL_SUCCESS(retVal);
+        queueForKernel = opencl.createQueue(queueForKernelPropertes);
+        queueForCopy = opencl.createQueue(queueForCopyProperties);
     } else {
         if (arguments.runKernel) {
-            queues[0] = queueForKernel = clCreateCommandQueueWithProperties(opencl.context, opencl.device, queueForKernelPropertes, &retVal);
-            ASSERT_CL_SUCCESS(retVal);
+            queueForKernel = opencl.createQueue(queueForKernelPropertes);
             if (arguments.runCopy) {
                 ERROR_IF(arguments.useCopyQueue, "Configuration (runKernel && useCopyQueue && !twoQueues) is invalid");
                 queueForCopy = queueForKernel;
             }
         } else if (arguments.runCopy) {
-            queueForCopy = clCreateCommandQueueWithProperties(opencl.context, opencl.device, queueForCopyProperties, &retVal);
+            queueForCopy = opencl.createQueue(queueForCopyProperties);
             ASSERT_CL_SUCCESS(retVal);
         } else {
             ERROR("Either runCopy or runKernel must be active");
@@ -126,11 +120,6 @@ static TestResult run(const KernelAndCopyArguments &arguments, Statistics &stati
     if (arguments.runCopy) {
         ASSERT_CL_SUCCESS(clReleaseMemObject(bufferForCopy1));
         ASSERT_CL_SUCCESS(clReleaseMemObject(bufferForCopy2));
-    }
-    for (auto i = 0u; i < sizeof(queues) / sizeof(queues[0]); i++) {
-        if (queues[i] != nullptr) {
-            ASSERT_CL_SUCCESS(clReleaseCommandQueue(queues[i]));
-        }
     }
 
     return TestResult::Success;
