@@ -8,6 +8,7 @@
 #include <exception>
 #include <gtest/gtest.h>
 #include <iostream>
+#include <unordered_map>
 
 #define ASSERT_CL_SUCCESS(retVal)      \
     if (retVal != CL_SUCCESS) {        \
@@ -77,7 +78,7 @@ struct Opencl {
             EXPECT_CL_SUCCESS(clReleaseCommandQueue(commandQueue));
         }
         for (auto &context : contexts) {
-            EXPECT_CL_SUCCESS(clReleaseContext(context));
+            EXPECT_CL_SUCCESS(clReleaseContext(context.second));
         }
         for (auto &subDevice : subDevices) {
             EXPECT_CL_SUCCESS(clReleaseDevice(subDevice));
@@ -102,6 +103,10 @@ struct Opencl {
     }
 
     cl_context createContext(DeviceSelection subDeviceSelection) {
+        if (auto entry = contexts.find(subDeviceSelection); entry != contexts.end()) {
+            return entry->second;
+        }
+
         cl_device_id deviceForContext = getDevice(subDeviceSelection, false);
         if (deviceForContext == nullptr) {
             return nullptr;
@@ -110,7 +115,7 @@ struct Opencl {
         cl_int retVal{};
         cl_context context = clCreateContext(nullptr, 1, &device, nullptr, nullptr, &retVal);
         EXPECT_CL_SUCCESS(retVal);
-        contexts.push_back(context);
+        contexts[subDeviceSelection] = context;
         return context;
     }
 
@@ -155,6 +160,6 @@ struct Opencl {
 
     cl_device_id rootDevice;
     std::vector<cl_device_id> subDevices{};
-    std::vector<cl_context> contexts{};
+    std::unordered_map<DeviceSelection, cl_context> contexts{};
     std::vector<cl_command_queue> commandQueues{};
 };
