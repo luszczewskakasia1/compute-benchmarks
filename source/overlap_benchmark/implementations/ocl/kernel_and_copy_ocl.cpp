@@ -18,7 +18,7 @@ static TestResult run(const KernelAndCopyArguments &arguments, Statistics &stati
     cl_int retVal{};
 
     // Create queues
-    const auto queueForCopyProperties = QueueProperties::create().setBcs(arguments.useCopyQueue);
+    const auto queueForCopyProperties = QueueProperties::create().setBcs(arguments.useCopyQueue).allowCreationFail();
     const auto queueForKernelPropertes = QueueProperties::create();
     cl_command_queue queueForKernel{};
     cl_command_queue queueForCopy{};
@@ -38,6 +38,11 @@ static TestResult run(const KernelAndCopyArguments &arguments, Statistics &stati
         } else {
             ERROR("Either runCopy or runKernel must be active");
         }
+    }
+
+    // Validate copy queue creation (device may not support a BCS queue)
+    if (arguments.runCopy && queueForCopy == nullptr) {
+        return TestResult::DeviceNotCapable;
     }
 
     // Create buffers
