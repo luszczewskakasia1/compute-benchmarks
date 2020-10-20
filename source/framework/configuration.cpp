@@ -10,11 +10,11 @@ Configuration::Configuration()
       oclUseOOQ(*this, "oclUseOOQ", "Use out of order queue if it is supported"),
       l0DriverIndex(*this, "l0DriverIndex", "LevelZero driver index"),
       l0DeviceIndex(*this, "l0DeviceIndex", "LevelZero device index inside the driver"),
-      subDeviceSelection(*this, "subDeviceSelection"),
+      subDeviceSelection(*this, "subDeviceSelection", "Device to be used in the benchmarks. Might be ignored by some specific tests"),
       csv(*this, "csv", "dump results in CSV format for easy imports to spreadsheets"),
       verbose(*this, "verbose", "dump results from all iterations"),
       iterations(*this, "iterations", "select how many times each test will be run"),
-      selectedApi(*this, "api"),
+      selectedApi(*this, "api", "Compute API to be used"),
       noIntelExtensions(*this, "no-intel-extensions", "do not run benchmark requiring Intel specific extensions"),
       dumpCommandLines(*this, "dumpCommandLines", "output commandline arguments to run the each test"),
       benchmarkSpecificConfiguration(BenchmarkSpecificConfigurationBase::create(*this).release()) {

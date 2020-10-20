@@ -8,8 +8,9 @@ struct EnumTestCaseArgument : TestCaseArgument {
     using EnumType = _EnumType;
     using ThisType = DerivedType;
 
-    EnumTestCaseArgument(TestCaseArgumentsBase &parent, const std::string &key)
-        : TestCaseArgument(parent, key, composeHelpMessage()) {
+    EnumTestCaseArgument(TestCaseArgumentsBase &parent, const std::string &key) : EnumTestCaseArgument(parent, key, "") {}
+    EnumTestCaseArgument(TestCaseArgumentsBase &parent, const std::string &key, const std::string &extraHelpPrefix)
+        : TestCaseArgument(parent, key, composeHelpMessage(extraHelpPrefix)) {
         static_assert(sizeof(DerivedType::enumValues) / sizeof(DerivedType::enumValues[0]) ==
                       sizeof(DerivedType::enumValuesNames) / sizeof(DerivedType::enumValuesNames[0]));
     }
@@ -54,10 +55,14 @@ struct EnumTestCaseArgument : TestCaseArgument {
     EnumType value;
 
   private:
-    static std::string composeHelpMessage() {
+    static std::string composeHelpMessage(const std::string &extraHelpPrefix) {
         std::ostringstream out{};
-        out << "(";
 
+        if (extraHelpPrefix.size() > 0u) {
+            out << extraHelpPrefix << " ";
+        }
+
+        out << "(";
         const auto enumValuesNamesCount = sizeof(DerivedType::enumValuesNames) / sizeof(DerivedType::enumValuesNames[0]);
         for (int i = 0; i < enumValuesNamesCount; i++) {
             out << DerivedType::enumValuesNames[i];
