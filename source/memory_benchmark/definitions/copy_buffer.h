@@ -7,7 +7,6 @@
 #include <sstream>
 
 struct CopyBufferArguments : TestCaseArguments {
-    DeviceSelectionTestCaseArgument device;
     ByteSizeTestCaseArgument size;
     CompressionBooleanTestCaseArgument compressedSource;
     CompressionBooleanTestCaseArgument compressedDestination;
@@ -15,8 +14,7 @@ struct CopyBufferArguments : TestCaseArguments {
     BooleanTestCaseArgument useEvents;
 
     CopyBufferArguments()
-        : device(*this, "device"),
-          size(*this, "size"),
+        : size(*this, "size", "Size of the buffers"),
           compressedSource(*this, "compressedSource"),
           compressedDestination(*this, "compressedDestination"),
           useEvents(*this, "useEvents", "measure performance with events") {}

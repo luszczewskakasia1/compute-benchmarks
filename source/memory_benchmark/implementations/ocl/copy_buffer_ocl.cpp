@@ -16,8 +16,7 @@ static TestResult run(const CopyBufferArguments &arguments, Statistics &statisti
     // Setup
     cl_int retVal;
     QueueProperties queueProperties = QueueProperties::create().setProfiling(arguments.useEvents);
-    DeviceProperties devicePropertes = DeviceProperties::create().setDeviceSelection(arguments.device).allowSubDeviceCreationFail();
-    Opencl opencl(queueProperties, devicePropertes);
+    Opencl opencl(queueProperties);
     if (opencl.device == nullptr) {
         return TestResult::DeviceNotCapable;
     }
