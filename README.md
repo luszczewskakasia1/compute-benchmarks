@@ -5,6 +5,7 @@ A benchmark suite developed and maintained by NEO driver development team in ord
 |-----------|----------------|--------:|
 ulls_benchmark |performance impact of Ultra Low Latency Submission implemented in NEO Driver |[Linux](https://gfx-assets.igk.intel.com/artifactory/webapp/#/artifacts/browse/tree/General/gfx-ocl-abn-assets-igk/linux/ulls_benchmark) [Windows](https://gfx-assets.igk.intel.com/artifactory/webapp/#/artifacts/browse/tree/General/gfx-ocl-abn-assets-igk/windows/ulls_benchmark) |
 memory_benchmark |bandwidth of different memory transfer operations using various APIs |[Linux](https://gfx-assets.igk.intel.com/artifactory/webapp/#/artifacts/browse/tree/General/gfx-ocl-abn-assets-igk/linux/memory_benchmark) [Windows](https://gfx-assets.igk.intel.com/artifactory/webapp/#/artifacts/browse/tree/General/gfx-ocl-abn-assets-igk/windows/memory_benchmark) |
+multi_tile_benchmark | bandwidth of different memory transfer operations using various APIs on a multi-tile device | N/a | N/a |
 api_overhead_benchmark | duration of various API calls | N/a | N/a |
 gpu_cmds_benchmark | duration of various commands on the GPU | N/a | N/a |
 overlap_benchmark | GPU operations overlapping | N/a | N/a |

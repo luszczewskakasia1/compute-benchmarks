@@ -1,0 +1,1 @@
+add_benchmark(multitile_memory_benchmark ocl)
