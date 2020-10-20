@@ -26,6 +26,11 @@
     }
 
 struct Opencl {
+    cl_platform_id platform{};
+    cl_device_id device{};
+    cl_context context{};
+    cl_command_queue commandQueue{};
+
     Opencl() : Opencl(QueueProperties::create()) {}
     Opencl(const QueueProperties &queueProperties) : Opencl(queueProperties, DeviceProperties::create()) {}
     Opencl(const QueueProperties &queueProperties, const DeviceProperties &deviceProperties) {
@@ -63,12 +68,12 @@ struct Opencl {
             return;
         }
 
-        // Create command queue on the default
-        createQueue(queueProperties);
+        // Create command queue on the default device
+        this->commandQueue = createQueue(queueProperties);
     }
 
     ~Opencl() {
-        if (commandQueue != nullptr) {
+        for (auto &commandQueue : commandQueues) {
             EXPECT_CL_SUCCESS(clReleaseCommandQueue(commandQueue));
         }
         for (auto &context : contexts) {
@@ -79,14 +84,21 @@ struct Opencl {
         }
     }
 
-    void createQueue(const QueueProperties &queueProperties) {
-        if (queueProperties.createQueue) {
-            cl_int retVal{};
-            this->commandQueue = clCreateCommandQueueWithProperties(context, device, queueProperties, &retVal);
-            if (queueProperties.requireCreationSuccess) {
-                EXPECT_CL_SUCCESS(retVal);
-            }
+    cl_command_queue createQueue(const QueueProperties &queueProperties) {
+        if (!queueProperties.createQueue) {
+            return nullptr;
         }
+
+        cl_int retVal{};
+        cl_command_queue queue = clCreateCommandQueueWithProperties(this->context, this->device, queueProperties, &retVal);
+        if (queueProperties.requireCreationSuccess) {
+            EXPECT_CL_SUCCESS(retVal);
+        }
+
+        if (queue) {
+            this->commandQueues.push_back(queue);
+        }
+        return queue;
     }
 
     cl_context createContext(DeviceSelection subDeviceSelection) {
@@ -101,11 +113,6 @@ struct Opencl {
         contexts.push_back(context);
         return context;
     }
-
-    cl_platform_id platform{};
-    cl_device_id device{};
-    cl_context context{};
-    cl_command_queue commandQueue{};
 
   private:
     cl_device_id getDevice(DeviceSelection subDeviceSelection, bool requireSuccess) {
@@ -149,4 +156,5 @@ struct Opencl {
     cl_device_id rootDevice;
     std::vector<cl_device_id> subDevices{};
     std::vector<cl_context> contexts{};
+    std::vector<cl_command_queue> commandQueues{};
 };
