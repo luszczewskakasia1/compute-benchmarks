@@ -13,7 +13,7 @@ static TestResult run(const FillBufferArguments &arguments, Statistics &statisti
     }
 
     // Setup
-    QueueProperties queueProperties = QueueProperties::create().setBcs(arguments.copyQueue);
+    QueueProperties queueProperties = QueueProperties::create().setBcs(arguments.copyQueue).allowCreationFail();
     Opencl opencl(queueProperties);
     if (opencl.commandQueue == nullptr) {
         return TestResult::DeviceNotCapable;
