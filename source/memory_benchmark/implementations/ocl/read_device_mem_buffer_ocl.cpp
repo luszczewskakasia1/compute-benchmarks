@@ -1,4 +1,5 @@
 #include "framework/intel_product/ocl/get_intel_product_ocl.h"
+#include "framework/ocl/compression_helper.h"
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/load_binary_file.h"
@@ -38,7 +39,7 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
           + " -D SUBGROUP_SIZE=" + std::to_string(subgroupSize) + largeGrfOpt + std::string(" ");
 
     // Create buffer
-    const cl_mem_flags compressionHint = Opencl::getCompressionFlags(arguments.compressed, arguments.noIntelExtensions);
+    const cl_mem_flags compressionHint = CompressionHelper::getCompressionFlags(arguments.compressed, arguments.noIntelExtensions);
     const cl_mem_flags memFlags = CL_MEM_READ_WRITE | compressionHint;
 
     auto srcCpuBuffer = std::make_unique<float[]>(arguments.size/sizeof(float));
@@ -61,12 +62,12 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     ASSERT_CL_SUCCESS(retVal);
 
     // Check buffers compression
-    auto compressionStatus = Opencl::verifyCompression(source, arguments.compressed, arguments.noIntelExtensions);
+    auto compressionStatus = CompressionHelper::verifyCompression(source, arguments.compressed, arguments.noIntelExtensions);
     if (compressionStatus != TestResult::Success) {
         ASSERT_CL_SUCCESS(clReleaseMemObject(source));
         return compressionStatus;
     }
-    compressionStatus = Opencl::verifyCompression(destination, arguments.compressed, arguments.noIntelExtensions);
+    compressionStatus = CompressionHelper::verifyCompression(destination, arguments.compressed, arguments.noIntelExtensions);
     if (compressionStatus != TestResult::Success) {
         ASSERT_CL_SUCCESS(clReleaseMemObject(source));
         ASSERT_CL_SUCCESS(clReleaseMemObject(destination));

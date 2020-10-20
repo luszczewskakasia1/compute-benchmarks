@@ -1,3 +1,4 @@
+#include "framework/ocl/compression_helper.h"
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/ocl/profiling_helper.h"
@@ -23,16 +24,16 @@ static TestResult run(const CopyBufferArguments &arguments, Statistics &statisti
     Timer timer;
 
     // Create buffer
-    const cl_mem_flags compressionHintSrc = Opencl::getCompressionFlags(arguments.compressedSource, arguments.noIntelExtensions);
-    const cl_mem_flags compressionHintDst = Opencl::getCompressionFlags(arguments.compressedDestination, arguments.noIntelExtensions);
+    const cl_mem_flags compressionHintSrc = CompressionHelper::getCompressionFlags(arguments.compressedSource, arguments.noIntelExtensions);
+    const cl_mem_flags compressionHintDst = CompressionHelper::getCompressionFlags(arguments.compressedDestination, arguments.noIntelExtensions);
     const cl_mem source = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE | compressionHintSrc, arguments.size, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
     const cl_mem destination = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE | compressionHintDst, arguments.size, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
     // Check buffers compression
-    const auto srcCompressionStatus = Opencl::verifyCompression(source, arguments.compressedSource, arguments.noIntelExtensions);
-    const auto dstCompressionStatus = Opencl::verifyCompression(destination, arguments.compressedDestination, arguments.noIntelExtensions);
+    const auto srcCompressionStatus = CompressionHelper::verifyCompression(source, arguments.compressedSource, arguments.noIntelExtensions);
+    const auto dstCompressionStatus = CompressionHelper::verifyCompression(destination, arguments.compressedDestination, arguments.noIntelExtensions);
     if (srcCompressionStatus != TestResult::Success || dstCompressionStatus != TestResult::Success) {
         ASSERT_CL_SUCCESS(clReleaseMemObject(source));
         ASSERT_CL_SUCCESS(clReleaseMemObject(destination));
