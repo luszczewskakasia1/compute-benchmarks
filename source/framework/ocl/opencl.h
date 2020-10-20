@@ -66,10 +66,8 @@ struct Opencl {
             }
         }
 
-        // Create context
-        cl_int retVal{};
-        context = clCreateContext(nullptr, 1, &device, nullptr, nullptr, &retVal);
-        EXPECT_CL_SUCCESS(retVal);
+        // Create context on default device
+        this->context = createContext(deviceProperties.subDeviceSelection);
 
         // Create command queue
         createQueue(queueProperties);
@@ -79,7 +77,7 @@ struct Opencl {
         if (commandQueue != nullptr) {
             EXPECT_CL_SUCCESS(clReleaseCommandQueue(commandQueue));
         }
-        if (context != nullptr) {
+        for (auto &context : contexts) {
             EXPECT_CL_SUCCESS(clReleaseContext(context));
         }
         for (auto &subDevice : subDevices) {
@@ -116,12 +114,45 @@ struct Opencl {
         EXPECT_CL_SUCCESS(clCreateSubDevices(this->rootDevice, properties, numSubDevices, this->subDevices.data(), nullptr));
     }
 
+    cl_context createContext(DeviceSelection subDeviceSelection) {
+        cl_device_id deviceForContext = getDevice(subDeviceSelection, false);
+        if (deviceForContext == nullptr) {
+            return nullptr;
+        }
+
+        cl_int retVal{};
+        cl_context context = clCreateContext(nullptr, 1, &device, nullptr, nullptr, &retVal);
+        EXPECT_CL_SUCCESS(retVal);
+        contexts.push_back(context);
+        return context;
+    }
+
     cl_platform_id platform{};
     cl_device_id device{};
     cl_context context{};
     cl_command_queue commandQueue{};
 
   private:
+    cl_device_id getDevice(DeviceSelection subDeviceSelection, bool requireSuccess) {
+        if (subDeviceSelection == DeviceSelection::Root) {
+            ERROR_IF(!rootDevice && requireSuccess, "Root device has not been created yet");
+            return rootDevice;
+        }
+
+        if (subDevices.size() == 0) {
+            createSubDevices(requireSuccess);
+        }
+
+        const auto subDeviceIndex = getSubDeviceIndexFromDeviceSelection(subDeviceSelection);
+        if (subDeviceIndex >= subDevices.size()) {
+            ERROR_IF(requireSuccess, "Invalid subDevice selected");
+            return nullptr;
+        }
+
+        return subDevices[subDeviceIndex];
+    }
+
     cl_device_id rootDevice;
     std::vector<cl_device_id> subDevices{};
+    std::vector<cl_context> contexts{};
 };
