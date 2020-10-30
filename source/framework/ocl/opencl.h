@@ -113,7 +113,7 @@ struct Opencl {
         }
 
         cl_int retVal{};
-        cl_context context = clCreateContext(nullptr, 1, &device, nullptr, nullptr, &retVal);
+        cl_context context = clCreateContext(nullptr, 1, &deviceForContext, nullptr, nullptr, &retVal);
         EXPECT_CL_SUCCESS(retVal);
         contexts[subDeviceSelection] = context;
         return context;
