@@ -17,6 +17,10 @@ inline DeviceSelection operator&(DeviceSelection a, DeviceSelection b) {
     return static_cast<DeviceSelection>(static_cast<int>(a) & static_cast<int>(b));
 }
 
+inline DeviceSelection operator~(DeviceSelection a) {
+    return static_cast<DeviceSelection>(~static_cast<int>(a));
+}
+
 struct DeviceSelectionHelper {
     const static inline DeviceSelection subDevices[] = {DeviceSelection::Tile0, DeviceSelection::Tile1, DeviceSelection::Tile2, DeviceSelection::Tile3};
 

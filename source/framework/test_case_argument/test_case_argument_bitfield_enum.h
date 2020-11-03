@@ -37,7 +37,7 @@ struct BitfieldEnumTestCaseArgument : TestCaseArgument {
         }
 
         // Incorrect values cannot by set
-        const auto unknownValues = this->value & getAllValuesSum();
+        const auto unknownValues = this->value & ~getAllValuesSum();
         if (unknownValues != DerivedType::zeroEnumValue) {
             return false;
         }
