@@ -20,9 +20,13 @@
         EXPECT_EQ(CL_SUCCESS, retVal); \
     }
 
-#define CL_SUCCESS_OR_TERMINATE(retVal)                                                      \
-    if (retVal != CL_SUCCESS) {                                                              \
-        ERROR(std::string("Fatal OpenCL error occurred, retVal=") + std::to_string(retVal)); \
+#define ERROR_UNLESS_CL_SUCCESS(retVal, message)                                                      \
+    {                                                                                                 \
+        const auto _retVal = retVal;                                                                  \
+        if (_retVal != CL_SUCCESS) {                                                                  \
+            const auto _message = std::string(message) + " (retVal=" + std::to_string(_retVal) + ")"; \
+            ERROR(_message);                                                                          \
+        }                                                                                             \
     }
 
 struct Opencl {
@@ -97,7 +101,7 @@ struct Opencl {
         cl_int retVal{};
         cl_command_queue queue = clCreateCommandQueueWithProperties(this->context, deviceForQueue, queueProperties, &retVal);
         if (queueProperties.requireCreationSuccess) {
-            EXPECT_CL_SUCCESS(retVal);
+            ERROR_UNLESS_CL_SUCCESS(retVal, "Command queue creation failed");
         }
 
         if (queue) {
@@ -128,7 +132,7 @@ struct Opencl {
         cl_int retVal{};
         cl_context context = clCreateContext(nullptr, static_cast<cl_uint>(devicesForContext.size()), devicesForContext.data(), nullptr, nullptr, &retVal);
         if (contextProperties.requireCreationSuccess) {
-            EXPECT_CL_SUCCESS(retVal);
+            ERROR_UNLESS_CL_SUCCESS(retVal, "Context creation failed");
         }
         return context;
     }
