@@ -20,7 +20,8 @@ struct QueueProperties {
         return QueueProperties()
             .setProfiling(false)
             .setBcs(false)
-            .setOoq(-1);
+            .setOoq(-1)
+            .setDeviceSelection(::configuration.subDeviceSelection);
     }
 
     QueueProperties &setProfiling(bool profiling) {
