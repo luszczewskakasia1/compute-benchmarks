@@ -40,6 +40,7 @@ struct Configuration : TestCaseArgumentsBase {
     ApiTestCaseArgument selectedApi;
     BooleanFlagTestCaseArgument noIntelExtensions;
     BooleanFlagTestCaseArgument dumpCommandLines;
+    BooleanFlagTestCaseArgument noop;
 
     BenchmarkSpecificConfigurationBase *benchmarkSpecificConfiguration = nullptr;
 };

@@ -23,6 +23,7 @@ enum class TestResult {
     NoImplementation,        // Test is not implemented in current API
     IntelExtensionsRequired, // Intel extensions are required, but they are disabled
     InvalidArgs,             // Invalid arguments specific to the test case were supplied
+    Nooped,                  // Test was nooped, only print its name
 };
 
 template <typename _Arguments>
@@ -101,6 +102,10 @@ class TestCase : public TestCaseInterface {
             statistics.printStatisticsString(testCaseNameWithConfig, "MISSING_KERNEL");
             break;
 
+        case TestResult::Nooped:
+            statistics.printStatisticsString(testCaseNameWithConfig, "NOOP");
+            break;
+
         default:
             ERROR("unknown result was returned by test");
         }
@@ -139,6 +144,11 @@ class TestCase : public TestCaseInterface {
         // Check if test case name with config is not too long
         if (!::configuration.dumpCommandLines && !arguments.isSingleTestMode) {
             printTestCaseNameLengthWarning(testCaseNameWithConfig);
+        }
+
+        // Noop if required
+        if (::configuration.noop) {
+            return TestResult::Nooped;
         }
 
         // Run the test

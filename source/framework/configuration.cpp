@@ -17,6 +17,7 @@ Configuration::Configuration()
       selectedApi(*this, "api", "Compute API to be used"),
       noIntelExtensions(*this, "no-intel-extensions", "do not run benchmark requiring Intel specific extensions"),
       dumpCommandLines(*this, "dumpCommandLines", "output commandline arguments to run the each test"),
+      noop(*this, "noop", "do not run any tests, only print their names and parameters"),
       benchmarkSpecificConfiguration(BenchmarkSpecificConfigurationBase::create(*this).release()) {
 
     // OCL params
