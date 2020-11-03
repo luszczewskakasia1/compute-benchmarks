@@ -26,4 +26,5 @@ struct TestCaseArguments : TestCaseArgumentsBase {
     Api api = Api::Unknown;
     size_t iterations = 0;
     bool noIntelExtensions = false;
+    bool isSingleTestMode = false;
 };

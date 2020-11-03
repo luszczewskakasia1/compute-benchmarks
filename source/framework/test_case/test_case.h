@@ -69,7 +69,7 @@ class TestCase : public TestCaseInterface {
         Statistics statistics{arguments.iterations, ::configuration.printType};
 
         // Run test
-        const auto testResult = runImpl(statistics, arguments);
+        const auto testResult = runImpl(statistics, arguments, testCaseNameWithConfig);
         switch (testResult) {
         case TestResult::Success:
             ERROR_UNLESS(statistics.isFull(), "test did not generate as many values as expected");
@@ -107,7 +107,7 @@ class TestCase : public TestCaseInterface {
     }
 
   private:
-    TestResult runImpl(Statistics &statistics, const Arguments &arguments) const {
+    TestResult runImpl(Statistics &statistics, const Arguments &arguments, const std::string &testCaseNameWithConfig) const {
         // Get API
         const auto selectedApi = ::configuration.selectedApi;
         if (arguments.api != selectedApi && selectedApi != Api::All) {
@@ -136,11 +136,17 @@ class TestCase : public TestCaseInterface {
             printTestMapWarning();
         }
 
+        // Check if test case name with config is not too long
+        if (!::configuration.dumpCommandLines && !arguments.isSingleTestMode) {
+            printTestCaseNameLengthWarning(testCaseNameWithConfig);
+        }
+
         // Run the test
         return benchmarkImplementation.function(arguments, statistics);
     }
 
     static bool parseArguments(Arguments &arguments, int argc, char **argv) {
+        arguments.isSingleTestMode = true;
         for (int i = 2; i < argc; i++) {
             const auto argument = std::string{argv[i]};
             std::string key, value;
@@ -185,5 +191,17 @@ class TestCase : public TestCaseInterface {
         printed = true;
 
         std::cerr << "WARNING: \"" << getTestCaseName() << "\" is not added to the test map. This is an issue in the benchmark causing single-test mode to not work.\n";
+    }
+
+    void printTestCaseNameLengthWarning(const std::string &testCaseNameWithConfig) const {
+        const static size_t columnWidth = getTestCaseNameColumnWidth();
+        static size_t maxWidth = columnWidth;
+
+        const size_t currentWidth = testCaseNameWithConfig.length();
+        if (currentWidth > maxWidth) {
+            maxWidth = currentWidth;
+            std::cerr << "WARNING: current TestCase column width of " << columnWidth << " is too small. Consider changing it to " << maxWidth << ". "
+                      << "This is an issue in the benchmark which may cause the output to appear weird, but does not break any functionality.";
+        }
     }
 };
