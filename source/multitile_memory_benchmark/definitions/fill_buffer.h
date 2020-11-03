@@ -24,6 +24,11 @@ struct FillBufferArguments : TestCaseArguments {
           patternSize(*this, "patternSize", "Size of the fill pattern"),
           compressed(*this, "compressed", "Select if the buffer will be compressed"),
           copyQueue(*this, "copyQueue", "Force blitter") {}
+
+    bool validateArgumentsExtra() const override {
+        return DeviceSelectionHelper::isSubset(contextPlacement, queuePlacement) &&
+               DeviceSelectionHelper::isSubset(contextPlacement, bufferPlacement);
+    }
 };
 
 class FillBuffer : public TestCase<FillBufferArguments> {

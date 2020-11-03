@@ -27,6 +27,12 @@ struct CopyBufferArguments : TestCaseArguments {
           srcCompressed(*this, "srcCompressed", "Select if source buffer is to be compressed."),
           dstCompressed(*this, "dstCompressed", "Select if destination buffer is to be compressed."),
           useEvents(*this, "useEvents", "Select if GPU-side measurements should be done") {}
+
+    bool validateArgumentsExtra() const override {
+        return DeviceSelectionHelper::isSubset(contextPlacement, queuePlacement) &&
+               DeviceSelectionHelper::isSubset(contextPlacement, srcPlacement) &&
+               DeviceSelectionHelper::isSubset(contextPlacement, dstPlacement);
+    }
 };
 
 class CopyBuffer : public TestCase<CopyBufferArguments> {
