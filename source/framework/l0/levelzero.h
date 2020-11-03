@@ -62,7 +62,7 @@ struct LevelZero {
         if (subDeviceSelection != DeviceSelection::Root) {
             createSubDevices();
 
-            const auto subDeviceIndex = getSubDeviceIndexFromDeviceSelection(subDeviceSelection);
+            const auto subDeviceIndex = DeviceSelectionHelper::getSubDeviceIndex(subDeviceSelection);
             if (subDeviceIndex >= subDevices.size()) {
                 ERROR("Invalid subDevice selected");
             }

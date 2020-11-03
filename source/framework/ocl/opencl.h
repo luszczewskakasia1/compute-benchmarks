@@ -1,6 +1,6 @@
 #pragma once
 
-#include "framework/ocl/device_properties.h"
+#include "framework/ocl/context_properties.h"
 #include "framework/ocl/function_signatures_ocl.h"
 #include "framework/ocl/queue_properties.h"
 #include "framework/test_case/test_case.h"
@@ -8,7 +8,6 @@
 #include <exception>
 #include <gtest/gtest.h>
 #include <iostream>
-#include <unordered_map>
 
 #define ASSERT_CL_SUCCESS(retVal)      \
     if (retVal != CL_SUCCESS) {        \
@@ -33,8 +32,8 @@ struct Opencl {
     cl_command_queue commandQueue{};
 
     Opencl() : Opencl(QueueProperties::create()) {}
-    Opencl(const QueueProperties &queueProperties) : Opencl(queueProperties, DeviceProperties::create()) {}
-    Opencl(const QueueProperties &queueProperties, const DeviceProperties &deviceProperties) {
+    Opencl(const QueueProperties &queueProperties) : Opencl(queueProperties, ContextProperties::create()) {}
+    Opencl(const QueueProperties &queueProperties, const ContextProperties &contextProperties) {
         // Get Platform
         cl_uint numPlatforms;
         EXPECT_CL_SUCCESS(clGetPlatformIDs(0, nullptr, &numPlatforms));
@@ -57,14 +56,17 @@ struct Opencl {
         EXPECT_CL_SUCCESS(clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, numDevices, devices.get(), nullptr));
         this->rootDevice = devices[deviceIndex];
 
-        // Create a default device (either a root device or one of the subDevices)
-        this->device = getDevice(deviceProperties.subDeviceSelection, deviceProperties.requireSubDeviceCreationSuccess);
-        if (this->device == nullptr) {
-            return;
+        // Create sub devices if needed
+        if (DeviceSelectionHelper::hasAnySubDevice(queueProperties.deviceSelection) ||
+            DeviceSelectionHelper::hasAnySubDevice(contextProperties.deviceSelection)) {
+            createSubDevices();
         }
 
+        // Set the default device
+        this->device = getDefaultDevice(contextProperties.deviceSelection);
+
         // Create context on the default device
-        this->context = createContext(deviceProperties.subDeviceSelection);
+        this->context = createContext(contextProperties);
         if (this->context == nullptr) {
             return;
         }
@@ -77,8 +79,8 @@ struct Opencl {
         for (auto &commandQueue : commandQueues) {
             EXPECT_CL_SUCCESS(clReleaseCommandQueue(commandQueue));
         }
-        for (auto &context : contexts) {
-            EXPECT_CL_SUCCESS(clReleaseContext(context.second));
+        if (context) {
+            EXPECT_CL_SUCCESS(clReleaseContext(context));
         }
         for (auto &subDevice : subDevices) {
             EXPECT_CL_SUCCESS(clReleaseDevice(subDevice));
@@ -102,52 +104,60 @@ struct Opencl {
         return queue;
     }
 
-    cl_context createContext(DeviceSelection subDeviceSelection) {
-        if (auto entry = contexts.find(subDeviceSelection); entry != contexts.end()) {
-            return entry->second;
-        }
-
-        cl_device_id deviceForContext = getDevice(subDeviceSelection, false);
-        if (deviceForContext == nullptr) {
+  private:
+    cl_context createContext(const ContextProperties &contextProperties) {
+        std::vector<cl_device_id> devicesForContext = getDevices(contextProperties.deviceSelection, false);
+        if (devicesForContext.size() == 0) {
+            ERROR_IF(contextProperties.requireCreationSuccess, "Failed getting devices for context");
             return nullptr;
         }
 
         cl_int retVal{};
-        cl_context context = clCreateContext(nullptr, 1, &deviceForContext, nullptr, nullptr, &retVal);
-        EXPECT_CL_SUCCESS(retVal);
-        contexts[subDeviceSelection] = context;
+        cl_context context = clCreateContext(nullptr, static_cast<cl_uint>(devicesForContext.size()), devicesForContext.data(), nullptr, nullptr, &retVal);
+        if (contextProperties.requireCreationSuccess) {
+            EXPECT_CL_SUCCESS(retVal);
+        }
         return context;
     }
 
-  private:
-    cl_device_id getDevice(DeviceSelection subDeviceSelection, bool requireSuccess) {
-        if (subDeviceSelection == DeviceSelection::Root) {
-            ERROR_IF(!rootDevice && requireSuccess, "Root device has not been created yet");
-            return rootDevice;
+    std::vector<cl_device_id> getDevices(DeviceSelection deviceSelection, bool requireSuccess) {
+        std::vector<cl_device_id> result = {};
+
+        // Add root device
+        if ((deviceSelection & DeviceSelection::Root) == DeviceSelection::Root) {
+            ERROR_IF(this->rootDevice == nullptr, "Root device has not been created yet");
+            result.push_back(this->rootDevice);
         }
 
-        if (subDevices.size() == 0) {
-            createSubDevices(requireSuccess);
+        // Add subDevices
+        for (DeviceSelection subDevice : DeviceSelectionHelper::subDevices) {
+            if (DeviceSelectionHelper::hasDevice(deviceSelection, subDevice)) {
+                const auto subDeviceIndex = DeviceSelectionHelper::getSubDeviceIndex(subDevice);
+                ERROR_IF(subDeviceIndex >= subDevices.size() && requireSuccess, "Invalid subDevice selected")
+                result.push_back(subDevices[subDeviceIndex]);
+            }
         }
 
-        const auto subDeviceIndex = getSubDeviceIndexFromDeviceSelection(subDeviceSelection);
-        if (subDeviceIndex >= subDevices.size()) {
-            ERROR_IF(requireSuccess, "Invalid subDevice selected");
-            return nullptr;
+        // Validate number of devices
+        const auto expectedCount = DeviceSelectionHelper::getDevicesCount(deviceSelection);
+        const auto actualCount = result.size();
+        if (expectedCount != actualCount) {
+            ERROR_IF(expectedCount != actualCount && requireSuccess, "Invalid number of devices accumulated");
+            return {};
         }
 
-        return subDevices[subDeviceIndex];
+        return result;
     }
 
-    void createSubDevices(bool requireSuccess) {
+    void createSubDevices() {
         cl_device_affinity_domain domain{};
         EXPECT_CL_SUCCESS(clGetDeviceInfo(this->rootDevice, CL_DEVICE_PARTITION_AFFINITY_DOMAIN, sizeof(domain), &domain, NULL));
         if ((domain & CL_DEVICE_AFFINITY_DOMAIN_NEXT_PARTITIONABLE) == 0) {
-            ERROR_IF(requireSuccess, "SubDevice was selected, but device is not partitionable");
+            ERROR("SubDevice was selected, but device is not partitionable");
             return;
         }
         if ((domain & CL_DEVICE_AFFINITY_DOMAIN_NUMA) == 0) {
-            ERROR_IF(requireSuccess, "SubDevice was selected, but device is not CL_DEVICE_AFFINITY_DOMAIN_NUMA");
+            ERROR("SubDevice was selected, but device is not CL_DEVICE_AFFINITY_DOMAIN_NUMA");
             return;
         }
 
@@ -158,8 +168,25 @@ struct Opencl {
         EXPECT_CL_SUCCESS(clCreateSubDevices(this->rootDevice, properties, numSubDevices, this->subDevices.data(), nullptr));
     }
 
+    cl_device_id getDevice(DeviceSelection deviceSelection) {
+        ERROR_UNLESS(DeviceSelectionHelper::hasSingleDevice(deviceSelection), "Cannot get multiple devices");
+        if (deviceSelection == DeviceSelection::Root) {
+            return this->rootDevice;
+        }
+
+        const auto subDeviceIndex = DeviceSelectionHelper::getSubDeviceIndex(deviceSelection);
+        ERROR_UNLESS((subDeviceIndex < this->subDevices.size()), "Invalid subDevice index");
+        return this->subDevices[subDeviceIndex];
+    }
+
+    cl_device_id getDefaultDevice(DeviceSelection deviceSelection) {
+        if (DeviceSelectionHelper::hasSingleDevice(deviceSelection)) {
+            return getDevice(deviceSelection);
+        }
+        return nullptr;
+    }
+
     cl_device_id rootDevice;
     std::vector<cl_device_id> subDevices{};
-    std::unordered_map<DeviceSelection, cl_context> contexts{};
     std::vector<cl_command_queue> commandQueues{};
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "framework/configuration.h"
+#include "framework/enum/device_selection.h"
 #include "framework/ocl/cl.h"
 
 #include <CL/intel/embargo/cl_ext_private_internal.h>
@@ -9,6 +10,7 @@ struct QueueProperties {
     cl_command_queue_properties properties[5] = {CL_QUEUE_PROPERTIES, 0, 0, 0, 0};
     bool createQueue = true;
     bool requireCreationSuccess = true;
+    DeviceSelection deviceSelection = DeviceSelection::Unknown;
 
     operator const cl_command_queue_properties *() const {
         return &properties[0];
@@ -50,6 +52,12 @@ struct QueueProperties {
 
     QueueProperties &allowCreationFail() {
         requireCreationSuccess = false;
+        return *this;
+    }
+
+    QueueProperties &setDeviceSelection(DeviceSelection deviceSelection) {
+        ERROR_UNLESS(DeviceSelectionHelper::hasSingleDevice(deviceSelection), "Queue can be created only on a single device");
+        this->deviceSelection = deviceSelection;
         return *this;
     }
 };
