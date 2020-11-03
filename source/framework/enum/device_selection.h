@@ -22,6 +22,7 @@ inline DeviceSelection operator~(DeviceSelection a) {
 }
 
 struct DeviceSelectionHelper {
+    const static inline DeviceSelection devices[] = {DeviceSelection::Root, DeviceSelection::Tile0, DeviceSelection::Tile1, DeviceSelection::Tile2, DeviceSelection::Tile3};
     const static inline DeviceSelection subDevices[] = {DeviceSelection::Tile0, DeviceSelection::Tile1, DeviceSelection::Tile2, DeviceSelection::Tile3};
 
     static size_t getSubDeviceIndex(DeviceSelection deviceSelection) {
@@ -71,5 +72,14 @@ struct DeviceSelectionHelper {
 
     static bool hasSingleDevice(DeviceSelection deviceSelection) {
         return getDevicesCount(deviceSelection) == 1u;
+    }
+
+    static bool isSubset(DeviceSelection superset, DeviceSelection subset) {
+        for (auto device : devices) {
+            if (hasDevice(subset, device) && !hasDevice(superset, device)) {
+                return false;
+            }
+        }
+        return true;
     }
 };
