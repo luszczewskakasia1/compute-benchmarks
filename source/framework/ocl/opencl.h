@@ -92,8 +92,10 @@ struct Opencl {
             return nullptr;
         }
 
+        const cl_device_id deviceForQueue = getDevice(queueProperties.deviceSelection);
+
         cl_int retVal{};
-        cl_command_queue queue = clCreateCommandQueueWithProperties(this->context, this->device, queueProperties, &retVal);
+        cl_command_queue queue = clCreateCommandQueueWithProperties(this->context, deviceForQueue, queueProperties, &retVal);
         if (queueProperties.requireCreationSuccess) {
             EXPECT_CL_SUCCESS(retVal);
         }
