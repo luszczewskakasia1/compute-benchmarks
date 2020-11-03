@@ -14,27 +14,36 @@ static TestResult run(const CopyBufferArguments &arguments, Statistics &statisti
 
     // Setup
     cl_int retVal;
-    QueueProperties queueProperties = QueueProperties::create().setProfiling(arguments.useEvents);
-    DeviceProperties devicePropertes = DeviceProperties::create().setDeviceSelection(arguments.queuePlacement).allowSubDeviceCreationFail();
-    Opencl opencl(queueProperties, devicePropertes);
-    if (opencl.device == nullptr) {
+    QueueProperties queueProperties = QueueProperties::create().setDeviceSelection(arguments.queuePlacement).setProfiling(arguments.useEvents);
+    ContextProperties contextProperties = ContextProperties::create().setDeviceSelection(arguments.contextPlacement).allowCreationFail();
+    Opencl opencl(queueProperties, contextProperties);
+    if (opencl.context == nullptr) {
         return TestResult::DeviceNotCapable;
+    }
+    auto clCreateBufferWithPropertiesINTEL = (pfn_clCreateBufferWithPropertiesINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clCreateBufferWithPropertiesINTEL");
+    if (!clCreateBufferWithPropertiesINTEL) {
+        return TestResult::DriverFunctionNotFound;
     }
     Timer timer;
 
-    // Get contexts for buffers
-    const cl_context srcContext = opencl.createContext(arguments.srcPlacement);
-    const cl_context dstContext = opencl.createContext(arguments.dstPlacement);
-    if (srcContext == nullptr || dstContext == nullptr) {
-        return TestResult::DeviceNotCapable;
-    }
-
-    // Create buffer
-    const cl_mem_flags compressionHintSrc = CompressionHelper::getCompressionFlags(arguments.srcCompressed, arguments.noIntelExtensions);
-    const cl_mem_flags compressionHintDst = CompressionHelper::getCompressionFlags(arguments.dstCompressed, arguments.noIntelExtensions);
-    const cl_mem source = clCreateBuffer(srcContext, CL_MEM_READ_WRITE | compressionHintSrc, arguments.size, nullptr, &retVal);
+    // Create buffers
+    const cl_mem_properties_intel memPropertiesSrc[] = {
+        CL_MEM_FLAGS,
+        CL_MEM_READ_WRITE | CompressionHelper::getCompressionFlags(arguments.srcCompressed, arguments.noIntelExtensions),
+        CL_MEM_DEVICE_ID_INTEL,
+        (cl_mem_properties_intel)opencl.getDevice(arguments.srcPlacement),
+        0,
+    };
+    const cl_mem_properties_intel memPropertiesDst[] = {
+        CL_MEM_FLAGS,
+        CL_MEM_READ_WRITE | CompressionHelper::getCompressionFlags(arguments.dstCompressed, arguments.noIntelExtensions),
+        CL_MEM_DEVICE_ID_INTEL,
+        (cl_mem_properties_intel)opencl.getDevice(arguments.dstPlacement),
+        0,
+    };
+    const cl_mem source = clCreateBufferWithPropertiesINTEL(opencl.context, memPropertiesSrc, 0, arguments.size, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
-    const cl_mem destination = clCreateBuffer(dstContext, CL_MEM_READ_WRITE | compressionHintDst, arguments.size, nullptr, &retVal);
+    const cl_mem destination = clCreateBufferWithPropertiesINTEL(opencl.context, memPropertiesDst, 0, arguments.size, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
     // Check buffers compression
@@ -85,4 +94,4 @@ static TestResult run(const CopyBufferArguments &arguments, Statistics &statisti
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<CopyBuffer> registerTestCase(run, Api::OpenCL);
+static RegisterTestCaseImplementation<CopyBuffer> registerTestCase(run, Api::OpenCL, true);

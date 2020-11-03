@@ -12,22 +12,28 @@ static TestResult run(const FillBufferArguments &arguments, Statistics &statisti
     }
 
     // Setup
-    QueueProperties queueProperties = QueueProperties::create().setBcs(arguments.copyQueue).allowCreationFail();
-    DeviceProperties deviceProperties = DeviceProperties::create().setDeviceSelection(arguments.queuePlacement).allowSubDeviceCreationFail();
-    Opencl opencl(queueProperties, deviceProperties);
-    if (opencl.commandQueue == nullptr) {
+    cl_int retVal;
+    QueueProperties queueProperties = QueueProperties::create().setDeviceSelection(arguments.queuePlacement);
+    ContextProperties contextProperties = ContextProperties::create().setDeviceSelection(arguments.contextPlacement).allowCreationFail();
+    Opencl opencl(queueProperties, contextProperties);
+    if (opencl.context == nullptr) {
         return TestResult::DeviceNotCapable;
+    }
+    auto clCreateBufferWithPropertiesINTEL = (pfn_clCreateBufferWithPropertiesINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clCreateBufferWithPropertiesINTEL");
+    if (!clCreateBufferWithPropertiesINTEL) {
+        return TestResult::DriverFunctionNotFound;
     }
     Timer timer;
-    cl_int retVal;
 
     // Create buffer
-    const cl_context contextForBuffer = opencl.createContext(arguments.bufferPlacement);
-    if (contextForBuffer == nullptr) {
-        return TestResult::DeviceNotCapable;
-    }
-    const cl_mem_flags compressionHint = CompressionHelper::getCompressionFlags(arguments.compressed, arguments.noIntelExtensions);
-    const cl_mem buffer = clCreateBuffer(contextForBuffer, CL_MEM_READ_WRITE | compressionHint, arguments.size, nullptr, &retVal);
+    const cl_mem_properties_intel memPropertiesSrc[] = {
+        CL_MEM_FLAGS,
+        CL_MEM_READ_WRITE | CompressionHelper::getCompressionFlags(arguments.compressed, arguments.noIntelExtensions),
+        CL_MEM_DEVICE_ID_INTEL,
+        (cl_mem_properties_intel)opencl.getDevice(arguments.bufferPlacement),
+        0,
+    };
+    const cl_mem buffer = clCreateBufferWithPropertiesINTEL(opencl.context, memPropertiesSrc, 0, arguments.size, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
     // Check buffer compression
