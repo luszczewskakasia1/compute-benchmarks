@@ -104,6 +104,17 @@ struct Opencl {
         return queue;
     }
 
+    cl_device_id getDevice(DeviceSelection deviceSelection) {
+        ERROR_UNLESS(DeviceSelectionHelper::hasSingleDevice(deviceSelection), "Cannot get multiple devices");
+        if (deviceSelection == DeviceSelection::Root) {
+            return this->rootDevice;
+        }
+
+        const auto subDeviceIndex = DeviceSelectionHelper::getSubDeviceIndex(deviceSelection);
+        ERROR_UNLESS((subDeviceIndex < this->subDevices.size()), "Invalid subDevice index");
+        return this->subDevices[subDeviceIndex];
+    }
+
   private:
     cl_context createContext(const ContextProperties &contextProperties) {
         std::vector<cl_device_id> devicesForContext = getDevices(contextProperties.deviceSelection, false);
@@ -166,17 +177,6 @@ struct Opencl {
         EXPECT_CL_SUCCESS(clCreateSubDevices(this->rootDevice, properties, 0, nullptr, &numSubDevices));
         this->subDevices.resize(numSubDevices);
         EXPECT_CL_SUCCESS(clCreateSubDevices(this->rootDevice, properties, numSubDevices, this->subDevices.data(), nullptr));
-    }
-
-    cl_device_id getDevice(DeviceSelection deviceSelection) {
-        ERROR_UNLESS(DeviceSelectionHelper::hasSingleDevice(deviceSelection), "Cannot get multiple devices");
-        if (deviceSelection == DeviceSelection::Root) {
-            return this->rootDevice;
-        }
-
-        const auto subDeviceIndex = DeviceSelectionHelper::getSubDeviceIndex(deviceSelection);
-        ERROR_UNLESS((subDeviceIndex < this->subDevices.size()), "Invalid subDevice index");
-        return this->subDevices[subDeviceIndex];
     }
 
     cl_device_id getDefaultDevice(DeviceSelection deviceSelection) {

@@ -18,7 +18,7 @@ struct ContextProperties {
         return *this;
     }
 
-    ContextProperties &allowCreationSuccess() {
+    ContextProperties &allowCreationFail() {
         requireCreationSuccess = false;
         return *this;
     }
