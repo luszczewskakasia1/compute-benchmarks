@@ -27,7 +27,7 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     const size_t subgroupSize = 8;
     size_t euNum = 0;
 
-    CL_SUCCESS_OR_TERMINATE(clGetDeviceInfo(opencl.device, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(euNum), &euNum, nullptr ));
+    ERROR_UNLESS_CL_SUCCESS(clGetDeviceInfo(opencl.device, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(euNum), &euNum, nullptr), "clGetDeviceInfo failed");
 
     IntelProduct intelProduct = getIntelProduct(opencl);
     IntelGen gpuGen = getIntelGen(intelProduct);
