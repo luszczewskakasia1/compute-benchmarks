@@ -10,19 +10,19 @@ constexpr size_t megaByte = 1024u * kiloByte;
 
 static const inline RegisterTestCase<CopyBuffer> registerTestCase{};
 
-class CopyBufferTest : public ::testing::TestWithParam<std::tuple<DeviceSelection, DeviceSelection, DeviceSelection, DeviceSelection, Api, size_t, bool, bool, bool>> {};
+class CopyBufferTest : public ::testing::TestWithParam<std::tuple<DeviceSelection, DeviceSelection, DeviceSelection, DeviceSelection, size_t, bool, bool, bool>> {};
 
 TEST_P(CopyBufferTest, Test) {
     CopyBufferArguments args;
+    args.api = Api::OpenCL;
     args.contextPlacement = std::get<0>(GetParam());
     args.queuePlacement = std::get<1>(GetParam());
     args.srcPlacement = std::get<2>(GetParam());
     args.dstPlacement = std::get<3>(GetParam());
-    args.api = std::get<4>(GetParam());
-    args.size = std::get<5>(GetParam());
-    args.srcCompressed = std::get<6>(GetParam());
-    args.dstCompressed = std::get<7>(GetParam());
-    args.useEvents = std::get<8>(GetParam());
+    args.size = std::get<4>(GetParam());
+    args.srcCompressed = std::get<5>(GetParam());
+    args.dstCompressed = std::get<6>(GetParam());
+    args.useEvents = std::get<7>(GetParam());
 
     if (!DeviceSelectionHelper::isSubset(args.contextPlacement, args.queuePlacement) ||
         !DeviceSelectionHelper::isSubset(args.contextPlacement, args.srcPlacement) ||
@@ -42,7 +42,6 @@ INSTANTIATE_TEST_SUITE_P(
         ::CommonGtestArgs::resourceDeviceSelections(),
         ::CommonGtestArgs::resourceDeviceSelections(),
         ::CommonGtestArgs::resourceDeviceSelections(),
-        ::CommonGtestArgs::allApis(),
         ::testing::Values(128 * megaByte, 512 * megaByte),
         ::testing::Values(false, true),
         ::testing::Values(false, true),

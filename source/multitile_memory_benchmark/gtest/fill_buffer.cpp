@@ -7,18 +7,18 @@
 
 static const inline RegisterTestCase<FillBuffer> registerTestCase{};
 
-class FillBufferTest : public ::testing::TestWithParam<std::tuple<DeviceSelection, DeviceSelection, DeviceSelection, Api, size_t, size_t, bool, bool>> {};
+class FillBufferTest : public ::testing::TestWithParam<std::tuple<DeviceSelection, DeviceSelection, DeviceSelection, size_t, size_t, bool, bool>> {};
 
 TEST_P(FillBufferTest, Test) {
     FillBufferArguments args;
+    args.api = Api::OpenCL;
     args.contextPlacement = std::get<0>(GetParam());
     args.queuePlacement = std::get<1>(GetParam());
     args.bufferPlacement = std::get<2>(GetParam());
-    args.api = std::get<3>(GetParam());
-    args.size = std::get<4>(GetParam());
-    args.patternSize = std::get<5>(GetParam());
-    args.compressed = std::get<6>(GetParam());
-    args.copyQueue = std::get<7>(GetParam());
+    args.size = std::get<3>(GetParam());
+    args.patternSize = std::get<4>(GetParam());
+    args.compressed = std::get<5>(GetParam());
+    args.copyQueue = std::get<6>(GetParam());
 
     if (!DeviceSelectionHelper::isSubset(args.contextPlacement, args.queuePlacement) ||
         !DeviceSelectionHelper::isSubset(args.contextPlacement, args.bufferPlacement)) {
@@ -39,7 +39,6 @@ INSTANTIATE_TEST_SUITE_P(
         ::CommonGtestArgs::contextDeviceSelections(),
         ::CommonGtestArgs::resourceDeviceSelections(),
         ::CommonGtestArgs::resourceDeviceSelections(),
-        ::CommonGtestArgs::allApis(),
         ::testing::Values(128 * megaByte, 512 * megaByte),
         ::testing::Values(1, 16, 128),
         ::testing::Values(false, true),
