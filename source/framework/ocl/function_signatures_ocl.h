@@ -60,3 +60,11 @@ typedef CL_API_ENTRY cl_int(CL_API_CALL *pfn_clEnqueueMemsetINTEL)(
     cl_uint numEventsInWaitList,
     const cl_event *eventWaitList,
     cl_event *event);
+
+typedef CL_API_ENTRY cl_mem(CL_API_CALL *pfn_clCreateBufferWithPropertiesINTEL)(
+    cl_context context,
+    const cl_mem_properties_intel *properties,
+    cl_mem_flags flags,
+    size_t size,
+    void *hostPtr,
+    cl_int *errcodeRet);
