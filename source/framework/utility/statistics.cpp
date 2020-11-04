@@ -50,7 +50,19 @@ static std::string getColumnName(const std::string &label, const std::string &un
     return label;
 }
 
-void Statistics::printStatisticsHeader(Configuration::PrintType printType, const std::string &unit) {
+void Statistics::printStatisticsHeader(Configuration::PrintType printType) {
+    std::string unit = "";
+    switch (getMeasurementUnit()) {
+    case MeasurementUnit::Microseconds:
+        unit = "us";
+        break;
+    case MeasurementUnit::GigabytesPerSecond:
+        unit = "GB/s";
+        break;
+    default:
+        ERROR("Unknown measurement unit");
+    }
+
     switch (printType) {
     case Configuration::PrintType::Verbose:
     case Configuration::PrintType::Default: {

@@ -8,8 +8,8 @@ std::string getBenchmarkDescription() {
     return "Gpu Commands Benchmark is a set of tests aimed at measuring GPU-side execution duration of various commands.";
 }
 
-std::string getMeasurmentsUnit() {
-    return "us";
+MeasurementUnit getMeasurementUnit() {
+    return MeasurementUnit::Microseconds;
 }
 
 int getTestCaseNameColumnWidth() {

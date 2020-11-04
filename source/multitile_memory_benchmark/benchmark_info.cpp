@@ -8,8 +8,8 @@ std::string getBenchmarkDescription() {
     return "Multi-tile Memory Benchmark is a set of tests aimed at measuring bandwidth of memory transfers performed on a multi-tile device.";
 }
 
-std::string getMeasurmentsUnit() {
-    return "GB/s";
+MeasurementUnit getMeasurementUnit() {
+    return MeasurementUnit::GigabytesPerSecond;
 }
 
 int getTestCaseNameColumnWidth() {

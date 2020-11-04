@@ -8,8 +8,8 @@ std::string getBenchmarkDescription() {
     return "Ulls Benchmark is a set of tests aimed at measuring Ultra Low Latency Submission (ULLS) performance impact.";
 }
 
-std::string getMeasurmentsUnit() {
-    return "us";
+MeasurementUnit getMeasurementUnit() {
+    return MeasurementUnit::Microseconds;
 }
 
 int getTestCaseNameColumnWidth() {

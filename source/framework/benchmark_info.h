@@ -22,7 +22,11 @@ inline std::string getBenchmarkFilename() {
 }
 std::string getBenchmarkDescription();
 
-std::string getMeasurmentsUnit();
+enum class MeasurementUnit {
+    Microseconds,
+    GigabytesPerSecond,
+};
+MeasurementUnit getMeasurementUnit();
 
 int getTestCaseNameColumnWidth();
 

@@ -14,7 +14,7 @@ class Statistics {
     bool isEmpty();
     bool isFull();
 
-    static void printStatisticsHeader(Configuration::PrintType printType, const std::string &unit);
+    static void printStatisticsHeader(Configuration::PrintType printType);
     void printStatistics(const std::string &testCaseName);
     void printStatisticsString(const std::string &testCaseName, const std::string &message);
 

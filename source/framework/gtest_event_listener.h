@@ -18,7 +18,7 @@ class CustomEventListener : public ::testing::TestEventListener {
         if (::configuration.printType != Configuration::PrintType::Csv) {
             std::cout << "Running " << ::configuration.iterations << " iterations of each benchmark\n\n";
         }
-        Statistics::printStatisticsHeader(::configuration.printType, getMeasurmentsUnit());
+        Statistics::printStatisticsHeader(::configuration.printType);
     }
     void OnTestProgramEnd(const ::testing::UnitTest &unitTest) override {
         if (errorInfos.size() > 0) {
