@@ -5,6 +5,8 @@ set(PREDEFINED_TARGETS_FOLDER "CustomTargets")
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+
+
 # Enable MT Compilation in VisualStudio
 if (MSVC)
     add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/MP>)
@@ -14,6 +16,26 @@ endif()
 if(NOT EXISTS third_party/googletest/CMakeLists.txt)
     execute_process(COMMAND git submodule update --init --recursive
                     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+endif()
+
+# Publish build additional handling
+if(BUILD_FOR_PUBLISHING)
+    # Only publish release builds
+    message(STATUS "Overriding build type to Release")
+    set(CMAKE_CONFIGURATION_TYPES Release)
+    set(CMAKE_BUILD_TYPE Release)
+
+    # Produce version string
+    string(TIMESTAMP versionDate "%Y%m%d")
+    set(versionIndex "01")
+    execute_process (COMMAND git log -1 --format=%h
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        OUTPUT_VARIABLE versionCommit
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    set(version "${versionDate}_${versionIndex}_${versionCommit}")
+    file(WRITE ${OUTPUT_DIR}/version.txt ${version})
+    message(STATUS "Version ${version} written to version.txt")
 endif()
 
 # Gtest

@@ -7,7 +7,7 @@ endmacro()
 
 message(STATUS "Build options:")
 benchmark_option(OUTPUT_DIR "${CMAKE_BINARY_DIR}/bin")
-benchmark_option(OUTPUT_IN_SUBDIRS OFF)
+benchmark_option(BUILD_FOR_PUBLISHING OFF)
 benchmark_option(BUILD_SINGLE_API_BINARIES ON)
 benchmark_option(BUILD_ALL_API_BINARIES ON)
 if (UNIX)
