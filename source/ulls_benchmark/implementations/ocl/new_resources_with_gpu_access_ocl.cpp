@@ -53,7 +53,7 @@ static TestResult run(const NewResourcesWithGpuAccessArguments &arguments, Stati
         retVal |= clFinish(opencl.commandQueue);
         timer.measureEnd();
         ASSERT_CL_SUCCESS(retVal);
-        statistics.pushValue(timer.getUs());
+        statistics.pushValue(timer.get());
 
         // Store buffer used in this iteration to avoid reuse
         ASSERT_CL_SUCCESS(clReleaseMemObject(previousBuffer));

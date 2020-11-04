@@ -54,7 +54,7 @@ static TestResult run(const WalkerCompletionLatencyArguments &arguments, Statist
         timer.measureStart();
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
-        statistics.pushValue(timer.getUs());
+        statistics.pushValue(timer.get());
     }
 
     // Cleanup

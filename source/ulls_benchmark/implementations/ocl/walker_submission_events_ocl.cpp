@@ -40,10 +40,8 @@ static TestResult run(const WalkerSubmissionEventsArguments &arguments, Statisti
         ASSERT_CL_SUCCESS(clGetEventProfilingInfo(profilingEvent, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, nullptr));
         ASSERT_CL_SUCCESS(clGetEventProfilingInfo(profilingEvent, CL_PROFILING_COMMAND_QUEUED, sizeof(cl_ulong), &queued, nullptr));
         ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
-        const auto timeNs = static_cast<Statistics::Value>(start - queued);
-        const auto timeUs = timeNs / 1000;
-
-        statistics.pushValue(timeUs);
+        const auto submissionTime = std::chrono::nanoseconds(start - queued);
+        statistics.pushValue(submissionTime);
     }
 
     // Cleanup

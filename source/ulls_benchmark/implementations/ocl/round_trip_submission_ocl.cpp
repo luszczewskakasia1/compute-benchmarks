@@ -42,7 +42,7 @@ static TestResult run(const RoundTripSubmissionArguments &arguments, Statistics 
         timer.measureEnd();
 
         ASSERT_CL_SUCCESS(retVal);
-        statistics.pushValue(timer.getUs());
+        statistics.pushValue(timer.get());
     }
 
     // Cleanup

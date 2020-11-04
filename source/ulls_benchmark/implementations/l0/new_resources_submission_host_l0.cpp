@@ -82,7 +82,7 @@ static TestResult run(const NewResourcesSubmissionHostArguments &arguments, Stat
         ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));
         ASSERT_ZE_RESULT_SUCCESS(zeMemFree(levelzero.context, buffer));
 
-        statistics.pushValue(timer.getUs());
+        statistics.pushValue(timer.get());
     }
 
     ASSERT_ZE_RESULT_SUCCESS(zeKernelDestroy(kernel));

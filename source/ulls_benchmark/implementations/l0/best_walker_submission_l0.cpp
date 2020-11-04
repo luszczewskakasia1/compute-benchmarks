@@ -65,7 +65,7 @@ static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics
         timer.measureEnd();
 
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
-        statistics.pushValue(timer.getUs());
+        statistics.pushValue(timer.get());
     }
 
     ASSERT_ZE_RESULT_SUCCESS(zeContextEvictMemory(levelzero.context, levelzero.device, buffer, bufferSize));
