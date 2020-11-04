@@ -61,9 +61,11 @@ struct Opencl {
         this->rootDevice = devices[deviceIndex];
 
         // Create sub devices if needed
-        if (DeviceSelectionHelper::hasAnySubDevice(queueProperties.deviceSelection) ||
-            DeviceSelectionHelper::hasAnySubDevice(contextProperties.deviceSelection)) {
-            createSubDevices();
+        if (DeviceSelectionHelper::hasAnySubDevice(contextProperties.deviceSelection)) {
+            createSubDevices(contextProperties.requireCreationSuccess);
+            if (this->subDevices.size() == 0) {
+                return;
+            }
         }
 
         // Set the default device
@@ -166,15 +168,15 @@ struct Opencl {
         return result;
     }
 
-    void createSubDevices() {
+    void createSubDevices(bool requireSuccess) {
         cl_device_affinity_domain domain{};
         EXPECT_CL_SUCCESS(clGetDeviceInfo(this->rootDevice, CL_DEVICE_PARTITION_AFFINITY_DOMAIN, sizeof(domain), &domain, NULL));
         if ((domain & CL_DEVICE_AFFINITY_DOMAIN_NEXT_PARTITIONABLE) == 0) {
-            ERROR("SubDevice was selected, but device is not partitionable");
+            ERROR_IF(requireSuccess, "SubDevice was selected, but device is not partitionable");
             return;
         }
         if ((domain & CL_DEVICE_AFFINITY_DOMAIN_NUMA) == 0) {
-            ERROR("SubDevice was selected, but device is not CL_DEVICE_AFFINITY_DOMAIN_NUMA");
+            ERROR_IF(requireSuccess, "SubDevice was selected, but device is not CL_DEVICE_AFFINITY_DOMAIN_NUMA");
             return;
         }
 
