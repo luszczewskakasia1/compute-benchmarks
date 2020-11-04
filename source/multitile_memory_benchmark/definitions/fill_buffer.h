@@ -15,6 +15,7 @@ struct FillBufferArguments : TestCaseArguments {
     ByteSizeTestCaseArgument patternSize;
     CompressionBooleanTestCaseArgument compressed;
     BooleanTestCaseArgument copyQueue;
+    BooleanTestCaseArgument useEvents;
 
     FillBufferArguments()
         : contextPlacement(*this, "context", "How context will be created"),
@@ -23,7 +24,8 @@ struct FillBufferArguments : TestCaseArguments {
           size(*this, "size", "Size of the buffer"),
           patternSize(*this, "patternSize", "Size of the fill pattern"),
           compressed(*this, "compressed", "Select if the buffer will be compressed"),
-          copyQueue(*this, "copyQueue", "Force blitter") {}
+          copyQueue(*this, "copyQueue", "Force blitter"),
+          useEvents(*this, "useEvents", "Select if GPU-side measurements should be done") {}
 
     bool validateArgumentsExtra() const override {
         return DeviceSelectionHelper::isSubset(contextPlacement, queuePlacement) &&

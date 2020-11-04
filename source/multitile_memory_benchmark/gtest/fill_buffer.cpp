@@ -7,7 +7,7 @@
 
 static const inline RegisterTestCase<FillBuffer> registerTestCase{};
 
-class FillBufferTest : public ::testing::TestWithParam<std::tuple<DeviceSelection, DeviceSelection, DeviceSelection, size_t, size_t, bool, bool>> {};
+class FillBufferTest : public ::testing::TestWithParam<std::tuple<DeviceSelection, DeviceSelection, DeviceSelection, size_t, size_t, bool, bool, bool>> {};
 
 TEST_P(FillBufferTest, Test) {
     FillBufferArguments args;
@@ -19,6 +19,7 @@ TEST_P(FillBufferTest, Test) {
     args.patternSize = std::get<4>(GetParam());
     args.compressed = std::get<5>(GetParam());
     args.copyQueue = std::get<6>(GetParam());
+    args.useEvents = std::get<7>(GetParam());
 
     if (!DeviceSelectionHelper::isSubset(args.contextPlacement, args.queuePlacement) ||
         !DeviceSelectionHelper::isSubset(args.contextPlacement, args.bufferPlacement)) {
@@ -41,5 +42,6 @@ INSTANTIATE_TEST_SUITE_P(
         ::CommonGtestArgs::resourceDeviceSelections(),
         ::testing::Values(128 * megaByte, 512 * megaByte),
         ::testing::Values(1, 16, 128),
+        ::testing::Values(false, true),
         ::testing::Values(false, true),
         ::testing::Values(false, true)));

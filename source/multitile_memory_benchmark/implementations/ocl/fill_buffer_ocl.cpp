@@ -1,6 +1,7 @@
 #include "framework/ocl/compression_helper.h"
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
+#include "framework/utility/ocl/profiling_helper.h"
 #include "framework/utility/timer.h"
 #include "multitile_memory_benchmark/definitions/fill_buffer.h"
 
@@ -13,7 +14,7 @@ static TestResult run(const FillBufferArguments &arguments, Statistics &statisti
 
     // Setup
     cl_int retVal;
-    QueueProperties queueProperties = QueueProperties::create().setDeviceSelection(arguments.queuePlacement);
+    QueueProperties queueProperties = QueueProperties::create().setDeviceSelection(arguments.queuePlacement).setProfiling(arguments.useEvents);
     ContextProperties contextProperties = ContextProperties::create().setDeviceSelection(arguments.contextPlacement).allowCreationFail();
     Opencl opencl(queueProperties, contextProperties);
     if (opencl.context == nullptr) {
@@ -52,12 +53,22 @@ static TestResult run(const FillBufferArguments &arguments, Statistics &statisti
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
+        cl_event profilingEvent{};
+        cl_event *eventForEnqueue = arguments.useEvents ? &profilingEvent : nullptr;
+
         timer.measureStart();
-        ASSERT_CL_SUCCESS(clEnqueueFillBuffer(opencl.commandQueue, buffer, pattern.get(), arguments.patternSize, 0, arguments.size, 0, nullptr, nullptr));
+        ASSERT_CL_SUCCESS(clEnqueueFillBuffer(opencl.commandQueue, buffer, pattern.get(), arguments.patternSize, 0, arguments.size, 0, nullptr, eventForEnqueue));
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue))
         timer.measureEnd();
 
-        statistics.pushValue(timer.get(), arguments.size);
+        if (eventForEnqueue) {
+            cl_ulong timeNs{};
+            ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
+            ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
+            statistics.pushValue(std::chrono::nanoseconds(timeNs), arguments.size);
+        } else {
+            statistics.pushValue(timer.get(), arguments.size);
+        }
     }
 
     ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));
