@@ -69,10 +69,9 @@ static TestResult run(const WaitOnEventColdArguments &arguments, Statistics &sta
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
         testResources.reset();
 
-        auto commandTime = static_cast<Statistics::Value>(*endTimestamp - *beginTimestamp);
+        auto commandTime = std::chrono::nanoseconds(*endTimestamp - *beginTimestamp);
         commandTime *= levelzero.deviceProperties.timerResolution;
         commandTime /= arguments.measuredCommands;
-        commandTime /= 1000;
         statistics.pushValue(commandTime);
     }
 
