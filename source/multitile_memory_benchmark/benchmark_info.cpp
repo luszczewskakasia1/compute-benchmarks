@@ -1,4 +1,4 @@
-#include "framework/benchmark_info.h"
+#include "memory_benchmark/benchmark_specific_configuration.h"
 
 std::string getBenchmarkName() {
     return "multitile_memory_benchmark";
@@ -9,7 +9,12 @@ std::string getBenchmarkDescription() {
 }
 
 MeasurementUnit getMeasurementUnit() {
-    return MeasurementUnit::GigabytesPerSecond;
+    auto configuration = static_cast<BenchmarkSpecificConfiguration *>(::configuration.benchmarkSpecificConfiguration);
+    if (configuration->printBandwidth) {
+        return MeasurementUnit::GigabytesPerSecond;
+    } else {
+        return MeasurementUnit::Microseconds;
+    }
 }
 
 int getTestCaseNameColumnWidth() {
@@ -17,5 +22,5 @@ int getTestCaseNameColumnWidth() {
 }
 
 std::unique_ptr<BenchmarkSpecificConfigurationBase> BenchmarkSpecificConfigurationBase::create(TestCaseArgumentsBase &testCaseArguments) {
-    return std::unique_ptr<BenchmarkSpecificConfigurationBase>{};
+    return std::unique_ptr<BenchmarkSpecificConfigurationBase>{new BenchmarkSpecificConfiguration(testCaseArguments)};
 }
