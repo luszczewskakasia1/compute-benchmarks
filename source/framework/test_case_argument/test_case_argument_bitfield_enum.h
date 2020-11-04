@@ -5,7 +5,7 @@
 
 template <typename DerivedType, typename _EnumType>
 struct BitfieldEnumTestCaseArgument : TestCaseArgument {
-    constexpr static inline char separator = ',';
+    constexpr static inline char separator = ':';
     using EnumType = _EnumType;
     using ThisType = DerivedType;
 
@@ -130,7 +130,7 @@ struct BitfieldEnumTestCaseArgument : TestCaseArgument {
                 out << " or ";
             }
         }
-        out << " or a comma separated list)";
+        out << " or a list separated with '" << separator << "')";
         return out.str();
     }
 };
