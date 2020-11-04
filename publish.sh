@@ -1,16 +1,19 @@
-# First build the benchmark
+# Run CMake
 cmake_dir="build"
 binary_dir="build/bin"
-./build.sh -D BUILD_FOR_PUBLISHING=ON
+./build.sh -DBUILD_FOR_PUBLISHING=ON
+
+# Compile
 pushd $cmake_dir >/dev/null 2>&1
-cmake --build . --config Release
+if [ `uname -a | grep Linux | wc -l` == 1 ]; then
+    extra_args="-- -j `nproc`"
+fi
+cmake --build . --config Release $extra_args
 rm -rf bin/Release # There are gtest_main files  there. TODO: steer CMake to not generate them
 popd >/dev/null 2>&1
 echo
 
-#$GTA_ASSET push gfx-ocl-abn-assets-igk/windows memory_benchmark  $version windows/memory  --user mdziuban --root-url=https://gfx-assets.igk.intel.com/artifactory
-
-# Get gta-asset
+# Get gta-asset binary
 gta_asset_path=`which gta-asset 2>/dev/null`
 if [ $? != 0 ]; then
     echo "ERROR: gta-asset not found in PATH"
