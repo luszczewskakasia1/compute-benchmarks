@@ -1,0 +1,63 @@
+# First build the benchmark
+cmake_dir="build"
+binary_dir="build/bin"
+./build.sh -D BUILD_FOR_PUBLISHING=ON
+pushd $cmake_dir >/dev/null 2>&1
+cmake --build . --config Release
+rm -rf bin/Release # There are gtest_main files  there. TODO: steer CMake to not generate them
+popd >/dev/null 2>&1
+echo
+
+#$GTA_ASSET push gfx-ocl-abn-assets-igk/windows memory_benchmark  $version windows/memory  --user mdziuban --root-url=https://gfx-assets.igk.intel.com/artifactory
+
+# Get gta-asset
+gta_asset_path=`which gta-asset 2>/dev/null`
+if [ $? != 0 ]; then
+    echo "ERROR: gta-asset not found in PATH"
+    exit 1
+fi
+
+# Get asset path
+if [ `uname -a | grep Linux | wc -l` == 1 ]; then
+    asset_path=gfx-ocl-abn-assets-igk/linux
+else
+    asset_path=gfx-ocl-abn-assets-igk/windows
+fi
+
+# Get asset name
+asset_name=compute_benchmarks
+
+# Get version
+pushd $binary_dir >/dev/null 2>&1
+version=$(cat version.txt)
+popd >/dev/null 2>&1
+
+# Get user
+user=`whoami`
+
+# Get artifactory_url
+artifactory_url=https://gfx-assets.igk.intel.com/artifactory
+
+# Print info
+echo "Gathered parameters:"
+echo "    gta_asset_path=$gta_asset_path"
+echo "    asset_path=$asset_path"
+echo "    asset_name=$asset_name"
+echo "    version=$version"
+echo "    binary_dir=$binary_dir"
+echo "    user=$user"
+echo "    artifactory_url=$artifactory_url"
+echo
+echo "Contents of binary_dir that will be pushed:"
+ls -l $binary_dir | sed 's/^/    /'
+echo "Full command to be run:"
+echo "$gta_asset_path push $asset_path $asset_name $version $binary_dir --user $user --root-url=$artifactory_url"
+
+ans=
+while [ "$ans" != 'y' ]; do
+    echo -n "Do you want to proceed? (y/n): "
+    read ans
+    if [ "$ans" == 'n' ]; then exit 0; fi
+done
+
+$gta_asset_path push $asset_path $asset_name $version $binary_dir --user $user --root-url=$artifactory_url
