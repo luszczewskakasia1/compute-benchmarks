@@ -3,7 +3,6 @@
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/usm_copy.h"
-#include "memory_benchmark/timer_helper.h"
 
 #include <gtest/gtest.h>
 
@@ -62,11 +61,11 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
         if (arguments.useEvents) {
             ze_kernel_timestamp_result_t timestampResult{};
             ASSERT_ZE_RESULT_SUCCESS(zeEventQueryKernelTimestamp(event, &timestampResult));
-            auto commandTime = static_cast<Statistics::Value>(timestampResult.global.kernelEnd - timestampResult.global.kernelStart);
+            auto commandTime = std::chrono::nanoseconds(timestampResult.global.kernelEnd - timestampResult.global.kernelStart);
             commandTime *= levelzero.deviceProperties.timerResolution;
-            TimerHelper::pushValue(statistics, commandTime, arguments.size);
+            statistics.pushValue(commandTime, arguments.size);
         } else {
-            TimerHelper::pushValueFromTimer(statistics, timer, arguments.size);
+            statistics.pushValue(timer.get(), arguments.size);
         }
     }
 

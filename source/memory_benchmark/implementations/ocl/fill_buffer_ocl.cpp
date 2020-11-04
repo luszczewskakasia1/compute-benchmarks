@@ -3,7 +3,6 @@
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/fill_buffer.h"
-#include "memory_benchmark/timer_helper.h"
 
 #include <gtest/gtest.h>
 
@@ -47,7 +46,7 @@ static TestResult run(const FillBufferArguments &arguments, Statistics &statisti
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue))
         timer.measureEnd();
 
-        TimerHelper::pushValueFromTimer(statistics, timer, arguments.size);
+        statistics.pushValue(timer.get(), arguments.size);
     }
 
     ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));

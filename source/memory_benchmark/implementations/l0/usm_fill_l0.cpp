@@ -4,7 +4,6 @@
 #include "framework/utility/random_helper.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/usm_fill.h"
-#include "memory_benchmark/timer_helper.h"
 
 #include <gtest/gtest.h>
 
@@ -67,11 +66,11 @@ static TestResult run(const UsmFillArguments &arguments, Statistics &statistics)
         if (arguments.useEvents) {
             ze_kernel_timestamp_result_t timestampResult{};
             ASSERT_ZE_RESULT_SUCCESS(zeEventQueryKernelTimestamp(event, &timestampResult));
-            auto commandTime = static_cast<Statistics::Value>(timestampResult.global.kernelEnd - timestampResult.global.kernelStart);
+            auto commandTime = std::chrono::nanoseconds(timestampResult.global.kernelEnd - timestampResult.global.kernelStart);
             commandTime *= levelzero.deviceProperties.timerResolution;
-            TimerHelper::pushValue(statistics, commandTime, arguments.bufferSize);
+            statistics.pushValue(commandTime, arguments.bufferSize);
         } else {
-            TimerHelper::pushValueFromTimer(statistics, timer, arguments.bufferSize);
+            statistics.pushValue(timer.get(), arguments.bufferSize);
         }
     }
 

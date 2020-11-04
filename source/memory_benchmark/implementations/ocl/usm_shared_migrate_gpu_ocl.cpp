@@ -2,7 +2,6 @@
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/usm_shared_migrate_gpu.h"
-#include "memory_benchmark/timer_helper.h"
 
 #include <gtest/gtest.h>
 
@@ -53,7 +52,7 @@ static TestResult run(const UsmSharedMigrateGpuArguments &arguments, Statistics 
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
 
-        TimerHelper::pushValueFromTimer(statistics, timer, arguments.bufferSize);
+        statistics.pushValue(timer.get(), arguments.bufferSize);
     }
 
     ASSERT_CL_SUCCESS(clReleaseKernel(kernel));

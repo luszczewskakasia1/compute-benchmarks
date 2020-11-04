@@ -5,7 +5,6 @@
 #include "framework/utility/load_binary_file.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/read_device_mem_buffer.h"
-#include "memory_benchmark/timer_helper.h"
 
 #include <gtest/gtest.h>
 
@@ -199,11 +198,11 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
         retVal |= clGetEventProfilingInfo(evt, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &enqend, NULL);
         ASSERT_CL_SUCCESS(retVal);
 
-        const auto timeNs = static_cast<Statistics::Value>(enqend - enqstart);
+        const auto time = std::chrono::nanoseconds(enqend - enqstart);
         const size_t groupsExed = gws / subgroupSize;
         const size_t totalAccessedMemory = (groupsExed * threadTileSizeInSubgroup * numOfLoops);
 
-        TimerHelper::pushValue(statistics, timeNs, totalAccessedMemory);
+        statistics.pushValue(time, arguments.size);
         ASSERT_CL_SUCCESS(clReleaseEvent(evt));
     }
 
