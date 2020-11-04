@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <iostream>
 #include <numeric>
+#include <type_traits>
 
 Statistics::Statistics(size_t maxSamplesCount, Configuration::PrintType printType)
     : maxSamplesCount(maxSamplesCount),
@@ -15,7 +16,60 @@ Statistics::Statistics(size_t maxSamplesCount, Configuration::PrintType printTyp
       samples(std::make_unique<Value[]>(maxSamplesCount)) {
 }
 
+void Statistics::pushValue(Clock::duration time) {
+    static_assert(std::is_floating_point_v<Value>, "Need floating point type for the above cast to work properly");
+    const Value timeSeconds = std::chrono::duration_cast<std::chrono::duration<Value>>(time).count();
+
+    switch (getMeasurementUnit()) {
+    case MeasurementUnit::Microseconds: {
+        const Value timeMicroseconds = timeSeconds * 1e6;
+        this->pushValue(timeMicroseconds);
+        break;
+    }
+    case MeasurementUnit::GigabytesPerSecond:
+        ERROR("Buffer size needs to be passed in bandwidth mode");
+    default:
+        ERROR("Unknown measurement unit");
+    }
+}
+
+void Statistics::pushValue(Clock::duration time, uint64_t size) {
+    static_assert(std::is_floating_point_v<Value>, "Need floating point type for the above cast to work properly");
+    const Value timeSeconds = std::chrono::duration_cast<std::chrono::duration<Value>>(time).count();
+
+    switch (getMeasurementUnit()) {
+    case MeasurementUnit::Microseconds: {
+        const Value timeMicroseconds = timeSeconds * 1e6;
+        this->pushValue(timeMicroseconds);
+        break;
+    }
+    case MeasurementUnit::GigabytesPerSecond: {
+        const Value timeNanoseconds = timeSeconds * 1e9;
+        const Value bandwidth = size / timeNanoseconds; // Bytes/Nanoseconds = Gigabytes/Seconds
+        this->pushValue(bandwidth);
+        break;
+    }
+    default:
+        ERROR("Unknown measurement unit");
+    }
+}
+
 void Statistics::pushValue(Value value) {
+
+    ERROR_IF(samplesCount > maxSamplesCount, "Too much values pushed by the test");
+    samples[samplesCount++] = value;
+}
+
+void Statistics::pushValue(Value value, uint64_t size) {
+    switch (getMeasurementUnit()) {
+    case MeasurementUnit::Microseconds:
+        break; // Ok
+    case MeasurementUnit::GigabytesPerSecond:
+        ERROR("Buffer size needs to be passed in bandwidth mode");
+    default:
+        ERROR("Unknown measurement unit");
+    }
+
     ERROR_IF(samplesCount > maxSamplesCount, "Too much values pushed by the test");
     samples[samplesCount++] = value;
 }

@@ -2,15 +2,21 @@
 
 #include "framework/configuration.h"
 
+#include <chrono>
 #include <memory>
 #include <string>
 
 class Statistics {
   public:
+    using Clock = std::chrono::high_resolution_clock;
     using Value = double;
 
     explicit Statistics(size_t maxSamplesCount, Configuration::PrintType printType);
-    void pushValue(Value value);
+
+    void pushValue(Clock::duration time);
+    void pushValue(Clock::duration time, uint64_t size);
+
+    void pushValue(Value value, uint64_t size);
     bool isEmpty();
     bool isFull();
 
@@ -19,6 +25,7 @@ class Statistics {
     void printStatisticsString(const std::string &testCaseName, const std::string &message);
 
   private:
+    void pushValue(Value value);
     Value min();
     Value max();
     Value mean();
