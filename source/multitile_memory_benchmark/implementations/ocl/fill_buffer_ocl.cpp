@@ -57,7 +57,7 @@ static TestResult run(const FillBufferArguments &arguments, Statistics &statisti
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue))
         timer.measureEnd();
 
-        statistics.pushValue(timer.getBandwidth(arguments.size));
+        statistics.pushValue(timer.get(), arguments.size);
     }
 
     ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));
