@@ -21,9 +21,8 @@ TEST_P(FillBufferTest, Test) {
     args.copyQueue = std::get<6>(GetParam());
     args.useEvents = std::get<7>(GetParam());
 
-    if (!DeviceSelectionHelper::isSubset(args.contextPlacement, args.queuePlacement) ||
-        !DeviceSelectionHelper::isSubset(args.contextPlacement, args.bufferPlacement)) {
-        GTEST_SKIP(); // Placement of all resources must be a subset of context placement
+    if (!args.validateArgumentsExtra()) {
+        GTEST_SKIP(); // If above arguments make no sense (e.g. queue created outside of the context), skip the case
     }
 
     FillBuffer test;
