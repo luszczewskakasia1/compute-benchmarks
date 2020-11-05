@@ -42,6 +42,10 @@ struct BitfieldEnumTestCaseArgument : TestCaseArgument {
             return false;
         }
 
+        if (!validateExtra()) {
+            return false;
+        }
+
         return true;
     }
 
@@ -91,6 +95,10 @@ struct BitfieldEnumTestCaseArgument : TestCaseArgument {
         }
     }
 
+  protected:
+    EnumType value;
+
+  private:
     static EnumType parseSingleValue(const std::string &singleValueLower) {
         const auto valuesCount = sizeof(DerivedType::enumValues) / sizeof(DerivedType::enumValues[0]);
         for (auto valueIndex = 0; valueIndex < valuesCount; valueIndex++) {
@@ -101,9 +109,6 @@ struct BitfieldEnumTestCaseArgument : TestCaseArgument {
         return DerivedType::zeroEnumValue;
     }
 
-    EnumType value;
-
-  private:
     static EnumType getAllValuesSum() {
         EnumType sum = DerivedType::zeroEnumValue;
         const auto valuesCount = sizeof(DerivedType::enumValues) / sizeof(DerivedType::enumValues[0]);
@@ -133,4 +138,6 @@ struct BitfieldEnumTestCaseArgument : TestCaseArgument {
         out << " or a list separated with '" << separator << "')";
         return out.str();
     }
+
+    virtual bool validateExtra() const { return true; }
 };

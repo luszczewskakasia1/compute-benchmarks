@@ -1,7 +1,10 @@
 #pragma once
 
+#include "framework/utility/error.h"
+
 enum class DeviceSelection : int {
     Unknown = 0,
+    Host = 1 << 0, // For USM
     Root = 1 << 1,
     Tile0 = 1 << 2,
     Tile1 = 1 << 3,
@@ -22,7 +25,7 @@ inline DeviceSelection operator~(DeviceSelection a) {
 }
 
 struct DeviceSelectionHelper {
-    const static inline DeviceSelection devices[] = {DeviceSelection::Root, DeviceSelection::Tile0, DeviceSelection::Tile1, DeviceSelection::Tile2, DeviceSelection::Tile3};
+    const static inline DeviceSelection devices[] = {DeviceSelection::Host, DeviceSelection::Root, DeviceSelection::Tile0, DeviceSelection::Tile1, DeviceSelection::Tile2, DeviceSelection::Tile3};
     const static inline DeviceSelection subDevices[] = {DeviceSelection::Tile0, DeviceSelection::Tile1, DeviceSelection::Tile2, DeviceSelection::Tile3};
 
     static size_t getSubDeviceIndex(DeviceSelection deviceSelection) {
@@ -56,22 +59,20 @@ struct DeviceSelectionHelper {
 
     static size_t getDevicesCount(DeviceSelection deviceSelection) {
         size_t deviceCount = 0u;
-
-        if (hasDevice(deviceSelection, DeviceSelection::Root)) {
-            deviceCount++;
-        }
-
-        for (auto subDevice : subDevices) {
-            if (hasDevice(deviceSelection, subDevice)) {
+        for (auto device : devices) {
+            if (hasDevice(deviceSelection, device)) {
                 deviceCount++;
             }
         }
-
         return deviceCount;
     }
 
     static bool hasSingleDevice(DeviceSelection deviceSelection) {
         return getDevicesCount(deviceSelection) == 1u;
+    }
+
+    static DeviceSelection withoutHost(DeviceSelection deviceSelection) {
+        return deviceSelection & ~DeviceSelection::Host;
     }
 
     static bool isSubset(DeviceSelection superset, DeviceSelection subset) {
