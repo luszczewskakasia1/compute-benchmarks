@@ -70,5 +70,19 @@ cmake .. -DBUILD_ALL_API_BINARIES=OFF -DBUILD_SINGLE_API_BINARIES=ON
 ComputeBenchmarks will try to find SDKs for the APIs used. In case of inability to find those, it will use libraries contained in [third_party/opencl-sdk](third_party/opencl-sdk) and [third_party/level-zero-sdk](third_party/level-zero-sdk) directories. The libraries where compiled on Ubuntu 18.04 LTS with gcc 7.4.0 compiler. Using a different setup may result in build failures due to ABI incompatibility, so it's safest to have the SDK installed in your system.
 
 ## Contributing
-Please insert new benchmarks you add to TestMap contained in source/<benchmark_name>/benchmark_info.cpp. This will enable the benchmark in single-test mode.
 Please use ClangFormat to properly format the code. Visual Studio extension can be downloaded [here](https://marketplace.visualstudio.com/items?itemName=LLVMExtensions.ClangFormat).
+
+Submit your changes via pull request. Maintainers are allowed to push to the master branch directly.
+
+Please do not create wrappers for compute API calls if not absolutely necessary.
+
+If you want to significantly change the underlying test framework, please contact maciej.dziuban@intel.com first. There are many changes planned and it's best not to interfere with each other.
+
+### Adding new benchmarks
+A good way to add new benchmarks is to mimic the existing ones and tweak them to your needs. General flow of adding a brand new test is:
+1. Select binary, that suits you benchmark, for example `memory_benchmark`
+2. Select name for you benchmark, for example `TwoWayTransfer`.
+3. Add definition file of your benchmark as source/`memory_benchmark`/definitions/`TwoWayTransfer`.h. This file specifiec generic info about your test - its name, description and parameters
+4. Add test registration file as source/`memory_benchmark`/gtest/`TwoWayTransfer`.cpp. This file registers your test, so the framework knowns about it and it can be run.
+5. Add implementation file as source/`memory_benchmark`/implementations/ocl/`TwoWayTransfer`_ocl.cpp. This file is contains the actual implementation of your test. Substittue *ocl* with *l0* for LevelZero implementation. Each test *can* be implemented in more than one API.
+
