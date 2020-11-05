@@ -4,8 +4,27 @@
 #include "framework/enum/memory_placement.h"
 #include "framework/ocl/opencl.h"
 
-inline void *clHostOrDeviceOrSharedAllocINTEL(MemoryPlacement placement, cl_platform_id platform, cl_context context,
-                                              cl_device_id device, size_t bufferSize, cl_int *retVal) {
+namespace UsmHelper {
+inline bool supportsUsm(cl_platform_id platform) {
+    const char *functions[] = {
+        "clHostMemAllocINTEL",
+        "clDeviceMemAllocINTEL",
+        "clSharedMemAllocINTEL",
+        "clMemFreeINTEL",
+        "clEnqueueMemFillINTEL",
+        "clEnqueueMemsetINTEL",
+        "clEnqueueMemcpyINTEL",
+    };
+
+    for (const auto function : functions) {
+        if (clGetExtensionFunctionAddressForPlatform(platform, function) == nullptr) {
+            return false;
+        }
+    }
+    return true;
+}
+
+inline void *allocate(MemoryPlacement placement, cl_platform_id platform, cl_context context, cl_device_id device, size_t bufferSize, cl_int *retVal) {
     switch (placement) {
     case MemoryPlacement::Device: {
         auto clDeviceMemAllocINTEL = (pfn_clDeviceMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(platform, "clDeviceMemAllocINTEL");
@@ -24,7 +43,7 @@ inline void *clHostOrDeviceOrSharedAllocINTEL(MemoryPlacement placement, cl_plat
     }
 }
 
-inline void *clHostOrDeviceOrSharedAllocINTEL(DeviceSelection placement, Opencl &opencl, size_t bufferSize, cl_int *retVal) {
+inline void *allocate(DeviceSelection placement, Opencl &opencl, size_t bufferSize, cl_int *retVal) {
     const DeviceSelection gpuDevice = DeviceSelectionHelper::withoutHost(placement);
     const auto gpuDevicesCount = DeviceSelectionHelper::getDevicesCount(gpuDevice);
     ERROR_IF(gpuDevicesCount > 1, "USM allocations can have 0 or 1 gpu device");
@@ -49,3 +68,5 @@ inline void *clHostOrDeviceOrSharedAllocINTEL(DeviceSelection placement, Opencl 
 
     ERROR("USM allocations need at least one storage location");
 }
+
+} // namespace UsmHelper

@@ -1,5 +1,5 @@
-#include "framework/ocl/memory_placement_helper_ocl.h"
 #include "framework/ocl/opencl.h"
+#include "framework/ocl/usm_helper.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/usm_memset.h"
@@ -14,17 +14,15 @@ static TestResult run(const UsmMemsetArguments &arguments, Statistics &statistic
         return TestResult::DeviceNotCapable;
     }
     Timer timer;
-    auto clHostMemAllocINTEL = (pfn_clHostMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clHostMemAllocINTEL");
-    auto clDeviceMemAllocINTEL = (pfn_clDeviceMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clDeviceMemAllocINTEL");
     auto clMemFreeINTEL = (pfn_clMemFreeINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clMemFreeINTEL");
     auto clEnqueueMemsetINTEL = (pfn_clEnqueueMemsetINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clEnqueueMemsetINTEL");
-    if (!clHostMemAllocINTEL || !clDeviceMemAllocINTEL || !clMemFreeINTEL || !clEnqueueMemsetINTEL) {
+    if (!UsmHelper::supportsUsm(opencl.platform)) {
         return TestResult::DriverFunctionNotFound;
     }
     cl_int retVal;
 
     // Create buffer
-    void *buffer = clHostOrDeviceOrSharedAllocINTEL(arguments.memoryPlacement, opencl.platform, opencl.context, opencl.device, arguments.bufferSize, &retVal);
+    void *buffer = UsmHelper::allocate(arguments.memoryPlacement, opencl.platform, opencl.context, opencl.device, arguments.bufferSize, &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
     // Warmup

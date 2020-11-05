@@ -1,5 +1,5 @@
-#include "framework/ocl/memory_placement_helper_ocl.h"
 #include "framework/ocl/opencl.h"
+#include "framework/ocl/usm_helper.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/ocl/profiling_helper.h"
 #include "framework/utility/timer.h"
@@ -16,19 +16,16 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
         return TestResult::DeviceNotCapable;
     }
     Timer timer;
-    auto clHostMemAllocINTEL = (pfn_clHostMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clHostMemAllocINTEL");
-    auto clDeviceMemAllocINTEL = (pfn_clDeviceMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clDeviceMemAllocINTEL");
-    auto clSharedMemAllocINTEL = (pfn_clSharedMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clSharedMemAllocINTEL");
     auto clMemFreeINTEL = (pfn_clMemFreeINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clMemFreeINTEL");
     auto clEnqueueMemcpyINTEL = (pfn_clEnqueueMemcpyINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clEnqueueMemcpyINTEL");
-    if (!clHostMemAllocINTEL || !clDeviceMemAllocINTEL || !clMemFreeINTEL || !clEnqueueMemcpyINTEL) {
+    if (!UsmHelper::supportsUsm(opencl.platform)) {
         return TestResult::DriverFunctionNotFound;
     }
 
     // Create buffers
-    void *source = clHostOrDeviceOrSharedAllocINTEL(arguments.sourcePlacement, opencl.platform, opencl.context, opencl.device, arguments.size, &retVal);
+    void *source = UsmHelper::allocate(arguments.sourcePlacement, opencl.platform, opencl.context, opencl.device, arguments.size, &retVal);
     ASSERT_CL_SUCCESS(retVal);
-    void *destination = clHostOrDeviceOrSharedAllocINTEL(arguments.destinationPlacement, opencl.platform, opencl.context, opencl.device, arguments.size, &retVal);
+    void *destination = UsmHelper::allocate(arguments.destinationPlacement, opencl.platform, opencl.context, opencl.device, arguments.size, &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
     // Warmup

@@ -1,6 +1,6 @@
 #include "framework/ocl/compression_helper.h"
-#include "framework/ocl/memory_placement_helper_ocl.h"
 #include "framework/ocl/opencl.h"
+#include "framework/ocl/usm_helper.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/ocl/profiling_helper.h"
 #include "framework/utility/timer.h"
@@ -18,17 +18,15 @@ static TestResult run(const UsmFillArguments &arguments, Statistics &statistics)
         return TestResult::DeviceNotCapable;
     }
     auto clCreateBufferWithPropertiesINTEL = (pfn_clCreateBufferWithPropertiesINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clCreateBufferWithPropertiesINTEL");
-    auto clHostMemAllocINTEL = (pfn_clHostMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clHostMemAllocINTEL");
-    auto clDeviceMemAllocINTEL = (pfn_clDeviceMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clDeviceMemAllocINTEL");
     auto clMemFreeINTEL = (pfn_clMemFreeINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clMemFreeINTEL");
     auto clEnqueueMemFillINTEL = (pfn_clEnqueueMemFillINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clEnqueueMemFillINTEL");
-    if (!clCreateBufferWithPropertiesINTEL || !clHostMemAllocINTEL || !clDeviceMemAllocINTEL || !clMemFreeINTEL || !clEnqueueMemFillINTEL) {
+    if (!clCreateBufferWithPropertiesINTEL || !UsmHelper::supportsUsm(opencl.platform)) {
         return TestResult::DriverFunctionNotFound;
     }
     Timer timer;
 
     // Create buffer
-    void *buffer = clHostOrDeviceOrSharedAllocINTEL(arguments.bufferPlacement, opencl, arguments.size, &retVal);
+    void *buffer = UsmHelper::allocate(arguments.bufferPlacement, opencl, arguments.size, &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
     // Create pattern
