@@ -10,6 +10,8 @@ api_overhead_benchmark | duration of various API calls |
 gpu_cmds_benchmark | duration of various commands on the GPU |
 overlap_benchmark | GPU operations overlapping |
 
+## How to run benchmarks
+For specific information about how to run the benchmarks, please run the binary with "--help" parameter.
 
 ## Binary releases
 
@@ -66,9 +68,6 @@ cmake .. -DBUILD_ALL_API_BINARIES=OFF -DBUILD_SINGLE_API_BINARIES=ON
 
 ### SDK
 ComputeBenchmarks will try to find SDKs for the APIs used. In case of inability to find those, it will use libraries contained in [third_party/opencl-sdk](third_party/opencl-sdk) and [third_party/level-zero-sdk](third_party/level-zero-sdk) directories. The libraries where compiled on Ubuntu 18.04 LTS with gcc 7.4.0 compiler. Using a different setup may result in build failures due to ABI incompatibility, so it's safest to have the SDK installed in your system.
-
-## Running
-For specific information about how to run the benchmarks, please run the binary with "--help" parameter.
 
 ## Contributing
 Please insert new benchmarks you add to TestMap contained in source/<benchmark_name>/benchmark_info.cpp. This will enable the benchmark in single-test mode.
