@@ -2,7 +2,6 @@
 
 #include "framework/configuration.h"
 #include "framework/enum/device_selection.h"
-#include "framework/ocl/cl.h"
 
 struct ContextProperties {
     DeviceSelection deviceSelection = DeviceSelection::Unknown;
