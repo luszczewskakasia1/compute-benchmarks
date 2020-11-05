@@ -1,0 +1,65 @@
+#include "framework/ocl/compression_helper.h"
+#include "framework/ocl/memory_placement_helper_ocl.h"
+#include "framework/ocl/opencl.h"
+#include "framework/test_case/register_test_case.h"
+#include "framework/utility/ocl/profiling_helper.h"
+#include "framework/utility/timer.h"
+#include "multitile_memory_benchmark/definitions/usm_fill.h"
+
+#include <gtest/gtest.h>
+
+static TestResult run(const UsmFillArguments &arguments, Statistics &statistics) {
+    // Setup
+    cl_int retVal;
+    QueueProperties queueProperties = QueueProperties::create().setDeviceSelection(arguments.queuePlacement).setBcs(arguments.copyQueue).setProfiling(arguments.useEvents).allowCreationFail();
+    ContextProperties contextProperties = ContextProperties::create().setDeviceSelection(arguments.contextPlacement).allowCreationFail();
+    Opencl opencl(queueProperties, contextProperties);
+    if (opencl.context == nullptr || opencl.commandQueue == nullptr) {
+        return TestResult::DeviceNotCapable;
+    }
+    auto clCreateBufferWithPropertiesINTEL = (pfn_clCreateBufferWithPropertiesINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clCreateBufferWithPropertiesINTEL");
+    auto clHostMemAllocINTEL = (pfn_clHostMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clHostMemAllocINTEL");
+    auto clDeviceMemAllocINTEL = (pfn_clDeviceMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clDeviceMemAllocINTEL");
+    auto clMemFreeINTEL = (pfn_clMemFreeINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clMemFreeINTEL");
+    auto clEnqueueMemFillINTEL = (pfn_clEnqueueMemFillINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clEnqueueMemFillINTEL");
+    if (!clCreateBufferWithPropertiesINTEL || !clHostMemAllocINTEL || !clDeviceMemAllocINTEL || !clMemFreeINTEL || !clEnqueueMemFillINTEL) {
+        return TestResult::DriverFunctionNotFound;
+    }
+    Timer timer;
+
+    // Create buffer
+    void *buffer = clHostOrDeviceOrSharedAllocINTEL(arguments.bufferPlacement, opencl, arguments.size, &retVal);
+    ASSERT_CL_SUCCESS(retVal);
+
+    // Create pattern
+    const auto pattern = std::make_unique<uint8_t[]>(arguments.patternSize);
+
+    // Warmup
+    ASSERT_CL_SUCCESS(clEnqueueMemFillINTEL(opencl.commandQueue, buffer, pattern.get(), arguments.patternSize, arguments.size, 0, nullptr, nullptr));
+    ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue))
+
+    // Benchmark
+    for (int i = 0; i < arguments.iterations; i++) {
+        cl_event profilingEvent{};
+        cl_event *eventForEnqueue = arguments.useEvents ? &profilingEvent : nullptr;
+
+        timer.measureStart();
+        ASSERT_CL_SUCCESS(clEnqueueMemFillINTEL(opencl.commandQueue, buffer, pattern.get(), arguments.patternSize, arguments.size, 0, nullptr, nullptr));
+        ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue))
+        timer.measureEnd();
+
+        if (eventForEnqueue) {
+            cl_ulong timeNs{};
+            ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
+            ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
+            statistics.pushValue(std::chrono::nanoseconds(timeNs), arguments.size);
+        } else {
+            statistics.pushValue(timer.get(), arguments.size);
+        }
+    }
+
+    ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, buffer));
+    return TestResult::Success;
+}
+
+static RegisterTestCaseImplementation<UsmFill> registerTestCase(run, Api::OpenCL, true);

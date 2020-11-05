@@ -1,5 +1,6 @@
 #pragma once
 
+#include "framework/enum/device_selection.h"
 #include "framework/enum/memory_placement.h"
 #include "framework/ocl/opencl.h"
 
@@ -21,4 +22,30 @@ inline void *clHostOrDeviceOrSharedAllocINTEL(MemoryPlacement placement, cl_plat
     default:
         ERROR("Unknown placement");
     }
+}
+
+inline void *clHostOrDeviceOrSharedAllocINTEL(DeviceSelection placement, Opencl &opencl, size_t bufferSize, cl_int *retVal) {
+    const DeviceSelection gpuDevice = DeviceSelectionHelper::withoutHost(placement);
+    const auto gpuDevicesCount = DeviceSelectionHelper::getDevicesCount(gpuDevice);
+    ERROR_IF(gpuDevicesCount > 1, "USM allocations can have 0 or 1 gpu device");
+
+    const bool hasDevice = gpuDevicesCount == 1;
+    const bool hasHost = DeviceSelectionHelper::hasDevice(placement, DeviceSelection::Host);
+
+    if (hasDevice && hasHost) {
+        auto clSharedMemAllocINTEL = (pfn_clDeviceMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clSharedMemAllocINTEL");
+        return clSharedMemAllocINTEL(opencl.context, opencl.getDevice(gpuDevice), nullptr, bufferSize, 0, retVal);
+    }
+
+    if (hasDevice) {
+        auto clDeviceMemAllocINTEL = (pfn_clDeviceMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clDeviceMemAllocINTEL");
+        return clDeviceMemAllocINTEL(opencl.context, opencl.getDevice(gpuDevice), nullptr, bufferSize, 0, retVal);
+    }
+
+    if (hasHost) {
+        auto clHostMemAllocINTEL = (pfn_clHostMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clHostMemAllocINTEL");
+        return clHostMemAllocINTEL(opencl.context, nullptr, bufferSize, 0, retVal);
+    }
+
+    ERROR("USM allocations need at least one storage location");
 }
