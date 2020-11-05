@@ -21,7 +21,7 @@ struct TestResources {
 
         // Create command list
         ze_command_list_desc_t cmdListDesc{};
-        cmdListDesc.commandQueueGroupOrdinal = levelzero.commandQueueDescCompute->ordinal;
+        cmdListDesc.commandQueueGroupOrdinal = levelzero.commandQueueDesc.ordinal;
         ZE_RESULT_SUCCESS_OR_TERMINATE(zeCommandListCreate(levelzero.context, levelzero.device, &cmdListDesc, &this->cmdList));
         ZE_RESULT_SUCCESS_OR_TERMINATE(zeCommandListAppendWriteGlobalTimestamp(this->cmdList, beginTimestamp, nullptr, 0, nullptr));
         for (size_t commandIndex = 0u; commandIndex < eventsCount; commandIndex++) {

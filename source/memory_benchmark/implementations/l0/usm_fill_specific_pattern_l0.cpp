@@ -8,12 +8,11 @@
 #include <gtest/gtest.h>
 
 static TestResult run(const UsmFillSpecificPatternArguments &arguments, Statistics &statistics) {
-    LevelZero levelzero(false);
-    const auto queueDesc = levelzero.getCommandQueueDescCopyOrNot(arguments.copyQueue);
-    if (queueDesc == nullptr) {
+    QueueProperties queueProperties = QueueProperties::create().setBcs(arguments.copyQueue).allowCreationFail();
+    LevelZero levelzero(queueProperties);
+    if (levelzero.commandQueue == nullptr) {
         return TestResult::DeviceNotCapable;
     }
-    ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueCreate(levelzero.context, levelzero.device, queueDesc, &levelzero.commandQueue));
     Timer timer;
 
     // Create buffer
@@ -40,7 +39,7 @@ static TestResult run(const UsmFillSpecificPatternArguments &arguments, Statisti
 
     // Create command list
     ze_command_list_desc_t cmdListDesc{};
-    cmdListDesc.commandQueueGroupOrdinal = queueDesc->ordinal;
+    cmdListDesc.commandQueueGroupOrdinal = levelzero.commandQueueDesc.ordinal;
     const std::vector<uint8_t> &pattern = arguments.pattern;
     ze_command_list_handle_t cmdList{};
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.context, levelzero.device, &cmdListDesc, &cmdList));

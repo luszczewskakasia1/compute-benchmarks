@@ -1,6 +1,8 @@
 #pragma once
 
 #include "framework/configuration.h"
+#include "framework/l0/context_properties.h"
+#include "framework/l0/queue_properties.h"
 #include "framework/utility/error.h"
 
 #include <gtest/gtest.h>
@@ -29,9 +31,18 @@
         return {};                                  \
     }
 
+using namespace L0;
 struct LevelZero {
-    LevelZero() : LevelZero(true) {}
-    LevelZero(bool createCommandQueue) {
+    ze_driver_handle_t driver{};
+    ze_device_handle_t device{};
+    ze_context_handle_t context{};
+    ze_command_queue_handle_t commandQueue{};
+    ze_command_queue_desc_t commandQueueDesc{};
+    ze_device_properties_t deviceProperties{};
+
+    LevelZero() : LevelZero(QueueProperties::create()) {}
+    LevelZero(const QueueProperties &queueProperties) : LevelZero(queueProperties, ContextProperties::create()) {}
+    LevelZero(const QueueProperties &queueProperties, const ContextProperties &contextProperties) {
         EXPECT_ZE_RESULT_SUCCESS(zeInit(ZE_INIT_FLAG_GPU_ONLY));
 
         // Get driver
@@ -55,87 +66,30 @@ struct LevelZero {
         auto devices = std::make_unique<ze_device_handle_t[]>(deviceCount);
         EXPECT_ZE_RESULT_SUCCESS(zeDeviceGet(driver, &deviceCount, devices.get()));
         this->rootDevice = devices[deviceIndex];
-        this->device = devices[deviceIndex];
 
         // Create subDevices if needed
-        const auto subDeviceSelection = ::configuration.subDeviceSelection;
-        if (subDeviceSelection != DeviceSelection::Root) {
-            createSubDevices();
-
-            const auto subDeviceIndex = DeviceSelectionHelper::getSubDeviceIndex(subDeviceSelection);
-            if (subDeviceIndex >= subDevices.size()) {
-                ERROR("Invalid subDevice selected");
+        if (DeviceSelectionHelper::hasAnySubDevice(contextProperties.deviceSelection)) {
+            createSubDevices(contextProperties.requireCreationSuccess);
+            if (this->subDevices.size() == 0) {
+                return;
             }
-
-            this->device = this->subDevices[subDeviceIndex];
         }
 
-        // Get device info
-        this->deviceProperties.stype = {ZE_STRUCTURE_TYPE_DEVICE_PROPERTIES};
-        EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetProperties(this->device, &this->deviceProperties));
+        // Set the default device
+        this->device = getDefaultDevice(contextProperties.deviceSelection);
+        if (this->device != nullptr) {
+            this->deviceProperties.stype = {ZE_STRUCTURE_TYPE_DEVICE_PROPERTIES};
+            EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetProperties(this->device, &this->deviceProperties));
+        }
 
         // Create context
         const ze_context_desc_t contextDesc{ZE_STRUCTURE_TYPE_CONTEXT_DESC};
         EXPECT_ZE_RESULT_SUCCESS(zeContextCreate(driver, &contextDesc, &context));
 
-        // Get queue ordinals
-        uint32_t numQueueGroups = 0;
-        EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetCommandQueueGroupProperties(device, &numQueueGroups, nullptr));
-        ERROR_IF(numQueueGroups == 0, "No queue groups found!");
-        std::vector<ze_command_queue_group_properties_t> queueProperties(numQueueGroups);
-        EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetCommandQueueGroupProperties(device, &numQueueGroups, queueProperties.data()));
-        uint32_t commandQueueOrdinalCompute{};
-        uint32_t commandQueueOrdinalCopy{};
-        uint32_t commandQueueOrdinalCopyOnly{};
-        bool commandQueueHasCompute = false;
-        bool commandQueueHasCopy = false;
-        bool commandQueueHasCopyOnly = false;
-        for (uint32_t i = 0; i < numQueueGroups; i++) {
-            const bool isCompute = queueProperties[i].flags & ZE_COMMAND_QUEUE_GROUP_PROPERTY_FLAG_COMPUTE;
-            const bool isCopy = queueProperties[i].flags & ZE_COMMAND_QUEUE_GROUP_PROPERTY_FLAG_COPY;
-            const bool isCopyOnly = !isCompute && isCopy;
-
-            if (isCopyOnly) {
-                commandQueueOrdinalCopyOnly = i;
-                commandQueueHasCopyOnly = true;
-
-                commandQueueOrdinalCopy = i;
-                commandQueueHasCopy = true;
-            }
-            if (isCompute) {
-                commandQueueOrdinalCompute = i;
-                commandQueueHasCompute = true;
-            }
-            if (isCopy && !commandQueueHasCopyOnly) {
-                commandQueueOrdinalCopy = i;
-                commandQueueHasCopy = true;
-            }
-        }
-
-        // Prepare queue descriptions
-        if (commandQueueHasCompute) {
-            this->commandQueueDescCompute = std::make_unique<ze_command_queue_desc_t>();
-            this->commandQueueDescCompute->stype = ZE_STRUCTURE_TYPE_COMMAND_QUEUE_DESC;
-            this->commandQueueDescCompute->mode = ZE_COMMAND_QUEUE_MODE_ASYNCHRONOUS;
-            this->commandQueueDescCompute->ordinal = commandQueueOrdinalCompute;
-        }
-        if (commandQueueHasCopy) {
-            this->commandQueueDescCopy = std::make_unique<ze_command_queue_desc_t>();
-            this->commandQueueDescCopy->stype = ZE_STRUCTURE_TYPE_COMMAND_QUEUE_DESC;
-            this->commandQueueDescCopy->mode = ZE_COMMAND_QUEUE_MODE_ASYNCHRONOUS;
-            this->commandQueueDescCopy->ordinal = commandQueueOrdinalCopy;
-        }
-        if (commandQueueHasCopyOnly) {
-            this->commandQueueDescCopyOnly = std::make_unique<ze_command_queue_desc_t>();
-            this->commandQueueDescCopyOnly->stype = ZE_STRUCTURE_TYPE_COMMAND_QUEUE_DESC;
-            this->commandQueueDescCopyOnly->mode = ZE_COMMAND_QUEUE_MODE_ASYNCHRONOUS;
-            this->commandQueueDescCopyOnly->ordinal = commandQueueOrdinalCopyOnly;
-        }
-
         // Create queue
-        if (createCommandQueue) {
-            EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueCreate(context, device, commandQueueDescCompute.get(), &commandQueue));
-        }
+        const auto queueCreationResults = createQueue(queueProperties);
+        this->commandQueue = queueCreationResults.first;
+        this->commandQueueDesc = queueCreationResults.second;
     }
 
     ~LevelZero() {
@@ -145,33 +99,92 @@ struct LevelZero {
         EXPECT_ZE_RESULT_SUCCESS(zeContextDestroy(context));
     }
 
-    void createSubDevices() {
+    ze_device_handle_t getDevice(DeviceSelection deviceSelection) {
+        ERROR_IF(DeviceSelectionHelper::hasHost(deviceSelection), "Cannot get cl_device_id for host");
+        ERROR_UNLESS(DeviceSelectionHelper::hasSingleDevice(deviceSelection), "Cannot get multiple devices");
+        if (deviceSelection == DeviceSelection::Root) {
+            return this->rootDevice;
+        }
+
+        const auto subDeviceIndex = DeviceSelectionHelper::getSubDeviceIndex(deviceSelection);
+        ERROR_UNLESS((subDeviceIndex < this->subDevices.size()), "Invalid subDevice index");
+        return this->subDevices[subDeviceIndex];
+    }
+
+  private:
+    void createSubDevices(bool requireSuccess) {
         uint32_t numSubDevices{};
         EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetSubDevices(this->rootDevice, &numSubDevices, nullptr));
         if (numSubDevices == 0) {
-            ERROR("SubDevice was selected, but device has 0 subDevices");
+            ERROR_IF(requireSuccess, "SubDevice was selected, but device has 0 subDevices");
+            return;
         }
 
         subDevices.resize(numSubDevices);
         EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetSubDevices(this->rootDevice, &numSubDevices, subDevices.data()));
     }
 
-    ze_command_queue_desc_t *getCommandQueueDescCopyOrNot(bool copy) {
-        auto &result = copy ? commandQueueDescCopyOnly : commandQueueDescCompute;
-        return result.get();
+    ze_device_handle_t getDefaultDevice(DeviceSelection deviceSelection) {
+        if (DeviceSelectionHelper::hasSingleDevice(deviceSelection)) {
+            return getDevice(deviceSelection);
+        }
+        return nullptr;
     }
 
-    ze_driver_handle_t driver{};
-    ze_device_handle_t device{};
-    ze_context_handle_t context{};
-    ze_command_queue_handle_t commandQueue{};
-    ze_device_properties_t deviceProperties;
+    struct QueueDesc {
+        bool isCopyOnly = {};
+        ze_command_queue_desc_t desc = {};
+    };
+    static std::vector<QueueDesc> queryQueueFamilies(ze_device_handle_t device) {
+        // Get queue ordinals
+        uint32_t numQueueGroups = 0;
+        EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetCommandQueueGroupProperties(device, &numQueueGroups, nullptr));
+        ERROR_IF(numQueueGroups == 0, "No queue groups found!");
+        std::vector<ze_command_queue_group_properties_t> queueProperties(numQueueGroups);
+        EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetCommandQueueGroupProperties(device, &numQueueGroups, queueProperties.data()));
 
-    std::unique_ptr<ze_command_queue_desc_t> commandQueueDescCompute{};
-    std::unique_ptr<ze_command_queue_desc_t> commandQueueDescCopy{};
-    std::unique_ptr<ze_command_queue_desc_t> commandQueueDescCopyOnly{};
+        // Iterate over queue groups
+        std::vector<QueueDesc> result{};
+        for (uint32_t i = 0; i < numQueueGroups; i++) {
+            const bool isCompute = queueProperties[i].flags & ZE_COMMAND_QUEUE_GROUP_PROPERTY_FLAG_COMPUTE;
+            const bool isCopy = queueProperties[i].flags & ZE_COMMAND_QUEUE_GROUP_PROPERTY_FLAG_COPY;
+            const bool isCopyOnly = !isCompute && isCopy;
 
-  private:
+            // Add compute and copy only queue
+            if (isCopyOnly || isCompute) {
+                ze_command_queue_desc_t desc = {};
+                desc.stype = ZE_STRUCTURE_TYPE_COMMAND_QUEUE_DESC;
+                desc.mode = ZE_COMMAND_QUEUE_MODE_ASYNCHRONOUS;
+                desc.ordinal = i;
+                result.push_back({isCopyOnly, desc});
+            }
+        }
+        return result;
+    }
+
+    std::pair<ze_command_queue_handle_t, ze_command_queue_desc_t> createQueue(const QueueProperties &queueProperties) {
+        if (!queueProperties.createQueue) {
+            return {};
+        }
+
+        // Get device
+        const ze_device_handle_t deviceForQueue = getDevice(queueProperties.deviceSelection);
+
+        // Get desc
+        const auto queueFamilies = queryQueueFamilies(deviceForQueue);
+        auto descEntry = std::find_if(queueFamilies.begin(), queueFamilies.end(), [queueProperties](const QueueDesc &d) { return d.isCopyOnly == queueProperties.copyQueue; });
+        if (descEntry == queueFamilies.end()) {
+            ERROR_IF(queueProperties.requireCreationSuccess, "Device does not support such queue");
+            return {};
+        }
+        const ze_command_queue_desc_t commandQueueDesc = descEntry->desc;
+
+        // Create
+        ze_command_queue_handle_t commandQueue = {};
+        EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueCreate(this->context, deviceForQueue, &commandQueueDesc, &commandQueue));
+        return std::make_pair(commandQueue, commandQueueDesc);
+    }
+
     ze_device_handle_t rootDevice{};
     std::vector<ze_device_handle_t> subDevices{};
 };

@@ -8,7 +8,7 @@
 #include <gtest/gtest.h>
 
 static TestResult run(const BestWalkerSubmissionImmediateArguments &arguments, Statistics &statistics) {
-    LevelZero levelzero{false};
+    LevelZero levelzero{QueueProperties::create().disable()};
     constexpr static auto bufferSize = 4096u;
     Timer timer;
 
