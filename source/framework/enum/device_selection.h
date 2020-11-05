@@ -71,6 +71,10 @@ struct DeviceSelectionHelper {
         return getDevicesCount(deviceSelection) == 1u;
     }
 
+    static bool hasHost(DeviceSelection deviceSelection) {
+        return hasDevice(deviceSelection, DeviceSelection::Host);
+    }
+
     static DeviceSelection withoutHost(DeviceSelection deviceSelection) {
         return deviceSelection & ~DeviceSelection::Host;
     }

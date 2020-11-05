@@ -113,6 +113,7 @@ struct Opencl {
     }
 
     cl_device_id getDevice(DeviceSelection deviceSelection) {
+        ERROR_IF(DeviceSelectionHelper::hasHost(deviceSelection), "Cannot get cl_device_id for host");
         ERROR_UNLESS(DeviceSelectionHelper::hasSingleDevice(deviceSelection), "Cannot get multiple devices");
         if (deviceSelection == DeviceSelection::Root) {
             return this->rootDevice;
@@ -140,6 +141,7 @@ struct Opencl {
     }
 
     std::vector<cl_device_id> getDevices(DeviceSelection deviceSelection, bool requireSuccess) {
+        ERROR_IF(DeviceSelectionHelper::hasHost(deviceSelection), "Cannot get cl_device_id for host");
         std::vector<cl_device_id> result = {};
 
         // Add root device
