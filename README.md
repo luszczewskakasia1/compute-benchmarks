@@ -1,14 +1,28 @@
 # Compute Benchmarks
 A benchmark suite developed and maintained by NEO driver development team in order to provide a stable environment which allows checking and reproducing performance for various parts of the driver. The benchmark suite is divided into multiple executables, each of which tests a different aspect of the driver. Each executable contained in ComputeBechmarks consists of multiple test cases with a set of predefined configurations (parameters like buffer sizes, workgroup sizes, etc.) along with a possibility to run them with any desired parameters. They support both OpenCL and LevelZero APIs. Current set of exectuables:
 
-|Executable |Measured aspect |Binaries |
-|-----------|----------------|--------:|
-ulls_benchmark |performance impact of Ultra Low Latency Submission implemented in NEO Driver |[Linux](https://gfx-assets.igk.intel.com/artifactory/webapp/#/artifacts/browse/tree/General/gfx-ocl-abn-assets-igk/linux/ulls_benchmark) [Windows](https://gfx-assets.igk.intel.com/artifactory/webapp/#/artifacts/browse/tree/General/gfx-ocl-abn-assets-igk/windows/ulls_benchmark) |
-memory_benchmark |bandwidth of different memory transfer operations using various APIs |[Linux](https://gfx-assets.igk.intel.com/artifactory/webapp/#/artifacts/browse/tree/General/gfx-ocl-abn-assets-igk/linux/memory_benchmark) [Windows](https://gfx-assets.igk.intel.com/artifactory/webapp/#/artifacts/browse/tree/General/gfx-ocl-abn-assets-igk/windows/memory_benchmark) |
-multi_tile_benchmark | bandwidth of different memory transfer operations using various APIs on a multi-tile device | N/a | N/a |
-api_overhead_benchmark | duration of various API calls | N/a | N/a |
-gpu_cmds_benchmark | duration of various commands on the GPU | N/a | N/a |
-overlap_benchmark | GPU operations overlapping | N/a | N/a |
+|Executable |Measured aspect |
+|-----------|----------------|
+ulls_benchmark |performance impact of Ultra Low Latency Submission implemented in NEO Driver |
+memory_benchmark |bandwidth of different memory transfer operations using various APIs |
+multi_tile_benchmark | bandwidth of different memory transfer operations using various APIs on a multi-tile device |
+api_overhead_benchmark | duration of various API calls |
+gpu_cmds_benchmark | duration of various commands on the GPU |
+overlap_benchmark | GPU operations overlapping |
+
+
+## Binary releases
+
+Binary releases are available on Artifactory for both [Windows](https://gfx-assets.igk.intel.com/artifactory/webapp/#/artifacts/browse/tree/General/gfx-ocl-abn-assets-igk/windows/compute_benchmarks) and [Linux](https://gfx-assets.igk.intel.com/artifactory/webapp/#/artifacts/browse/tree/General/gfx-ocl-abn-assets-igk/linux/compute_benchmarks). Keep in mind, the releases may not be regular and it's best to build the newest version of the benchmarks yourself. You can find out how recent the binary release is from its name. Naming is as follows:
+```
+YYYYMMDD_II_HHHHHHH
+
+Y - year of publishing
+M - month of publishing
+D - day of publishing
+I - index in given day
+H - git commit hash ID
+```
 
 ## Building
 
