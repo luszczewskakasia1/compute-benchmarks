@@ -1,5 +1,18 @@
-# Run CMake
+# Clean
 cmake_dir="build"
+if [ -d "$cmake_dir" ]; then
+    ans=
+    while [ "$ans" != 'y' -a "$ans" != 'n' ]; do
+        echo -n "Build directory is present? Do you want to delete it to ensure a clean build? (y/n): "
+        read ans
+        if [ "$ans" == 'y' ]; then
+            echo "Deleting $cmake_dir..."
+            rm -rf "$cmake_dir"
+        fi
+    done
+fi
+
+# Run CMake
 binary_dir="build/bin"
 ./build.sh -DBUILD_FOR_PUBLISHING=ON
 
