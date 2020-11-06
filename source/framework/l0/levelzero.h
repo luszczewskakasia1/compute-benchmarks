@@ -38,6 +38,7 @@ struct LevelZero {
     ze_context_handle_t context{};
     ze_command_queue_handle_t commandQueue{};
     ze_command_queue_desc_t commandQueueDesc{};
+    ze_device_handle_t commandQueueDevice{};
     ze_device_properties_t deviceProperties{};
 
     LevelZero() : LevelZero(QueueProperties::create()) {}
@@ -88,8 +89,9 @@ struct LevelZero {
 
         // Create queue
         const auto queueCreationResults = createQueue(queueProperties);
-        this->commandQueue = queueCreationResults.first;
-        this->commandQueueDesc = queueCreationResults.second;
+        this->commandQueue = std::get<ze_command_queue_handle_t>(queueCreationResults);
+        this->commandQueueDesc = std::get<ze_command_queue_desc_t>(queueCreationResults);
+        this->commandQueueDevice = std::get<ze_device_handle_t>(queueCreationResults);
     }
 
     ~LevelZero() {
@@ -162,7 +164,7 @@ struct LevelZero {
         return result;
     }
 
-    std::pair<ze_command_queue_handle_t, ze_command_queue_desc_t> createQueue(const QueueProperties &queueProperties) {
+    std::tuple<ze_command_queue_handle_t, ze_command_queue_desc_t, ze_device_handle_t> createQueue(const QueueProperties &queueProperties) {
         if (!queueProperties.createQueue) {
             return {};
         }
@@ -182,7 +184,7 @@ struct LevelZero {
         // Create
         ze_command_queue_handle_t commandQueue = {};
         EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueCreate(this->context, deviceForQueue, &commandQueueDesc, &commandQueue));
-        return std::make_pair(commandQueue, commandQueueDesc);
+        return std::make_tuple(commandQueue, commandQueueDesc, deviceForQueue);
     }
 
     ze_device_handle_t rootDevice{};
