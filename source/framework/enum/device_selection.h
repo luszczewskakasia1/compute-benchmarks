@@ -2,6 +2,8 @@
 
 #include "framework/utility/error.h"
 
+#include <vector>
+
 enum class DeviceSelection : int {
     Unknown = 0,
     Host = 1 << 0, // For USM
@@ -77,6 +79,16 @@ struct DeviceSelectionHelper {
 
     static DeviceSelection withoutHost(DeviceSelection deviceSelection) {
         return deviceSelection & ~DeviceSelection::Host;
+    }
+
+    static std::vector<DeviceSelection> split(DeviceSelection deviceSelection) {
+        std::vector<DeviceSelection> result{};
+        for (auto device : devices) {
+            if (hasDevice(deviceSelection, device)) {
+                result.push_back(device);
+            }
+        }
+        return result;
     }
 
     static bool isSubset(DeviceSelection superset, DeviceSelection subset) {
