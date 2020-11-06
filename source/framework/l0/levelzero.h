@@ -34,7 +34,7 @@
 using namespace L0;
 struct LevelZero {
     ze_driver_handle_t driver{};
-    ze_device_handle_t device{};
+    ze_device_handle_t device{}; // default device, it is not present in multitile scenarios
     ze_context_handle_t context{};
     ze_command_queue_handle_t commandQueue{};
     ze_command_queue_desc_t commandQueueDesc{};
@@ -111,6 +111,16 @@ struct LevelZero {
         const auto subDeviceIndex = DeviceSelectionHelper::getSubDeviceIndex(deviceSelection);
         ERROR_UNLESS((subDeviceIndex < this->subDevices.size()), "Invalid subDevice index");
         return this->subDevices[subDeviceIndex];
+    }
+
+    uint64_t getTimerResoultion(DeviceSelection deviceSelection) {
+        return getTimerResoultion(getDevice(deviceSelection));
+    }
+
+    uint64_t getTimerResoultion(ze_device_handle_t device) {
+        ze_device_properties_t deviceProperties{ZE_STRUCTURE_TYPE_DEVICE_PROPERTIES};
+        EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetProperties(device, &deviceProperties));
+        return deviceProperties.timerResolution;
     }
 
   private:
