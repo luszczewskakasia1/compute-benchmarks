@@ -2,34 +2,11 @@
 
 #include "framework/configuration.h"
 #include "framework/l0/context_properties.h"
+#include "framework/l0/error.h"
 #include "framework/l0/queue_properties.h"
 #include "framework/utility/error.h"
 
-#include <gtest/gtest.h>
-#include <iostream>
 #include <level_zero/ze_api.h>
-
-#define ASSERT_ZE_RESULT_SUCCESS(retVal)      \
-    if (retVal != ZE_RESULT_SUCCESS) {        \
-        EXPECT_EQ(ZE_RESULT_SUCCESS, retVal); \
-        return TestResult::Error;             \
-    }
-
-#define EXPECT_ZE_RESULT_SUCCESS(retVal)      \
-    if (retVal != ZE_RESULT_SUCCESS) {        \
-        EXPECT_EQ(ZE_RESULT_SUCCESS, retVal); \
-    }
-
-#define ZE_RESULT_SUCCESS_OR_TERMINATE(retVal)                                                  \
-    if (retVal != ZE_RESULT_SUCCESS) {                                                          \
-        ERROR(std::string("Fatal LevelZero error occurred, retVal=") + std::to_string(retVal)); \
-    }
-
-#define ZE_RESULT_SUCCESS_OR_RETURN_DEFAULT(retVal) \
-    if (retVal != ZE_RESULT_SUCCESS) {              \
-        EXPECT_EQ(ZE_RESULT_SUCCESS, retVal);       \
-        return {};                                  \
-    }
 
 namespace L0 {
 struct LevelZero {

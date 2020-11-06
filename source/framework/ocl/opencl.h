@@ -1,33 +1,10 @@
 #pragma once
 
 #include "framework/ocl/context_properties.h"
+#include "framework/ocl/error.h"
 #include "framework/ocl/function_signatures_ocl.h"
 #include "framework/ocl/queue_properties.h"
 #include "framework/test_case/test_case.h"
-
-#include <exception>
-#include <gtest/gtest.h>
-#include <iostream>
-
-#define ASSERT_CL_SUCCESS(retVal)      \
-    if (retVal != CL_SUCCESS) {        \
-        EXPECT_EQ(CL_SUCCESS, retVal); \
-        return TestResult::Error;      \
-    }
-
-#define EXPECT_CL_SUCCESS(retVal)      \
-    if (retVal != CL_SUCCESS) {        \
-        EXPECT_EQ(CL_SUCCESS, retVal); \
-    }
-
-#define ERROR_UNLESS_CL_SUCCESS(retVal, message)                                                      \
-    {                                                                                                 \
-        const auto _retVal = retVal;                                                                  \
-        if (_retVal != CL_SUCCESS) {                                                                  \
-            const auto _message = std::string(message) + " (retVal=" + std::to_string(_retVal) + ")"; \
-            ERROR(_message);                                                                          \
-        }                                                                                             \
-    }
 
 namespace OCL {
 struct Opencl {
