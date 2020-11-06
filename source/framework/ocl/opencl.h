@@ -29,6 +29,7 @@
         }                                                                                             \
     }
 
+namespace OCL {
 struct Opencl {
     cl_platform_id platform{};
     cl_device_id device{};
@@ -200,3 +201,6 @@ struct Opencl {
     std::vector<cl_device_id> subDevices{};
     std::vector<cl_command_queue> commandQueues{};
 };
+
+} // namespace OCL
+using namespace OCL;

@@ -4,7 +4,7 @@
 #include "framework/enum/memory_placement.h"
 #include "framework/l0/levelzero.h"
 
-namespace UsmHelper {
+namespace L0::UsmHelper {
 
 inline ze_result_t allocate(MemoryPlacement placement, ze_context_handle_t context, ze_device_handle_t device, size_t size, void **buffer) {
     const ze_host_mem_alloc_desc_t hostAllocDesc{ZE_STRUCTURE_TYPE_HOST_MEM_ALLOC_DESC};
@@ -47,4 +47,4 @@ inline ze_result_t allocate(DeviceSelection placement, LevelZero &levelzero, siz
     ERROR("USM allocations need at least one storage location");
 }
 
-} // namespace UsmHelper
+} // namespace L0::UsmHelper

@@ -6,7 +6,7 @@
 #include <CL/intel/cl_ext_private.h>
 #include <CL/intel/embargo/cl_ext_private_internal.h>
 
-namespace CompressionHelper {
+namespace OCL::CompressionHelper {
 
 inline cl_mem_flags getCompressionFlags(bool compression, bool noIntelExtensions) {
     if (noIntelExtensions) {
@@ -37,4 +37,4 @@ inline TestResult verifyCompression(cl_mem mem, bool expectedCompression, bool n
     }
     return TestResult::Success;
 }
-} // namespace CompressionHelper
+} // namespace OCL::CompressionHelper

@@ -3,6 +3,7 @@
 #include "framework/configuration.h"
 #include "framework/enum/device_selection.h"
 
+namespace L0 {
 struct ContextProperties {
     DeviceSelection deviceSelection = DeviceSelection::Unknown;
     bool requireCreationSuccess = true;
@@ -22,3 +23,4 @@ struct ContextProperties {
         return *this;
     }
 };
+} // namespace L0

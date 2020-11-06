@@ -6,6 +6,7 @@
 
 #include <CL/intel/embargo/cl_ext_private_internal.h>
 
+namespace OCL {
 struct QueueProperties {
     cl_command_queue_properties properties[5] = {CL_QUEUE_PROPERTIES, 0, 0, 0, 0};
     bool createQueue = true;
@@ -62,3 +63,4 @@ struct QueueProperties {
         return *this;
     }
 };
+} // namespace OCL

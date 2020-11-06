@@ -31,7 +31,7 @@
         return {};                                  \
     }
 
-using namespace L0;
+namespace L0 {
 struct LevelZero {
     ze_driver_handle_t driver{};
     ze_device_handle_t device{}; // default device, it is not present in multitile scenarios
@@ -200,3 +200,6 @@ struct LevelZero {
     ze_device_handle_t rootDevice{};
     std::vector<ze_device_handle_t> subDevices{};
 };
+} // namespace L0
+
+using namespace L0;

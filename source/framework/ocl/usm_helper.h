@@ -4,7 +4,7 @@
 #include "framework/enum/memory_placement.h"
 #include "framework/ocl/opencl.h"
 
-namespace UsmHelper {
+namespace OCL::UsmHelper {
 inline bool supportsUsm(cl_platform_id platform) {
     const char *functions[] = {
         "clHostMemAllocINTEL",
@@ -69,4 +69,4 @@ inline void *allocate(DeviceSelection placement, Opencl &opencl, size_t bufferSi
     ERROR("USM allocations need at least one storage location");
 }
 
-} // namespace UsmHelper
+} // namespace OCL::UsmHelper

@@ -3,6 +3,7 @@
 #include "framework/enum/map_flags.h"
 #include "framework/ocl/opencl.h"
 
+namespace OCL {
 inline cl_map_flags convertMapFlags(MapFlags mapFlags) {
     switch (mapFlags) {
     case MapFlags::Read:
@@ -15,3 +16,4 @@ inline cl_map_flags convertMapFlags(MapFlags mapFlags) {
         ERROR("Unknown map flag");
     }
 }
+} // namespace OCL
