@@ -1,5 +1,5 @@
 #include "framework/l0/levelzero.h"
-#include "framework/l0/memory_placement_helper_l0.h"
+#include "framework/l0/usm_helper.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/usm_copy.h"
@@ -16,8 +16,8 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
 
     // Create buffers
     void *source{}, *destination{};
-    ASSERT_ZE_RESULT_SUCCESS(zeMemAllocHostOrDeviceOrShared(arguments.sourcePlacement, levelzero.context, levelzero.device, arguments.size, &source));
-    ASSERT_ZE_RESULT_SUCCESS(zeMemAllocHostOrDeviceOrShared(arguments.destinationPlacement, levelzero.context, levelzero.device, arguments.size, &destination));
+    ASSERT_ZE_RESULT_SUCCESS(UsmHelper::allocate(arguments.sourcePlacement, levelzero.context, levelzero.device, arguments.size, &source));
+    ASSERT_ZE_RESULT_SUCCESS(UsmHelper::allocate(arguments.destinationPlacement, levelzero.context, levelzero.device, arguments.size, &destination));
 
     // Create event
     ze_event_pool_handle_t eventPool{};

@@ -1,5 +1,5 @@
 #include "framework/l0/levelzero.h"
-#include "framework/l0/memory_placement_helper_l0.h"
+#include "framework/l0/usm_helper.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/random_helper.h"
 #include "framework/utility/timer.h"
@@ -17,7 +17,7 @@ static TestResult run(const UsmFillSpecificPatternArguments &arguments, Statisti
 
     // Create buffer
     void *buffer{};
-    ASSERT_ZE_RESULT_SUCCESS(zeMemAllocHostOrDeviceOrShared(arguments.memoryPlacement, levelzero.context, levelzero.device, arguments.bufferSize, &buffer));
+    ASSERT_ZE_RESULT_SUCCESS(UsmHelper::allocate(arguments.memoryPlacement, levelzero.context, levelzero.device, arguments.bufferSize, &buffer));
 
     // Create event
     ze_event_pool_handle_t eventPool{};

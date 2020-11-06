@@ -1,5 +1,5 @@
 #include "framework/l0/levelzero.h"
-#include "framework/l0/memory_placement_helper_l0.h"
+#include "framework/l0/usm_helper.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/random_helper.h"
 #include "framework/utility/timer.h"
