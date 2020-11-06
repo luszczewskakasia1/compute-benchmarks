@@ -30,8 +30,10 @@ inline auto resourceDeviceSelections() {
 inline auto usmDeviceSelections() {
     return ::testing::Values(DeviceSelection::Host,                           // Host
                              DeviceSelection::Root,                           // Device
+                             DeviceSelection::Tile0,                          // Device
                              DeviceSelection::Tile1,                          // Device
                              DeviceSelection::Host | DeviceSelection::Root,   // Shared
+                             DeviceSelection::Host | DeviceSelection::Tile0,  // Shared
                              DeviceSelection::Host | DeviceSelection::Tile1); // Shared
 }
 
