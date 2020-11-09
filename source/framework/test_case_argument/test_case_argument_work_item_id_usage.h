@@ -1,7 +1,7 @@
 #pragma once
 
 #include "framework/enum/work_item_id_usage.h"
-#include "framework/test_case_argument/test_case_argument_enum.h"
+#include "framework/test_case_argument/abstract/test_case_argument_enum.h"
 
 struct WorkItemIdUsageTestCaseArgument : EnumTestCaseArgument<WorkItemIdUsageTestCaseArgument, WorkItemIdUsage> {
     using EnumTestCaseArgument::EnumTestCaseArgument;

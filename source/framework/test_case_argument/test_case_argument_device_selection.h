@@ -1,7 +1,7 @@
 #pragma once
 
 #include "framework/enum/device_selection.h"
-#include "framework/test_case_argument/test_case_argument_enum.h"
+#include "framework/test_case_argument/abstract/test_case_argument_enum.h"
 
 struct DeviceSelectionTestCaseArgument : EnumTestCaseArgument<DeviceSelectionTestCaseArgument, DeviceSelection> {
     using EnumTestCaseArgument::EnumTestCaseArgument;
