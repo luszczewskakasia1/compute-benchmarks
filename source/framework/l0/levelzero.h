@@ -90,15 +90,16 @@ struct LevelZero {
         return this->subDevices[subDeviceIndex];
     }
 
-    uint64_t getTimerResoultion(DeviceSelection deviceSelection) {
-        return getTimerResoultion(getDevice(deviceSelection));
+    ze_device_properties_t getDeviceProperties(DeviceSelection deviceSelection) {
+        return getDeviceProperties(getDevice(deviceSelection));
     }
-
-    uint64_t getTimerResoultion(ze_device_handle_t device) {
+    ze_device_properties_t getDeviceProperties(ze_device_handle_t device) {
         ze_device_properties_t deviceProperties{ZE_STRUCTURE_TYPE_DEVICE_PROPERTIES};
         EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetProperties(device, &deviceProperties));
-        return deviceProperties.timerResolution;
+        return deviceProperties;
     }
+    uint64_t getTimerResoultion(DeviceSelection deviceSelection) { return getDeviceProperties(device).timerResolution; }
+    uint64_t getTimerResoultion(ze_device_handle_t device) { return getDeviceProperties(device).timerResolution; }
 
   private:
     void createSubDevices(bool requireSuccess) {
