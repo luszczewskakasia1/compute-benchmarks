@@ -27,7 +27,7 @@ class UsmSharedMigrateGpu : public TestCase<UsmSharedMigrateGpuArguments> {
     using TestCase<UsmSharedMigrateGpuArguments>::TestCase;
 
     std::string getHelp() const override {
-        return "allocates a unified shared memory buffer and measures time to migrate it from GPU to Gpu.";
+        return "allocates a unified shared memory buffer and measures time to migrate it from CPU to GPU.";
     }
 
     std::string getTestCaseName() const override {

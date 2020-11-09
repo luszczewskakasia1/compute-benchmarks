@@ -17,10 +17,10 @@ struct ReadBufferArguments : TestCaseArguments {
 
     ReadBufferArguments()
         : contextPlacement(*this, "context", "How context will be created"),
-          queuePlacement(*this, "queue", "Which device within the context will perform the copy"),
-          bufferPlacement(*this, "memory", "Placement of memory for the source buffer"),
-          size(*this, "size", "Size of the buffers"),
-          compressed(*this, "compressed", "Select if source buffer is to be compressed."),
+          queuePlacement(*this, "queue", "Which device within the context will perform the operation"),
+          bufferPlacement(*this, "memory", "Placement of memory for the buffer"),
+          size(*this, "size", "Size of the buffer"),
+          compressed(*this, "compressed", "Select if the buffer is to be compressed."),
           useEvents(*this, "useEvents", "Select if GPU-side measurements should be done") {}
 
     bool validateArgumentsExtra() const override {

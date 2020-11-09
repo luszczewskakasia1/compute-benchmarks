@@ -19,7 +19,7 @@ struct FillBufferArguments : TestCaseArguments {
 
     FillBufferArguments()
         : contextPlacement(*this, "context", "How context will be created"),
-          queuePlacement(*this, "queue", "Which device will perform the fill"),
+          queuePlacement(*this, "queue", "Which device within the context will perform the operation"),
           bufferPlacement(*this, "memory", "Placement of memory for the buffer"),
           size(*this, "size", "Size of the buffer"),
           patternSize(*this, "patternSize", "Size of the fill pattern"),

@@ -19,7 +19,7 @@ struct UsmFillArguments : TestCaseArguments {
 
     UsmFillArguments()
         : contextPlacement(*this, "context", "How context will be created"),
-          queuePlacement(*this, "queue", "Which device will perform the fill"),
+          queuePlacement(*this, "queue", "Which device within the context will perform the operation"),
           bufferPlacement(*this, "memory", "Placement of memory for the buffer"),
           size(*this, "size", "Size of the buffer"),
           patternSize(*this, "patternSize", "Size of the fill pattern"),
@@ -37,7 +37,7 @@ class UsmFill : public TestCase<UsmFillArguments> {
     using TestCase<UsmFillArguments>::TestCase;
 
     std::string getHelp() const override {
-        return "allocates a USM buffer and measures fill bandwidth.";
+        return "allocates a unified shared memory buffer and measures fill bandwidth.";
     }
 
     std::string getTestCaseName() const override {

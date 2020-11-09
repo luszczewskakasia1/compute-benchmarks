@@ -20,7 +20,7 @@ struct CopyBufferArguments : TestCaseArguments {
 
     CopyBufferArguments()
         : contextPlacement(*this, "context", "How context will be created"),
-          queuePlacement(*this, "queue", "Which device within the context will perform the copy"),
+          queuePlacement(*this, "queue", "Which device within the context will perform the operation"),
           srcPlacement(*this, "src", "Placement of memory for the source buffer"),
           dstPlacement(*this, "dst", "Placement of memory for the destination buffer"),
           size(*this, "size", "Size of the buffers"),

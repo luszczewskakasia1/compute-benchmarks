@@ -15,8 +15,8 @@ struct UsmSharedMigrateCpuArguments : TestCaseArguments {
 
     UsmSharedMigrateCpuArguments()
         : contextPlacement(*this, "context", "How context will be created"),
-          bufferPlacement(*this, "memory", "Placement of memory for the source buffer"),
-          bufferSize(*this, "size", "Size of the buffers"),
+          bufferPlacement(*this, "memory", "Placement of memory for the buffer"),
+          bufferSize(*this, "size", "Size of the buffer"),
           accessAllBytes(*this, "accessAllBytes", "Select if GPU-side measurements should be done") {}
 
     bool validateArgumentsExtra() const override {
