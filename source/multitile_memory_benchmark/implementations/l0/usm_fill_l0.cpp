@@ -11,7 +11,7 @@ static TestResult run(const UsmFillArguments &arguments, Statistics &statistics)
     ContextProperties contextProperties = ContextProperties::create().create().setDeviceSelection(arguments.contextPlacement).allowCreationFail();
     QueueProperties queueProperties = QueueProperties::create().setDeviceSelection(arguments.queuePlacement).setBcs(arguments.copyQueue).allowCreationFail();
     LevelZero levelzero(queueProperties, contextProperties);
-    if (levelzero.context == nullptr || levelzero.commandQueue == nullptr) {
+    if (levelzero.context == nullptr || levelzero.commandQueue == nullptr || arguments.patternSize > levelzero.commandQueueMaxFillSize) {
         return TestResult::DeviceNotCapable;
     }
     Timer timer;

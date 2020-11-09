@@ -10,7 +10,7 @@
 static TestResult run(const UsmFillArguments &arguments, Statistics &statistics) {
     QueueProperties queueProperties = QueueProperties::create().setBcs(arguments.copyQueue).allowCreationFail();
     LevelZero levelzero(queueProperties);
-    if (levelzero.commandQueue == nullptr) {
+    if (levelzero.commandQueue == nullptr || arguments.patternSize > levelzero.commandQueueMaxFillSize) {
         return TestResult::DeviceNotCapable;
     }
     Timer timer;

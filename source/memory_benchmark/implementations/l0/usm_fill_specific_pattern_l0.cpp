@@ -8,9 +8,10 @@
 #include <gtest/gtest.h>
 
 static TestResult run(const UsmFillSpecificPatternArguments &arguments, Statistics &statistics) {
+    const std::vector<uint8_t> &pattern = arguments.pattern;
     QueueProperties queueProperties = QueueProperties::create().setBcs(arguments.copyQueue).allowCreationFail();
     LevelZero levelzero(queueProperties);
-    if (levelzero.commandQueue == nullptr) {
+    if (levelzero.commandQueue == nullptr || pattern.size() > levelzero.commandQueueMaxFillSize) {
         return TestResult::DeviceNotCapable;
     }
     Timer timer;
@@ -40,7 +41,6 @@ static TestResult run(const UsmFillSpecificPatternArguments &arguments, Statisti
     // Create command list
     ze_command_list_desc_t cmdListDesc{};
     cmdListDesc.commandQueueGroupOrdinal = levelzero.commandQueueDesc.ordinal;
-    const std::vector<uint8_t> &pattern = arguments.pattern;
     ze_command_list_handle_t cmdList{};
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.context, levelzero.device, &cmdListDesc, &cmdList));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendMemoryFill(cmdList, buffer, pattern.data(), pattern.size(), arguments.bufferSize, event, 0, nullptr));

@@ -16,6 +16,7 @@ struct LevelZero {
     ze_command_queue_handle_t commandQueue{};
     ze_command_queue_desc_t commandQueueDesc{};
     ze_device_handle_t commandQueueDevice{};
+    size_t commandQueueMaxFillSize{};
     ze_device_properties_t deviceProperties{};
 
     LevelZero() : LevelZero(QueueProperties::create()) {}
@@ -69,6 +70,7 @@ struct LevelZero {
         this->commandQueue = std::get<ze_command_queue_handle_t>(queueCreationResults);
         this->commandQueueDesc = std::get<ze_command_queue_desc_t>(queueCreationResults);
         this->commandQueueDevice = std::get<ze_device_handle_t>(queueCreationResults);
+        this->commandQueueMaxFillSize = std::get<size_t>(queueCreationResults);
     }
 
     ~LevelZero() {
@@ -123,6 +125,7 @@ struct LevelZero {
 
     struct QueueDesc {
         bool isCopyOnly = {};
+        size_t maxFillSize;
         ze_command_queue_desc_t desc = {};
     };
     static std::vector<QueueDesc> queryQueueFamilies(ze_device_handle_t device) {
@@ -139,6 +142,7 @@ struct LevelZero {
             const bool isCompute = queueProperties[i].flags & ZE_COMMAND_QUEUE_GROUP_PROPERTY_FLAG_COMPUTE;
             const bool isCopy = queueProperties[i].flags & ZE_COMMAND_QUEUE_GROUP_PROPERTY_FLAG_COPY;
             const bool isCopyOnly = !isCompute && isCopy;
+            const size_t maxFillSize = queueProperties[i].maxMemoryFillPatternSize;
 
             // Add compute and copy only queue
             if (isCopyOnly || isCompute) {
@@ -146,13 +150,13 @@ struct LevelZero {
                 desc.stype = ZE_STRUCTURE_TYPE_COMMAND_QUEUE_DESC;
                 desc.mode = ZE_COMMAND_QUEUE_MODE_ASYNCHRONOUS;
                 desc.ordinal = i;
-                result.push_back({isCopyOnly, desc});
+                result.push_back({isCopyOnly, maxFillSize, desc});
             }
         }
         return result;
     }
 
-    std::tuple<ze_command_queue_handle_t, ze_command_queue_desc_t, ze_device_handle_t> createQueue(const QueueProperties &queueProperties) {
+    std::tuple<ze_command_queue_handle_t, ze_command_queue_desc_t, ze_device_handle_t, size_t> createQueue(const QueueProperties &queueProperties) {
         if (!queueProperties.createQueue) {
             return {};
         }
@@ -172,7 +176,7 @@ struct LevelZero {
         // Create
         ze_command_queue_handle_t commandQueue = {};
         EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueCreate(this->context, deviceForQueue, &commandQueueDesc, &commandQueue));
-        return std::make_tuple(commandQueue, commandQueueDesc, deviceForQueue);
+        return std::make_tuple(commandQueue, commandQueueDesc, deviceForQueue, descEntry->maxFillSize);
     }
 
     ze_device_handle_t rootDevice{};
