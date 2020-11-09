@@ -37,4 +37,10 @@ inline auto usmDeviceSelections() {
                              DeviceSelection::Host | DeviceSelection::Tile1); // Shared
 }
 
+inline auto usmSharedSelections() {
+    return ::testing::Values(DeviceSelection::Host | DeviceSelection::Root,   // Shared
+                             DeviceSelection::Host | DeviceSelection::Tile0,  // Shared
+                             DeviceSelection::Host | DeviceSelection::Tile1); // Shared
+}
+
 } // namespace CommonGtestArgs
