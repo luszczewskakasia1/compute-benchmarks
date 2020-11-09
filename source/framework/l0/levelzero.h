@@ -17,7 +17,6 @@ struct LevelZero {
     ze_command_queue_desc_t commandQueueDesc{};
     ze_device_handle_t commandQueueDevice{};
     size_t commandQueueMaxFillSize{};
-    ze_device_properties_t deviceProperties{};
 
     LevelZero() : LevelZero(QueueProperties::create()) {}
     LevelZero(const QueueProperties &queueProperties) : LevelZero(queueProperties, ContextProperties::create()) {}
@@ -56,10 +55,6 @@ struct LevelZero {
 
         // Set the default device
         this->device = getDefaultDevice(contextProperties.deviceSelection);
-        if (this->device != nullptr) {
-            this->deviceProperties.stype = {ZE_STRUCTURE_TYPE_DEVICE_PROPERTIES};
-            EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetProperties(this->device, &this->deviceProperties));
-        }
 
         // Create context
         const ze_context_desc_t contextDesc{ZE_STRUCTURE_TYPE_CONTEXT_DESC};
@@ -80,7 +75,7 @@ struct LevelZero {
         EXPECT_ZE_RESULT_SUCCESS(zeContextDestroy(context));
     }
 
-    ze_device_handle_t getDevice(DeviceSelection deviceSelection) {
+    ze_device_handle_t getDevice(DeviceSelection deviceSelection) const {
         ERROR_IF(DeviceSelectionHelper::hasHost(deviceSelection), "Cannot get ze_device_handle_t for host");
         ERROR_UNLESS(DeviceSelectionHelper::hasSingleDevice(deviceSelection), "Cannot get multiple devices");
         if (deviceSelection == DeviceSelection::Root) {
@@ -92,16 +87,15 @@ struct LevelZero {
         return this->subDevices[subDeviceIndex];
     }
 
-    ze_device_properties_t getDeviceProperties(DeviceSelection deviceSelection) {
-        return getDeviceProperties(getDevice(deviceSelection));
-    }
-    ze_device_properties_t getDeviceProperties(ze_device_handle_t device) {
+    ze_device_properties_t getDeviceProperties() const { return getDeviceProperties(this->device); }
+    ze_device_properties_t getDeviceProperties(DeviceSelection deviceSelection) const { return getDeviceProperties(getDevice(deviceSelection)); }
+    ze_device_properties_t getDeviceProperties(ze_device_handle_t device) const {
         ze_device_properties_t deviceProperties{ZE_STRUCTURE_TYPE_DEVICE_PROPERTIES};
         EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetProperties(device, &deviceProperties));
         return deviceProperties;
     }
-    uint64_t getTimerResoultion(DeviceSelection deviceSelection) { return getDeviceProperties(device).timerResolution; }
-    uint64_t getTimerResoultion(ze_device_handle_t device) { return getDeviceProperties(device).timerResolution; }
+    uint64_t getTimerResoultion(DeviceSelection deviceSelection) const { return getDeviceProperties(deviceSelection).timerResolution; }
+    uint64_t getTimerResoultion(ze_device_handle_t device) const { return getDeviceProperties(device).timerResolution; }
 
   private:
     void createSubDevices(bool requireSuccess) {

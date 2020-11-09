@@ -8,6 +8,7 @@
 
 static TestResult run(const WaitOnEventHotArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;
+    const uint64_t timerResolution = levelzero.getTimerResoultion(levelzero.device);
 
     // Create buffer
     const ze_host_mem_alloc_desc_t allocationDesc{ZE_STRUCTURE_TYPE_HOST_MEM_ALLOC_DESC};
@@ -49,7 +50,7 @@ static TestResult run(const WaitOnEventHotArguments &arguments, Statistics &stat
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
 
         auto commandTime = std::chrono::nanoseconds(*endTimestamp - *beginTimestamp);
-        commandTime *= levelzero.deviceProperties.timerResolution;
+        commandTime *= timerResolution;
         commandTime /= arguments.measuredCommands;
         statistics.pushValue(commandTime);
     }

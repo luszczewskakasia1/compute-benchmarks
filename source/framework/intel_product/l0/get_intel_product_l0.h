@@ -17,7 +17,7 @@ inline IntelProduct getIntelProduct(const ze_device_properties_t &deviceProperti
 }
 
 inline IntelProduct getIntelProduct(const LevelZero &levelzero) {
-    return getIntelProduct(levelzero.deviceProperties);
+    return getIntelProduct(levelzero.getDeviceProperties());
 }
 
 template <typename Arg>

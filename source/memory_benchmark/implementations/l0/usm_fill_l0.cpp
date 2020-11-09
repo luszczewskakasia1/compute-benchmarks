@@ -14,6 +14,7 @@ static TestResult run(const UsmFillArguments &arguments, Statistics &statistics)
         return TestResult::DeviceNotCapable;
     }
     Timer timer;
+    const uint64_t timerResolution = levelzero.getTimerResoultion(levelzero.device);
 
     // Create buffer
     void *buffer{};
@@ -66,7 +67,7 @@ static TestResult run(const UsmFillArguments &arguments, Statistics &statistics)
             ze_kernel_timestamp_result_t timestampResult{};
             ASSERT_ZE_RESULT_SUCCESS(zeEventQueryKernelTimestamp(event, &timestampResult));
             auto commandTime = std::chrono::nanoseconds(timestampResult.global.kernelEnd - timestampResult.global.kernelStart);
-            commandTime *= levelzero.deviceProperties.timerResolution;
+            commandTime *= timerResolution;
             statistics.pushValue(commandTime, arguments.bufferSize);
         } else {
             statistics.pushValue(timer.get(), arguments.bufferSize);
