@@ -81,7 +81,7 @@ struct LevelZero {
     }
 
     ze_device_handle_t getDevice(DeviceSelection deviceSelection) {
-        ERROR_IF(DeviceSelectionHelper::hasHost(deviceSelection), "Cannot get cl_device_id for host");
+        ERROR_IF(DeviceSelectionHelper::hasHost(deviceSelection), "Cannot get ze_device_handle_t for host");
         ERROR_UNLESS(DeviceSelectionHelper::hasSingleDevice(deviceSelection), "Cannot get multiple devices");
         if (deviceSelection == DeviceSelection::Root) {
             return this->rootDevice;
