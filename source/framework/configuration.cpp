@@ -18,6 +18,7 @@ Configuration::Configuration()
       noIntelExtensions(*this, "no-intel-extensions", "do not run benchmark requiring Intel specific extensions"),
       dumpCommandLines(*this, "dumpCommandLines", "output commandline arguments to run the each test"),
       noop(*this, "noop", "do not run any tests, only print their names and parameters"),
+      argFilter(*this, "argFilter", "filter tests by their arguments"),
       benchmarkSpecificConfiguration(BenchmarkSpecificConfigurationBase::create(*this).release()) {
 
     // OCL params
@@ -37,6 +38,8 @@ Configuration::Configuration()
     noIntelExtensions = false;
     dumpCommandLines = false;
     subDeviceSelection = DeviceSelection::Root;
+    noop = false;
+    argFilter = std::vector<std::string>();
 }
 
 Configuration::~Configuration() {

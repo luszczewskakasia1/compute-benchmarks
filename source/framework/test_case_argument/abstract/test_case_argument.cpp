@@ -10,6 +10,10 @@ TestCaseArgument::TestCaseArgument(TestCaseArgumentsBase &parent, const std::str
     parent.arguments.push_back(this);
 }
 
+const std::string TestCaseArgument::getKey() const {
+    return key;
+}
+
 std::string TestCaseArgument::getHelp() const {
     std::ostringstream result;
     if (!extraHelp.empty()) {

@@ -11,6 +11,7 @@ struct TestCaseArgument {
     TestCaseArgument(TestCaseArgumentsBase &parent, const std::string &key) : TestCaseArgument(parent, key, "") {}
     TestCaseArgument(TestCaseArgumentsBase &parent, const std::string &key, const std::string &extraHelp);
 
+    const std::string getKey() const;
     std::string getHelp() const;
 
     virtual std::string toString() const {

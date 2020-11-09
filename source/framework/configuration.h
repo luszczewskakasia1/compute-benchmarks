@@ -1,6 +1,7 @@
 #pragma once
 
 #include "framework/test_case_argument/test_case_argument_api.h"
+#include "framework/test_case_argument/test_case_argument_arg_filter.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
 #include "framework/test_case_argument/test_case_argument_boolean_flag.h"
 #include "framework/test_case_argument/test_case_argument_device_selection.h"
@@ -41,6 +42,7 @@ struct Configuration : TestCaseArgumentsBase {
     BooleanFlagTestCaseArgument noIntelExtensions;
     BooleanFlagTestCaseArgument dumpCommandLines;
     BooleanFlagTestCaseArgument noop;
+    ArgFilterTestCaseArgument argFilter;
 
     BenchmarkSpecificConfigurationBase *benchmarkSpecificConfiguration = nullptr;
 };

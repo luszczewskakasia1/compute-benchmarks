@@ -24,6 +24,7 @@ enum class TestResult {
     IntelExtensionsRequired, // Intel extensions are required, but they are disabled
     InvalidArgs,             // Invalid arguments specific to the test case were supplied
     Nooped,                  // Test was nooped, only print its name
+    FilteredOut,             // Test was skipped because of passed argFilter
 };
 
 template <typename _Arguments>
@@ -89,6 +90,7 @@ class TestCase : public TestCaseInterface {
         case TestResult::NoImplementation:
         case TestResult::DeviceNotCapable:
         case TestResult::IntelExtensionsRequired:
+        case TestResult::FilteredOut:
             ERROR_UNLESS(statistics.isEmpty(), "test was skipped but generated some values");
             break;
 
@@ -144,6 +146,18 @@ class TestCase : public TestCaseInterface {
         // Check if test case name with config is not too long
         if (!::configuration.dumpCommandLines && !arguments.isSingleTestMode) {
             printTestCaseNameLengthWarning(testCaseNameWithConfig);
+        }
+
+        // Check arg filters
+        for (const std::string &argFilter : ::configuration.argFilter.get()) {
+            const std::vector<TestCaseArgument *> &args = arguments.arguments;
+            const auto matches = [&](TestCaseArgument *arg) {
+                return arg->toString() == argFilter;
+            };
+            const bool requirementMet = std::any_of(args.begin(), args.end(), matches);
+            if (!requirementMet) {
+                return TestResult::FilteredOut;
+            }
         }
 
         // Noop if required
