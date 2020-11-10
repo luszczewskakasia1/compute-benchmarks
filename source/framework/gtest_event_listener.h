@@ -21,13 +21,7 @@ class CustomEventListener : public ::testing::TestEventListener {
         Statistics::printStatisticsHeader(::configuration.printType);
     }
     void OnTestProgramEnd(const ::testing::UnitTest &unitTest) override {
-        if (errorInfos.size() > 0) {
-            std::cout << "\n";
-            for (const auto &errorInfo : errorInfos) {
-                std::cout << "[  FAILED  ] " << errorInfo.name.str() << '\n'
-                          << errorInfo.errorMessage.str() << '\n';
-            }
-        }
+        dumpErrors();
     }
 
     void OnTestIterationStart(const ::testing::UnitTest &unitTest, int iteration) override {}
@@ -56,6 +50,20 @@ class CustomEventListener : public ::testing::TestEventListener {
             currentTestCaseErrorInfo.name << testCase.test_case_name() << "." << testCase.name();
             errorInfos.push_back(std::move(currentTestCaseErrorInfo));
         }
+        if (::configuration.dumpErrorsImmediately) {
+            dumpErrors();
+        }
+    }
+
+    void dumpErrors() {
+        if (errorInfos.size() > 0) {
+            std::cout << "\n";
+            for (const auto &errorInfo : errorInfos) {
+                std::cout << "[  FAILED  ] " << errorInfo.name.str() << '\n'
+                          << errorInfo.errorMessage.str() << '\n';
+            }
+        }
+        errorInfos.clear();
     }
 
     std::vector<ErrorInfo> errorInfos = {};

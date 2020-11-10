@@ -42,6 +42,7 @@ struct Configuration : TestCaseArgumentsBase {
     BooleanFlagTestCaseArgument noIntelExtensions;
     BooleanFlagTestCaseArgument dumpCommandLines;
     BooleanFlagTestCaseArgument noop;
+    BooleanTestCaseArgument dumpErrorsImmediately;
     StringListTestCaseArgument argFilter;
     StringListTestCaseArgument testFilter;
 
