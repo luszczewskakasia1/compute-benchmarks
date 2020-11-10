@@ -8,7 +8,7 @@
 
 #include <sstream>
 
-struct UsmCopyArguments : TestCaseArguments {
+struct UsmCopyKernelArguments : TestCaseArguments {
     MultiDeviceSelectionTestCaseArgument contextPlacement;
     DeviceSelectionTestCaseArgument queuePlacement;
     UsmDeviceSelectionTestCaseArgument srcPlacement;
@@ -17,7 +17,7 @@ struct UsmCopyArguments : TestCaseArguments {
     BooleanTestCaseArgument copyQueue;
     BooleanTestCaseArgument useEvents;
 
-    UsmCopyArguments()
+    UsmCopyKernelArguments()
         : contextPlacement(*this, "context", "How context will be created"),
           queuePlacement(*this, "queue", "Which device within the context will perform the operation"),
           srcPlacement(*this, "src", "Placement of memory for the source buffer"),
@@ -33,15 +33,15 @@ struct UsmCopyArguments : TestCaseArguments {
     }
 };
 
-class UsmCopy : public TestCase<UsmCopyArguments> {
+class UsmCopyKernel : public TestCase<UsmCopyKernelArguments> {
   public:
-    using TestCase<UsmCopyArguments>::TestCase;
+    using TestCase<UsmCopyKernelArguments>::TestCase;
 
     std::string getHelp() const override {
-        return "allocates two unified shared memory buffers and measures copy bandwidth between them using a builtin function.";
+        return "allocates two unified shared memory buffers and measures copy bandwidth between them using a custom kernel.";
     }
 
     std::string getTestCaseName() const override {
-        return "UsmCopy";
+        return "UsmCopyKernel";
     }
 };
