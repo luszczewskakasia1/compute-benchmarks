@@ -1,6 +1,7 @@
 #pragma once
 
 #include "framework/ocl/cl.h"
+#include "framework/ocl/error.h"
 #include "framework/test_case/test_case.h"
 
 #include <CL/intel/cl_ext_private.h>
@@ -28,7 +29,7 @@ inline TestResult verifyCompression(cl_mem mem, bool expectedCompression, bool n
     cl_bool isCompressedRaw{};
     const cl_int retVal = clGetMemObjectInfo(mem, CL_MEM_USES_COMPRESSION_INTEL, sizeof(isCompressedRaw), &isCompressedRaw, nullptr);
     if (retVal != CL_SUCCESS) {
-        return TestResult::Error; // We are not on an Intel GPU. Parameter --no-intel-extensions should be passed
+        ASSERT_CL_SUCCESS(retVal); // We are not on an Intel GPU. Parameter --no-intel-extensions should be passed
     }
 
     const bool isCompressed = isCompressedRaw == CL_TRUE;
