@@ -5,7 +5,7 @@
 
 #include <vector>
 
-struct ArgFilterTestCaseArgument : TestCaseArgument {
+struct StringListTestCaseArgument : TestCaseArgument {
     using TestCaseArgument::TestCaseArgument;
 
     operator const std::vector<std::string> &() const {
@@ -16,7 +16,7 @@ struct ArgFilterTestCaseArgument : TestCaseArgument {
         return value;
     }
 
-    ArgFilterTestCaseArgument &operator=(const std::vector<std::string> &value) {
+    StringListTestCaseArgument &operator=(const std::vector<std::string> &value) {
         this->value = value;
         this->isValid = true;
         return *this;

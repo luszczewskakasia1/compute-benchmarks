@@ -19,6 +19,7 @@ Configuration::Configuration()
       dumpCommandLines(*this, "dumpCommandLines", "output commandline arguments to run the each test"),
       noop(*this, "noop", "do not run any tests, only print their names and parameters"),
       argFilter(*this, "argFilter", "filter tests by their arguments"),
+      testFilter(*this, "testFilter", "filter tests by their names"),
       benchmarkSpecificConfiguration(BenchmarkSpecificConfigurationBase::create(*this).release()) {
 
     // OCL params
@@ -40,6 +41,7 @@ Configuration::Configuration()
     subDeviceSelection = DeviceSelection::Root;
     noop = false;
     argFilter = std::vector<std::string>();
+    testFilter = std::vector<std::string>();
 }
 
 Configuration::~Configuration() {

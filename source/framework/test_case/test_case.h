@@ -148,12 +148,20 @@ class TestCase : public TestCaseInterface {
             printTestCaseNameLengthWarning(testCaseNameWithConfig);
         }
 
+        // Check test filters
+        if (auto testFilters = ::configuration.testFilter.get(); testFilters.size() > 0) {
+            const auto testCaseName = getTestCaseName();
+            const auto matches = [&](const std::string &testFilter) { return testFilter == testCaseName; };
+            const auto requirementMet = std::any_of(testFilters.begin(), testFilters.end(), matches);
+            if (!requirementMet) {
+                return TestResult::FilteredOut;
+            }
+        }
+
         // Check arg filters
         for (const std::string &argFilter : ::configuration.argFilter.get()) {
             const std::vector<TestCaseArgument *> &args = arguments.arguments;
-            const auto matches = [&](TestCaseArgument *arg) {
-                return arg->toString() == argFilter;
-            };
+            const auto matches = [&](TestCaseArgument *arg) { return arg->toString() == argFilter; };
             const bool requirementMet = std::any_of(args.begin(), args.end(), matches);
             if (!requirementMet) {
                 return TestResult::FilteredOut;
