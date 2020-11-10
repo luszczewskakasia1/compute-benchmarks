@@ -72,7 +72,9 @@ struct LevelZero {
         if (commandQueue != nullptr) {
             EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueDestroy(commandQueue));
         }
-        EXPECT_ZE_RESULT_SUCCESS(zeContextDestroy(context));
+        if (context != nullptr) {
+            EXPECT_ZE_RESULT_SUCCESS(zeContextDestroy(context));
+        }
     }
 
     ze_device_handle_t getDevice(DeviceSelection deviceSelection) const {
