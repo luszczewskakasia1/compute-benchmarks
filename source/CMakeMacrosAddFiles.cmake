@@ -4,9 +4,9 @@ function(add_sources_to_benchmark TARGET_NAME DIR)
 endfunction()
 
 function (add_kernels_to_benchmark TARGET_NAME DIR)
-    file(GLOB SOURCE_KERNELS ${DIR}/*.cl)
+    file(GLOB_RECURSE SOURCE_KERNELS ${DIR}/*.cl)
     target_sources(${TARGET_NAME} PRIVATE ${SOURCE_KERNELS})
 
-    file(GLOB BINARY_KERNELS ${DIR}/*.spv)
-    set_property(TARGET ${TARGET_NAME} APPEND PROPERTY KERNELS ${BINARY_KERNELS})
+    file(GLOB KERNELS ${DIR}/*.spv ${DIR}/copyable_sources/*.cl)
+    set_property(TARGET ${TARGET_NAME} APPEND PROPERTY KERNELS ${KERNELS})
 endfunction()

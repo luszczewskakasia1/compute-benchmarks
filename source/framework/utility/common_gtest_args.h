@@ -1,3 +1,9 @@
+#pragma once
+
+#include "framework/enum/api.h"
+#include "framework/enum/atomic_operation.h"
+#include "framework/enum/device_selection.h"
+
 #include <gtest/gtest.h>
 
 namespace CommonGtestArgs {
@@ -41,6 +47,15 @@ inline auto usmSharedSelections() {
     return ::testing::Values(DeviceSelection::Host | DeviceSelection::Root,   // Shared
                              DeviceSelection::Host | DeviceSelection::Tile0,  // Shared
                              DeviceSelection::Host | DeviceSelection::Tile1); // Shared
+}
+
+inline auto allAtomicOperations() {
+    return ::testing::Values(AtomicOperation::Add, AtomicOperation::Sub,
+                             AtomicOperation::Xchg, AtomicOperation::CmpXchg,
+                             AtomicOperation::Inc, AtomicOperation::Dec,
+                             AtomicOperation::Min, AtomicOperation::Max,
+                             AtomicOperation::And, AtomicOperation::Or,
+                             AtomicOperation::Xor);
 }
 
 } // namespace CommonGtestArgs
