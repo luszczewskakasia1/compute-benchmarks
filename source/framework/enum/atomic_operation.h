@@ -17,9 +17,3 @@ enum class AtomicOperation {
     Or,
     Xor,
 };
-
-enum class DataType {
-    Unknown,
-    Int32,
-    Float,
-};

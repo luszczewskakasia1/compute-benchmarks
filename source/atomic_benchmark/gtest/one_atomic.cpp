@@ -7,15 +7,16 @@
 
 static const inline RegisterTestCase<OneAtomic> registerTestCase{};
 
-class OneAtomicTest : public ::testing::TestWithParam<std::tuple<AtomicOperation, size_t, size_t>> {
+class OneAtomicTest : public ::testing::TestWithParam<std::tuple<DataType, AtomicOperation, size_t, size_t>> {
 };
 
 TEST_P(OneAtomicTest, Test) {
     OneAtomicArguments args{};
     args.api = Api::OpenCL;
-    args.atomicOperation = std::get<0>(GetParam());
-    args.workgroupCount = std::get<1>(GetParam());
-    args.workgroupSize = std::get<2>(GetParam());
+    args.dataType = std::get<0>(GetParam());
+    args.atomicOperation = std::get<1>(GetParam());
+    args.workgroupCount = std::get<2>(GetParam());
+    args.workgroupSize = std::get<3>(GetParam());
 
     OneAtomic test;
     test.run(args);
@@ -25,6 +26,7 @@ INSTANTIATE_TEST_SUITE_P(
     OneAtomicTest,
     OneAtomicTest,
     ::testing::Combine(
+        ::testing::Values(DataType::Float, DataType::Int32),
         ::CommonGtestArgs::allAtomicOperations(),
         ::CommonGtestArgs::workgroupCount(),
         ::CommonGtestArgs::workgroupSize()));

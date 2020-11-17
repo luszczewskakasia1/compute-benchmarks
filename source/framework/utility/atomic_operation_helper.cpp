@@ -137,3 +137,14 @@ std::string AtomicOperationHelper::getCompilerOptions(AtomicOperation operation,
 
     return result.str();
 }
+
+bool AtomicOperationHelper::isSupported(AtomicOperation operation, DataType type) {
+    switch (type) {
+    case DataType::Float:
+        return operation == AtomicOperation::Xchg;
+    case DataType::Int32:
+        return true;
+    default:
+        ERROR("Unknown data type");
+    }
+}
