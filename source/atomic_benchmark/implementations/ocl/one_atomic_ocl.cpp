@@ -12,8 +12,18 @@ static TestResult run(const OneAtomicArguments &arguments, Statistics &statistic
     Timer timer{};
     cl_int retVal{};
 
-    // Create buffer
+    // Prepare data
+    const size_t lws = arguments.workgroupSize;
+    const size_t gws = arguments.workgroupSize * arguments.workgroupCount;
+    const cl_uint loopIterations = 100;
+    const size_t loopIterationsTotal = gws * loopIterations * (arguments.iterations + 1);
+    const size_t operatorApplicationCount = loopIterationsTotal * 128; // Each loop iteration performs 128 operations
+    const auto dataForKernel = AtomicOperationHelper::getDataForKernel(DataType::Int32, arguments.atomicOperation, operatorApplicationCount);
+
+    // Create and initialize the buffer with atomic
     cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, sizeof(cl_uint), nullptr, &retVal);
+    ASSERT_CL_SUCCESS(retVal);
+    ASSERT_CL_SUCCESS(clEnqueueWriteBuffer(opencl.commandQueue, buffer, CL_BLOCKING, 0, dataForKernel.sizeOfDataType, dataForKernel.initialValue, 0, nullptr, nullptr));
 
     // Create kernel
     const std::vector<uint8_t> kernelSource = loadBinaryFile("atomic_benchmark_kernel.cl");
@@ -30,12 +40,8 @@ static TestResult run(const OneAtomicArguments &arguments, Statistics &statistic
     ASSERT_CL_SUCCESS(retVal);
 
     // Warmup
-    const size_t lws = arguments.workgroupSize;
-    const size_t gws = arguments.workgroupSize * arguments.workgroupCount;
-    const cl_uint otherArgument = 1;
-    const cl_uint loopIterations = 100;
     ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 0, sizeof(buffer), &buffer));
-    ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 1, sizeof(otherArgument), &otherArgument));
+    ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 1, dataForKernel.sizeOfDataType, dataForKernel.otherArgument));
     ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 2, sizeof(loopIterations), &loopIterations));
     ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
@@ -47,6 +53,13 @@ static TestResult run(const OneAtomicArguments &arguments, Statistics &statistic
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
         statistics.pushValue(timer.get());
+    }
+
+    // Verify
+    std::byte result[8] = {};
+    ASSERT_CL_SUCCESS(clEnqueueReadBuffer(opencl.commandQueue, buffer, CL_BLOCKING, 0, dataForKernel.sizeOfDataType, result, 0, nullptr, nullptr));
+    if (std::memcmp(result, dataForKernel.expectedValue, dataForKernel.sizeOfDataType) != 0) {
+        return TestResult::VerificationFail;
     }
 
     // Cleanup

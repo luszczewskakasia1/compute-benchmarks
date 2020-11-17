@@ -25,6 +25,7 @@ enum class TestResult {
     InvalidArgs,             // Invalid arguments specific to the test case were supplied
     Nooped,                  // Test was nooped, only print its name
     FilteredOut,             // Test was skipped because of passed argFilter
+    VerificationFail,        // Results where incorrect
 };
 
 template <typename _Arguments>
@@ -106,6 +107,10 @@ class TestCase : public TestCaseInterface {
 
         case TestResult::Nooped:
             statistics.printStatisticsString(testCaseNameWithConfig, "NOOP");
+            break;
+
+        case TestResult::VerificationFail:
+            statistics.printStatisticsString(testCaseNameWithConfig, "VERIF_FAIL");
             break;
 
         default:
