@@ -47,7 +47,7 @@ static TestResult run(const OneAtomicArguments &arguments, Statistics &statistic
     const size_t sourceLength = kernelSource.size();
     cl_program program = clCreateProgramWithSource(opencl.context, 1, &source, &sourceLength, &retVal);
     ASSERT_CL_SUCCESS(retVal);
-    const std::string compilerOptions = AtomicOperationHelper::getCompilerOptions(arguments.atomicOperation, otherArgumentsBufferSize);
+    const std::string compilerOptions = AtomicOperationHelper::getCompilerOptions(arguments.dataType, arguments.atomicOperation, otherArgumentsBufferSize);
     ASSERT_CL_SUCCESS(clBuildProgram(program, 1, &opencl.device, compilerOptions.c_str(), nullptr, nullptr));
     cl_kernel kernel = clCreateKernel(program, "one_atomic", &retVal);
     ASSERT_CL_SUCCESS(retVal);

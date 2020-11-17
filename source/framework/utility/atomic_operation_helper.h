@@ -12,11 +12,13 @@ struct AtomicOperationHelper {
     };
 
     static DataForKernel getDataForKernel(DataType dataType, AtomicOperation operation, size_t iterations);
-    static std::string getCompilerOptions(AtomicOperation operation,
+    static std::string getCompilerOptions(DataType dataType,
+                                          AtomicOperation operation,
                                           size_t otherArgumentBufferSize,
                                           const std::string &otherArgumentName = "otherArgument");
     static bool isSupported(AtomicOperation operation, DataType type);
 
   private:
+    static std::string getDataTypeName(DataType dataType);
     static size_t getArgumentsCount(AtomicOperation operation);
 };

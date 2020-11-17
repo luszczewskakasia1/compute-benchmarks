@@ -94,6 +94,17 @@ AtomicOperationHelper::DataForKernel AtomicOperationHelper::getDataForKernel(Dat
     }
 }
 
+std::string AtomicOperationHelper::getDataTypeName(DataType dataType) {
+    switch (dataType) {
+    case DataType::Float:
+        return "float";
+    case DataType::Int32:
+        return "int";
+    default:
+        ERROR("Unknown data type");
+    }
+}
+
 size_t AtomicOperationHelper::getArgumentsCount(AtomicOperation operation) {
     switch (operation) {
     case AtomicOperation::Unknown:
@@ -110,7 +121,8 @@ size_t AtomicOperationHelper::getArgumentsCount(AtomicOperation operation) {
     return operation == AtomicOperation::Inc || operation == AtomicOperation::Dec;
 }
 
-std::string AtomicOperationHelper::getCompilerOptions(AtomicOperation operation,
+std::string AtomicOperationHelper::getCompilerOptions(DataType dataType,
+                                                      AtomicOperation operation,
                                                       size_t otherArgumentBufferSize,
                                                       const std::string &otherArgumentName) {
     const static char *functionNames[] = {"ERROR",
@@ -135,7 +147,7 @@ std::string AtomicOperationHelper::getCompilerOptions(AtomicOperation operation,
     result << ") ";
 
     // Select datatype (TODO: it's hardcoded for now)
-    result << "-D DATATYPE=int ";
+    result << "-D DATATYPE=" << getDataTypeName(dataType) << " ";
 
     // Select otherArguments buffer size
     result << "-D OTHER_ARGUMENT_BUFFER_SIZE=" << otherArgumentBufferSize << " ";
