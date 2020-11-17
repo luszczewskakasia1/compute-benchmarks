@@ -1,6 +1,7 @@
 #include "atomic_benchmark/definitions/one_atomic.h"
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
+#include "framework/utility/atomic_operation_helper.h"
 #include "framework/utility/load_binary_file.h"
 #include "framework/utility/timer.h"
 
