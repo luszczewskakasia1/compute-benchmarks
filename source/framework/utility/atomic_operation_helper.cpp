@@ -110,7 +110,9 @@ size_t AtomicOperationHelper::getArgumentsCount(AtomicOperation operation) {
     return operation == AtomicOperation::Inc || operation == AtomicOperation::Dec;
 }
 
-std::string AtomicOperationHelper::getCompilerOptions(AtomicOperation operation, const std::string &otherArgumentName) {
+std::string AtomicOperationHelper::getCompilerOptions(AtomicOperation operation,
+                                                      size_t otherArgumentBufferSize,
+                                                      const std::string &otherArgumentName) {
     const static char *functionNames[] = {"ERROR",
                                           "atomic_add", "atomic_sub",
                                           "atomic_xchg", "atomic_cmpxchg",
@@ -133,7 +135,10 @@ std::string AtomicOperationHelper::getCompilerOptions(AtomicOperation operation,
     result << ") ";
 
     // Select datatype (TODO: it's hardcoded for now)
-    result << "-D DATATYPE=int";
+    result << "-D DATATYPE=int ";
+
+    // Select otherArguments buffer size
+    result << "-D OTHER_ARGUMENT_BUFFER_SIZE=" << otherArgumentBufferSize << " ";
 
     return result.str();
 }

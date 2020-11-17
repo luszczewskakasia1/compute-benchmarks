@@ -12,7 +12,9 @@ struct AtomicOperationHelper {
     };
 
     static DataForKernel getDataForKernel(DataType dataType, AtomicOperation operation, size_t iterations);
-    static std::string getCompilerOptions(AtomicOperation operation, const std::string &otherArgumentName = "otherArgument");
+    static std::string getCompilerOptions(AtomicOperation operation,
+                                          size_t otherArgumentBufferSize,
+                                          const std::string &otherArgumentName = "otherArgument");
     static bool isSupported(AtomicOperation operation, DataType type);
 
   private:

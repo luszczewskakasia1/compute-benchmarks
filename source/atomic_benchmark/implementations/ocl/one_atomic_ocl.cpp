@@ -24,12 +24,19 @@ static TestResult run(const OneAtomicArguments &arguments, Statistics &statistic
     const cl_uint loopIterations = 100;
     const size_t loopIterationsTotal = gws * loopIterations * (arguments.iterations + 1);
     const size_t operatorApplicationCount = loopIterationsTotal * 128; // Each loop iteration performs 128 operations
-    const auto dataForKernel = AtomicOperationHelper::getDataForKernel(arguments.dataType, arguments.atomicOperation, operatorApplicationCount);
+    const auto data = AtomicOperationHelper::getDataForKernel(arguments.dataType, arguments.atomicOperation, operatorApplicationCount);
+    const size_t otherArgumentsBufferSize = 32u;
 
     // Create and initialize the buffer with atomic
-    cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, sizeof(cl_uint), nullptr, &retVal);
+    cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, data.sizeOfDataType, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
-    ASSERT_CL_SUCCESS(clEnqueueWriteBuffer(opencl.commandQueue, buffer, CL_BLOCKING, 0, dataForKernel.sizeOfDataType, dataForKernel.initialValue, 0, nullptr, nullptr));
+    ASSERT_CL_SUCCESS(clEnqueueWriteBuffer(opencl.commandQueue, buffer, CL_FALSE, 0, data.sizeOfDataType, data.initialValue, 0, nullptr, nullptr));
+
+    // Create and initialize the buffer with other argument
+    cl_mem otherArgumentsBuffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, data.sizeOfDataType * otherArgumentsBufferSize, nullptr, &retVal);
+    ASSERT_CL_SUCCESS(retVal);
+    ASSERT_CL_SUCCESS(clEnqueueFillBuffer(opencl.commandQueue, otherArgumentsBuffer, data.otherArgument, data.sizeOfDataType, 0, data.sizeOfDataType * otherArgumentsBufferSize, 0, nullptr, nullptr));
+    ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
     // Create kernel
     const std::vector<uint8_t> kernelSource = loadBinaryFile("atomic_benchmark_kernel.cl");
@@ -40,14 +47,14 @@ static TestResult run(const OneAtomicArguments &arguments, Statistics &statistic
     const size_t sourceLength = kernelSource.size();
     cl_program program = clCreateProgramWithSource(opencl.context, 1, &source, &sourceLength, &retVal);
     ASSERT_CL_SUCCESS(retVal);
-    const std::string compilerOptions = AtomicOperationHelper::getCompilerOptions(arguments.atomicOperation);
+    const std::string compilerOptions = AtomicOperationHelper::getCompilerOptions(arguments.atomicOperation, otherArgumentsBufferSize);
     ASSERT_CL_SUCCESS(clBuildProgram(program, 1, &opencl.device, compilerOptions.c_str(), nullptr, nullptr));
     cl_kernel kernel = clCreateKernel(program, "one_atomic", &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
     // Warmup
     ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 0, sizeof(buffer), &buffer));
-    ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 1, dataForKernel.sizeOfDataType, dataForKernel.otherArgument));
+    ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 1, sizeof(otherArgumentsBuffer), &otherArgumentsBuffer));
     ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 2, sizeof(loopIterations), &loopIterations));
     ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
@@ -63,8 +70,8 @@ static TestResult run(const OneAtomicArguments &arguments, Statistics &statistic
 
     // Verify
     std::byte result[8] = {};
-    ASSERT_CL_SUCCESS(clEnqueueReadBuffer(opencl.commandQueue, buffer, CL_BLOCKING, 0, dataForKernel.sizeOfDataType, result, 0, nullptr, nullptr));
-    if (std::memcmp(result, dataForKernel.expectedValue, dataForKernel.sizeOfDataType) != 0) {
+    ASSERT_CL_SUCCESS(clEnqueueReadBuffer(opencl.commandQueue, buffer, CL_BLOCKING, 0, data.sizeOfDataType, result, 0, nullptr, nullptr));
+    if (std::memcmp(result, data.expectedValue, data.sizeOfDataType) != 0) {
         return TestResult::VerificationFail;
     }
 
