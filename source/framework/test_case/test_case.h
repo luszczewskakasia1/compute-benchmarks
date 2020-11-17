@@ -148,11 +148,6 @@ class TestCase : public TestCaseInterface {
             printTestMapWarning();
         }
 
-        // Check if test case name with config is not too long
-        if (!::configuration.dumpCommandLines && !arguments.isSingleTestMode) {
-            printTestCaseNameLengthWarning(testCaseNameWithConfig);
-        }
-
         // Check test filters
         if (auto testFilters = ::configuration.testFilter.get(); testFilters.size() > 0) {
             const auto testCaseName = getTestCaseName();
@@ -171,6 +166,11 @@ class TestCase : public TestCaseInterface {
             if (!requirementMet) {
                 return TestResult::FilteredOut;
             }
+        }
+
+        // Check if test case name with config is not too long
+        if (!::configuration.dumpCommandLines && !arguments.isSingleTestMode) {
+            printTestCaseNameLengthWarning(testCaseNameWithConfig);
         }
 
         // Noop if required
@@ -238,7 +238,7 @@ class TestCase : public TestCaseInterface {
         if (currentWidth > maxWidth) {
             maxWidth = currentWidth;
             std::cerr << "WARNING: current TestCase column width of " << columnWidth << " is too small. Consider changing it to " << maxWidth << ". "
-                      << "This is an issue in the benchmark which may cause the output to appear weird, but does not break any functionality.";
+                      << "This is an issue in the benchmark which may cause the output to appear weird, but does not break any functionality.\n";
         }
     }
 };
