@@ -6,6 +6,7 @@
 #include "framework/utility/timer.h"
 
 #include <gtest/gtest.h>
+#include <cstring>
 
 static TestResult run(const SeparateAtomicsArguments &arguments, Statistics &statistics) {
     // Check support

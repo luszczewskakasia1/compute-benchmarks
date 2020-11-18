@@ -5,6 +5,7 @@
 #include "framework/utility/load_binary_file.h"
 #include "framework/utility/timer.h"
 
+#include <cstring>
 #include <gtest/gtest.h>
 
 static TestResult run(const OneAtomicArguments &arguments, Statistics &statistics) {
