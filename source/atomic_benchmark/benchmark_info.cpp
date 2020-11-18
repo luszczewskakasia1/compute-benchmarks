@@ -13,7 +13,7 @@ MeasurementUnit getMeasurementUnit() {
 }
 
 int getTestCaseNameColumnWidth() {
-    return 58;
+    return 86;
 }
 
 std::unique_ptr<BenchmarkSpecificConfigurationBase> BenchmarkSpecificConfigurationBase::create(TestCaseArgumentsBase &testCaseArguments) {

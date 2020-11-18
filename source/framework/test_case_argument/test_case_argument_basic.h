@@ -14,6 +14,14 @@ struct IntegerTestCaseArgument : TestCaseArgument {
         return *this;
     }
 
+    size_t getSizeOf() const {
+        return sizeof(value);
+    }
+
+    const size_t *getAddressOf() const {
+        return &value;
+    }
+
   protected:
     std::string toStringValue() const override {
         return std::to_string(this->value);

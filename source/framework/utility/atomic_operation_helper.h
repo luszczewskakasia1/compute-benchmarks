@@ -4,6 +4,8 @@
 #include "framework/enum/data_type.h"
 
 struct AtomicOperationHelper {
+    constexpr static inline size_t cachelineSize = 64; // TODO move to some file along with Megabyte, Gigabyte, etc.
+
     struct DataForKernel {
         size_t sizeOfDataType;
         std::byte initialValue[8];
