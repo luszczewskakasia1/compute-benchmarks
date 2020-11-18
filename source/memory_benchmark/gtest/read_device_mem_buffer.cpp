@@ -1,6 +1,7 @@
 #include "memory_benchmark/definitions/read_device_mem_buffer.h"
 
 #include "framework/test_case/register_test_case.h"
+#include "framework/utility/memory_constants.h"
 
 #include <gtest/gtest.h>
 
@@ -19,6 +20,7 @@ TEST_P(ReadDeviceMemBufferTest, Test) {
     test.run(args);
 }
 
+using namespace MemoryConstants;
 INSTANTIATE_TEST_SUITE_P(
     ReadDeviceMemBufferTest,
     ReadDeviceMemBufferTest,

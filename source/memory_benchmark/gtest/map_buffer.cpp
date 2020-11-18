@@ -2,6 +2,7 @@
 
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/common_gtest_args.h"
+#include "framework/utility/memory_constants.h"
 
 #include <gtest/gtest.h>
 
@@ -22,9 +23,7 @@ TEST_P(MapBufferTest, Test) {
     test.run(args);
 }
 
-constexpr size_t kiloByte = 1024u;
-constexpr size_t megaByte = 1024u * kiloByte;
-
+using namespace MemoryConstants;
 INSTANTIATE_TEST_SUITE_P(
     MapBufferTest,
     MapBufferTest,

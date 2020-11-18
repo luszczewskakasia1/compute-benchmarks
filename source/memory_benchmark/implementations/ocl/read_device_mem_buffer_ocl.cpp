@@ -4,6 +4,7 @@
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/load_binary_file.h"
 #include "framework/utility/timer.h"
+#include "framework/utility/memory_constants.h"
 #include "memory_benchmark/definitions/read_device_mem_buffer.h"
 
 #include <gtest/gtest.h>
@@ -56,7 +57,7 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     const cl_mem destination = clCreateBuffer(opencl.context, memFlags, arguments.size, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
-    const uint32_t clearGpuBuffSize = 16*megaByte;
+    const uint32_t clearGpuBuffSize = 16*MemoryConstants::megaByte;
     const cl_mem clearGpuBuff = clCreateBuffer(opencl.context, memFlags, clearGpuBuffSize, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
 

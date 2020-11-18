@@ -5,10 +5,6 @@
 
 #include <sstream>
 
-constexpr size_t kiloByte = 1024u;
-constexpr size_t megaByte = 1024u * kiloByte;
-constexpr size_t gigaByte = 1024u * megaByte;
-
 struct ReadDeviceMemBufferArguments : TestCaseArguments {
     ByteSizeTestCaseArgument size;
     BooleanTestCaseArgument compressed;
