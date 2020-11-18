@@ -28,5 +28,5 @@ INSTANTIATE_TEST_SUITE_P(
     ::testing::Combine(
         ::testing::Values(DataType::Float, DataType::Int32),
         ::CommonGtestArgs::allAtomicOperations(),
-        ::CommonGtestArgs::workgroupCount(),
-        ::CommonGtestArgs::workgroupSize()));
+        ::testing::Values(1u, 1000u),
+        ::testing::Values(16u, 256u)));

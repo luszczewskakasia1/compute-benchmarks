@@ -25,7 +25,6 @@ static TestResult run(const OneAtomicArguments &arguments, Statistics &statistic
     const size_t loopIterationsTotal = gws * loopIterations * (arguments.iterations + 1);
     const size_t operatorApplicationCount = loopIterationsTotal * 128; // Each loop iteration performs 128 operations
     const auto data = AtomicOperationHelper::getDataForKernel(arguments.dataType, arguments.atomicOperation, operatorApplicationCount);
-    const size_t otherArgumentsBufferSize = 32u;
 
     // Create and initialize the buffer with atomic
     cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, data.sizeOfDataType, nullptr, &retVal);
@@ -33,6 +32,7 @@ static TestResult run(const OneAtomicArguments &arguments, Statistics &statistic
     ASSERT_CL_SUCCESS(clEnqueueWriteBuffer(opencl.commandQueue, buffer, CL_FALSE, 0, data.sizeOfDataType, data.initialValue, 0, nullptr, nullptr));
 
     // Create and initialize the buffer with other argument
+    const size_t otherArgumentsBufferSize = 32u;
     cl_mem otherArgumentsBuffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, data.sizeOfDataType * otherArgumentsBufferSize, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
     ASSERT_CL_SUCCESS(clEnqueueFillBuffer(opencl.commandQueue, otherArgumentsBuffer, data.otherArgument, data.sizeOfDataType, 0, data.sizeOfDataType * otherArgumentsBufferSize, 0, nullptr, nullptr));
