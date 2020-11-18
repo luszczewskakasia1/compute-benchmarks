@@ -28,7 +28,7 @@ static TestResult run(const SeparateAtomicsArguments &arguments, Statistics &sta
 
     // Create and initialize the buffer with atomics
     const size_t cachelinesCount = gws / arguments.atomicsPerCacheline;
-    const size_t totalBufferSize = cachelinesCount * AtomicOperationHelper::cachelineSize;
+    const size_t totalBufferSize = cachelinesCount * MemoryConstants::cachelineSize;
     cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, totalBufferSize, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
     ASSERT_CL_SUCCESS(clEnqueueFillBuffer(opencl.commandQueue, buffer, data.initialValue, data.sizeOfDataType, 0, totalBufferSize, 0, nullptr, nullptr));
@@ -75,10 +75,10 @@ static TestResult run(const SeparateAtomicsArguments &arguments, Statistics &sta
     auto result = std::make_unique<std::byte[]>(totalBufferSize);
     ASSERT_CL_SUCCESS(clEnqueueReadBuffer(opencl.commandQueue, buffer, CL_BLOCKING, 0, totalBufferSize, result.get(), 0, nullptr, nullptr));
     for (auto cachelineIndex = 0u; cachelineIndex < cachelinesCount; cachelineIndex++) {
-        for (auto atomicIndex = 0u; atomicIndex < AtomicOperationHelper::cachelineSize / data.sizeOfDataType; atomicIndex++) {
+        for (auto atomicIndex = 0u; atomicIndex < MemoryConstants::cachelineSize / data.sizeOfDataType; atomicIndex++) {
             const bool wasTouched = atomicIndex < arguments.atomicsPerCacheline;
             const std::byte *expectedValue = wasTouched ? data.expectedValue : data.initialValue;
-            const std::byte *actualValue = result.get() + cachelineIndex * AtomicOperationHelper::cachelineSize + atomicIndex * data.sizeOfDataType;
+            const std::byte *actualValue = result.get() + cachelineIndex * MemoryConstants::cachelineSize + atomicIndex * data.sizeOfDataType;
             if (std::memcmp(actualValue, expectedValue, data.sizeOfDataType) != 0) {
                 return TestResult::VerificationFail;
             }

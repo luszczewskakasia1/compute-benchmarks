@@ -15,7 +15,7 @@ constexpr inline size_t getSize(DataType dataType) {
         return 4u;
     case DataType::Float:
         return sizeof(float);
-    case DataType::Unknown:
+    default:
         ERROR("Unkown data type")
     }
 }

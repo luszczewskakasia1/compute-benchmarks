@@ -4,7 +4,7 @@
 #include "framework/test_case_argument/test_case_argument_atomic_operation.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
 #include "framework/test_case_argument/test_case_argument_data_type.h"
-#include "framework/utility/atomic_operation_helper.h"
+#include "framework/utility/memory_constants.h"
 
 struct SeparateAtomicsArguments : TestCaseArguments {
     DataTypeTestCaseArgument dataType;
@@ -24,7 +24,7 @@ struct SeparateAtomicsArguments : TestCaseArguments {
         if (atomicsPerCacheline > workgroupCount * workgroupSize) {
             return false;
         }
-        if (atomicsPerCacheline > AtomicOperationHelper::cachelineSize / DataTypeHelper::getSize(dataType)) {
+        if (atomicsPerCacheline > MemoryConstants::cachelineSize / DataTypeHelper::getSize(dataType)) {
             return false;
         }
         return true;
