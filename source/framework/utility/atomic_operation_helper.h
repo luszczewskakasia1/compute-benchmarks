@@ -3,6 +3,8 @@
 #include "framework/enum/atomic_operation.h"
 #include "framework/enum/data_type.h"
 
+#include <cstddef>
+
 struct AtomicOperationHelper {
     struct DataForKernel {
         size_t sizeOfDataType;
