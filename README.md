@@ -1,14 +1,3 @@
-# !!! INFORMATION !!!
-
-Compute Benchmarks are being moved to [GitHub](https://github.com/intel-innersource/drivers.gpu.compute.benchmarks). 
-
-New commits will be pushed to both repositories ([GitLab](https://gitlab.devtools.intel.com/mdziuban/ullsbenchmark) and [GitHub](https://github.com/intel-innersource/drivers.gpu.compute.benchmarks)) during the transition period, which is WW47. Starting 23 Nov 2020 the GitLab repository will be deprecated and no longer updated.
-
-Please make sure you have access to the new repository before that. You don't need any specific permissions beyond `All BB Employees` to have a read access and be able to create pull requests. Useful links:
-* http://goto/1SCM 
-* https://1source.intel.com/onboard
-* https://github.com/intel-innersource/drivers.gpu.compute.benchmarks
-
 # Compute Benchmarks
 A benchmark suite developed and maintained by NEO driver development team in order to provide a stable environment which allows checking and reproducing performance for various parts of the driver. The benchmark suite is divided into multiple executables, each of which tests a different aspect of the driver. Each executable contained in ComputeBechmarks consists of multiple test cases with a set of predefined configurations (parameters like buffer sizes, workgroup sizes, etc.) along with a possibility to run them with any desired parameters. They support both OpenCL and LevelZero APIs. Current set of exectuables:
 
