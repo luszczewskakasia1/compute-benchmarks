@@ -14,7 +14,7 @@ struct UsmMemsetArguments : TestCaseArguments {
     UsmMemsetArguments()
         : memoryPlacement(*this, "memory"),
           bufferSize(*this, "size", "size of the buffer to be set"),
-          forceBlitter(*this, "copyQueue") {}
+          forceBlitter(*this, "forceBlitter", "Force blitter engine. Test will be skipped if device does not support blitter. Warning: in OpenCL blitter may still be used even if not forced") {}
 };
 
 class UsmMemset : public TestCase<UsmMemsetArguments> {

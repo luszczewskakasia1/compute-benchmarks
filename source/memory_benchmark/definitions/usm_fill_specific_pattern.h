@@ -19,7 +19,7 @@ struct UsmFillSpecificPatternArguments : TestCaseArguments {
         : memoryPlacement(*this, "memory"),
           bufferSize(*this, "size", "size of the buffer to be filled"),
           pattern(*this, "pattern"),
-          forceBlitter(*this, "copyQueue"),
+          forceBlitter(*this, "forceBlitter", "Force blitter engine. Test will be skipped if device does not support blitter. Warning: in OpenCL blitter may still be used even if not forced"),
           useEvents(*this, "useEvents") {}
 };
 

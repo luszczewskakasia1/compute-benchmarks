@@ -23,7 +23,7 @@ struct UsmFillArguments : TestCaseArguments {
           bufferPlacement(*this, "memory", "Placement of memory for the buffer"),
           size(*this, "size", "Size of the buffer"),
           patternSize(*this, "patternSize", "Size of the fill pattern"),
-          forceBlitter(*this, "copyQueue", "Force blitter"),
+          forceBlitter(*this, "forceBlitter", "Force blitter engine. Test will be skipped if device does not support blitter. Warning: in OpenCL blitter may still be used even if not forced"),
           useEvents(*this, "useEvents", "Select if GPU-side measurements should be done") {}
 
     bool validateArgumentsExtra() const override {

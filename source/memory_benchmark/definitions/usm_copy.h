@@ -17,7 +17,7 @@ struct UsmCopyArguments : TestCaseArguments {
         : sourcePlacement(*this, "src"),
           destinationPlacement(*this, "dst"),
           size(*this, "size"),
-          forceBlitter(*this, "copyQueue"),
+          forceBlitter(*this, "forceBlitter", "Force blitter engine. Test will be skipped if device does not support blitter. Warning: in OpenCL blitter may still be used even if not forced"),
           useEvents(*this, "useEvents") {}
 };
 
