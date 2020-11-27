@@ -14,7 +14,7 @@ struct FillBufferArguments : TestCaseArguments {
     ByteSizeTestCaseArgument size;
     ByteSizeTestCaseArgument patternSize;
     CompressionBooleanTestCaseArgument compressed;
-    BooleanTestCaseArgument copyQueue;
+    BooleanTestCaseArgument forceBlitter;
     BooleanTestCaseArgument useEvents;
 
     FillBufferArguments()
@@ -24,7 +24,7 @@ struct FillBufferArguments : TestCaseArguments {
           size(*this, "size", "Size of the buffer"),
           patternSize(*this, "patternSize", "Size of the fill pattern"),
           compressed(*this, "compressed", "Select if the buffer will be compressed"),
-          copyQueue(*this, "copyQueue", "Force blitter"),
+          forceBlitter(*this, "copyQueue", "Force blitter"),
           useEvents(*this, "useEvents", "Select if GPU-side measurements should be done") {}
 
     bool validateArgumentsExtra() const override {

@@ -9,7 +9,7 @@ struct QueueProperties {
     bool createQueue = true;
     bool requireCreationSuccess = true;
     bool profiling = false;
-    int copyQueue = -1;
+    bool forceBlitter = false;
     int ooq = -1;
     DeviceSelection deviceSelection = DeviceSelection::Unknown;
 
@@ -23,8 +23,8 @@ struct QueueProperties {
         return *this;
     }
 
-    QueueProperties &setBcs(bool bcs) {
-        this->copyQueue = bcs;
+    QueueProperties &setForceBlitter(bool bcs) {
+        this->forceBlitter = bcs;
         return *this;
     }
 

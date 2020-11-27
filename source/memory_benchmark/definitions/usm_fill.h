@@ -11,7 +11,7 @@ struct UsmFillArguments : TestCaseArguments {
     MemoryPlacementTestCaseArgument memoryPlacement;
     ByteSizeTestCaseArgument bufferSize;
     ByteSizeTestCaseArgument patternSize;
-    BooleanTestCaseArgument copyQueue;
+    BooleanTestCaseArgument forceBlitter;
     BooleanTestCaseArgument useEvents;
     BufferContentsTestCaseArgument patternContents;
 
@@ -19,7 +19,7 @@ struct UsmFillArguments : TestCaseArguments {
         : memoryPlacement(*this, "memory"),
           bufferSize(*this, "size", "size of the buffer to be filled"),
           patternSize(*this, "patternSize"),
-          copyQueue(*this, "copyQueue"),
+          forceBlitter(*this, "copyQueue"),
           useEvents(*this, "useEvents"),
           patternContents(*this, "patternContents") {}
 };

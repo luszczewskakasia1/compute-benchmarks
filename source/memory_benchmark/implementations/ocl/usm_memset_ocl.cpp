@@ -8,7 +8,7 @@
 
 static TestResult run(const UsmMemsetArguments &arguments, Statistics &statistics) {
     // Setup
-    QueueProperties queueProperties = QueueProperties::create().setBcs(arguments.copyQueue).allowCreationFail();
+    QueueProperties queueProperties = QueueProperties::create().setForceBlitter(arguments.forceBlitter).allowCreationFail();
     Opencl opencl(queueProperties);
     if (opencl.commandQueue == nullptr) {
         return TestResult::DeviceNotCapable;

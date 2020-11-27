@@ -9,7 +9,7 @@
 
 static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics) {
     ContextProperties contextProperties = ContextProperties::create().create().setDeviceSelection(arguments.contextPlacement).allowCreationFail();
-    QueueProperties queueProperties = QueueProperties::create().setDeviceSelection(arguments.queuePlacement).setBcs(arguments.copyQueue).allowCreationFail();
+    QueueProperties queueProperties = QueueProperties::create().setDeviceSelection(arguments.queuePlacement).setForceBlitter(arguments.forceBlitter).allowCreationFail();
     LevelZero levelzero(queueProperties, contextProperties);
     if (levelzero.context == nullptr || levelzero.commandQueue == nullptr) {
         return TestResult::DeviceNotCapable;

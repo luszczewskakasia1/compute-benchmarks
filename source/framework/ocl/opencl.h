@@ -85,7 +85,7 @@ struct Opencl {
         if (queueProperties.ooq == 1 || (queueProperties.ooq == -1 && ::configuration.oclUseOOQ)) {
             properties[1] |= CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
         }
-        if (queueProperties.copyQueue == 1) {
+        if (queueProperties.forceBlitter == 1) {
             properties[propertiesIndex++] = CL_QUEUE_FAMILY_INTEL;
             properties[propertiesIndex++] = CL_QUEUE_FAMILY_TYPE_BCS_DEPRECATED_INTEL;
         }

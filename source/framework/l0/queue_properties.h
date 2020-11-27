@@ -6,7 +6,7 @@ namespace L0 {
 struct QueueProperties {
     bool createQueue = true;
     bool requireCreationSuccess = true;
-    bool copyQueue = false;
+    bool forceBlitter = false;
     DeviceSelection deviceSelection = DeviceSelection::Unknown;
 
     static QueueProperties create() {
@@ -19,8 +19,8 @@ struct QueueProperties {
         return *this;
     }
 
-    QueueProperties &setBcs(bool bcs) {
-        this->copyQueue = bcs;
+    QueueProperties &setForceBlitter(bool bcs) {
+        this->forceBlitter = bcs;
         return *this;
     }
 

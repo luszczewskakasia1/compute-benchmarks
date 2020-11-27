@@ -162,7 +162,7 @@ struct LevelZero {
 
         // Get desc
         const auto queueFamilies = queryQueueFamilies(deviceForQueue);
-        auto descEntry = std::find_if(queueFamilies.begin(), queueFamilies.end(), [queueProperties](const QueueDesc &d) { return d.isCopyOnly == queueProperties.copyQueue; });
+        auto descEntry = std::find_if(queueFamilies.begin(), queueFamilies.end(), [queueProperties](const QueueDesc &d) { return d.isCopyOnly == queueProperties.forceBlitter; });
         if (descEntry == queueFamilies.end()) {
             ERROR_IF(queueProperties.requireCreationSuccess, "Device does not support such queue");
             return {};

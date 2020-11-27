@@ -16,7 +16,7 @@ TEST_P(UsmMemsetTest, Test) {
     args.api = std::get<0>(GetParam());
     args.memoryPlacement = std::get<1>(GetParam());
     args.bufferSize = std::get<2>(GetParam());
-    args.copyQueue = std::get<3>(GetParam());
+    args.forceBlitter = std::get<3>(GetParam());
 
     UsmMemset test;
     test.run(args);

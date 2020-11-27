@@ -10,14 +10,14 @@ struct UsmCopyArguments : TestCaseArguments {
     MemoryPlacementTestCaseArgument sourcePlacement;
     MemoryPlacementTestCaseArgument destinationPlacement;
     ByteSizeTestCaseArgument size;
-    BooleanTestCaseArgument copyQueue;
+    BooleanTestCaseArgument forceBlitter;
     BooleanTestCaseArgument useEvents;
 
     UsmCopyArguments()
         : sourcePlacement(*this, "src"),
           destinationPlacement(*this, "dst"),
           size(*this, "size"),
-          copyQueue(*this, "copyQueue"),
+          forceBlitter(*this, "copyQueue"),
           useEvents(*this, "useEvents") {}
 };
 

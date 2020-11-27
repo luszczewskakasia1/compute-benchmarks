@@ -9,7 +9,7 @@
 
 static TestResult run(const UsmFillSpecificPatternArguments &arguments, Statistics &statistics) {
     const std::vector<uint8_t> &pattern = arguments.pattern;
-    QueueProperties queueProperties = QueueProperties::create().setBcs(arguments.copyQueue).allowCreationFail();
+    QueueProperties queueProperties = QueueProperties::create().setForceBlitter(arguments.forceBlitter).allowCreationFail();
     LevelZero levelzero(queueProperties);
     if (levelzero.commandQueue == nullptr || pattern.size() > levelzero.commandQueueMaxFillSize) {
         return TestResult::DeviceNotCapable;

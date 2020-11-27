@@ -11,7 +11,7 @@
 static TestResult run(const UsmFillArguments &arguments, Statistics &statistics) {
     // Setup
     cl_int retVal;
-    QueueProperties queueProperties = QueueProperties::create().setDeviceSelection(arguments.queuePlacement).setBcs(arguments.copyQueue).setProfiling(arguments.useEvents).allowCreationFail();
+    QueueProperties queueProperties = QueueProperties::create().setDeviceSelection(arguments.queuePlacement).setForceBlitter(arguments.forceBlitter).setProfiling(arguments.useEvents).allowCreationFail();
     ContextProperties contextProperties = ContextProperties::create().setDeviceSelection(arguments.contextPlacement).allowCreationFail();
     Opencl opencl(queueProperties, contextProperties);
     if (opencl.context == nullptr || opencl.commandQueue == nullptr) {

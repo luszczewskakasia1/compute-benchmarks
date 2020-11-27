@@ -14,7 +14,7 @@ struct UsmFillArguments : TestCaseArguments {
     UsmDeviceSelectionTestCaseArgument bufferPlacement;
     ByteSizeTestCaseArgument size;
     ByteSizeTestCaseArgument patternSize;
-    BooleanTestCaseArgument copyQueue;
+    BooleanTestCaseArgument forceBlitter;
     BooleanTestCaseArgument useEvents;
 
     UsmFillArguments()
@@ -23,7 +23,7 @@ struct UsmFillArguments : TestCaseArguments {
           bufferPlacement(*this, "memory", "Placement of memory for the buffer"),
           size(*this, "size", "Size of the buffer"),
           patternSize(*this, "patternSize", "Size of the fill pattern"),
-          copyQueue(*this, "copyQueue", "Force blitter"),
+          forceBlitter(*this, "copyQueue", "Force blitter"),
           useEvents(*this, "useEvents", "Select if GPU-side measurements should be done") {}
 
     bool validateArgumentsExtra() const override {

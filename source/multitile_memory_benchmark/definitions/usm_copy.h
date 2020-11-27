@@ -14,7 +14,7 @@ struct UsmCopyArguments : TestCaseArguments {
     UsmDeviceSelectionTestCaseArgument srcPlacement;
     UsmDeviceSelectionTestCaseArgument dstPlacement;
     ByteSizeTestCaseArgument size;
-    BooleanTestCaseArgument copyQueue;
+    BooleanTestCaseArgument forceBlitter;
     BooleanTestCaseArgument useEvents;
 
     UsmCopyArguments()
@@ -23,7 +23,7 @@ struct UsmCopyArguments : TestCaseArguments {
           srcPlacement(*this, "src", "Placement of memory for the source buffer"),
           dstPlacement(*this, "dst", "Placement of memory for the destination buffer"),
           size(*this, "size", "Size of the buffers"),
-          copyQueue(*this, "copyQueue", "Force blitter"),
+          forceBlitter(*this, "copyQueue", "Force blitter"),
           useEvents(*this, "useEvents", "Select if GPU-side measurements should be done") {}
 
     bool validateArgumentsExtra() const override {

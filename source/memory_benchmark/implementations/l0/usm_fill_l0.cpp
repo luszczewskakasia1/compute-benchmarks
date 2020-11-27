@@ -8,7 +8,7 @@
 #include <gtest/gtest.h>
 
 static TestResult run(const UsmFillArguments &arguments, Statistics &statistics) {
-    QueueProperties queueProperties = QueueProperties::create().setBcs(arguments.copyQueue).allowCreationFail();
+    QueueProperties queueProperties = QueueProperties::create().setForceBlitter(arguments.forceBlitter).allowCreationFail();
     LevelZero levelzero(queueProperties);
     if (levelzero.commandQueue == nullptr || arguments.patternSize > levelzero.commandQueueMaxFillSize) {
         return TestResult::DeviceNotCapable;

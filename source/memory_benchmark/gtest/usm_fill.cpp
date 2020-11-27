@@ -17,7 +17,7 @@ TEST_P(UsmFillTest, Test) {
     args.memoryPlacement = std::get<1>(GetParam());
     args.bufferSize = std::get<2>(GetParam());
     args.patternSize = std::get<3>(GetParam());
-    args.copyQueue = std::get<4>(GetParam());
+    args.forceBlitter = std::get<4>(GetParam());
     args.useEvents = std::get<5>(GetParam());
     args.patternContents = std::get<6>(GetParam());
 

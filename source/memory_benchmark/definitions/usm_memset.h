@@ -9,12 +9,12 @@
 struct UsmMemsetArguments : TestCaseArguments {
     MemoryPlacementTestCaseArgument memoryPlacement;
     ByteSizeTestCaseArgument bufferSize;
-    BooleanTestCaseArgument copyQueue;
+    BooleanTestCaseArgument forceBlitter;
 
     UsmMemsetArguments()
         : memoryPlacement(*this, "memory"),
           bufferSize(*this, "size", "size of the buffer to be set"),
-          copyQueue(*this, "copyQueue") {}
+          forceBlitter(*this, "copyQueue") {}
 };
 
 class UsmMemset : public TestCase<UsmMemsetArguments> {

@@ -17,7 +17,7 @@ TEST_P(FillBufferTest, Test) {
     args.size = std::get<1>(GetParam());
     args.patternSize = std::get<2>(GetParam());
     args.compressed = std::get<3>(GetParam());
-    args.copyQueue = std::get<4>(GetParam());
+    args.forceBlitter = std::get<4>(GetParam());
 
     FillBuffer test;
     test.run(args);
