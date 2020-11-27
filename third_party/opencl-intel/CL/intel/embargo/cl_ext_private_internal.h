@@ -30,33 +30,25 @@
 
 // clang-format off
 // cl_mem_properties_intel
-#define CL_MEM_TILE_ID_INTEL                           0x10002
 #define CL_MEM_DEVICE_ID_INTEL                         0x10011
 
 // cl_context_properties
-#define CL_CONTEXT_FLAGS_INTEL                         0x10003
-#define CL_CONTEXT_ALLOW_ONLY_MASKED_QUEUE_INTEL       0x10004
-#define CL_CONTEXT_ALLOW_ONLY_SINGLE_TILE_QUEUES_INTEL 0x10005
-#define CL_CONTEXT_ALLOW_ALL_KIND_OF_QUEUES_INTEL      0x10006
 #define CL_EXTERNAL_DEVICE_HANDLE_INTEL                0x300B
 #define CL_EXTERNAL_DEVICEGROUP_INTEL                  0x300C
 
 // cl_queue_properties
-#define CL_QUEUE_TILE_ID_INTEL                         0x10000
-#define CL_QUEUE_TILE_ID_MASK_INTEL                    0x10007
-#define CL_QUEUE_FAMILY_INTEL                          0x10008
+#define CL_QUEUE_FAMILY_DEPRECATED_INTEL               0x10008
 
 // cl_queue_properties values
-#define CL_QUEUE_FAMILY_TYPE_RCS_INTEL                 0x0u
-#define CL_QUEUE_FAMILY_TYPE_CCS0_INTEL                0x1u
-#define CL_QUEUE_FAMILY_TYPE_CCS1_INTEL                0x2u
-#define CL_QUEUE_FAMILY_TYPE_CCS2_INTEL                0x3u
-#define CL_QUEUE_FAMILY_TYPE_CCS3_INTEL                0x4u
-#define CL_QUEUE_FAMILY_TYPE_BCS_INTEL                 0x5u
+#define CL_QUEUE_FAMILY_TYPE_RCS_DEPRECATED_INTEL      0x0u
+#define CL_QUEUE_FAMILY_TYPE_CCS0_DEPRECATED_INTEL     0x1u
+#define CL_QUEUE_FAMILY_TYPE_CCS1_DEPRECATED_INTEL     0x2u
+#define CL_QUEUE_FAMILY_TYPE_CCS2_DEPRECATED_INTEL     0x3u
+#define CL_QUEUE_FAMILY_TYPE_CCS3_DEPRECATED_INTEL     0x4u
+#define CL_QUEUE_FAMILY_TYPE_BCS_DEPRECATED_INTEL      0x5u
 
 // cl_device_info
-#define CL_DEVICE_NUM_TILES_INTEL                      0x10000
-#define CL_DEVICE_NUM_QUEUE_FAMILIES_INTEL             0x10009
+#define CL_DEVICE_NUM_QUEUE_FAMILIES_DEPRECATED_INTEL  0x10009
 
 // cl_mem_flags
 // Ensure that values are not already used in opencl/extensions/public/cl_ext_private.h
@@ -90,6 +82,7 @@ typedef cl_uint cl_resource_memory_scope;
 
 // cl_kernel_exec_info 
 #define CL_KERNEL_EXEC_INFO_THREAD_ARBITRATION_POLICY_STALL_BASED_ROUND_ROBIN_INTEL 0x10026
+#define CL_KERNEL_EXEC_INFO_EU_THREAD_OVER_DISPATCH_INTEL 0x10027;
 
 #pragma pack(push, 1)
 typedef struct _cl_resource_barrier_descriptor_intel {

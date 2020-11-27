@@ -87,7 +87,7 @@ struct Opencl {
         }
         if (queueProperties.copyQueue == 1) {
             properties[propertiesIndex++] = CL_QUEUE_FAMILY_INTEL;
-            properties[propertiesIndex++] = CL_QUEUE_FAMILY_TYPE_BCS_INTEL;
+            properties[propertiesIndex++] = CL_QUEUE_FAMILY_TYPE_BCS_DEPRECATED_INTEL;
         }
 
         // Create the queue
