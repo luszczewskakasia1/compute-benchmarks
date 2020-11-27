@@ -76,10 +76,24 @@ struct Opencl {
             return nullptr;
         }
 
-        const cl_device_id deviceForQueue = getDevice(queueProperties.deviceSelection);
+        // Create queue properties
+        cl_queue_properties properties[] = {CL_QUEUE_PROPERTIES, 0, 0, 0, 0};
+        cl_int propertiesIndex = 1;
+        if (queueProperties.profiling) {
+            properties[1] |= CL_QUEUE_PROFILING_ENABLE;
+        }
+        if (queueProperties.ooq == 1 || (queueProperties.ooq == -1 && ::configuration.oclUseOOQ)) {
+            properties[1] |= CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
+        }
+        if (queueProperties.copyQueue == 1) {
+            properties[propertiesIndex++] = CL_QUEUE_FAMILY_INTEL;
+            properties[propertiesIndex++] = CL_QUEUE_FAMILY_TYPE_BCS_INTEL;
+        }
 
+        // Create the queue
         cl_int retVal{};
-        cl_command_queue queue = clCreateCommandQueueWithProperties(this->context, deviceForQueue, queueProperties, &retVal);
+        const cl_device_id deviceForQueue = getDevice(queueProperties.deviceSelection);
+        cl_command_queue queue = clCreateCommandQueueWithProperties(this->context, deviceForQueue, properties, &retVal);
         if (queueProperties.requireCreationSuccess) {
             ERROR_UNLESS_CL_SUCCESS(retVal, "Command queue creation failed");
         }
