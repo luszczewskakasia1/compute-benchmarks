@@ -4,8 +4,6 @@
 #include "framework/enum/device_selection.h"
 #include "framework/ocl/cl.h"
 
-#include <CL/intel/embargo/cl_ext_private_internal.h>
-
 namespace OCL {
 struct QueueProperties {
     bool createQueue = true;

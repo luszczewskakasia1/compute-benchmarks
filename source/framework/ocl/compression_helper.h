@@ -4,9 +4,6 @@
 #include "framework/ocl/error.h"
 #include "framework/test_case/test_case.h"
 
-#include <CL/intel/cl_ext_private.h>
-#include <CL/intel/embargo/cl_ext_private_internal.h>
-
 namespace OCL::CompressionHelper {
 
 inline cl_mem_flags getCompressionFlags(bool compression, bool noIntelExtensions) {
