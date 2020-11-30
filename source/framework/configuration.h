@@ -1,9 +1,9 @@
 #pragma once
 
-#include "framework/test_case_argument/test_case_argument_api.h"
+#include "framework/test_case_argument/enum/test_case_argument_api.h"
+#include "framework/test_case_argument/enum/test_case_argument_device_selection.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
 #include "framework/test_case_argument/test_case_argument_boolean_flag.h"
-#include "framework/test_case_argument/test_case_argument_device_selection.h"
 #include "framework/test_case_argument/test_case_argument_string_list.h"
 #include "framework/test_case_argument/test_case_arguments.h"
 #include "framework/utility/string_utils.h"

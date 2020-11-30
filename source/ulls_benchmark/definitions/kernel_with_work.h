@@ -1,8 +1,8 @@
 #pragma once
 
 #include "framework/test_case/test_case.h"
+#include "framework/test_case_argument/enum/test_case_argument_work_item_id_usage.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
-#include "framework/test_case_argument/test_case_argument_work_item_id_usage.h"
 
 #include <sstream>
 

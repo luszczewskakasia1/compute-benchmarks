@@ -1,10 +1,10 @@
 #pragma once
 
 #include "framework/test_case/test_case.h"
+#include "framework/test_case_argument/enum/test_case_argument_buffer_contents.h"
+#include "framework/test_case_argument/enum/test_case_argument_memory_placement.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
-#include "framework/test_case_argument/test_case_argument_buffer_contents.h"
 #include "framework/test_case_argument/test_case_argument_long_hex.h"
-#include "framework/test_case_argument/test_case_argument_memory_placement.h"
 
 #include <sstream>
 
