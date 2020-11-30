@@ -5,6 +5,7 @@
 #include "framework/ocl/function_signatures_ocl.h"
 #include "framework/ocl/queue_properties.h"
 #include "framework/test_case/test_case.h"
+#include "queue_families_helper.h"
 
 namespace OCL {
 struct Opencl {
@@ -71,29 +72,56 @@ struct Opencl {
         }
     }
 
-    cl_command_queue createQueue(const QueueProperties &queueProperties) {
-        if (!queueProperties.createQueue) {
-            return nullptr;
-        }
-
-        // Create queue properties
-        cl_queue_properties properties[] = {CL_QUEUE_PROPERTIES, 0, 0, 0, 0};
-        cl_int propertiesIndex = 1;
+    bool fillQueueProperties(const QueueProperties &queueProperties, cl_queue_properties properties[], size_t size) {
+        std::fill_n(properties, size, 0);
+        properties[0] = CL_QUEUE_PROPERTIES;
+        cl_int propertiesIndex = 2;
         if (queueProperties.profiling) {
             properties[1] |= CL_QUEUE_PROFILING_ENABLE;
         }
         if (queueProperties.ooq == 1 || (queueProperties.ooq == -1 && ::configuration.oclUseOOQ)) {
             properties[1] |= CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
         }
-        if (queueProperties.forceBlitter == 1) {
-            properties[propertiesIndex++] = CL_QUEUE_FAMILY_INTEL;
-            properties[propertiesIndex++] = CL_QUEUE_FAMILY_TYPE_BCS_DEPRECATED_INTEL;
+        if (queueProperties.forceBlitter) {
+            const bool useLegacy = queueProperties.useLegacyQueueFamilySelection;
+            const cl_device_id device = getDevice(queueProperties.deviceSelection);
+            const auto propertiesForBlitter = QueueFamiliesHelper::getPropertiesForSelectingBlitter(device, useLegacy);
+            if (propertiesForBlitter == nullptr) {
+                return false;
+            }
+
+            for (auto i = 0u; i < propertiesForBlitter->propertiesCount; i++) {
+                properties[propertiesIndex++] = propertiesForBlitter->properties[i];
+            }
         }
 
-        // Create the queue
-        cl_int retVal{};
+        return true;
+    }
+
+    cl_command_queue createQueue(const QueueProperties &queueProperties) {
+        if (!queueProperties.createQueue) {
+            return nullptr;
+        }
         const cl_device_id deviceForQueue = getDevice(queueProperties.deviceSelection);
-        cl_command_queue queue = clCreateCommandQueueWithProperties(this->context, deviceForQueue, properties, &retVal);
+        const size_t maxPropertiesCount = 7u;
+        cl_int retVal{};
+        cl_command_queue queue{};
+        cl_queue_properties properties[maxPropertiesCount] = {};
+
+        // Create queue
+        if (fillQueueProperties(queueProperties, properties, maxPropertiesCount)) {
+            queue = clCreateCommandQueueWithProperties(this->context, deviceForQueue, properties, &retVal);
+        }
+
+        // Fallback to legacy path for blitter queue
+        if (queue == nullptr && queueProperties.forceBlitter) {
+            QueueProperties queuePropertiesLegacy = queueProperties;
+            queuePropertiesLegacy.setUseLegacyQueueFamilySelection(true);
+            if (fillQueueProperties(queuePropertiesLegacy, properties, maxPropertiesCount)) {
+                queue = clCreateCommandQueueWithProperties(this->context, deviceForQueue, properties, &retVal);
+            }
+        }
+
         if (queueProperties.requireCreationSuccess) {
             ERROR_UNLESS_CL_SUCCESS(retVal, "Command queue creation failed");
         }
@@ -162,16 +190,20 @@ struct Opencl {
         return result;
     }
 
-    void createSubDevices(bool requireSuccess) {
+    bool createSubDevices(bool requireSuccess) {
+        if (subDevices.size() != 0) {
+            return true;
+        }
+
         cl_device_affinity_domain domain{};
         EXPECT_CL_SUCCESS(clGetDeviceInfo(this->rootDevice, CL_DEVICE_PARTITION_AFFINITY_DOMAIN, sizeof(domain), &domain, NULL));
         if ((domain & CL_DEVICE_AFFINITY_DOMAIN_NEXT_PARTITIONABLE) == 0) {
             ERROR_IF(requireSuccess, "SubDevice was selected, but device is not partitionable");
-            return;
+            return false;
         }
         if ((domain & CL_DEVICE_AFFINITY_DOMAIN_NUMA) == 0) {
             ERROR_IF(requireSuccess, "SubDevice was selected, but device is not CL_DEVICE_AFFINITY_DOMAIN_NUMA");
-            return;
+            return false;
         }
 
         const cl_device_partition_property properties[] = {CL_DEVICE_PARTITION_BY_AFFINITY_DOMAIN, CL_DEVICE_AFFINITY_DOMAIN_NUMA, 0};
@@ -179,6 +211,7 @@ struct Opencl {
         EXPECT_CL_SUCCESS(clCreateSubDevices(this->rootDevice, properties, 0, nullptr, &numSubDevices));
         this->subDevices.resize(numSubDevices);
         EXPECT_CL_SUCCESS(clCreateSubDevices(this->rootDevice, properties, numSubDevices, this->subDevices.data(), nullptr));
+        return true;
     }
 
     cl_device_id getDefaultDevice(DeviceSelection deviceSelection) {

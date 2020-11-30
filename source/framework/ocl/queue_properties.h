@@ -10,6 +10,7 @@ struct QueueProperties {
     bool requireCreationSuccess = true;
     bool profiling = false;
     bool forceBlitter = false;
+    bool useLegacyQueueFamilySelection = false;
     int ooq = -1;
     DeviceSelection deviceSelection = DeviceSelection::Unknown;
 
@@ -25,6 +26,11 @@ struct QueueProperties {
 
     QueueProperties &setForceBlitter(bool bcs) {
         this->forceBlitter = bcs;
+        return *this;
+    }
+
+    QueueProperties &setUseLegacyQueueFamilySelection(bool useLegacy) {
+        this->useLegacyQueueFamilySelection = useLegacy;
         return *this;
     }
 
