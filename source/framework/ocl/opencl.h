@@ -5,7 +5,6 @@
 #include "framework/ocl/function_signatures_ocl.h"
 #include "framework/ocl/queue_properties.h"
 #include "framework/test_case/test_case.h"
-#include "queue_families_helper.h"
 
 namespace OCL {
 struct Opencl {
@@ -72,32 +71,6 @@ struct Opencl {
         }
     }
 
-    bool fillQueueProperties(const QueueProperties &queueProperties, cl_queue_properties properties[], size_t size) {
-        std::fill_n(properties, size, 0);
-        properties[0] = CL_QUEUE_PROPERTIES;
-        cl_int propertiesIndex = 2;
-        if (queueProperties.profiling) {
-            properties[1] |= CL_QUEUE_PROFILING_ENABLE;
-        }
-        if (queueProperties.ooq == 1 || (queueProperties.ooq == -1 && ::configuration.oclUseOOQ)) {
-            properties[1] |= CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
-        }
-        if (queueProperties.forceBlitter) {
-            const bool useLegacy = queueProperties.useLegacyQueueFamilySelection;
-            const cl_device_id device = getDevice(queueProperties.deviceSelection);
-            const auto propertiesForBlitter = QueueFamiliesHelper::getPropertiesForSelectingBlitter(device, useLegacy);
-            if (propertiesForBlitter == nullptr) {
-                return false;
-            }
-
-            for (auto i = 0u; i < propertiesForBlitter->propertiesCount; i++) {
-                properties[propertiesIndex++] = propertiesForBlitter->properties[i];
-            }
-        }
-
-        return true;
-    }
-
     cl_command_queue createQueue(const QueueProperties &queueProperties) {
         if (!queueProperties.createQueue) {
             return nullptr;
@@ -109,7 +82,7 @@ struct Opencl {
         cl_queue_properties properties[maxPropertiesCount] = {};
 
         // Create queue
-        if (fillQueueProperties(queueProperties, properties, maxPropertiesCount)) {
+        if (queueProperties.fillQueueProperties(deviceForQueue, properties, maxPropertiesCount)) {
             queue = clCreateCommandQueueWithProperties(this->context, deviceForQueue, properties, &retVal);
         }
 
@@ -117,7 +90,7 @@ struct Opencl {
         if (queue == nullptr && queueProperties.forceBlitter) {
             QueueProperties queuePropertiesLegacy = queueProperties;
             queuePropertiesLegacy.setUseLegacyQueueFamilySelection(true);
-            if (fillQueueProperties(queuePropertiesLegacy, properties, maxPropertiesCount)) {
+            if (queuePropertiesLegacy.fillQueueProperties(deviceForQueue, properties, maxPropertiesCount)) {
                 queue = clCreateCommandQueueWithProperties(this->context, deviceForQueue, properties, &retVal);
             }
         }
