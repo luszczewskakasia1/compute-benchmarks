@@ -6,7 +6,7 @@
 
 static const inline RegisterTestCase<SeparateAtomics> registerTestCase{};
 
-class SeparateAtomicsTest : public ::testing::TestWithParam<std::tuple<DataType, AtomicOperation, size_t, size_t, size_t>> {
+class SeparateAtomicsTest : public ::testing::TestWithParam<std::tuple<DataType, AtomicOperation, size_t, CommonGtestArgs::EnqueueSize>> {
 };
 
 TEST_P(SeparateAtomicsTest, Test) {
@@ -15,8 +15,12 @@ TEST_P(SeparateAtomicsTest, Test) {
     args.dataType = std::get<0>(GetParam());
     args.atomicOperation = std::get<1>(GetParam());
     args.atomicsPerCacheline = std::get<2>(GetParam());
-    args.workgroupCount = std::get<3>(GetParam());
-    args.workgroupSize = std::get<4>(GetParam());
+    args.workgroupCount = std::get<3>(GetParam()).workgroupCount;
+    args.workgroupSize = std::get<3>(GetParam()).workgroupSize;
+
+    if (args.atomicsPerCacheline > args.workgroupCount * args.workgroupSize) {
+        GTEST_SKIP();
+    }
 
     SeparateAtomics test;
     test.run(args);
@@ -29,5 +33,4 @@ INSTANTIATE_TEST_SUITE_P(
         ::testing::Values(DataType::Float, DataType::Int32),
         ::CommonGtestArgs::allAtomicOperations(),
         ::testing::Values(1, 4),
-        ::testing::Values(1u, 1000u),
-        ::testing::Values(16u, 256u)));
+        ::CommonGtestArgs::enqueueSizesForAtomics()));
