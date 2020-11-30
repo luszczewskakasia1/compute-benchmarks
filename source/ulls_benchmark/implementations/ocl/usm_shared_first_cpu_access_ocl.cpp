@@ -1,4 +1,5 @@
 #include "framework/ocl/opencl.h"
+#include "framework/ocl/usm_helper.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
 #include "ulls_benchmark/definitions/usm_shared_first_cpu_access.h"
@@ -17,14 +18,19 @@ static TestResult run(const UsmSharedFirstCpuAccessArguments &arguments, Statist
     cl_int retVal{};
 
     // Warmup
-    auto buffer = clSharedMemAllocINTEL(opencl.context, opencl.device, nullptr, arguments.bufferSize, 0u, &retVal);
+    const cl_mem_properties_intel properties[] = {
+        CL_MEM_ALLOC_FLAGS_INTEL,
+        UsmHelper::getInitialPlacementFlag(arguments.initialPlacement),
+        0,
+    };
+    auto buffer = clSharedMemAllocINTEL(opencl.context, opencl.device, properties, arguments.bufferSize, 0u, &retVal);
     ASSERT_CL_SUCCESS(retVal);
     static_cast<uint8_t *>(buffer)[0] = 0;
     ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, buffer));
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
-        auto buffer = clSharedMemAllocINTEL(opencl.context, opencl.device, nullptr, arguments.bufferSize, 0u, &retVal);
+        auto buffer = clSharedMemAllocINTEL(opencl.context, opencl.device, properties, arguments.bufferSize, 0u, &retVal);
         ASSERT_CL_SUCCESS(retVal);
 
         timer.measureStart();

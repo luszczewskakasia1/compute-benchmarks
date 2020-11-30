@@ -2,6 +2,7 @@
 
 #include "framework/enum/device_selection.h"
 #include "framework/enum/memory_placement.h"
+#include "framework/enum/usm_initial_placement.h"
 #include "framework/ocl/opencl.h"
 
 namespace OCL::UsmHelper {
@@ -67,6 +68,19 @@ inline void *allocate(DeviceSelection placement, Opencl &opencl, size_t bufferSi
     }
 
     ERROR("USM allocations need at least one storage location");
+}
+
+inline cl_mem_properties_intel getInitialPlacementFlag(UsmInitialPlacement placement) {
+    switch (placement) {
+    case UsmInitialPlacement::Any:
+        return 0;
+    case UsmInitialPlacement::Host:
+        return CL_MEM_ALLOC_INITIAL_PLACEMENT_HOST_INTEL;
+    case UsmInitialPlacement::Device:
+        return CL_MEM_ALLOC_INITIAL_PLACEMENT_DEVICE_INTEL;
+    default:
+        ERROR("Unknown USM initial placement");
+    }
 }
 
 } // namespace OCL::UsmHelper

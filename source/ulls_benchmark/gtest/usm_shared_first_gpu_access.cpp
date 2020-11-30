@@ -8,13 +8,14 @@
 
 static const inline RegisterTestCase<UsmSharedFirstGpuAccess> registerTestCase{};
 
-class UsmSharedFirstGpuAccessTest : public ::testing::TestWithParam<std::tuple<Api, size_t>> {
+class UsmSharedFirstGpuAccessTest : public ::testing::TestWithParam<std::tuple<Api, UsmInitialPlacement, size_t>> {
 };
 
 TEST_P(UsmSharedFirstGpuAccessTest, Test) {
     UsmSharedFirstGpuAccessArguments args;
     args.api = std::get<0>(GetParam());
-    args.bufferSize = std::get<1>(GetParam());
+    args.initialPlacement = std::get<1>(GetParam());
+    args.bufferSize = std::get<2>(GetParam());
 
     UsmSharedFirstGpuAccess test;
     test.run(args);
@@ -26,4 +27,5 @@ INSTANTIATE_TEST_SUITE_P(
     UsmSharedFirstGpuAccessTest,
     ::testing::Combine(
         ::CommonGtestArgs::allApis(),
+        ::testing::Values(UsmInitialPlacement::Any, UsmInitialPlacement::Host, UsmInitialPlacement::Device),
         ::testing::Values(64 * megaByte, 128 * megaByte)));

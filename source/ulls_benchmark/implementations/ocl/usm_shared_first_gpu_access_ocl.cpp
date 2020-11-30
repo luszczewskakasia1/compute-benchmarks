@@ -1,4 +1,5 @@
 #include "framework/ocl/opencl.h"
+#include "framework/ocl/usm_helper.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
 #include "ulls_benchmark/definitions/usm_shared_first_gpu_access.h"
@@ -28,9 +29,14 @@ static TestResult run(const UsmSharedFirstGpuAccessArguments &arguments, Statist
     ASSERT_CL_SUCCESS(retVal);
 
     // Warmup
+    const cl_mem_properties_intel properties[] = {
+        CL_MEM_ALLOC_FLAGS_INTEL,
+        UsmHelper::getInitialPlacementFlag(arguments.initialPlacement),
+        0,
+    };
     const size_t gws = 1;
     const size_t lws = 1;
-    auto buffer = clSharedMemAllocINTEL(opencl.context, opencl.device, nullptr, arguments.bufferSize, 0u, &retVal);
+    auto buffer = clSharedMemAllocINTEL(opencl.context, opencl.device, properties, arguments.bufferSize, 0u, &retVal);
     ASSERT_CL_SUCCESS(retVal);
     ASSERT_CL_SUCCESS(clSetKernelArgSVMPointer(kernel, 0, buffer));
     ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
@@ -39,7 +45,7 @@ static TestResult run(const UsmSharedFirstGpuAccessArguments &arguments, Statist
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
-        auto buffer = clSharedMemAllocINTEL(opencl.context, opencl.device, nullptr, arguments.bufferSize, 0u, &retVal);
+        auto buffer = clSharedMemAllocINTEL(opencl.context, opencl.device, properties, arguments.bufferSize, 0u, &retVal);
         ASSERT_CL_SUCCESS(retVal);
         ASSERT_CL_SUCCESS(clSetKernelArgSVMPointer(kernel, 0, buffer));
 

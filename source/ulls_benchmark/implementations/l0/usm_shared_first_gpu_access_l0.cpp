@@ -7,6 +7,10 @@
 #include <gtest/gtest.h>
 
 static TestResult run(const UsmSharedFirstGpuAccessArguments &arguments, Statistics &statistics) {
+    if (arguments.initialPlacement != UsmInitialPlacement::Any) {
+        return TestResult::NoImplementation;
+    }
+
     LevelZero levelzero;
     Timer timer;
 
