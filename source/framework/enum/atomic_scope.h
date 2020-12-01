@@ -1,4 +1,5 @@
 #pragma once
+#include "framework/utility/error.h"
 
 #include <array>
 
@@ -13,4 +14,15 @@ constexpr inline std::array<AtomicScope, 2> allValues = {
     AtomicScope::Workgroup,
     AtomicScope::Device,
 };
+
+inline std::string toOpenclC(AtomicScope order) {
+    switch (order) {
+    case AtomicScope::Workgroup:
+        return "memory_scope_work_group";
+    case AtomicScope::Device:
+        return "memory_scope_device";
+    default:
+        ERROR("Unknown memory scope");
+    }
 }
+} // namespace AtomicScopeHelper

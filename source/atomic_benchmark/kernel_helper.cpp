@@ -4,11 +4,9 @@
 
 #include <algorithm>
 
-namespace KernelHelper {
-
 template <typename T>
-constexpr inline DataForKernel getDataForKernel(AtomicOperation operation, size_t iterations) {
-    DataForKernel result{};
+constexpr inline KernelHelper::DataForKernel getDataForKernel(AtomicOperation operation, size_t iterations) {
+    KernelHelper::DataForKernel result{};
     result.sizeOfDataType = sizeof(T);
     T &initialValue = reinterpret_cast<T &>(result.initialValue);
     T &otherArgument = reinterpret_cast<T &>(result.otherArgument);
@@ -83,23 +81,37 @@ constexpr inline DataForKernel getDataForKernel(AtomicOperation operation, size_
     return result;
 }
 
-DataForKernel getDataForKernel(DataType dataType,
-                               AtomicOperation operation,
-                               size_t iterations) {
+KernelHelper::DataForKernel KernelHelper::getDataForKernel(DataType dataType,
+                                                           AtomicOperation operation,
+                                                           size_t iterations) {
     switch (dataType) {
     case DataType::Float:
-        return getDataForKernel<float>(operation, iterations);
+        return ::getDataForKernel<float>(operation, iterations);
     case DataType::Int32:
-        return getDataForKernel<int32_t>(operation, iterations);
+        return ::getDataForKernel<int32_t>(operation, iterations);
     default:
         ERROR("Invalid data type");
     }
 }
 
-std::string getCompilerOptions(DataType dataType,
-                               AtomicOperation operation,
-                               size_t otherArgumentBufferSize,
-                               const std::string &otherArgumentName) {
+std::string KernelHelper::getCompilerOptions(DataType dataType,
+                                             AtomicOperation operation,
+                                             size_t otherArgumentBufferSize,
+                                             const std::string &otherArgumentName) {
+    std::ostringstream result{};
+    result << getCompilerOptionForAtomicOp(operation) << " "
+           << getCompilerOption("DATATYPE", AtomicOperationHelper::getDataTypeName(dataType)) << " "
+           << getCompilerOption("OTHER_ARGUMENT_BUFFER_SIZE", std::to_string(otherArgumentBufferSize)) << " ";
+    return result.str();
+}
+
+std::string KernelHelper::getCompilerOption(const std::string &key, const std::string &value) {
+    std::ostringstream result{};
+    result << "-D " << key << "=" << value;
+    return result.str();
+}
+
+std::string KernelHelper::getCompilerOptionForAtomicOp(AtomicOperation operation) {
     const static char *functionNames[] = {"ERROR",
                                           "atomic_add", "atomic_sub",
                                           "atomic_xchg", "atomic_cmpxchg",
@@ -109,24 +121,71 @@ std::string getCompilerOptions(DataType dataType,
                                           "atomic_xor"};
 
     std::ostringstream result{};
-
-    // Select atomic operation
-    result << "-D ATOMIC_OP(address," << otherArgumentName << ")="
-           << functionNames[static_cast<int>(operation)] << "(address";
-    if (AtomicOperationHelper::getArgumentsCount(operation) >= 2) {
-        result << "," << otherArgumentName;
+    result << "-D ATOMIC_OP(address,other)="
+           << functionNames[static_cast<int>(operation)]
+           << "(address";
+    switch (operation) {
+    case AtomicOperation::Add:
+    case AtomicOperation::Sub:
+    case AtomicOperation::Min:
+    case AtomicOperation::Max:
+    case AtomicOperation::And:
+    case AtomicOperation::Or:
+    case AtomicOperation::Xor:
+    case AtomicOperation::Xchg:
+        result << ",other";
+        break;
+    case AtomicOperation::Inc:
+    case AtomicOperation::Dec:
+        break;
+    case AtomicOperation::CmpXchg:
+        result << ",other,other";
+        break;
+    default:
+        ERROR("Unknown atomic operation");
     }
-    if (AtomicOperationHelper::getArgumentsCount(operation) >= 3) {
-        result << "," << otherArgumentName;
-    }
-    result << ") ";
-
-    // Select datatype
-    result << "-D DATATYPE=" << AtomicOperationHelper::getDataTypeName(dataType) << " ";
-
-    // Select otherArguments buffer size
-    result << "-D OTHER_ARGUMENT_BUFFER_SIZE=" << otherArgumentBufferSize << " ";
-
+    result << ")";
     return result.str();
 }
-} // namespace KernelHelper
+
+std::string KernelHelper::getCompilerOptionForAtomicOpExplicit(AtomicOperation operation, AtomicMemoryOrder order, AtomicScope scope) {
+    const static char *functionNames[] = {"ERROR",
+                                          "atomic_fetch_add_explicit", "atomic_fetch_sub_explicit",
+                                          "atomic_exchange_explicit", "atomic_compare_exchange_strong_explicit",
+                                          "atomic_fetch_add_explicit", "atomic_fetch_sub_explicit", // inc and dec emulated with add and sub
+                                          "atomic_fetch_min_explicit", "atomic_fetch_max_explicit",
+                                          "atomic_fetch_and_explicit", "atomic_fetch_or_explicit",
+                                          "atomic_fetch_xor_explicit"};
+
+    std::ostringstream result{};
+    result << "-D ATOMIC_OP(address, other)="
+           << functionNames[static_cast<int>(operation)]
+           << "(address";
+    switch (operation) {
+    case AtomicOperation::Add:
+    case AtomicOperation::Sub:
+    case AtomicOperation::Min:
+    case AtomicOperation::Max:
+    case AtomicOperation::And:
+    case AtomicOperation::Or:
+    case AtomicOperation::Xor:
+    case AtomicOperation::Xchg:
+        result << ",other";
+        break;
+    case AtomicOperation::Inc:
+    case AtomicOperation::Dec:
+        result << ",1";
+        break;
+
+    case AtomicOperation::CmpXchg:
+        result << ",other,other" << AtomicMemoryOrderHelper::toOpenclC(order);
+        break;
+    default:
+        ERROR("Unknown atomic operation");
+    }
+
+    result << "," << AtomicMemoryOrderHelper::toOpenclC(order)
+           << "," << AtomicScopeHelper::toOpenclC(scope)
+           << ")";
+    return result.str();
+}
