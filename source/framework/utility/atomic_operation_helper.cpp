@@ -3,16 +3,6 @@
 #include "framework/utility/error.h"
 
 namespace AtomicOperationHelper {
-std::string getDataTypeName(DataType dataType) {
-    switch (dataType) {
-    case DataType::Float:
-        return "float";
-    case DataType::Int32:
-        return "int";
-    default:
-        ERROR("Unknown data type");
-    }
-}
 
 size_t getArgumentsCount(AtomicOperation operation) {
     switch (operation) {

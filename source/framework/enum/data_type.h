@@ -19,4 +19,26 @@ constexpr inline size_t getSize(DataType dataType) {
         ERROR("Unkown data type")
     }
 }
+
+inline std::string toOpenclC(DataType dataType) {
+    switch (dataType) {
+    case DataType::Float:
+        return "float";
+    case DataType::Int32:
+        return "int";
+    default:
+        ERROR("Unknown data type");
+    }
+}
+
+inline std::string toExplicitOpenclC(DataType dataType) {
+    switch (dataType) {
+    case DataType::Float:
+        return "atomic_float";
+    case DataType::Int32:
+        return "atomic_int";
+    default:
+        ERROR("Unknown data type");
+    }
+}
 } // namespace DataTypeHelper

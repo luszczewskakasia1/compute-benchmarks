@@ -100,7 +100,7 @@ std::string KernelHelper::getCompilerOptions(DataType dataType,
                                              const std::string &otherArgumentName) {
     std::ostringstream result{};
     result << getCompilerOptionForAtomicOp(operation) << " "
-           << getCompilerOption("DATATYPE", AtomicOperationHelper::getDataTypeName(dataType)) << " "
+           << getCompilerOption("DATATYPE", DataTypeHelper::toOpenclC(dataType)) << " "
            << getCompilerOption("OTHER_ARGUMENT_BUFFER_SIZE", std::to_string(otherArgumentBufferSize)) << " ";
     return result.str();
 }

@@ -7,6 +7,5 @@
 
 namespace AtomicOperationHelper {
 bool isSupported(AtomicOperation operation, DataType type);
-std::string getDataTypeName(DataType dataType);
 size_t getArgumentsCount(AtomicOperation operation);
 }; // namespace AtomicOperationHelper
