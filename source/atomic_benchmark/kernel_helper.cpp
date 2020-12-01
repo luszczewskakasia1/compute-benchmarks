@@ -94,10 +94,7 @@ KernelHelper::DataForKernel KernelHelper::getDataForKernel(DataType dataType,
     }
 }
 
-std::string KernelHelper::getCompilerOptions(DataType dataType,
-                                             AtomicOperation operation,
-                                             size_t otherArgumentBufferSize,
-                                             const std::string &otherArgumentName) {
+std::string KernelHelper::getCompilerOptions(DataType dataType, AtomicOperation operation, size_t otherArgumentBufferSize) {
     std::ostringstream result{};
     result << getCompilerOptionForAtomicOp(operation) << " "
            << getCompilerOption("DATATYPE", DataTypeHelper::toOpenclC(dataType)) << " "
