@@ -1,0 +1,17 @@
+#pragma once
+
+#include "framework/enum/atomic_scope.h"
+#include "framework/test_case_argument/abstract/test_case_argument_enum.h"
+
+struct AtomicScopeTestCaseArgument : EnumTestCaseArgument<AtomicScopeTestCaseArgument, AtomicScope> {
+    using EnumTestCaseArgument::EnumTestCaseArgument;
+    ThisType &operator=(EnumType value) {
+        this->value = value;
+        return *this;
+    }
+
+    const static inline std::string enumName = "atomic scope";
+    const static inline EnumType invalidEnumValue = EnumType::Unknown;
+    const static inline EnumType enumValues[2] = {EnumType::Workgroup, EnumType::Device};
+    const static inline std::string enumValuesNames[2] = {"Workgroup", "Device"};
+};
