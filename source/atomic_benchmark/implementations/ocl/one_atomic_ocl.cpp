@@ -1,4 +1,5 @@
 #include "atomic_benchmark/definitions/one_atomic.h"
+#include "atomic_benchmark/kernel_helper.h"
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/atomic_operation_helper.h"
@@ -25,7 +26,7 @@ static TestResult run(const OneAtomicArguments &arguments, Statistics &statistic
     const cl_uint loopIterations = 100;
     const size_t loopIterationsTotal = gws * loopIterations * (arguments.iterations + 1);
     const size_t operatorApplicationCount = loopIterationsTotal * 128; // Each loop iteration performs 128 operations
-    const auto data = AtomicOperationHelper::getDataForKernel(arguments.dataType, arguments.atomicOperation, operatorApplicationCount);
+    const auto data = KernelHelper::getDataForKernel(arguments.dataType, arguments.atomicOperation, operatorApplicationCount);
 
     // Create and initialize the buffer with atomic
     cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, data.sizeOfDataType, nullptr, &retVal);
@@ -48,7 +49,7 @@ static TestResult run(const OneAtomicArguments &arguments, Statistics &statistic
     const size_t sourceLength = kernelSource.size();
     cl_program program = clCreateProgramWithSource(opencl.context, 1, &source, &sourceLength, &retVal);
     ASSERT_CL_SUCCESS(retVal);
-    const std::string compilerOptions = AtomicOperationHelper::getCompilerOptions(arguments.dataType, arguments.atomicOperation, otherArgumentsBufferSize);
+    const std::string compilerOptions = KernelHelper::getCompilerOptions(arguments.dataType, arguments.atomicOperation, otherArgumentsBufferSize);
     ASSERT_CL_SUCCESS(clBuildProgram(program, 1, &opencl.device, compilerOptions.c_str(), nullptr, nullptr));
     cl_kernel kernel = clCreateKernel(program, "one_atomic", &retVal);
     ASSERT_CL_SUCCESS(retVal);
