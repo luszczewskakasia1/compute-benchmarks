@@ -15,6 +15,8 @@ struct KernelHelper {
 
     static DataForKernel getDataForKernel(DataType dataType, AtomicOperation operation, size_t iterations);
     static std::string getCompilerOptions(DataType dataType, AtomicOperation operation, size_t otherArgumentBufferSize);
+    static std::string getCompilerOptionsExplicit(DataType dataType, AtomicOperation operation, AtomicMemoryOrder order,
+                                                  AtomicScope scope, size_t otherArgumentBufferSize);
 
   private:
     static std::string getCompilerOption(const std::string &key, const std::string &value);

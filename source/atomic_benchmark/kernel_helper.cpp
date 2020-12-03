@@ -102,6 +102,17 @@ std::string KernelHelper::getCompilerOptions(DataType dataType, AtomicOperation 
     return result.str();
 }
 
+std::string KernelHelper::getCompilerOptionsExplicit(DataType dataType, AtomicOperation operation, AtomicMemoryOrder order,
+                                                     AtomicScope scope, size_t otherArgumentBufferSize) {
+    std::ostringstream result{};
+    result << getCompilerOptionForAtomicOpExplicit(operation, order, scope) << " "
+           << getCompilerOption("ATOMIC_DATATYPE", DataTypeHelper::toExplicitAtomicOpenclC(dataType)) << " "
+           << getCompilerOption("DATATYPE", DataTypeHelper::toOpenclC(dataType)) << " "
+           << getCompilerOption("OTHER_ARGUMENT_BUFFER_SIZE", std::to_string(otherArgumentBufferSize)) << " "
+           << "-cl-std=CL2.0";
+    return result.str();
+}
+
 std::string KernelHelper::getCompilerOption(const std::string &key, const std::string &value) {
     std::ostringstream result{};
     result << "-D " << key << "=" << value;
@@ -155,7 +166,7 @@ std::string KernelHelper::getCompilerOptionForAtomicOpExplicit(AtomicOperation o
                                           "atomic_fetch_xor_explicit"};
 
     std::ostringstream result{};
-    result << "-D ATOMIC_OP(address, other)="
+    result << "-D ATOMIC_OP(address,other)="
            << functionNames[static_cast<int>(operation)]
            << "(address";
     switch (operation) {
@@ -175,7 +186,7 @@ std::string KernelHelper::getCompilerOptionForAtomicOpExplicit(AtomicOperation o
         break;
 
     case AtomicOperation::CmpXchg:
-        result << ",other,other" << AtomicMemoryOrderHelper::toOpenclC(order);
+        result << ",&other,other," << AtomicMemoryOrderHelper::toOpenclC(order);
         break;
     default:
         ERROR("Unknown atomic operation");

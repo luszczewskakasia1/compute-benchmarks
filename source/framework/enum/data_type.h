@@ -31,7 +31,7 @@ inline std::string toOpenclC(DataType dataType) {
     }
 }
 
-inline std::string toExplicitOpenclC(DataType dataType) {
+inline std::string toExplicitAtomicOpenclC(DataType dataType) {
     switch (dataType) {
     case DataType::Float:
         return "atomic_float";
