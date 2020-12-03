@@ -5,6 +5,8 @@
 #include "framework/enum/atomic_scope.h"
 #include "framework/enum/data_type.h"
 
+#include <cstddef>
+
 struct KernelHelper {
     struct DataForKernel {
         size_t sizeOfDataType;
