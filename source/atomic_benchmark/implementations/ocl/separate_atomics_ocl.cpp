@@ -91,6 +91,7 @@ static TestResult run(const SeparateAtomicsArguments &arguments, Statistics &sta
     ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
     ASSERT_CL_SUCCESS(clReleaseProgram(program));
     ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));
+    ASSERT_CL_SUCCESS(clReleaseMemObject(otherArgumentsBuffer));
     return TestResult::Success;
 }
 

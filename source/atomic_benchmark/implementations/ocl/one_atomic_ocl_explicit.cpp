@@ -54,7 +54,7 @@ static TestResult run(const OneAtomicExplicitArguments &arguments, Statistics &s
     cl_mem atomicBuffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, atomicBufferSize, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
     ASSERT_CL_SUCCESS(clSetKernelArg(initializeKernel, 0, sizeof(atomicBuffer), &atomicBuffer));
-    ASSERT_CL_SUCCESS(clSetKernelArg(initializeKernel, 1, atomicBufferSize, data.initialValue));
+    ASSERT_CL_SUCCESS(clSetKernelArg(initializeKernel, 1, data.sizeOfDataType, data.initialValue));
     ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, initializeKernel, 1, nullptr, &gwsForInitialize, nullptr, 0, nullptr, nullptr));
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
@@ -88,6 +88,7 @@ static TestResult run(const OneAtomicExplicitArguments &arguments, Statistics &s
     }
 
     // Cleanup
+    ASSERT_CL_SUCCESS(clReleaseKernel(initializeKernel));
     ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
     ASSERT_CL_SUCCESS(clReleaseProgram(program));
     ASSERT_CL_SUCCESS(clReleaseMemObject(atomicBuffer));
