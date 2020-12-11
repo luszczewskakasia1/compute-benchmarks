@@ -97,6 +97,7 @@ KernelHelper::DataForKernel KernelHelper::getDataForKernel(DataType dataType,
 std::string KernelHelper::getCompilerOptions(DataType dataType, AtomicOperation operation, size_t otherArgumentBufferSize) {
     std::ostringstream result{};
     result << getCompilerOptionForAtomicOp(operation) << " "
+           << getCompilerOption("ATOMIC_DATATYPE", DataTypeHelper::toOpenclC(dataType)) << " "
            << getCompilerOption("DATATYPE", DataTypeHelper::toOpenclC(dataType)) << " "
            << getCompilerOption("OTHER_ARGUMENT_BUFFER_SIZE", std::to_string(otherArgumentBufferSize)) << " ";
     return result.str();
@@ -109,6 +110,7 @@ std::string KernelHelper::getCompilerOptionsExplicit(DataType dataType, AtomicOp
            << getCompilerOption("ATOMIC_DATATYPE", DataTypeHelper::toExplicitAtomicOpenclC(dataType)) << " "
            << getCompilerOption("DATATYPE", DataTypeHelper::toOpenclC(dataType)) << " "
            << getCompilerOption("OTHER_ARGUMENT_BUFFER_SIZE", std::to_string(otherArgumentBufferSize)) << " "
+           << "-DOCL_20 "
            << "-cl-std=CL2.0";
     return result.str();
 }

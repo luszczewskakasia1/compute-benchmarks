@@ -34,7 +34,7 @@ static TestResult run(const OneAtomicExplicitArguments &arguments, Statistics &s
     const size_t otherArgumentsBufferSize = otherArguemtnsBufferEntryCount * data.sizeOfDataType;
 
     // Create kernels
-    const std::vector<uint8_t> kernelSource = loadBinaryFile("atomic_benchmark_kernels_explicit.cl");
+    const std::vector<uint8_t> kernelSource = loadBinaryFile("atomic_benchmark_kernel.cl");
     if (kernelSource.size() == 0) {
         return TestResult::KernelNotFound;
     }
