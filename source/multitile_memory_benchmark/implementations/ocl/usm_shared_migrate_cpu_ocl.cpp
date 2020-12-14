@@ -18,7 +18,7 @@ static TestResult run(const UsmSharedMigrateCpuArguments &arguments, Statistics 
         return TestResult::DeviceNotCapable;
     }
     auto clMemFreeINTEL = (pfn_clMemFreeINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clMemFreeINTEL");
-    if (!UsmHelper::supportsUsm(opencl.platform)) {
+    if (!opencl.getExtensions().isUsmSupported()) {
         return TestResult::DriverFunctionNotFound;
     }
 

@@ -6,25 +6,6 @@
 #include "framework/ocl/opencl.h"
 
 namespace OCL::UsmHelper {
-inline bool supportsUsm(cl_platform_id platform) {
-    const char *functions[] = {
-        "clHostMemAllocINTEL",
-        "clDeviceMemAllocINTEL",
-        "clSharedMemAllocINTEL",
-        "clMemFreeINTEL",
-        "clEnqueueMemFillINTEL",
-        "clEnqueueMemsetINTEL",
-        "clEnqueueMemcpyINTEL",
-    };
-
-    for (const auto function : functions) {
-        if (clGetExtensionFunctionAddressForPlatform(platform, function) == nullptr) {
-            return false;
-        }
-    }
-    return true;
-}
-
 inline void *allocate(MemoryPlacement placement, cl_platform_id platform, cl_context context, cl_device_id device, size_t bufferSize, cl_int *retVal) {
     switch (placement) {
     case MemoryPlacement::Device: {

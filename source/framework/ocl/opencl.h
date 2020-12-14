@@ -2,6 +2,7 @@
 
 #include "framework/ocl/context_properties.h"
 #include "framework/ocl/error.h"
+#include "framework/ocl/extensions_helper.h"
 #include "framework/ocl/function_signatures_ocl.h"
 #include "framework/ocl/queue_properties.h"
 #include "framework/test_case/test_case.h"
@@ -117,6 +118,13 @@ struct Opencl {
         return this->subDevices[subDeviceIndex];
     }
 
+    const ExtensionsHelper &getExtensions() {
+        if (extensionsHelper) {
+            extensionsHelper = std::make_unique<ExtensionsHelper>(this->rootDevice);
+        }
+        return *extensionsHelper;
+    }
+
   private:
     cl_context createContext(const ContextProperties &contextProperties) {
         std::vector<cl_device_id> devicesForContext = getDevices(contextProperties.deviceSelection, false);
@@ -197,6 +205,7 @@ struct Opencl {
     cl_device_id rootDevice;
     std::vector<cl_device_id> subDevices{};
     std::vector<cl_command_queue> commandQueues{};
+    std::unique_ptr<ExtensionsHelper> extensionsHelper{};
 };
 
 } // namespace OCL

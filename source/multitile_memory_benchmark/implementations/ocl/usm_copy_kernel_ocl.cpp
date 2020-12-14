@@ -20,7 +20,7 @@ static TestResult run(const UsmCopyKernelArguments &arguments, Statistics &stati
     auto clCreateBufferWithPropertiesINTEL = (pfn_clCreateBufferWithPropertiesINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clCreateBufferWithPropertiesINTEL");
     auto clMemFreeINTEL = (pfn_clMemFreeINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clMemFreeINTEL");
     auto clEnqueueMemcpyINTEL = (pfn_clEnqueueMemcpyINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clEnqueueMemcpyINTEL");
-    if (!clCreateBufferWithPropertiesINTEL || !UsmHelper::supportsUsm(opencl.platform)) {
+    if (!clCreateBufferWithPropertiesINTEL || !opencl.getExtensions().isUsmSupported()) {
         return TestResult::DriverFunctionNotFound;
     }
     Timer timer;

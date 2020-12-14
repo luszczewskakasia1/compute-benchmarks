@@ -19,7 +19,7 @@ static TestResult run(const UsmFillSpecificPatternArguments &arguments, Statisti
     Timer timer;
     auto clMemFreeINTEL = (pfn_clMemFreeINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clMemFreeINTEL");
     auto clEnqueueMemFillINTEL = (pfn_clEnqueueMemFillINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clEnqueueMemFillINTEL");
-    if (!UsmHelper::supportsUsm(opencl.platform)) {
+    if (!opencl.getExtensions().isUsmSupported()) {
         return TestResult::DriverFunctionNotFound;
     }
 
