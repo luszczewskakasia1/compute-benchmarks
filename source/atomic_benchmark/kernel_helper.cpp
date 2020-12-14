@@ -5,9 +5,14 @@
 #include <algorithm>
 
 template <typename T>
-constexpr inline KernelHelper::DataForKernel getDataForKernel(AtomicOperation operation, size_t iterations) {
+constexpr inline KernelHelper::DataForKernel getDataForKernel(AtomicOperation operation, size_t totalThreadsCount) {
+    const auto loopIterations = 100u;                   // Kernel performs some number of loop iterations
+    const auto operatorApplicationsPerIteration = 128u; // Each iteration performs some number of atomic operations
+    const auto totalAtomicOperationsCount = totalThreadsCount * loopIterations * operatorApplicationsPerIteration;
+
     KernelHelper::DataForKernel result{};
     result.sizeOfDataType = sizeof(T);
+    result.loopIterations = loopIterations;
     T &initialValue = reinterpret_cast<T &>(result.initialValue);
     T &otherArgument = reinterpret_cast<T &>(result.otherArgument);
     T &expectedValue = reinterpret_cast<T &>(result.expectedValue);
@@ -16,12 +21,12 @@ constexpr inline KernelHelper::DataForKernel getDataForKernel(AtomicOperation op
     case AtomicOperation::Add:
         initialValue = 1000;
         otherArgument = 3;
-        expectedValue = initialValue + otherArgument * static_cast<T>(iterations);
+        expectedValue = initialValue + otherArgument * static_cast<T>(totalAtomicOperationsCount);
         break;
     case AtomicOperation::Sub:
         initialValue = 1000;
         otherArgument = 3;
-        expectedValue = initialValue - otherArgument * static_cast<T>(iterations);
+        expectedValue = initialValue - otherArgument * static_cast<T>(totalAtomicOperationsCount);
         break;
     case AtomicOperation::Xchg:
         initialValue = 7;
@@ -36,12 +41,12 @@ constexpr inline KernelHelper::DataForKernel getDataForKernel(AtomicOperation op
     case AtomicOperation::Inc:
         initialValue = 12;
         otherArgument = 0;
-        expectedValue = initialValue + static_cast<T>(iterations);
+        expectedValue = initialValue + static_cast<T>(totalAtomicOperationsCount);
         break;
     case AtomicOperation::Dec:
         initialValue = 43;
         otherArgument = 0;
-        expectedValue = initialValue - static_cast<T>(iterations);
+        expectedValue = initialValue - static_cast<T>(totalAtomicOperationsCount);
         break;
     case AtomicOperation::Min:
         initialValue = 100;
@@ -69,7 +74,7 @@ constexpr inline KernelHelper::DataForKernel getDataForKernel(AtomicOperation op
             case AtomicOperation::Xor:
                 initialValue = 0b1111001111001101;
                 otherArgument = 0b1101100100101010;
-                expectedValue = (iterations % 2 == 0) ? initialValue : initialValue ^ otherArgument;
+                expectedValue = (totalAtomicOperationsCount % 2 == 0) ? initialValue : initialValue ^ otherArgument;
                 break;
             default:
                 ERROR("Invalid atomic operation");
@@ -83,12 +88,13 @@ constexpr inline KernelHelper::DataForKernel getDataForKernel(AtomicOperation op
 
 KernelHelper::DataForKernel KernelHelper::getDataForKernel(DataType dataType,
                                                            AtomicOperation operation,
-                                                           size_t iterations) {
+                                                           size_t totalThreadsCount) {
+
     switch (dataType) {
     case DataType::Float:
-        return ::getDataForKernel<float>(operation, iterations);
+        return ::getDataForKernel<float>(operation, totalThreadsCount);
     case DataType::Int32:
-        return ::getDataForKernel<int32_t>(operation, iterations);
+        return ::getDataForKernel<int32_t>(operation, totalThreadsCount);
     default:
         ERROR("Invalid data type");
     }

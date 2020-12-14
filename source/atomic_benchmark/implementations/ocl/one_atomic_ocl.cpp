@@ -23,10 +23,8 @@ static TestResult run(const OneAtomicArguments &arguments, Statistics &statistic
     // Prepare data
     const size_t lws = arguments.workgroupSize;
     const size_t gws = arguments.workgroupSize * arguments.workgroupCount;
-    const cl_uint loopIterations = 100;
-    const size_t loopIterationsTotal = gws * loopIterations * (arguments.iterations + 1);
-    const size_t operatorApplicationCount = loopIterationsTotal * 128; // Each loop iteration performs 128 operations
-    const auto data = KernelHelper::getDataForKernel(arguments.dataType, arguments.atomicOperation, operatorApplicationCount);
+    const size_t totalThreadsCount = gws * (arguments.iterations + 1);
+    const auto data = KernelHelper::getDataForKernel(arguments.dataType, arguments.atomicOperation, totalThreadsCount);
 
     // Create and initialize the buffer with atomic
     cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, data.sizeOfDataType, nullptr, &retVal);
@@ -57,7 +55,7 @@ static TestResult run(const OneAtomicArguments &arguments, Statistics &statistic
     // Warmup
     ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 0, sizeof(buffer), &buffer));
     ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 1, sizeof(otherArgumentsBuffer), &otherArgumentsBuffer));
-    ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 2, sizeof(loopIterations), &loopIterations));
+    ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 2, sizeof(data.loopIterations), &data.loopIterations));
     ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
