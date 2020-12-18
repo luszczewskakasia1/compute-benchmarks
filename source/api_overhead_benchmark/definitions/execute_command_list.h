@@ -7,18 +7,17 @@ struct ExecuteCommandListArguments : TestCaseArguments {
     BooleanTestCaseArgument useFence;
 
     ExecuteCommandListArguments()
-        : useFence(*this, "useFence") {}
+        : useFence(*this, "UseFence", "Pass a non-null ze_fence_handle_t to the API call") {}
 };
 
-class ExecuteCommandList : public TestCase<ExecuteCommandListArguments> {
-  public:
+struct ExecuteCommandList : TestCase<ExecuteCommandListArguments> {
     using TestCase<ExecuteCommandListArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "measures time spent in zeCommandQueueExecuteCommandLists on CPU.";
-    }
 
     std::string getTestCaseName() const override {
         return "ExecuteCommandList";
+    }
+
+    std::string getHelp() const override {
+        return "measures time spent in zeCommandQueueExecuteCommandLists on CPU.";
     }
 };

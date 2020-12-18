@@ -9,20 +9,19 @@ struct AppendLaunchKernelArguments : TestCaseArguments {
     BooleanTestCaseArgument useEvent;
 
     AppendLaunchKernelArguments()
-        : workgroupCount(*this, "wgc", "workgroup count"),
-          workgroupSize(*this, "wgs", "workgroup size, pass 0 to make the driver calculate it during enqueue"),
-          useEvent(*this, "event", "pass output event to the enqueue call") {}
+        : workgroupCount(*this, "wgc", "Workgroup count"),
+          workgroupSize(*this, "wgs", "Workgroup size, pass 0 to make the driver calculate it during enqueue"),
+          useEvent(*this, "event", "Pass output event to the enqueue call") {}
 };
 
-class AppendLaunchKernel : public TestCase<AppendLaunchKernelArguments> {
-  public:
+struct AppendLaunchKernel : TestCase<AppendLaunchKernelArguments> {
     using TestCase<AppendLaunchKernelArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "measures time spent in zeCommandListAppendLaunchKernel on CPU.";
-    }
 
     std::string getTestCaseName() const override {
         return "AppendLaunchKernel";
+    }
+
+    std::string getHelp() const override {
+        return "measures time spent in zeCommandListAppendLaunchKernel on CPU.";
     }
 };

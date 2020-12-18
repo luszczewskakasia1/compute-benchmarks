@@ -10,21 +10,20 @@ struct FlushTimeArguments : TestCaseArguments {
     BooleanTestCaseArgument useEvent;
 
     FlushTimeArguments()
-        : workgroupCount(*this, "wgc", "workgroup count"),
-          workgroupSize(*this, "wgs", "workgroup size, pass 0 to make the driver calculate it during enqueue"),
-          useOoq(*this, "ooq", "use out of order queue"),
-          useEvent(*this, "event", "pass output event to the enqueue call") {}
+        : workgroupCount(*this, "wgc", "Workgroup count"),
+          workgroupSize(*this, "wgs", "Workgroup size, pass 0 to make the driver calculate it during enqueue"),
+          useOoq(*this, "ooq", "Use out of order queue"),
+          useEvent(*this, "event", "Pass output event to the enqueue call") {}
 };
 
-class FlushTime : public TestCase<FlushTimeArguments> {
-  public:
+struct FlushTime : TestCase<FlushTimeArguments> {
     using TestCase<FlushTimeArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "measures time spent in clEnqueueNDRangeKernel on CPU.";
-    }
 
     std::string getTestCaseName() const override {
         return "FlushTime";
+    }
+
+    std::string getHelp() const override {
+        return "measures time spent in clEnqueueNDRangeKernel on CPU.";
     }
 };

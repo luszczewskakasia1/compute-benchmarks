@@ -11,22 +11,21 @@ struct EnqueueNdrTimeArguments : TestCaseArguments {
     BooleanTestCaseArgument useEvent;
 
     EnqueueNdrTimeArguments()
-        : workgroupCount(*this, "wgc", "workgroup count"),
-          workgroupSize(*this, "wgs", "workgroup size"),
-          useOoq(*this, "ooq", "use out of order queue"),
-          useProfiling(*this, "profiling", "creating a profiling queue"),
-          useEvent(*this, "event", "pass output event to the enqueue call") {}
+        : workgroupCount(*this, "wgc", "Workgroup count"),
+          workgroupSize(*this, "wgs", "Workgroup size"),
+          useOoq(*this, "ooq", "Use out of order queue"),
+          useProfiling(*this, "profiling", "Creating a profiling queue"),
+          useEvent(*this, "event", "Pass output event to the enqueue call") {}
 };
 
-class EnqueueNdrTime : public TestCase<EnqueueNdrTimeArguments> {
-  public:
+struct EnqueueNdrTime : TestCase<EnqueueNdrTimeArguments> {
     using TestCase<EnqueueNdrTimeArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "measures time spent in clEnqueueNDRangeKernel on CPU.";
-    }
 
     std::string getTestCaseName() const override {
         return "EnqueueNdrTime";
+    }
+
+    std::string getHelp() const override {
+        return "measures time spent in clEnqueueNDRangeKernel on CPU.";
     }
 };
