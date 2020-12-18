@@ -20,10 +20,18 @@ size_t getArgumentsCount(AtomicOperation operation) {
     return operation == AtomicOperation::Inc || operation == AtomicOperation::Dec;
 }
 
-bool isSupported(AtomicOperation operation, DataType type) {
+bool isSupported(AtomicOperation operation, DataType type, bool globalAtomicFloatsSupported) {
     switch (type) {
     case DataType::Float:
-        return operation == AtomicOperation::Xchg;
+        switch (operation) {
+        case AtomicOperation::Xchg:
+            return true;
+        case AtomicOperation::Add:
+        case AtomicOperation::Sub:
+            return globalAtomicFloatsSupported;
+        default:
+            return false;
+        }
     case DataType::Int32:
         return true;
     default:

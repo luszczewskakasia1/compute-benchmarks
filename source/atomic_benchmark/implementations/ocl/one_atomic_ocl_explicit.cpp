@@ -10,15 +10,15 @@
 #include <gtest/gtest.h>
 
 static TestResult run(const OneAtomicExplicitArguments &arguments, Statistics &statistics) {
-    // Check support
-    if (!AtomicOperationHelper::isSupported(arguments.atomicOperation, arguments.dataType)) {
-        return TestResult::DeviceNotCapable;
-    }
-
     // Setup
     Opencl opencl{};
     Timer timer{};
     cl_int retVal{};
+
+    // Check support
+    if (!AtomicOperationHelper::isSupported(arguments.atomicOperation, arguments.dataType, opencl.getExtensions().isGlobalFloatAtomicsSupported())) {
+        return TestResult::DeviceNotCapable;
+    }
 
     // Prepare data
     const size_t lws = arguments.workgroupSize;
