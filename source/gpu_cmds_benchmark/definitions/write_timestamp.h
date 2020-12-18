@@ -2,23 +2,23 @@
 
 #include "framework/test_case/test_case.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
+#include "framework/utility/common_help_message.h"
 
 struct WriteTimestampArguments : TestCaseArguments {
     PositiveIntegerTestCaseArgument measuredCommands;
 
     WriteTimestampArguments()
-        : measuredCommands(*this, "measuredCommands", "Number of commands being measured. Result is divided by this number.") {}
+        : measuredCommands(*this, "measuredCommands", CommonHelpMessage::measuredCommandsCount()) {}
 };
 
-class WriteTimestamp : public TestCase<WriteTimestampArguments> {
-  public:
+struct WriteTimestamp : TestCase<WriteTimestampArguments> {
     using TestCase<WriteTimestampArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "measures time required to write timestamp on GPU.";
-    }
 
     std::string getTestCaseName() const override {
         return "WriteTimestamp";
+    }
+
+    std::string getHelp() const override {
+        return "measures time required to write a timestamp on GPU.";
     }
 };

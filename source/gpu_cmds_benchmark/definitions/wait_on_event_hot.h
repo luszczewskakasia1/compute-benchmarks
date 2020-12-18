@@ -2,23 +2,23 @@
 
 #include "framework/test_case/test_case.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
+#include "framework/utility/common_help_message.h"
 
 struct WaitOnEventHotArguments : TestCaseArguments {
     PositiveIntegerTestCaseArgument measuredCommands;
 
     WaitOnEventHotArguments()
-        : measuredCommands(*this, "measuredCommands", "Number of commands being measured. Result is divided by this number.") {}
+        : measuredCommands(*this, "measuredCommands", CommonHelpMessage::measuredCommandsCount()) {}
 };
 
-class WaitOnEventHot : public TestCase<WaitOnEventHotArguments> {
-  public:
+struct WaitOnEventHot : TestCase<WaitOnEventHotArguments> {
     using TestCase<WaitOnEventHotArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "measures time required to service a signalled semaphore, that was previously used";
-    }
 
     std::string getTestCaseName() const override {
         return "WaitOnEventHot";
+    }
+
+    std::string getHelp() const override {
+        return "measures time required to service a signalled semaphore, that was previously used";
     }
 };

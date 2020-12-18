@@ -18,3 +18,6 @@ std::string CommonHelpMessage::forceBlitter() {
 std::string CommonHelpMessage::useEvents() {
     return "Perform GPU-side measurements using events";
 }
+std::string CommonHelpMessage::measuredCommandsCount() {
+    return "Number of commands being measured. Result is later divided by this number, to achieve time of a single command";
+}

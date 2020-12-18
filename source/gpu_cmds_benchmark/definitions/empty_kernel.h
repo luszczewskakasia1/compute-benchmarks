@@ -2,6 +2,7 @@
 
 #include "framework/test_case/test_case.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
+#include "framework/utility/common_help_message.h"
 
 struct EmptyKernelArguments : TestCaseArguments {
     PositiveIntegerTestCaseArgument measuredCommands;
@@ -9,20 +10,20 @@ struct EmptyKernelArguments : TestCaseArguments {
     PositiveIntegerTestCaseArgument workgroupSize;
 
     EmptyKernelArguments()
-        : measuredCommands(*this, "measuredCommands", "Number of commands being measured. Result is divided by this number."),
-          workgroupCount(*this, "wgc", "workgroup count"),
-          workgroupSize(*this, "wgs", "workgroup size (aka local work size)") {}
+        : measuredCommands(*this, "measuredCommands", CommonHelpMessage::measuredCommandsCount()),
+          workgroupCount(*this, "wgc", "Workgroup count"),
+          workgroupSize(*this, "wgs", "Workgroup size (aka local work size)") {}
 };
 
 class EmptyKernel : public TestCase<EmptyKernelArguments> {
   public:
     using TestCase<EmptyKernelArguments>::TestCase;
 
-    std::string getHelp() const override {
-        return "measures time required to run an empty kernel on GPU.";
-    }
-
     std::string getTestCaseName() const override {
         return "EmptyKernel";
+    }
+
+    std::string getHelp() const override {
+        return "measures time required to run an empty kernel on GPU.";
     }
 };
