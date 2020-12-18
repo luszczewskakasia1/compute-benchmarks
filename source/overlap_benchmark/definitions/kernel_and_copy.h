@@ -10,10 +10,10 @@ struct KernelAndCopyArguments : TestCaseArguments {
     BooleanTestCaseArgument useCopyQueue;
 
     KernelAndCopyArguments()
-        : twoQueues(*this, "twoQueues", "enables using separate queues for both operations. Must be used with runCopy and runKernel"),
-          runKernel(*this, "runKernel", "enqueue kernel during each iteration"),
-          runCopy(*this, "runCopy", "enqueue buffer to buffer copy during each iteration"),
-          useCopyQueue(*this, "useCopyQueue", "use a specialized copy queue for the copy operation. Must be used with runCopy") {}
+        : twoQueues(*this, "twoQueues", "Enables using separate queues for both operations. Must be used with runCopy and runKernel"),
+          runKernel(*this, "runKernel", "Enqueue kernel during each iteration"),
+          runCopy(*this, "runCopy", "Enqueue buffer to buffer copy during each iteration"),
+          useCopyQueue(*this, "useCopyQueue", "Use a specialized copy queue for the copy operation. Must be used with runCopy") {}
 
     bool validateArgumentsExtra() const override {
         if (!runKernel && !runCopy) {
@@ -32,16 +32,15 @@ struct KernelAndCopyArguments : TestCaseArguments {
     }
 };
 
-class KernelAndCopy : public TestCase<KernelAndCopyArguments> {
-  public:
+struct KernelAndCopy : TestCase<KernelAndCopyArguments> {
     using TestCase<KernelAndCopyArguments>::TestCase;
+
+    std::string getTestCaseName() const override {
+        return "KernelAndCopy";
+    }
 
     std::string getHelp() const override {
         return "enqueues kernel and copy operation with the ability to perform both tasks on "
                "different command queues.";
-    }
-
-    std::string getTestCaseName() const override {
-        return "KernelAndCopy";
     }
 };
