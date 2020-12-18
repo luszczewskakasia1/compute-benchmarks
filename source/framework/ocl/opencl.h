@@ -119,7 +119,7 @@ struct Opencl {
     }
 
     const ExtensionsHelper &getExtensions() {
-        if (extensionsHelper) {
+        if (extensionsHelper == nullptr) {
             extensionsHelper = std::make_unique<ExtensionsHelper>(this->rootDevice);
         }
         return *extensionsHelper;
