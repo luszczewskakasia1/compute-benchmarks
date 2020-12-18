@@ -4,8 +4,7 @@
 #include "framework/test_case_argument/enum/test_case_argument_device_selection.h"
 #include "framework/test_case_argument/enum/test_case_argument_multi_device_selection.h"
 #include "framework/test_case_argument/test_case_argument_compression.h"
-
-#include <sstream>
+#include "framework/utility/common_help_message.h"
 
 struct CopyBufferArguments : TestCaseArguments {
     MultiDeviceSelectionTestCaseArgument contextPlacement;
@@ -15,7 +14,6 @@ struct CopyBufferArguments : TestCaseArguments {
     ByteSizeTestCaseArgument size;
     CompressionBooleanTestCaseArgument srcCompressed;
     CompressionBooleanTestCaseArgument dstCompressed;
-
     BooleanTestCaseArgument useEvents;
 
     CopyBufferArguments()
@@ -24,9 +22,9 @@ struct CopyBufferArguments : TestCaseArguments {
           srcPlacement(*this, "src", "Placement of memory for the source buffer"),
           dstPlacement(*this, "dst", "Placement of memory for the destination buffer"),
           size(*this, "size", "Size of the buffers"),
-          srcCompressed(*this, "srcCompressed", "Select if source buffer is to be compressed."),
-          dstCompressed(*this, "dstCompressed", "Select if destination buffer is to be compressed."),
-          useEvents(*this, "useEvents", "Select if GPU-side measurements should be done") {}
+          srcCompressed(*this, "srcCompressed", CommonHelpMessage::compression("source buffer")),
+          dstCompressed(*this, "dstCompressed", CommonHelpMessage::compression("destination buffer")),
+          useEvents(*this, "useEvents", CommonHelpMessage::useEvents()) {}
 
     bool validateArgumentsExtra() const override {
         return DeviceSelectionHelper::isSubset(contextPlacement, queuePlacement) &&
@@ -35,15 +33,15 @@ struct CopyBufferArguments : TestCaseArguments {
     }
 };
 
-class CopyBuffer : public TestCase<CopyBufferArguments> {
-  public:
+struct CopyBuffer : TestCase<CopyBufferArguments> {
     using TestCase<CopyBufferArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "allocates two OpenCL buffers and measures copy bandwidth between them.";
-    }
 
     std::string getTestCaseName() const override {
         return "CopyBuffer";
+    }
+
+    std::string getHelp() const override {
+        return "allocates two OpenCL buffers and measures copy bandwidth between them. Buffers "
+               "will be placed in device memory, if it's available.";
     }
 };

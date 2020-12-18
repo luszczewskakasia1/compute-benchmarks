@@ -4,8 +4,7 @@
 #include "framework/test_case_argument/enum/test_case_argument_device_selection.h"
 #include "framework/test_case_argument/enum/test_case_argument_multi_device_selection.h"
 #include "framework/test_case_argument/test_case_argument_compression.h"
-
-#include <sstream>
+#include "framework/utility/common_help_message.h"
 
 struct ReadBufferArguments : TestCaseArguments {
     MultiDeviceSelectionTestCaseArgument contextPlacement;
@@ -20,8 +19,8 @@ struct ReadBufferArguments : TestCaseArguments {
           queuePlacement(*this, "queue", "Which device within the context will perform the operation"),
           bufferPlacement(*this, "memory", "Placement of memory for the buffer"),
           size(*this, "size", "Size of the buffer"),
-          compressed(*this, "compressed", "Select if the buffer is to be compressed."),
-          useEvents(*this, "useEvents", "Select if GPU-side measurements should be done") {}
+          compressed(*this, "compressed", CommonHelpMessage::compression("buffer")),
+          useEvents(*this, "useEvents", CommonHelpMessage::useEvents()) {}
 
     bool validateArgumentsExtra() const override {
         return DeviceSelectionHelper::isSubset(contextPlacement, queuePlacement) &&
@@ -29,15 +28,15 @@ struct ReadBufferArguments : TestCaseArguments {
     }
 };
 
-class ReadBuffer : public TestCase<ReadBufferArguments> {
-  public:
+struct ReadBuffer : TestCase<ReadBufferArguments> {
     using TestCase<ReadBufferArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "allocates an OpenCL buffer and measures read bandwidth.";
-    }
 
     std::string getTestCaseName() const override {
         return "ReadBuffer";
+    }
+
+    std::string getHelp() const override {
+        return "allocates an OpenCL buffer and measures read bandwidth. Read operation means "
+               "transfer from GPU to CPU.";
     }
 };

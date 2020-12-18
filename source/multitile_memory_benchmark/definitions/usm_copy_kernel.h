@@ -5,8 +5,7 @@
 #include "framework/test_case_argument/enum/test_case_argument_multi_device_selection.h"
 #include "framework/test_case_argument/enum/test_case_argument_usm_device_selection.h"
 #include "framework/test_case_argument/test_case_argument_compression.h"
-
-#include <sstream>
+#include "framework/utility/common_help_message.h"
 
 struct UsmCopyKernelArguments : TestCaseArguments {
     MultiDeviceSelectionTestCaseArgument contextPlacement;
@@ -23,8 +22,8 @@ struct UsmCopyKernelArguments : TestCaseArguments {
           srcPlacement(*this, "src", "Placement of memory for the source buffer"),
           dstPlacement(*this, "dst", "Placement of memory for the destination buffer"),
           size(*this, "size", "Size of the buffers"),
-          forceBlitter(*this, "forceBlitter", "Force blitter engine. Test will be skipped if device does not support blitter. Warning: in OpenCL blitter may still be used even if not forced"),
-          useEvents(*this, "useEvents", "Select if GPU-side measurements should be done") {}
+          forceBlitter(*this, "forceBlitter", CommonHelpMessage::forceBlitter()),
+          useEvents(*this, "useEvents", CommonHelpMessage::useEvents()) {}
 
     bool validateArgumentsExtra() const override {
         return DeviceSelectionHelper::isSubset(contextPlacement, queuePlacement) &&
@@ -33,15 +32,15 @@ struct UsmCopyKernelArguments : TestCaseArguments {
     }
 };
 
-class UsmCopyKernel : public TestCase<UsmCopyKernelArguments> {
-  public:
+struct UsmCopyKernel : TestCase<UsmCopyKernelArguments> {
     using TestCase<UsmCopyKernelArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "allocates two unified shared memory buffers and measures copy bandwidth between them using a custom kernel.";
-    }
 
     std::string getTestCaseName() const override {
         return "UsmCopyKernel";
+    }
+
+    std::string getHelp() const override {
+        return "allocates two unified shared memory buffers and measures copy bandwidth between "
+               "them using a custom kernel.";
     }
 };

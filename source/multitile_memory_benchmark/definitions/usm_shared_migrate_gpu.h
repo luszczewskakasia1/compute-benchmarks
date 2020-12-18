@@ -5,8 +5,6 @@
 #include "framework/test_case_argument/enum/test_case_argument_usm_device_selection.h"
 #include "framework/test_case_argument/test_case_argument_compression.h"
 
-#include <sstream>
-
 struct UsmSharedMigrateGpuArguments : TestCaseArguments {
     MultiDeviceSelectionTestCaseArgument contextPlacement;
     UsmSharedDeviceSelectionTestCaseArgument bufferPlacement;
@@ -22,15 +20,14 @@ struct UsmSharedMigrateGpuArguments : TestCaseArguments {
     }
 };
 
-class UsmSharedMigrateGpu : public TestCase<UsmSharedMigrateGpuArguments> {
-  public:
+struct UsmSharedMigrateGpu : TestCase<UsmSharedMigrateGpuArguments> {
     using TestCase<UsmSharedMigrateGpuArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "allocates a unified shared memory buffer and measures time to migrate it from CPU to GPU.";
-    }
 
     std::string getTestCaseName() const override {
         return "UsmSharedMigrateGpu";
+    }
+
+    std::string getHelp() const override {
+        return "allocates a unified shared memory buffer and measures time to migrate it from CPU to GPU.";
     }
 };

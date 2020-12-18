@@ -5,8 +5,7 @@
 #include "framework/test_case_argument/enum/test_case_argument_multi_device_selection.h"
 #include "framework/test_case_argument/enum/test_case_argument_usm_device_selection.h"
 #include "framework/test_case_argument/test_case_argument_compression.h"
-
-#include <sstream>
+#include "framework/utility/common_help_message.h"
 
 struct UsmFillArguments : TestCaseArguments {
     MultiDeviceSelectionTestCaseArgument contextPlacement;
@@ -23,8 +22,8 @@ struct UsmFillArguments : TestCaseArguments {
           bufferPlacement(*this, "memory", "Placement of memory for the buffer"),
           size(*this, "size", "Size of the buffer"),
           patternSize(*this, "patternSize", "Size of the fill pattern"),
-          forceBlitter(*this, "forceBlitter", "Force blitter engine. Test will be skipped if device does not support blitter. Warning: in OpenCL blitter may still be used even if not forced"),
-          useEvents(*this, "useEvents", "Select if GPU-side measurements should be done") {}
+          forceBlitter(*this, "forceBlitter", CommonHelpMessage::forceBlitter()),
+          useEvents(*this, "useEvents", CommonHelpMessage::useEvents()) {}
 
     bool validateArgumentsExtra() const override {
         return DeviceSelectionHelper::isSubset(contextPlacement, queuePlacement) &&
@@ -32,15 +31,14 @@ struct UsmFillArguments : TestCaseArguments {
     }
 };
 
-class UsmFill : public TestCase<UsmFillArguments> {
-  public:
+struct UsmFill : TestCase<UsmFillArguments> {
     using TestCase<UsmFillArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "allocates a unified shared memory buffer and measures fill bandwidth.";
-    }
 
     std::string getTestCaseName() const override {
         return "UsmFill";
+    }
+
+    std::string getHelp() const override {
+        return "allocates a unified shared memory buffer and measures fill bandwidth.";
     }
 };
