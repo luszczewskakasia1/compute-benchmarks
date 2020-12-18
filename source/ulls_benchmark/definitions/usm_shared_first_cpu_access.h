@@ -4,8 +4,6 @@
 #include "framework/test_case_argument/enum/test_case_argument_usm_initial_placement.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
 
-#include <sstream>
-
 struct UsmSharedFirstCpuAccessArguments : TestCaseArguments {
     UsmInitialPlacementTestCaseArgument initialPlacement;
     ByteSizeTestCaseArgument bufferSize;

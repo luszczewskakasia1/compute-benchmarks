@@ -3,8 +3,6 @@
 #include "framework/test_case/test_case.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
 
-#include <sstream>
-
 struct EmptyKernelArguments : TestCaseArguments {
     PositiveIntegerTestCaseArgument workgroupCount;
     PositiveIntegerTestCaseArgument workgroupSize;
