@@ -4,15 +4,15 @@
 
 struct BestSubmissionArguments : TestCaseArguments {};
 
-class BestSubmission : public TestCase<BestSubmissionArguments> {
-  public:
+struct BestSubmission : TestCase<BestSubmissionArguments> {
     using TestCase<BestSubmissionArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "enqueues a system memory write without kernel and measure when update when became visible on the CPUs\n";
-    }
 
     std::string getTestCaseName() const override {
         return "BestSubmission";
+    }
+
+    std::string getHelp() const override {
+        return "enqueues a system memory write via PIPE_CONTROL and measures when update becomes "
+               "visible on the CPU.";
     }
 };

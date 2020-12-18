@@ -12,18 +12,17 @@ struct UsmSharedFirstCpuAccessArguments : TestCaseArguments {
 
     UsmSharedFirstCpuAccessArguments()
         : initialPlacement(*this, "initialPlacement", "Hint for initial placement of the resource passed to the driver"),
-          bufferSize(*this, "size", "size of the buffer to be set") {}
+          bufferSize(*this, "size", "Size of the buffer") {}
 };
 
-class UsmSharedFirstCpuAccess : public TestCase<UsmSharedFirstCpuAccessArguments> {
-  public:
+struct UsmSharedFirstCpuAccess : TestCase<UsmSharedFirstCpuAccessArguments> {
     using TestCase<UsmSharedFirstCpuAccessArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "allocates a unified shared memory buffer and measures time to access it on cpu after creation";
-    }
 
     std::string getTestCaseName() const override {
         return "UsmSharedFirstCpuAccess";
+    }
+
+    std::string getHelp() const override {
+        return "allocates a unified shared memory buffer and measures time to access it on CPU after creation.";
     }
 };

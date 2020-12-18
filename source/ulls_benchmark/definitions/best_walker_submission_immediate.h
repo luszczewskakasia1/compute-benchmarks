@@ -4,16 +4,16 @@
 
 struct BestWalkerSubmissionImmediateArguments : TestCaseArguments {};
 
-class BestWalkerSubmissionImmediate : public TestCase<BestWalkerSubmissionImmediateArguments> {
-  public:
+struct BestWalkerSubmissionImmediate : TestCase<BestWalkerSubmissionImmediateArguments> {
     using TestCase<BestWalkerSubmissionImmediateArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "enqueues kernel which updates system memory location and waits for the update in busy loop. Kernel"
-               "is enqueued using low-latency immediate command list, so the test is LevelZero only\n";
-    }
 
     std::string getTestCaseName() const override {
         return "BestWalkerSubmissionImmediate";
+    }
+
+    std::string getHelp() const override {
+        return "enqueues kernel, which updates system memory location and then busy-loops on CPU "
+               "until the update becomes visible. Kernel is enqueued using low-latency immediate "
+               "command list, so the test is LevelZero-specific.";
     }
 };

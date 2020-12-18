@@ -9,18 +9,19 @@ struct NewResourcesWithGpuAccessArguments : TestCaseArguments {
     ByteSizeTestCaseArgument size;
 
     NewResourcesWithGpuAccessArguments()
-        : size(*this, "size") {}
+        : size(*this, "size", "Size of the buffer") {}
 };
 
-class NewResourcesWithGpuAccess : public TestCase<NewResourcesWithGpuAccessArguments> {
-  public:
+struct NewResourcesWithGpuAccess : TestCase<NewResourcesWithGpuAccessArguments> {
     using TestCase<NewResourcesWithGpuAccessArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "enqueues kernel accessing the entire resource, which is new, and measures submission time.";
-    };
 
     std::string getTestCaseName() const override {
         return "NewResourcesWithGpuAccess";
     }
+
+    std::string getHelp() const override {
+        return "enqueues kernel that accesses an entire buffer placed in device memory to measure "
+               "resource preparation time. The resource is destroyed and recreated for each "
+               "iteration to ensure it is a different memory allocation.";
+    };
 };

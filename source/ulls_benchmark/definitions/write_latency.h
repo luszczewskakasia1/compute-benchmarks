@@ -4,15 +4,14 @@
 
 struct WriteLatencyArguments : TestCaseArguments {};
 
-class WriteLatency : public TestCase<WriteLatencyArguments> {
-public:
+struct WriteLatency : TestCase<WriteLatencyArguments> {
     using TestCase<WriteLatencyArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "unblocks event on GPU, then waits for timestamp being written\n";
-    }
 
     std::string getTestCaseName() const override {
         return "WriteLatency";
+    }
+
+    std::string getHelp() const override {
+        return "unblocks event on GPU, then waits for timestamp being written.";
     }
 };

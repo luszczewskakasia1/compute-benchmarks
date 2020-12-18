@@ -12,18 +12,17 @@ struct UsmSharedFirstGpuAccessArguments : TestCaseArguments {
 
     UsmSharedFirstGpuAccessArguments()
         : initialPlacement(*this, "initialPlacement", "Hint for initial placement of the resource passed to the driver"),
-          bufferSize(*this, "size", "size of the buffer to be set") {}
+          bufferSize(*this, "size", "Size of the buffer") {}
 };
 
-class UsmSharedFirstGpuAccess : public TestCase<UsmSharedFirstGpuAccessArguments> {
-  public:
+struct UsmSharedFirstGpuAccess : TestCase<UsmSharedFirstGpuAccessArguments> {
     using TestCase<UsmSharedFirstGpuAccessArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "allocates a unified shared memory buffer and measures time to access it on gpu after creation";
-    }
 
     std::string getTestCaseName() const override {
         return "UsmSharedFirstGpuAccess";
+    }
+
+    std::string getHelp() const override {
+        return "allocates a unified shared memory buffer and measures time to access it on GPU after creation.";
     }
 };

@@ -4,15 +4,14 @@
 
 struct RoundTripSubmissionArguments : TestCaseArguments {};
 
-class RoundTripSubmission : public TestCase<RoundTripSubmissionArguments> {
-  public:
+struct RoundTripSubmission : TestCase<RoundTripSubmissionArguments> {
     using TestCase<RoundTripSubmissionArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "enqueues kernel which updates system memory location and waits for it with a synchronizing API\n";
-    }
 
     std::string getTestCaseName() const override {
         return "RoundTripSubmission";
+    }
+
+    std::string getHelp() const override {
+        return "enqueues kernel which updates system memory location and waits for it with a synchronizing API.";
     }
 };

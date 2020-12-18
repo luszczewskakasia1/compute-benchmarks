@@ -9,18 +9,19 @@ struct NewResourcesSubmissionHostArguments : TestCaseArguments {
     ByteSizeTestCaseArgument size;
 
     NewResourcesSubmissionHostArguments()
-        : size(*this, "size") {}
+        : size(*this, "size", "Size of the buffer") {}
 };
 
-class NewResourcesSubmissionHost : public TestCase<NewResourcesSubmissionHostArguments> {
-  public:
+struct NewResourcesSubmissionHost : TestCase<NewResourcesSubmissionHostArguments> {
     using TestCase<NewResourcesSubmissionHostArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "enqueues kernel with a new host resource to measure resource preparation time.";
-    };
 
     std::string getTestCaseName() const override {
         return "NewResourcesSubmissionHost";
     }
+
+    std::string getHelp() const override {
+        return "enqueues kernel that uses a buffer placed in host memory to measure resource "
+               "preparation time. The resource is destroyed and recreated for each iteration "
+               "to ensure it is a different memory allocation.";
+    };
 };

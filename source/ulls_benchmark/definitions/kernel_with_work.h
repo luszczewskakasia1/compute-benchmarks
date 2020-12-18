@@ -12,21 +12,21 @@ struct KernelWithWorkArguments : TestCaseArguments {
     PositiveIntegerTestCaseArgument workgroupSize;
 
     KernelWithWorkArguments()
-        : usedIds(*this, "usedIds"),
-          workgroupCount(*this, "wgc", "workgroup count"),
-          workgroupSize(*this, "wgs", "workgroup size (aka local work size)") {}
+        : usedIds(*this, "usedIds", "Which of the get_global_id() and get_local_id() calls will be used in the kernel"),
+          workgroupCount(*this, "wgc", "Workgroup count"),
+          workgroupSize(*this, "wgs", "Workgroup size (aka local work size)") {}
 };
 
-class KernelWithWork : public TestCase<KernelWithWorkArguments> {
-  public:
+struct KernelWithWork : TestCase<KernelWithWorkArguments> {
     using TestCase<KernelWithWorkArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "measures time required to run a GPU kernel which assigns values to elements of a buffer.";
-    }
 
     std::string getTestCaseName() const override {
         return "KernelWithWork";
+    }
+
+    std::string getHelp() const override {
+        return "measures time required to run a GPU kernel which assigns constant values to "
+               "elements of a buffer. Each thread assigns one value.";
     }
 };
 

@@ -10,19 +10,19 @@ struct EmptyKernelArguments : TestCaseArguments {
     PositiveIntegerTestCaseArgument workgroupSize;
 
     EmptyKernelArguments()
-        : workgroupCount(*this, "wgc", "workgroup count"),
-          workgroupSize(*this, "wgs", "workgroup size (aka local work size)") {}
+        : workgroupCount(*this, "wgc", "Workgroup count"),
+          workgroupSize(*this, "wgs", "Workgroup size (aka local work size)") {}
 };
 
-class EmptyKernel : public TestCase<EmptyKernelArguments> {
-  public:
+struct EmptyKernel : TestCase<EmptyKernelArguments> {
     using TestCase<EmptyKernelArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "enqueues empty kernel to measure walker spawn time.";
-    }
 
     std::string getTestCaseName() const override {
         return "EmptyKernel";
+    }
+
+    std::string getHelp() const override {
+        return "enqueues empty kernel and measures time to launch it and wait for it on CPU, thus "
+               "measuring walker spawn time.";
     }
 };

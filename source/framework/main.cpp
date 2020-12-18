@@ -70,6 +70,8 @@ int printHelp() {
         if (helpParameters.size() != 0) {
             std::cout << " Parameters:\n"
                       << helpParameters;
+        } else {
+            std::cout << '\n';
         }
         std::cout << '\n';
     }
