@@ -4,6 +4,7 @@
 #include "framework/test_case_argument/enum/test_case_argument_atomic_operation.h"
 #include "framework/test_case_argument/enum/test_case_argument_data_type.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
+#include "framework/utility/common_help_message.h"
 
 struct OneAtomicArguments : TestCaseArguments {
     DataTypeTestCaseArgument dataType;
@@ -12,21 +13,20 @@ struct OneAtomicArguments : TestCaseArguments {
     PositiveIntegerTestCaseArgument workgroupSize;
 
     OneAtomicArguments()
-        : dataType(*this, "type", "data type of the atomic. Keep in mind not all operations are supported for floating poins"),
-          atomicOperation(*this, "op", "atomic operation to perform"),
-          workgroupCount(*this, "wgc", "work group count"),
-          workgroupSize(*this, "wgs", "work group size") {}
+        : dataType(*this, "type", CommonHelpMessage::atomicDataType()),
+          atomicOperation(*this, "op", "Atomic operation to perform"),
+          workgroupCount(*this, "wgc", "Work group count"),
+          workgroupSize(*this, "wgs", "Work group size") {}
 };
 
-class OneAtomic : public TestCase<OneAtomicArguments> {
-  public:
+struct OneAtomic : TestCase<OneAtomicArguments> {
     using TestCase<OneAtomicArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "enqueues kernel performing an atomic operation on a single address";
-    }
 
     std::string getTestCaseName() const override {
         return "OneAtomic";
+    }
+
+    std::string getHelp() const override {
+        return "enqueues kernel performing an atomic operation on a single address";
     }
 };

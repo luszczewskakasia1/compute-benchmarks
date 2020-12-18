@@ -6,6 +6,7 @@
 #include "framework/test_case_argument/enum/test_case_argument_atomic_scope.h"
 #include "framework/test_case_argument/enum/test_case_argument_data_type.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
+#include "framework/utility/common_help_message.h"
 
 struct OneAtomicExplicitArguments : TestCaseArguments {
     DataTypeTestCaseArgument dataType;
@@ -16,23 +17,22 @@ struct OneAtomicExplicitArguments : TestCaseArguments {
     PositiveIntegerTestCaseArgument workgroupSize;
 
     OneAtomicExplicitArguments()
-        : dataType(*this, "type", "data type of the atomic. Keep in mind not all operations are supported for floating points"),
-          atomicOperation(*this, "op", "atomic operation to perform"),
-          scope(*this, "scope", "memory scope of an atomic operation"),
-          memoryOrder(*this, "order", "memory order of an atomic operation"),
-          workgroupCount(*this, "wgc", "work group count"),
-          workgroupSize(*this, "wgs", "work group size") {}
+        : dataType(*this, "type", CommonHelpMessage::atomicDataType()),
+          atomicOperation(*this, "op", "Atomic operation to perform"),
+          scope(*this, "scope", "Memory scope of an atomic operation"),
+          memoryOrder(*this, "order", "Memory order of an atomic operation"),
+          workgroupCount(*this, "wgc", "Work group count"),
+          workgroupSize(*this, "wgs", "Work group size") {}
 };
 
-class OneAtomicExplicit : public TestCase<OneAtomicExplicitArguments> {
-  public:
+struct OneAtomicExplicit : TestCase<OneAtomicExplicitArguments> {
     using TestCase<OneAtomicExplicitArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "enqueues kernel performing an atomic operation on a single address using OpenCL 2.0 Atomics with explicit memory order and scope";
-    }
 
     std::string getTestCaseName() const override {
         return "OneAtomicExplicit";
+    }
+
+    std::string getHelp() const override {
+        return "enqueues kernel performing an atomic operation on a single address using OpenCL 2.0 Atomics with explicit memory order and scope";
     }
 };

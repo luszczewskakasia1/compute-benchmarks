@@ -4,6 +4,7 @@
 #include "framework/test_case_argument/enum/test_case_argument_atomic_operation.h"
 #include "framework/test_case_argument/enum/test_case_argument_data_type.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
+#include "framework/utility/common_help_message.h"
 #include "framework/utility/memory_constants.h"
 
 struct SeparateAtomicsArguments : TestCaseArguments {
@@ -14,11 +15,11 @@ struct SeparateAtomicsArguments : TestCaseArguments {
     PositiveIntegerTestCaseArgument workgroupSize;
 
     SeparateAtomicsArguments()
-        : dataType(*this, "type", "data type of the atomic. Keep in mind not all operations are supported for floating poins"),
-          atomicOperation(*this, "op", "atomic operation to perform"),
+        : dataType(*this, "type", CommonHelpMessage::atomicDataType()),
+          atomicOperation(*this, "op", "Atomic operation to perform"),
           atomicsPerCacheline(*this, "atomicsPerCacheline", "Number of used addresses occupying a single cacheline (this causes operations to be serialized)"),
-          workgroupCount(*this, "wgc", "work group count"),
-          workgroupSize(*this, "wgs", "work group size") {}
+          workgroupCount(*this, "wgc", "Work group count"),
+          workgroupSize(*this, "wgs", "Work group size") {}
 
     bool validateArgumentsExtra() const override {
         if (atomicsPerCacheline > workgroupCount * workgroupSize) {
@@ -31,15 +32,14 @@ struct SeparateAtomicsArguments : TestCaseArguments {
     }
 };
 
-class SeparateAtomics : public TestCase<SeparateAtomicsArguments> {
-  public:
+struct SeparateAtomics : TestCase<SeparateAtomicsArguments> {
     using TestCase<SeparateAtomicsArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "enqueues kernel performing an atomic operation on different addresses";
-    }
 
     std::string getTestCaseName() const override {
         return "SeparateAtomics";
+    }
+
+    std::string getHelp() const override {
+        return "enqueues kernel performing an atomic operation on different addresses";
     }
 };

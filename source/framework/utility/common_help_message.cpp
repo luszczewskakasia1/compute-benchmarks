@@ -21,3 +21,7 @@ std::string CommonHelpMessage::useEvents() {
 std::string CommonHelpMessage::measuredCommandsCount() {
     return "Number of commands being measured. Result is later divided by this number, to achieve time of a single command";
 }
+
+std::string CommonHelpMessage::atomicDataType() {
+    return "Data type of the atomic. Keep in mind not all operations are supported for floating points";
+}

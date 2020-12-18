@@ -6,6 +6,7 @@
 #include "framework/test_case_argument/enum/test_case_argument_atomic_scope.h"
 #include "framework/test_case_argument/enum/test_case_argument_data_type.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
+#include "framework/utility/common_help_message.h"
 #include "framework/utility/memory_constants.h"
 
 struct SeparateAtomicsExplicitArguments : TestCaseArguments {
@@ -18,13 +19,13 @@ struct SeparateAtomicsExplicitArguments : TestCaseArguments {
     PositiveIntegerTestCaseArgument workgroupSize;
 
     SeparateAtomicsExplicitArguments()
-        : dataType(*this, "type", "data type of the atomic. Keep in mind not all operations are supported for floating poins"),
-          atomicOperation(*this, "op", "atomic operation to perform"),
+        : dataType(*this, "type", CommonHelpMessage::atomicDataType()),
+          atomicOperation(*this, "op", "Atomic operation to perform"),
           atomicsPerCacheline(*this, "atomicsPerCacheline", "Number of used addresses occupying a single cacheline (this causes operations to be serialized)"),
-          scope(*this, "scope", "memory scope of an atomic operation"),
-          memoryOrder(*this, "order", "memory order of an atomic operation"),
-          workgroupCount(*this, "wgc", "work group count"),
-          workgroupSize(*this, "wgs", "work group size") {}
+          scope(*this, "scope", "Memory scope of an atomic operation"),
+          memoryOrder(*this, "order", "Memory order of an atomic operation"),
+          workgroupCount(*this, "wgc", "Work group count"),
+          workgroupSize(*this, "wgs", "Work group size") {}
 
     bool validateArgumentsExtra() const override {
         if (atomicsPerCacheline > workgroupCount * workgroupSize) {
@@ -37,15 +38,14 @@ struct SeparateAtomicsExplicitArguments : TestCaseArguments {
     }
 };
 
-class SeparateAtomicsExplicit : public TestCase<SeparateAtomicsExplicitArguments> {
-  public:
+struct SeparateAtomicsExplicit : TestCase<SeparateAtomicsExplicitArguments> {
     using TestCase<SeparateAtomicsExplicitArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "enqueues kernel performing an atomic operation on different addresses";
-    }
 
     std::string getTestCaseName() const override {
         return "SeparateAtomicsExplicit";
+    }
+
+    std::string getHelp() const override {
+        return "enqueues kernel performing an atomic operation on different addresses";
     }
 };

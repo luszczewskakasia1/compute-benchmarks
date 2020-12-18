@@ -7,4 +7,5 @@ struct CommonHelpMessage {
     static std::string forceBlitter();
     static std::string useEvents();
     static std::string measuredCommandsCount();
+    static std::string atomicDataType();
 };
