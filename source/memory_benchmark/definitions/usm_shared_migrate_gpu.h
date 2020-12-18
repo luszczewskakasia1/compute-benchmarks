@@ -3,24 +3,21 @@
 #include "framework/test_case/test_case.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
 
-#include <sstream>
-
 struct UsmSharedMigrateGpuArguments : TestCaseArguments {
     ByteSizeTestCaseArgument bufferSize;
 
     UsmSharedMigrateGpuArguments()
-        : bufferSize(*this, "size", "size of the buffer to be set") {}
+        : bufferSize(*this, "size", "Size of the buffer") {}
 };
 
-class UsmSharedMigrateGpu : public TestCase<UsmSharedMigrateGpuArguments> {
-  public:
+struct UsmSharedMigrateGpu : TestCase<UsmSharedMigrateGpuArguments> {
     using TestCase<UsmSharedMigrateGpuArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "allocates a unified shared memory buffer and measures time to migrate it from CPU to GPU";
-    }
 
     std::string getTestCaseName() const override {
         return "UsmSharedMigrateGpu";
+    }
+
+    std::string getHelp() const override {
+        return "allocates a unified shared memory buffer and measures time to migrate it from CPU to GPU";
     }
 };

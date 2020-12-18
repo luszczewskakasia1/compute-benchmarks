@@ -3,32 +3,30 @@
 #include "framework/test_case/test_case.h"
 #include "framework/test_case_argument/enum/test_case_argument_device_selection.h"
 #include "framework/test_case_argument/test_case_argument_compression.h"
-
-#include <sstream>
+#include "framework/utility/common_help_message.h"
 
 struct CopyBufferArguments : TestCaseArguments {
     ByteSizeTestCaseArgument size;
     CompressionBooleanTestCaseArgument compressedSource;
     CompressionBooleanTestCaseArgument compressedDestination;
-
     BooleanTestCaseArgument useEvents;
 
     CopyBufferArguments()
         : size(*this, "size", "Size of the buffers"),
-          compressedSource(*this, "compressedSource"),
-          compressedDestination(*this, "compressedDestination"),
-          useEvents(*this, "useEvents", "measure performance with events") {}
+          compressedSource(*this, "compressedSource", CommonHelpMessage::compression("source buffer")),
+          compressedDestination(*this, "compressedDestination", CommonHelpMessage::compression("destination buffer")),
+          useEvents(*this, "useEvents", CommonHelpMessage::useEvents()) {}
 };
 
-class CopyBuffer : public TestCase<CopyBufferArguments> {
-  public:
+struct CopyBuffer : TestCase<CopyBufferArguments> {
     using TestCase<CopyBufferArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "allocates two OpenCL buffers and measures copy bandwidth between them.";
-    }
 
     std::string getTestCaseName() const override {
         return "CopyBuffer";
+    }
+
+    std::string getHelp() const override {
+        return "allocates two OpenCL buffers and measures copy bandwidth between them. Buffers "
+               "will be placed in device memory, if it's available.";
     }
 };

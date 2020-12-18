@@ -2,8 +2,7 @@
 
 #include "framework/test_case/test_case.h"
 #include "framework/test_case_argument/test_case_argument_compression.h"
-
-#include <sstream>
+#include "framework/utility/common_help_message.h"
 
 struct FillBufferArguments : TestCaseArguments {
     ByteSizeTestCaseArgument size;
@@ -12,21 +11,21 @@ struct FillBufferArguments : TestCaseArguments {
     BooleanTestCaseArgument forceBlitter;
 
     FillBufferArguments()
-        : size(*this, "size"),
-          patternSize(*this, "patternSize"),
-          compressed(*this, "compressed"),
-          forceBlitter(*this, "forceBlitter", "Force blitter engine. Test will be skipped if device does not support blitter. Warning: in OpenCL blitter may still be used even if not forced") {}
+        : size(*this, "size", "Size of the buffer"),
+          patternSize(*this, "patternSize", "Size of the fill pattern"),
+          compressed(*this, "compressed", CommonHelpMessage::compression("buffer")),
+          forceBlitter(*this, "forceBlitter", CommonHelpMessage::forceBlitter()) {}
 };
 
-class FillBuffer : public TestCase<FillBufferArguments> {
-  public:
+struct FillBuffer : TestCase<FillBufferArguments> {
     using TestCase<FillBufferArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "allocates an OpenCL buffer and measures fill bandwidth.";
-    }
 
     std::string getTestCaseName() const override {
         return "FillBuffer";
+    }
+
+    std::string getHelp() const override {
+        return "allocates an OpenCL buffer and measures fill bandwidth. Buffer will be placed in "
+               "device memory, if it's available.";
     }
 };

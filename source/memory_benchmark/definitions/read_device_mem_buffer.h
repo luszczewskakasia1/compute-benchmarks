@@ -2,30 +2,29 @@
 
 #include "framework/test_case/test_case.h"
 #include "framework/test_case_argument/test_case_argument_compression.h"
-
-#include <sstream>
+#include "framework/utility/common_help_message.h"
 
 struct ReadDeviceMemBufferArguments : TestCaseArguments {
     ByteSizeTestCaseArgument size;
-    BooleanTestCaseArgument compressed;
+    CompressionBooleanTestCaseArgument compressed;
     //ByteSizeTestCaseArgument numWaves;
 
     ReadDeviceMemBufferArguments()
-        : size(*this, "size"),
-          compressed(*this, "compressed")
-          //,numWaves(*this, "waves") 
+        : size(*this, "size", "Size of the buffer"),
+          compressed(*this, "compressed", CommonHelpMessage::compression("buffer"))
+    //,numWaves(*this, "waves")
     {}
 };
 
-class ReadDeviceMemBuffer : public TestCase<ReadDeviceMemBufferArguments> {
-  public:
+struct ReadDeviceMemBuffer : TestCase<ReadDeviceMemBufferArguments> {
     using TestCase<ReadDeviceMemBufferArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "allocates two OpenCL buffers and measures source buffer read bandwidth, source buffer resides in device memory.";
-    }
 
     std::string getTestCaseName() const override {
         return "ReadDeviceMemBuffer";
+    }
+
+    std::string getHelp() const override {
+        return "allocates two OpenCL buffers and measures source buffer read bandwidth. Source "
+               "buffer resides in device memory.";
     }
 };

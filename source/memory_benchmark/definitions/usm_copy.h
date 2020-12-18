@@ -3,8 +3,7 @@
 #include "framework/test_case/test_case.h"
 #include "framework/test_case_argument/enum/test_case_argument_memory_placement.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
-
-#include <sstream>
+#include "framework/utility/common_help_message.h"
 
 struct UsmCopyArguments : TestCaseArguments {
     MemoryPlacementTestCaseArgument sourcePlacement;
@@ -14,22 +13,21 @@ struct UsmCopyArguments : TestCaseArguments {
     BooleanTestCaseArgument useEvents;
 
     UsmCopyArguments()
-        : sourcePlacement(*this, "src"),
-          destinationPlacement(*this, "dst"),
-          size(*this, "size"),
-          forceBlitter(*this, "forceBlitter", "Force blitter engine. Test will be skipped if device does not support blitter. Warning: in OpenCL blitter may still be used even if not forced"),
-          useEvents(*this, "useEvents") {}
+        : sourcePlacement(*this, "src", "Placement of the source buffer"),
+          destinationPlacement(*this, "dst", "Placement of the destination buffer"),
+          size(*this, "size", "Size of the buffer"),
+          forceBlitter(*this, "forceBlitter", CommonHelpMessage::forceBlitter()),
+          useEvents(*this, "useEvents", CommonHelpMessage::useEvents()) {}
 };
 
-class UsmCopy : public TestCase<UsmCopyArguments> {
-  public:
+struct UsmCopy : TestCase<UsmCopyArguments> {
     using TestCase<UsmCopyArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "allocates two unified shared memory buffers and measures copy bandwidth between them.";
-    }
 
     std::string getTestCaseName() const override {
         return "UsmCopy";
+    }
+
+    std::string getHelp() const override {
+        return "allocates two unified shared memory buffers and measures copy bandwidth between them.";
     }
 };

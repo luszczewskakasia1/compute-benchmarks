@@ -3,8 +3,7 @@
 #include "framework/test_case/test_case.h"
 #include "framework/test_case_argument/enum/test_case_argument_memory_placement.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
-
-#include <sstream>
+#include "framework/utility/common_help_message.h"
 
 struct UsmMemsetArguments : TestCaseArguments {
     MemoryPlacementTestCaseArgument memoryPlacement;
@@ -12,20 +11,19 @@ struct UsmMemsetArguments : TestCaseArguments {
     BooleanTestCaseArgument forceBlitter;
 
     UsmMemsetArguments()
-        : memoryPlacement(*this, "memory"),
-          bufferSize(*this, "size", "size of the buffer to be set"),
-          forceBlitter(*this, "forceBlitter", "Force blitter engine. Test will be skipped if device does not support blitter. Warning: in OpenCL blitter may still be used even if not forced") {}
+        : memoryPlacement(*this, "memory", "Placement of the buffer"),
+          bufferSize(*this, "size", "Size of the buffer"),
+          forceBlitter(*this, "forceBlitter", CommonHelpMessage::forceBlitter()) {}
 };
 
-class UsmMemset : public TestCase<UsmMemsetArguments> {
-  public:
+struct UsmMemset : TestCase<UsmMemsetArguments> {
     using TestCase<UsmMemsetArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "allocates a unified memory buffer and measures memset bandwidth";
-    }
 
     std::string getTestCaseName() const override {
         return "UsmMemset";
+    }
+
+    std::string getHelp() const override {
+        return "allocates a unified memory buffer and measures memset bandwidth";
     }
 };

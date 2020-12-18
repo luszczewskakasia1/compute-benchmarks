@@ -4,8 +4,7 @@
 #include "framework/test_case_argument/enum/test_case_argument_buffer_contents.h"
 #include "framework/test_case_argument/enum/test_case_argument_memory_placement.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
-
-#include <sstream>
+#include "framework/utility/common_help_message.h"
 
 struct UsmFillArguments : TestCaseArguments {
     MemoryPlacementTestCaseArgument memoryPlacement;
@@ -16,23 +15,22 @@ struct UsmFillArguments : TestCaseArguments {
     BufferContentsTestCaseArgument patternContents;
 
     UsmFillArguments()
-        : memoryPlacement(*this, "memory"),
-          bufferSize(*this, "size", "size of the buffer to be filled"),
-          patternSize(*this, "patternSize"),
-          forceBlitter(*this, "forceBlitter", "Force blitter engine. Test will be skipped if device does not support blitter. Warning: in OpenCL blitter may still be used even if not forced"),
-          useEvents(*this, "useEvents"),
-          patternContents(*this, "patternContents") {}
+        : memoryPlacement(*this, "memory", "Placement of the buffer"),
+          bufferSize(*this, "size", "Size of the buffer"),
+          patternSize(*this, "patternSize", "Size of the fill pattern"),
+          forceBlitter(*this, "forceBlitter", CommonHelpMessage::forceBlitter()),
+          useEvents(*this, "useEvents", CommonHelpMessage::useEvents()),
+          patternContents(*this, "patternContents", "Select contents of the fill pattern") {}
 };
 
-class UsmFill : public TestCase<UsmFillArguments> {
-  public:
+struct UsmFill : TestCase<UsmFillArguments> {
     using TestCase<UsmFillArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "allocates a unified memory buffer and measures fill bandwidth";
-    }
 
     std::string getTestCaseName() const override {
         return "UsmFill";
+    }
+
+    std::string getHelp() const override {
+        return "allocates a unified memory buffer and measures fill bandwidth";
     }
 };

@@ -2,27 +2,25 @@
 
 #include "framework/test_case/test_case.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
-
-#include <sstream>
+#include "framework/utility/common_help_message.h"
 
 struct UsmSharedMigrateCpuArguments : TestCaseArguments {
     BooleanTestCaseArgument accessAllBytes;
     ByteSizeTestCaseArgument bufferSize;
 
     UsmSharedMigrateCpuArguments()
-        : accessAllBytes(*this, "accessAllBytes", "select, whether entire resource or only one byte will be accessed on CPU"),
-          bufferSize(*this, "size", "size of the buffer to be set") {}
+        : accessAllBytes(*this, "accessAllBytes", "Select, whether entire resource or only one byte will be accessed on CPU"),
+          bufferSize(*this, "size", "Size of the buffer") {}
 };
 
-class UsmSharedMigrateCpu : public TestCase<UsmSharedMigrateCpuArguments> {
-  public:
+struct UsmSharedMigrateCpu : TestCase<UsmSharedMigrateCpuArguments> {
     using TestCase<UsmSharedMigrateCpuArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "allocates a unified shared memory buffer and measures time to migrate it from GPU to CPU";
-    }
 
     std::string getTestCaseName() const override {
         return "UsmSharedMigrateCpu";
+    }
+
+    std::string getHelp() const override {
+        return "allocates a unified shared memory buffer and measures time to migrate it from GPU to CPU";
     }
 };

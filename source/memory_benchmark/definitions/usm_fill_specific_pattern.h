@@ -5,8 +5,7 @@
 #include "framework/test_case_argument/enum/test_case_argument_memory_placement.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
 #include "framework/test_case_argument/test_case_argument_long_hex.h"
-
-#include <sstream>
+#include "framework/utility/common_help_message.h"
 
 struct UsmFillSpecificPatternArguments : TestCaseArguments {
     MemoryPlacementTestCaseArgument memoryPlacement;
@@ -16,22 +15,21 @@ struct UsmFillSpecificPatternArguments : TestCaseArguments {
     BooleanTestCaseArgument useEvents;
 
     UsmFillSpecificPatternArguments()
-        : memoryPlacement(*this, "memory"),
-          bufferSize(*this, "size", "size of the buffer to be filled"),
-          pattern(*this, "pattern"),
-          forceBlitter(*this, "forceBlitter", "Force blitter engine. Test will be skipped if device does not support blitter. Warning: in OpenCL blitter may still be used even if not forced"),
-          useEvents(*this, "useEvents") {}
+        : memoryPlacement(*this, "memory", "Placement of the buffer"),
+          bufferSize(*this, "size", "Size of the buffer"),
+          pattern(*this, "pattern", "The fill pattern represented hexadecimally, e.g. 0x91ABCD1254"),
+          forceBlitter(*this, "forceBlitter", CommonHelpMessage::forceBlitter()),
+          useEvents(*this, "useEvents", CommonHelpMessage::useEvents()) {}
 };
 
-class UsmFillSpecificPattern : public TestCase<UsmFillSpecificPatternArguments> {
-  public:
+struct UsmFillSpecificPattern : TestCase<UsmFillSpecificPatternArguments> {
     using TestCase<UsmFillSpecificPatternArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "allocates a unified memory buffer and measures fill bandwidth. Allow specifying arbitrary pattern.";
-    }
 
     std::string getTestCaseName() const override {
         return "UsmFillSpecificPattern";
+    }
+
+    std::string getHelp() const override {
+        return "allocates a unified memory buffer and measures fill bandwidth. Allow specifying arbitrary pattern.";
     }
 };

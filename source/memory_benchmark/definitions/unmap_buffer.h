@@ -3,8 +3,7 @@
 #include "framework/test_case/test_case.h"
 #include "framework/test_case_argument/enum/test_case_argument_map_flags.h"
 #include "framework/test_case_argument/test_case_argument_compression.h"
-
-#include <sstream>
+#include "framework/utility/common_help_message.h"
 
 struct UnmapBufferArguments : TestCaseArguments {
     ByteSizeTestCaseArgument size;
@@ -12,20 +11,20 @@ struct UnmapBufferArguments : TestCaseArguments {
     MapFlagsTestCaseArgument mapFlags;
 
     UnmapBufferArguments()
-        : size(*this, "size"),
-          compressed(*this, "compressed"),
-          mapFlags(*this, "mapFlags") {}
+        : size(*this, "size", "Size of the buffer"),
+          compressed(*this, "compressed", CommonHelpMessage::compression("buffer")),
+          mapFlags(*this, "mapFlags", "OpenCL map flags passed during memory mapping") {}
 };
 
-class UnmapBuffer : public TestCase<UnmapBufferArguments> {
-  public:
+struct UnmapBuffer : TestCase<UnmapBufferArguments> {
     using TestCase<UnmapBufferArguments>::TestCase;
-
-    std::string getHelp() const override {
-        return "allocates an OpenCL buffer and measures map bandwidth.";
-    }
 
     std::string getTestCaseName() const override {
         return "UnmapBuffer";
+    }
+
+    std::string getHelp() const override {
+        return "allocates an OpenCL buffer and measures unmap bandwidth. Unmapping operation means"
+               "memory transfer from CPU to GPU or a no-op, depending on map flags.";
     }
 };
