@@ -8,8 +8,24 @@
 #include <iostream>
 #include <string>
 
+int printVersion(bool enableWarning, const char *prefix = "") {
+    const std::string version = BENCHMARK_VERSION;
+    if (!version.empty()) {
+        std::cout << prefix << BENCHMARK_VERSION << std::endl;
+        return 0;
+    }
+
+    if (enableWarning) {
+        std::cerr << "Unknown version. Run CMake with \"-D INCLUDE_VERSION=ON\" to include it in the binary." << std::endl;
+        return 1;
+    }
+
+    return 0;
+}
+
 int executeSingleTest(const std::string &testName, int argc, char **argv) {
     printDeviceInfo();
+    printVersion(false, "Benchmark version: ");
 
     const TestMap &testMap = getTestMap();
     auto it = testMap.find(testName);
@@ -29,6 +45,7 @@ int executeSingleTest(const std::string &testName, int argc, char **argv) {
 
 int executeAllTests(int argc, char **argv) {
     printDeviceInfo();
+    printVersion(false, "Benchmark version: ");
 
     ::testing::InitGoogleTest(&argc, argv);
     auto &listeners = ::testing::UnitTest::GetInstance()->listeners();
@@ -97,6 +114,9 @@ int main(int argc, char **argv) {
         }
         if (key == "help") {
             return printHelp();
+        }
+        if (key == "version") {
+            return printVersion(true);
         }
     }
 

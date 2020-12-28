@@ -18,6 +18,16 @@ if(NOT EXISTS third_party/googletest/CMakeLists.txt)
                     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 endif()
 
+# Produce version string
+string(TIMESTAMP versionDate "%Y%m%d")
+set(versionIndex "01")
+execute_process (COMMAND git log -1 --format=%h
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE versionCommit
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+set(BENCHMARK_VERSION "${versionDate}_${versionIndex}_${versionCommit}")
+
 # Publish build additional handling
 if(BUILD_FOR_PUBLISHING)
     # Only publish release builds
@@ -25,17 +35,8 @@ if(BUILD_FOR_PUBLISHING)
     set(CMAKE_CONFIGURATION_TYPES Release)
     set(CMAKE_BUILD_TYPE Release)
 
-    # Produce version string
-    string(TIMESTAMP versionDate "%Y%m%d")
-    set(versionIndex "01")
-    execute_process (COMMAND git log -1 --format=%h
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        OUTPUT_VARIABLE versionCommit
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-    set(version "${versionDate}_${versionIndex}_${versionCommit}")
-    file(WRITE ${OUTPUT_DIR}/version.txt ${version})
-    message(STATUS "Version ${version} written to version.txt")
+    file(WRITE ${OUTPUT_DIR}/version.txt ${BENCHMARK_VERSION})
+    message(STATUS "Version ${BENCHMARK_VERSION} written to version.txt")
 endif()
 
 # Gtest

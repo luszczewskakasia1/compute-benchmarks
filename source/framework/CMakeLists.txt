@@ -7,6 +7,13 @@ target_include_directories(${TARGET_NAME} PUBLIC ${SOURCE_ROOT})
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_17)
 add_subdirectories()
 
+# Select version to print from binary
+if (BUILD_FOR_PUBLISHING OR INCLUDE_VERSION)
+    target_compile_definitions(${TARGET_NAME} PRIVATE BENCHMARK_VERSION="${BENCHMARK_VERSION}")
+else()
+    target_compile_definitions(${TARGET_NAME} PRIVATE BENCHMARK_VERSION="")
+endif()
+
 # Ignore CRT Warnings
 if (MSVC)
     target_compile_definitions(${TARGET_NAME} PUBLIC _CRT_SECURE_NO_WARNINGS)
