@@ -27,6 +27,10 @@ struct TestCaseArgument {
         return true;
     }
 
+    bool wasParsed() const {
+        return parsed;
+    }
+
   protected:
     virtual void parseImpl(const std::string &value) = 0;
     virtual std::string toStringValue() const = 0;
@@ -35,4 +39,5 @@ struct TestCaseArgument {
   private:
     const std::string key;
     const std::string extraHelp;
+    bool parsed = false;
 };

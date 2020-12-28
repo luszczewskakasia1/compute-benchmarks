@@ -33,6 +33,7 @@ void TestCaseArgument::parse(CommandLineArgument &argument) {
     if (argument.isKeyEqualTo(this->key)) {
         argument.markAsProcessed();
         parseImpl(argument.getValue());
+        this->parsed = true;
     }
 }
 

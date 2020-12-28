@@ -50,6 +50,16 @@ class TestCase : public TestCaseInterface {
             return false;
         }
 
+        // Check if all arguments were set (no defaults)
+        if (const auto unparsedArgs = arguments.getUnparsedArguments(); !unparsedArgs.empty()) {
+            std::cerr << "The following test case arguments were not set to any value: ";
+            for (const auto arg : unparsedArgs) {
+                std::cerr << arg->getKey() << " ";
+            }
+            std::cerr << std::endl;
+            return false;
+        }
+
         // Try running with all possible APIs. If some are disabled, e.g. --api=ocl is passed, then the rest will be skipped in run() method
         for (int apiIndex = static_cast<int>(Api::FIRST); apiIndex <= static_cast<int>(Api::LAST); apiIndex++) {
             arguments.api = static_cast<Api>(apiIndex);
