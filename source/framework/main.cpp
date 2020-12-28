@@ -2,11 +2,11 @@
 #include "framework/configuration.h"
 #include "framework/gtest_event_listener.h"
 #include "framework/print_device_info.h"
+#include "framework/utility/command_line_argument.h"
 #include "framework/utility/statistics.h"
 
 #include <gtest/gtest.h>
 #include <iostream>
-#include <string>
 
 int printVersion(bool enableWarning, const char *prefix = "") {
     const std::string version = BENCHMARK_VERSION;
@@ -96,26 +96,27 @@ int printHelp() {
 }
 
 int main(int argc, char **argv) {
-    if (!parseArgumentsForConfiguration(argc, argv)) {
+    CommandLineArguments commandLineArguments = {};
+    std::string commandLineArgumentsParsingErrors = {};
+    if (!CommandLineArgument::parseArguments(argc, argv, commandLineArguments, commandLineArgumentsParsingErrors)) {
+        std::cerr << commandLineArgumentsParsingErrors << std::endl;
+        return 1;
+    }
+
+    if (!parseArgumentsForConfiguration(commandLineArguments)) {
         std::cerr << "Error parsing command line\n";
         return 1;
     }
 
-    for (int argIndex = 1; argIndex < argc; argIndex++) {
-        const std::string argument{argv[argIndex]};
-        std::string key, value;
-        if (!parseArgumentToKeyValue(argument, key, value)) {
-            std::cerr << "Error parsing command line\n";
-            return 1;
+    for (auto &argument : commandLineArguments) {
+        if (argument.isKeyEqualTo("test")) {
+            argument.markAsProcessed();
+            return executeSingleTest(argument.getValue(), argc, argv);
         }
-
-        if (key == "test") {
-            return executeSingleTest(value, argc, argv);
-        }
-        if (key == "help") {
+        if (argument.isKeyEqualTo("help")) {
             return printHelp();
         }
-        if (key == "version") {
+        if (argument.isKeyEqualTo("version")) {
             return printVersion(true);
         }
     }

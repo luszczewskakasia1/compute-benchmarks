@@ -50,15 +50,9 @@ Configuration::~Configuration() {
     delete benchmarkSpecificConfiguration;
 }
 
-bool parseArgumentsForConfiguration(int argc, char **argv) {
-    for (int i = 1; i < argc; i++) {
-        const auto argument = std::string{argv[i]};
-        std::string key, value;
-        if (!parseArgumentToKeyValue(argument, key, value)) {
-            return false;
-        }
-
-        if (!::configuration.parseArgument(key, value)) {
+bool parseArgumentsForConfiguration(CommandLineArguments &arguments) {
+    for (auto &argument : arguments) {
+        if (!::configuration.parseArgument(argument.getKey(), argument.getValue())) {
             return false;
         }
     }

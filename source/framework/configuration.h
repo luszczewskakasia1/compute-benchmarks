@@ -6,7 +6,7 @@
 #include "framework/test_case_argument/test_case_argument_boolean_flag.h"
 #include "framework/test_case_argument/test_case_argument_string_list.h"
 #include "framework/test_case_argument/test_case_arguments.h"
-#include "framework/utility/string_utils.h"
+#include "framework/utility/command_line_argument.h"
 
 #include <memory>
 
@@ -50,4 +50,4 @@ struct Configuration : TestCaseArgumentsBase {
 };
 
 extern Configuration configuration;
-bool parseArgumentsForConfiguration(int argc, char **argv);
+bool parseArgumentsForConfiguration(CommandLineArguments &arguments);
