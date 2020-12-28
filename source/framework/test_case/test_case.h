@@ -46,21 +46,37 @@ class TestCase : public TestCaseInterface {
     bool runFromCommandLine(CommandLineArguments &commandLineArguments) override {
         // Parse test-specific parameters
         Arguments arguments;
+        bool error = false;
         if (!parseArguments(arguments, commandLineArguments)) {
             return false;
         }
 
-        // Check if all arguments were set (no defaults)
+        // Check if all command line arguments were processed (no ignoring)
+        if (const auto unprocessedArgs = CommandLineArgument::getUnprocessedArguments(commandLineArguments); !unprocessedArgs.empty()) {
+            std::cerr << "The following command line arguments were ignored: ";
+            for (const auto arg : unprocessedArgs) {
+                std::cerr << arg->getKey() << " ";
+            }
+            std::cerr << std::endl;
+            error = true;
+        }
+
+        // Check if all test case arguments were set (no defaults)
         if (const auto unparsedArgs = arguments.getUnparsedArguments(); !unparsedArgs.empty()) {
             std::cerr << "The following test case arguments were not set to any value: ";
             for (const auto arg : unparsedArgs) {
                 std::cerr << arg->getKey() << " ";
             }
             std::cerr << std::endl;
+            error = true;
+        }
+
+        if (error) {
             return false;
         }
 
         // Try running with all possible APIs. If some are disabled, e.g. --api=ocl is passed, then the rest will be skipped in run() method
+        Statistics::printStatisticsHeader(::configuration.printType);
         for (int apiIndex = static_cast<int>(Api::FIRST); apiIndex <= static_cast<int>(Api::LAST); apiIndex++) {
             arguments.api = static_cast<Api>(apiIndex);
             run(arguments);

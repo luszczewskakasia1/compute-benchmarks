@@ -9,7 +9,7 @@ CommandLineArgument::CommandLineArgument(const char *token) {
     this->valid = parseArgumentToKeyValue(token, this->key, this->value);
 }
 
-bool CommandLineArgument::parseArguments(int argc, char **argv, std::vector<CommandLineArgument> &outArguments, std::string &outErrorMessage) {
+bool CommandLineArgument::parseArguments(int argc, char **argv, CommandLineArguments &outArguments, std::string &outErrorMessage) {
     std::unordered_set<std::string> allKeys = {};
 
     for (int argIndex = 1; argIndex < argc; argIndex++) {
@@ -34,6 +34,16 @@ bool CommandLineArgument::parseArguments(int argc, char **argv, std::vector<Comm
     }
 
     return true;
+}
+
+std::vector<const CommandLineArgument *> CommandLineArgument::getUnprocessedArguments(const CommandLineArguments &arguments) {
+    std::vector<const CommandLineArgument *> unprocessedArguments = {};
+    for (const auto &argument : arguments) {
+        if (!argument.isProcessed()) {
+            unprocessedArguments.push_back(&argument);
+        }
+    }
+    return unprocessedArguments;
 }
 
 void CommandLineArgument::markAsProcessed() {

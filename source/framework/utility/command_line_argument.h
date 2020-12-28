@@ -5,13 +5,16 @@
 
 class CommandLineArgument {
   public:
+    using CommandLineArguments = std::vector<CommandLineArgument>;
+
     CommandLineArgument(const char *token);
     CommandLineArgument(const CommandLineArgument &) = delete;
     CommandLineArgument &operator=(const CommandLineArgument &) = delete;
     CommandLineArgument(CommandLineArgument &&) = default;
     CommandLineArgument &operator=(CommandLineArgument &&) = default;
 
-    static bool parseArguments(int argc, char **argv, std::vector<CommandLineArgument> &outArguments, std::string &outErrorMessage);
+    static bool parseArguments(int argc, char **argv, CommandLineArguments &outArguments, std::string &outErrorMessage);
+    static std::vector<const CommandLineArgument *> getUnprocessedArguments(const CommandLineArguments &arguments);
 
     void markAsProcessed();
 
@@ -28,4 +31,4 @@ class CommandLineArgument {
     bool processed = false;
 };
 
-using CommandLineArguments = std::vector<CommandLineArgument>;
+using CommandLineArguments = CommandLineArgument::CommandLineArguments;
