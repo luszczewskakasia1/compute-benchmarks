@@ -43,10 +43,10 @@ class TestCase : public TestCaseInterface {
 
     std::string getHelpParameters() const override { return Arguments{}.getHelp(2u); }
 
-    bool runFromCommandLine(int argc, char **argv) override {
+    bool runFromCommandLine(CommandLineArguments &commandLineArguments) override {
         // Parse test-specific parameters
         Arguments arguments;
-        if (!parseArguments(arguments, argc, argv)) {
+        if (!parseArguments(arguments, commandLineArguments)) {
             return false;
         }
 
@@ -182,20 +182,13 @@ class TestCase : public TestCaseInterface {
         return benchmarkImplementation.function(arguments, statistics);
     }
 
-    static bool parseArguments(Arguments &arguments, int argc, char **argv) {
+    static bool parseArguments(Arguments &arguments, CommandLineArguments &commandLineArguments) {
         arguments.isSingleTestMode = true;
-        for (int i = 2; i < argc; i++) {
-            const auto argument = std::string{argv[i]};
-            std::string key, value;
-            if (!parseArgumentToKeyValue(argument, key, value)) {
-                return false;
-            }
-
-            if (!arguments.parseArgument(key, value)) {
+        for (auto &commandLineArgument : commandLineArguments) {
+            if (!arguments.parseArgument(commandLineArgument)) {
                 return false;
             }
         }
-
         return true;
     }
 

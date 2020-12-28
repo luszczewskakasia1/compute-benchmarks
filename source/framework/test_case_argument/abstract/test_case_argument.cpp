@@ -1,6 +1,7 @@
 #include "test_case_argument.h"
 
 #include "framework/test_case_argument/test_case_arguments.h"
+#include "framework/utility/command_line_argument.h"
 
 #include <iomanip>
 
@@ -26,6 +27,13 @@ std::string TestCaseArgument::getHelp() const {
         result << extraHelp;
     }
     return result.str();
+}
+
+void TestCaseArgument::parse(CommandLineArgument &argument) {
+    if (argument.isKeyEqualTo(this->key)) {
+        argument.markAsProcessed();
+        parseImpl(argument.getValue());
+    }
 }
 
 std::string TestCaseArgument::getHelpEntry(const std::string &key) const {

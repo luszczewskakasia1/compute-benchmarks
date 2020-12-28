@@ -6,9 +6,10 @@
 #include <vector>
 
 struct TestCaseArgument;
+class CommandLineArgument;
 
 struct TestCaseArgumentsBase {
-    bool parseArgument(const std::string &key, const std::string &value);
+    bool parseArgument(CommandLineArgument &commandLineArgument);
     virtual bool validateArguments() const;
     std::string getHelp(size_t indent) const;
 

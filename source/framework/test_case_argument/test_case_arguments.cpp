@@ -4,9 +4,9 @@
 
 #include <sstream>
 
-bool TestCaseArgumentsBase::parseArgument(const std::string &key, const std::string &value) {
+bool TestCaseArgumentsBase::parseArgument(CommandLineArgument &commandLineArgument) {
     for (auto &argument : arguments) {
-        argument->parse(key, value);
+        argument->parse(commandLineArgument);
     }
     return true;
 }

@@ -2,7 +2,6 @@
 #include "framework/configuration.h"
 #include "framework/gtest_event_listener.h"
 #include "framework/print_device_info.h"
-#include "framework/utility/command_line_argument.h"
 #include "framework/utility/statistics.h"
 
 #include <gtest/gtest.h>
@@ -23,7 +22,7 @@ int printVersion(bool enableWarning, const char *prefix = "") {
     return 0;
 }
 
-int executeSingleTest(const std::string &testName, int argc, char **argv) {
+int executeSingleTest(const std::string &testName, CommandLineArguments &commandLineArguments) {
     printDeviceInfo();
     printVersion(false, "Benchmark version: ");
 
@@ -36,7 +35,7 @@ int executeSingleTest(const std::string &testName, int argc, char **argv) {
 
     TestCaseInterface *testCase = it->second.get();
     Statistics::printStatisticsHeader(::configuration.printType);
-    if (!testCase->runFromCommandLine(argc, argv)) {
+    if (!testCase->runFromCommandLine(commandLineArguments)) {
         std::cerr << "Error parsing command line\n";
         return 1;
     }
@@ -111,7 +110,7 @@ int main(int argc, char **argv) {
     for (auto &argument : commandLineArguments) {
         if (argument.isKeyEqualTo("test")) {
             argument.markAsProcessed();
-            return executeSingleTest(argument.getValue(), argc, argv);
+            return executeSingleTest(argument.getValue(), commandLineArguments);
         }
         if (argument.isKeyEqualTo("help")) {
             return printHelp();

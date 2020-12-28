@@ -52,7 +52,7 @@ Configuration::~Configuration() {
 
 bool parseArgumentsForConfiguration(CommandLineArguments &arguments) {
     for (auto &argument : arguments) {
-        if (!::configuration.parseArgument(argument.getKey(), argument.getValue())) {
+        if (!::configuration.parseArgument(argument)) {
             return false;
         }
     }

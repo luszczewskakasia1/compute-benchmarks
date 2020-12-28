@@ -6,6 +6,7 @@
 #include <string>
 
 struct TestCaseArgumentsBase;
+class CommandLineArgument;
 
 struct TestCaseArgument {
     TestCaseArgument(TestCaseArgumentsBase &parent, const std::string &key) : TestCaseArgument(parent, key, "") {}
@@ -20,11 +21,7 @@ struct TestCaseArgument {
         return result.str();
     }
 
-    void parse(const std::string &key, const std::string &value) {
-        if (key == this->key) {
-            parseImpl(value);
-        }
-    }
+    void parse(CommandLineArgument &argument);
 
     virtual bool validate() const {
         return true;
