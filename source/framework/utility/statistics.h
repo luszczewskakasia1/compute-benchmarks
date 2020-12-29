@@ -16,7 +16,6 @@ class Statistics {
     void pushValue(Clock::duration time);
     void pushValue(Clock::duration time, uint64_t size);
 
-    void pushValue(Value value, uint64_t size);
     bool isEmpty();
     bool isFull();
 
@@ -36,4 +35,5 @@ class Statistics {
     const Configuration::PrintType printType;
     const std::unique_ptr<Value[]> samples;
     size_t samplesCount = 0;
+    bool reachedInfinity = false;
 };

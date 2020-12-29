@@ -55,23 +55,12 @@ void Statistics::pushValue(Clock::duration time, uint64_t size) {
 }
 
 void Statistics::pushValue(Value value) {
-
     ERROR_IF(samplesCount > maxSamplesCount, "Too much values pushed by the test");
     samples[samplesCount++] = value;
-}
 
-void Statistics::pushValue(Value value, uint64_t size) {
-    switch (getMeasurementUnit()) {
-    case MeasurementUnit::Microseconds:
-        break; // Ok
-    case MeasurementUnit::GigabytesPerSecond:
-        ERROR("Buffer size needs to be passed in bandwidth mode");
-    default:
-        ERROR("Unknown measurement unit");
+    if (std::isinf(value)) {
+        this->reachedInfinity = true;
     }
-
-    ERROR_IF(samplesCount > maxSamplesCount, "Too much values pushed by the test");
-    samples[samplesCount++] = value;
 }
 
 bool Statistics::isEmpty() {
@@ -142,33 +131,37 @@ void Statistics::printStatisticsHeader(Configuration::PrintType printType) {
 }
 
 void Statistics::printStatistics(const std::string &testCaseName) {
-    switch (printType) {
-    case Configuration::PrintType::Verbose:
-    case Configuration::PrintType::Default: {
-        int column = 0;
-        std::cout << std::fixed;
-        std::cout << std::setw(columns[column++].width) << testCaseName;
-        std::cout << std::setw(columns[column++].width) << std::setprecision(3) << mean();
-        std::cout << std::setw(columns[column++].width) << std::setprecision(3) << median();
-        std::cout << std::setw(columns[column++].width - 1) << std::setprecision(2) << 100 * standardDeviation() << "%";
-        std::cout << std::setw(columns[column++].width) << std::setprecision(3) << min();
-        std::cout << std::setw(columns[column++].width) << std::setprecision(3) << max();
-        std::cout << std::endl;
-        break;
-    }
-    case Configuration::PrintType::Csv: {
-        std::cout << std::fixed;
-        std::cout << testCaseName << ",";
-        std::cout << std::setprecision(3) << mean() << ",";
-        std::cout << std::setprecision(3) << median() << ",";
-        std::cout << std::setprecision(2) << 100 * standardDeviation() << "%,";
-        std::cout << std::setprecision(3) << min() << ",";
-        std::cout << std::setprecision(3) << max();
-        std::cout << std::endl;
-        break;
-    }
-    default:
-        ERROR("unknown print type selected");
+    if (this->reachedInfinity) {
+        printStatisticsString(testCaseName, "inf");
+    } else {
+        switch (printType) {
+        case Configuration::PrintType::Verbose:
+        case Configuration::PrintType::Default: {
+            int column = 0;
+            std::cout << std::fixed;
+            std::cout << std::setw(columns[column++].width) << testCaseName;
+            std::cout << std::setw(columns[column++].width) << std::setprecision(3) << mean();
+            std::cout << std::setw(columns[column++].width) << std::setprecision(3) << median();
+            std::cout << std::setw(columns[column++].width - 1) << std::setprecision(2) << 100 * standardDeviation() << "%";
+            std::cout << std::setw(columns[column++].width) << std::setprecision(3) << min();
+            std::cout << std::setw(columns[column++].width) << std::setprecision(3) << max();
+            std::cout << std::endl;
+            break;
+        }
+        case Configuration::PrintType::Csv: {
+            std::cout << std::fixed;
+            std::cout << testCaseName << ",";
+            std::cout << std::setprecision(3) << mean() << ",";
+            std::cout << std::setprecision(3) << median() << ",";
+            std::cout << std::setprecision(2) << 100 * standardDeviation() << "%,";
+            std::cout << std::setprecision(3) << min() << ",";
+            std::cout << std::setprecision(3) << max();
+            std::cout << std::endl;
+            break;
+        }
+        default:
+            ERROR("unknown print type selected");
+        }
     }
 
     if (printType == Configuration::PrintType::Verbose) {
