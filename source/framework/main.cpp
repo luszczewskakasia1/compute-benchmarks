@@ -2,7 +2,8 @@
 #include "framework/configuration.h"
 #include "framework/gtest_event_listener.h"
 #include "framework/print_device_info.h"
-#include "framework/utility/statistics.h"
+#include "framework/utility/common_help_message.h"
+#include "framework/utility/string_utils.h"
 
 #include <gtest/gtest.h>
 #include <iostream>
@@ -41,9 +42,21 @@ int executeSingleTest(const std::string &testName, CommandLineArguments &command
     return 0;
 }
 
-int executeAllTests(int argc, char **argv) {
+int executeAllTests(int argc, char **argv, CommandLineArguments &commandLineArguments) {
     printDeviceInfo();
     printVersion(false, "Benchmark version: ");
+
+    for (auto &commandLineArgument : commandLineArguments) {
+        if (commandLineArgument.getKey().find("gtest_") == 0) {
+            commandLineArgument.markAsProcessed();
+        }
+    }
+
+    if (const auto unprocessedArgs = CommandLineArgument::getUnprocessedArguments(commandLineArguments); !unprocessedArgs.empty()) {
+        const auto getKey = +[](const CommandLineArgument *a) { return a->getKey(); };
+        std::cerr << CommonHelpMessage::errorIgnoredCommandLineArgs() << joinStrings(", ", unprocessedArgs, getKey) << std::endl;
+        return 1;
+    }
 
     ::testing::InitGoogleTest(&argc, argv);
     auto &listeners = ::testing::UnitTest::GetInstance()->listeners();
@@ -119,5 +132,5 @@ int main(int argc, char **argv) {
         }
     }
 
-    return executeAllTests(argc, argv);
+    return executeAllTests(argc, argv, commandLineArguments);
 }

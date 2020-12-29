@@ -4,6 +4,7 @@
 #include "framework/configuration.h"
 #include "framework/enum/api.h"
 #include "framework/test_case/test_case_interface.h"
+#include "framework/test_case/test_result.h"
 #include "framework/utility/common_help_message.h"
 #include "framework/utility/error.h"
 #include "framework/utility/statistics.h"
@@ -13,21 +14,6 @@
 #include <iostream>
 #include <sstream>
 #include <type_traits>
-
-enum class TestResult {
-    Success,                 // should be returned after a successful run
-    Error,                   // an error was returned by the compute API
-    DriverFunctionNotFound,  // extension function was not found and test is skipped
-    DeviceNotCapable,        // device does not support some functionality needed in test (e.g. compression)
-    KernelNotFound,          // binary kernel was not found in working directory
-    SkippedApi,              // selected API should not be run
-    NoImplementation,        // Test is not implemented in current API
-    IntelExtensionsRequired, // Intel extensions are required, but they are disabled
-    InvalidArgs,             // Invalid arguments specific to the test case were supplied
-    Nooped,                  // Test was nooped, only print its name
-    FilteredOut,             // Test was skipped because of passed argFilter
-    VerificationFail,        // Results where incorrect
-};
 
 template <typename _Arguments>
 class TestCase : public TestCaseInterface {
@@ -62,7 +48,7 @@ class TestCase : public TestCaseInterface {
         // Check if all test case arguments were set (no defaults)
         if (const auto unparsedArgs = arguments.getUnparsedArguments(); !unparsedArgs.empty()) {
             const auto getKey = +[](const TestCaseArgument *a) { return a->getKey(); };
-            std::cerr << CommonHelpMessage::errorUnsetArguments()<< joinStrings(", ", unparsedArgs, getKey) << std::endl;
+            std::cerr << CommonHelpMessage::errorUnsetArguments() << joinStrings(", ", unparsedArgs, getKey) << std::endl;
             error = true;
         }
 
@@ -94,48 +80,20 @@ class TestCase : public TestCaseInterface {
 
         // Run test
         const auto testResult = runImpl(statistics, arguments, testCaseNameWithConfig);
-        switch (testResult) {
-        case TestResult::Success:
+        if (testResult == TestResult::Success) {
             ERROR_UNLESS(statistics.isFull(), "test did not generate as many values as expected");
             statistics.printStatistics(testCaseNameWithConfig);
-            break;
+        } else {
+            const auto &testResultInfo = TestResultHelper::getTestResultInfo(testResult);
 
-        case TestResult::Error:
-            statistics.printStatisticsString(testCaseNameWithConfig, "ERROR");
-            break;
+            // If test was skipped at the very beginning, it shouldn't have pushed any statistics
+            ERROR_IF(testResultInfo.wasTestSkipped && !statistics.isEmpty(), "test was skipped but generated some values");
 
-        case TestResult::InvalidArgs:
-            statistics.printStatisticsString(testCaseNameWithConfig, "INVALID_ARGS");
-            break;
-
-        case TestResult::SkippedApi:
-        case TestResult::NoImplementation:
-        case TestResult::DeviceNotCapable:
-        case TestResult::IntelExtensionsRequired:
-        case TestResult::FilteredOut:
-            ERROR_UNLESS(statistics.isEmpty(), "test was skipped but generated some values");
-            break;
-
-        case TestResult::DriverFunctionNotFound:
-            ERROR_UNLESS(statistics.isEmpty(), "test was skipped but generated some values");
-            statistics.printStatisticsString(testCaseNameWithConfig, "SKIPPED");
-            break;
-
-        case TestResult::KernelNotFound:
-            ERROR_UNLESS(statistics.isEmpty(), "test was skipped but generated some values");
-            statistics.printStatisticsString(testCaseNameWithConfig, "MISSING_KERNEL");
-            break;
-
-        case TestResult::Nooped:
-            statistics.printStatisticsString(testCaseNameWithConfig, "NOOP");
-            break;
-
-        case TestResult::VerificationFail:
-            statistics.printStatisticsString(testCaseNameWithConfig, "VERIF_FAIL");
-            break;
-
-        default:
-            ERROR("unknown result was returned by test");
+            // Print output line with error info if needed
+            const auto printMessage = arguments.isSingleTestMode ? testResultInfo.printInSingleTestMode : testResultInfo.printInAllTestsMode;
+            if (printMessage) {
+                statistics.printStatisticsString(testCaseNameWithConfig, testResultInfo.stringMessage);
+            }
         }
     }
 
