@@ -131,37 +131,31 @@ void Statistics::printStatisticsHeader(Configuration::PrintType printType) {
 }
 
 void Statistics::printStatistics(const std::string &testCaseName) {
-    if (this->reachedInfinity) {
-        printStatisticsString(testCaseName, "inf");
-    } else {
-        switch (printType) {
-        case Configuration::PrintType::Verbose:
-        case Configuration::PrintType::Default: {
-            int column = 0;
-            std::cout << std::fixed;
-            std::cout << std::setw(columns[column++].width) << testCaseName;
-            std::cout << std::setw(columns[column++].width) << std::setprecision(3) << mean();
-            std::cout << std::setw(columns[column++].width) << std::setprecision(3) << median();
-            std::cout << std::setw(columns[column++].width - 1) << std::setprecision(2) << 100 * standardDeviation() << "%";
-            std::cout << std::setw(columns[column++].width) << std::setprecision(3) << min();
-            std::cout << std::setw(columns[column++].width) << std::setprecision(3) << max();
-            std::cout << std::endl;
-            break;
-        }
-        case Configuration::PrintType::Csv: {
-            std::cout << std::fixed;
-            std::cout << testCaseName << ",";
-            std::cout << std::setprecision(3) << mean() << ",";
-            std::cout << std::setprecision(3) << median() << ",";
-            std::cout << std::setprecision(2) << 100 * standardDeviation() << "%,";
-            std::cout << std::setprecision(3) << min() << ",";
-            std::cout << std::setprecision(3) << max();
-            std::cout << std::endl;
-            break;
-        }
-        default:
-            ERROR("unknown print type selected");
-        }
+    switch (printType) {
+    case Configuration::PrintType::Verbose:
+    case Configuration::PrintType::Default: {
+        int column = 0;
+        std::cout << std::setw(columns[column++].width) << testCaseName;
+        std::cout << std::setw(columns[column++].width) << meanString();
+        std::cout << std::setw(columns[column++].width) << medianString();
+        std::cout << std::setw(columns[column++].width) << standardDeviationString();
+        std::cout << std::setw(columns[column++].width) << minString();
+        std::cout << std::setw(columns[column++].width) << maxString();
+        std::cout << std::endl;
+        break;
+    }
+    case Configuration::PrintType::Csv: {
+        std::cout << testCaseName << ",";
+        std::cout << meanString() << ",";
+        std::cout << medianString() << ",";
+        std::cout << standardDeviationString() << ",";
+        std::cout << minString() << ",";
+        std::cout << maxString();
+        std::cout << std::endl;
+        break;
+    }
+    default:
+        ERROR("unknown print type selected");
     }
 
     if (printType == Configuration::PrintType::Verbose) {
@@ -203,19 +197,19 @@ void Statistics::printStatisticsString(const std::string &testCaseName, const st
     }
 }
 
-Statistics::Value Statistics::min() {
+Statistics::Value Statistics::min() const {
     return *std::min_element(samples.get(), samples.get() + samplesCount);
 }
 
-Statistics::Value Statistics::max() {
+Statistics::Value Statistics::max() const {
     return *std::max_element(samples.get(), samples.get() + samplesCount);
 }
 
-Statistics::Value Statistics::mean() {
+Statistics::Value Statistics::mean() const {
     return std::accumulate(samples.get(), samples.get() + samplesCount, Value{0}) / samplesCount;
 }
 
-Statistics::Value Statistics::median() {
+Statistics::Value Statistics::median() const {
     std::sort(samples.get(), samples.get() + samplesCount);
     if (samplesCount % 2 == 0) {
         const auto left = samples[samplesCount / 2 - 1];
@@ -227,7 +221,7 @@ Statistics::Value Statistics::median() {
     }
 }
 
-double Statistics::standardDeviation() {
+Statistics::Value Statistics::standardDeviation() const {
     const Value mean = this->mean();
     Value diffSum = 0;
     for (int i = 0; i < samplesCount; i++) {
@@ -239,4 +233,39 @@ double Statistics::standardDeviation() {
     stdDev = std::sqrt(static_cast<double>(stdDev));
     stdDev /= mean;
     return stdDev;
+}
+
+std::string Statistics::minString() const {
+    return generateMetricString(min());
+}
+
+std::string Statistics::maxString() const {
+    return generateMetricString(max());
+}
+
+std::string Statistics::meanString() const {
+    if (this->reachedInfinity) {
+        return "inf";
+    }
+    return generateMetricString(mean());
+}
+
+std::string Statistics::medianString() const {
+    return generateMetricString(median());
+}
+
+std::string Statistics::standardDeviationString() const {
+    if (this->reachedInfinity) {
+        return "inf";
+    }
+
+    std::ostringstream result{};
+    result << std::fixed << std::setprecision(2) << (100 * standardDeviation()) << "%";
+    return result.str();
+}
+
+std::string Statistics::generateMetricString(Value value) {
+    std::ostringstream result{};
+    result << std::fixed << std::setprecision(3) << value;
+    return result.str();
 }

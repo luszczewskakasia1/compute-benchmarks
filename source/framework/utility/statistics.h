@@ -25,11 +25,18 @@ class Statistics {
 
   private:
     void pushValue(Value value);
-    Value min();
-    Value max();
-    Value mean();
-    Value median();
-    double standardDeviation();
+    Value min() const;
+    Value max() const;
+    Value mean() const;
+    Value median() const;
+    Value standardDeviation() const;
+
+    std::string minString() const;
+    std::string maxString() const;
+    std::string meanString() const;
+    std::string medianString() const;
+    std::string standardDeviationString() const;
+    static std::string generateMetricString(Value value);
 
     const size_t maxSamplesCount;
     const Configuration::PrintType printType;
