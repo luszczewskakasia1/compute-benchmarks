@@ -47,3 +47,18 @@ inline std::vector<std::string> splitString(const std::string &string) {
 
     return result;
 }
+
+template <typename T>
+using ToStringConverter = std::string(*)(T);
+
+template <typename T>
+inline std::string joinStrings(const std::string &separator, const std::vector<T> &objects, ToStringConverter<T> toString) {
+    std::ostringstream result{};
+    for (int i = 0; i < objects.size(); i++) {
+        result << toString(objects[i]);
+        if (i < objects.size() - 1) {
+            result << separator;
+        }
+    }
+    return result.str();
+}

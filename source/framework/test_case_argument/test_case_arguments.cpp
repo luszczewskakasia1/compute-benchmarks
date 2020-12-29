@@ -50,8 +50,8 @@ std::string TestCaseArguments::getCurrentConfig(bool commandLine) const {
     return result.str();
 }
 
-std::vector<TestCaseArgument *> TestCaseArguments::getUnparsedArguments() const {
-    std::vector<TestCaseArgument *> result = {};
+std::vector<const TestCaseArgument *> TestCaseArguments::getUnparsedArguments() const {
+    std::vector<const TestCaseArgument *> result = {};
     for (const auto &argument : arguments) {
         if (!argument->wasParsed()) {
             result.push_back(argument);

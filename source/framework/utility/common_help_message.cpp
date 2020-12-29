@@ -2,6 +2,14 @@
 
 #include <sstream>
 
+std::string CommonHelpMessage::errorIgnoredCommandLineArgs() {
+    return "The following command line arguments were ignored: ";
+}
+
+std::string CommonHelpMessage::errorUnsetArguments() {
+    return "The following test case arguments were not set to any value: ";
+}
+
 std::string CommonHelpMessage::compression(const char *target) {
     std::ostringstream result{};
     result << "Select if the "

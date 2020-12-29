@@ -4,6 +4,7 @@
 #include "framework/configuration.h"
 #include "framework/enum/api.h"
 #include "framework/test_case/test_case_interface.h"
+#include "framework/utility/common_help_message.h"
 #include "framework/utility/error.h"
 #include "framework/utility/statistics.h"
 #include "framework/utility/string_utils.h"
@@ -53,21 +54,15 @@ class TestCase : public TestCaseInterface {
 
         // Check if all command line arguments were processed (no ignoring)
         if (const auto unprocessedArgs = CommandLineArgument::getUnprocessedArguments(commandLineArguments); !unprocessedArgs.empty()) {
-            std::cerr << "The following command line arguments were ignored: ";
-            for (const auto arg : unprocessedArgs) {
-                std::cerr << arg->getKey() << " ";
-            }
-            std::cerr << std::endl;
+            const auto getKey = +[](const CommandLineArgument *a) { return a->getKey(); };
+            std::cerr << CommonHelpMessage::errorIgnoredCommandLineArgs() << joinStrings(", ", unprocessedArgs, getKey) << std::endl;
             error = true;
         }
 
         // Check if all test case arguments were set (no defaults)
         if (const auto unparsedArgs = arguments.getUnparsedArguments(); !unparsedArgs.empty()) {
-            std::cerr << "The following test case arguments were not set to any value: ";
-            for (const auto arg : unparsedArgs) {
-                std::cerr << arg->getKey() << " ";
-            }
-            std::cerr << std::endl;
+            const auto getKey = +[](const TestCaseArgument *a) { return a->getKey(); };
+            std::cerr << CommonHelpMessage::errorUnsetArguments()<< joinStrings(", ", unparsedArgs, getKey) << std::endl;
             error = true;
         }
 
