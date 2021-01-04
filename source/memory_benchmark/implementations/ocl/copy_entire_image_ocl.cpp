@@ -15,6 +15,9 @@ static TestResult run(const CopyEntireImageArguments &arguments, Statistics &sta
     if (opencl.commandQueue == nullptr) {
         return TestResult::DeviceNotCapable;
     }
+    if (!ImageHelperOcl::validateImageDimensions(opencl.device, arguments.size)) {
+        return TestResult::DeviceNotCapable;
+    }
     Timer timer;
     const auto channelOrder = ImageHelperOcl::ChannelOrder::RGBA;
     const auto channelFormat = ImageHelperOcl::ChannelFormat::Float;

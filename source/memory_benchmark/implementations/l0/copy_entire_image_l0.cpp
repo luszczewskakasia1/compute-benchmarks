@@ -14,6 +14,9 @@ static TestResult run(const CopyEntireImageArguments &arguments, Statistics &sta
     if (levelzero.commandQueue == nullptr) {
         return TestResult::DeviceNotCapable;
     }
+    if (!ImageHelperL0::validateImageDimensions(levelzero.device, arguments.size)) {
+        return TestResult::DeviceNotCapable;
+    }
     Timer timer;
     const uint64_t timerResolution = levelzero.getTimerResoultion(levelzero.device);
     const auto channelOrder = ImageHelperL0::ChannelOrder::RGBA;

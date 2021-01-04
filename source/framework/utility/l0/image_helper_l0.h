@@ -63,4 +63,31 @@ struct ImageHelperL0 : ImageHelper {
 
         return imageFormat;
     }
+
+    static inline bool validateImageDimensions(ze_device_handle_t device, const size_t *dimensions) {
+        ze_device_image_properties_t deviceImageProperties{ZE_STRUCTURE_TYPE_DEVICE_IMAGE_PROPERTIES};
+        if (zeDeviceGetImageProperties(device, &deviceImageProperties) != ZE_RESULT_SUCCESS) {
+            return false;
+        }
+
+        switch (getImageTypeFromDimensions(dimensions)) {
+        case ImageType::Image1D:
+        case ImageType::Image1D_Array:
+        case ImageType::Image_Buffer:
+            return dimensions[0] <= deviceImageProperties.maxImageDims1D;
+
+        case ImageType::Image2D:
+        case ImageType::Image2D_Array:
+            return dimensions[0] <= deviceImageProperties.maxImageDims2D &&
+                   dimensions[1] <= deviceImageProperties.maxImageDims2D;
+
+        case ImageType::Image3D:
+            return dimensions[0] <= deviceImageProperties.maxImageDims3D &&
+                   dimensions[1] <= deviceImageProperties.maxImageDims3D &&
+                   dimensions[2] <= deviceImageProperties.maxImageDims3D;
+
+        default:
+            ERROR("Unknown image type");
+        }
+    }
 };

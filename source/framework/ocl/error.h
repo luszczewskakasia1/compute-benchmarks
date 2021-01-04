@@ -16,6 +16,13 @@
         EXPECT_EQ(CL_SUCCESS, retVal); \
     }
 
+#define CL_SUCCESS_OR_RETURN_VALUE(retVal, value) \
+    if ((retVal) != CL_SUCCESS) {                 \
+        return (value);                           \
+    }
+
+#define CL_SUCCESS_OR_RETURN_FALSE(retVal) CL_SUCCESS_OR_RETURN_VALUE((retVal), false)
+
 #define ERROR_UNLESS_CL_SUCCESS(retVal, message)                                                      \
     {                                                                                                 \
         const auto _retVal = retVal;                                                                  \
