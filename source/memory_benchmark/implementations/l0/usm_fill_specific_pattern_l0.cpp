@@ -20,6 +20,7 @@ static TestResult run(const UsmFillSpecificPatternArguments &arguments, Statisti
     // Create buffer
     void *buffer{};
     ASSERT_ZE_RESULT_SUCCESS(UsmHelper::allocate(arguments.memoryPlacement, levelzero.context, levelzero.device, arguments.bufferSize, &buffer));
+    ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, buffer, arguments.bufferSize));
 
     // Create event
     ze_event_pool_handle_t eventPool{};
@@ -36,9 +37,6 @@ static TestResult run(const UsmFillSpecificPatternArguments &arguments, Statisti
         ASSERT_ZE_RESULT_SUCCESS(zeEventCreate(eventPool, &eventDesc, &event));
     }
 
-    // Make the buffer  resident
-    ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, buffer, arguments.bufferSize));
-
     // Create command list
     ze_command_list_desc_t cmdListDesc{};
     cmdListDesc.commandQueueGroupOrdinal = levelzero.commandQueueDesc.ordinal;
@@ -53,6 +51,8 @@ static TestResult run(const UsmFillSpecificPatternArguments &arguments, Statisti
 
     // Benchmark
     for (auto i = 0; i < arguments.iterations; i++) {
+        ASSERT_ZE_RESULT_SUCCESS(BufferContentsHelperL0::fillBuffer(levelzero, buffer, arguments.bufferSize, arguments.contents))
+
         timer.measureStart();
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
@@ -69,7 +69,7 @@ static TestResult run(const UsmFillSpecificPatternArguments &arguments, Statisti
         }
     }
 
-    // Evict buffers
+    // Evict buffer
     ASSERT_ZE_RESULT_SUCCESS(zeContextEvictMemory(levelzero.context, levelzero.device, buffer, arguments.bufferSize));
 
     // Cleanup

@@ -10,6 +10,7 @@
 struct UsmFillSpecificPatternArguments : TestCaseArguments {
     MemoryPlacementTestCaseArgument memoryPlacement;
     ByteSizeTestCaseArgument bufferSize;
+    BufferContentsTestCaseArgument contents;
     LongHexTestCaseArgument pattern;
     BooleanTestCaseArgument forceBlitter;
     BooleanTestCaseArgument useEvents;
@@ -17,6 +18,7 @@ struct UsmFillSpecificPatternArguments : TestCaseArguments {
     UsmFillSpecificPatternArguments()
         : memoryPlacement(*this, "memory", "Placement of the buffer"),
           bufferSize(*this, "size", "Size of the buffer"),
+          contents(*this, "contents", "Contents of the buffer"),
           pattern(*this, "pattern", "The fill pattern represented hexadecimally, e.g. 0x91ABCD1254"),
           forceBlitter(*this, "forceBlitter", CommonHelpMessage::forceBlitter()),
           useEvents(*this, "useEvents", CommonHelpMessage::useEvents()) {}
