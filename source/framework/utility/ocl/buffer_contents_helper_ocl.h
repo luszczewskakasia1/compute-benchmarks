@@ -35,7 +35,7 @@ class BufferContentsHelperOcl : public BufferContentsHelper {
   private:
     static cl_int fillBufferWithRandomBytes(cl_command_queue queue, cl_mem buffer, size_t bufferSize) {
         auto cpuBuffer = std::make_unique<uint8_t[]>(bufferSize);
-        fillWithRandomBytes(cpuBuffer.get(), bufferSize);
+        BufferContentsHelper::fillWithRandomBytes(cpuBuffer.get(), bufferSize);
         CL_SUCCESS_OR_RETURN(clEnqueueWriteBuffer(queue, buffer, CL_BLOCKING, 0, bufferSize, cpuBuffer.get(), 0, nullptr, nullptr));
         return CL_SUCCESS;
     }

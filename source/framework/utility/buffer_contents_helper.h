@@ -1,9 +1,13 @@
 #pragma once
 
+#include "framework/enum/buffer_contents.h"
+
 #include <random>
 
 class BufferContentsHelper {
   public:
+    static void fill(uint8_t *buffer, size_t size, BufferContents contents);
+    static void fillWithZeros(uint8_t *buffer, size_t size);
     static void fillWithRandomBytes(uint8_t *buffer, size_t size);
 
   private:

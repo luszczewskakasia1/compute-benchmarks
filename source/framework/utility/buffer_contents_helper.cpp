@@ -1,11 +1,23 @@
 #include "framework/utility/buffer_contents_helper.h"
 
+#include "framework/utility/error.h"
+
 thread_local std::mt19937 BufferContentsHelper::generator{std::random_device{}()};
 std::vector<uint8_t> BufferContentsHelper::cachedRandomData{};
 
-uint64_t BufferContentsHelper::randomOword() {
-    const uint64_t result = std::uniform_int_distribution<uint64_t>{}(generator);
-    return result;
+void BufferContentsHelper::fill(uint8_t *buffer, size_t size, BufferContents contents) {
+    switch (contents) {
+    case BufferContents::Zeros:
+        return fillWithZeros(buffer, size);
+    case BufferContents::Random:
+        return fillWithRandomBytes(buffer, size);
+    default:
+        ERROR("Unknown buffer contents");
+    }
+}
+
+void BufferContentsHelper::fillWithZeros(uint8_t *buffer, size_t size) {
+    std::memset(buffer, 0, size);
 }
 
 void BufferContentsHelper::fillWithRandomBytes(uint8_t *buffer, size_t size) {
@@ -31,4 +43,9 @@ void BufferContentsHelper::fillWithRandomBytes(uint8_t *buffer, size_t size) {
 
     // Copy cached data to desired buffer
     std::memcpy(buffer, cachedRandomData.data(), size);
+}
+
+uint64_t BufferContentsHelper::randomOword() {
+    const uint64_t result = std::uniform_int_distribution<uint64_t>{}(generator);
+    return result;
 }

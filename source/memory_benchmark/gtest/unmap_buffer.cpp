@@ -8,15 +8,17 @@
 
 static const inline RegisterTestCase<UnmapBuffer> registerTestCase{};
 
-class UnmapBufferTest : public ::testing::TestWithParam<std::tuple<Api, size_t, bool, MapFlags>> {
+class UnmapBufferTest : public ::testing::TestWithParam<std::tuple<Api, size_t, BufferContents, bool, MapFlags, bool>> {
 };
 
 TEST_P(UnmapBufferTest, Test) {
     UnmapBufferArguments args;
     args.api = std::get<0>(GetParam());
     args.size = std::get<1>(GetParam());
-    args.compressed = std::get<2>(GetParam());
-    args.mapFlags = std::get<3>(GetParam());
+    args.contents = std::get<2>(GetParam());
+    args.compressed = std::get<3>(GetParam());
+    args.mapFlags = std::get<4>(GetParam());
+    args.useEvents = std::get<5>(GetParam());
 
     UnmapBuffer test;
     test.run(args);
@@ -29,5 +31,7 @@ INSTANTIATE_TEST_SUITE_P(
     ::testing::Combine(
         ::CommonGtestArgs::allApis(),
         ::testing::Values(128 * megaByte, 512 * megaByte),
+        ::testing::Values(BufferContents::Zeros),
         ::testing::Values(false, true),
-        ::testing::Values(MapFlags::Read, MapFlags::Write, MapFlags::WriteInvalidate)));
+        ::testing::Values(MapFlags::Read, MapFlags::Write, MapFlags::WriteInvalidate),
+        ::testing::Values(false)));
