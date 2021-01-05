@@ -27,7 +27,7 @@ int executeSingleTest(const std::string &testName, CommandLineArguments &command
     printDeviceInfo();
     printVersion(false, "Benchmark version: ");
 
-    const TestMap &testMap = getTestMap();
+    const BenchmarkInfo::TestMap &testMap = BenchmarkInfo::get().getTestMap();
     auto it = testMap.find(testName);
     if (it == testMap.end()) {
         std::cerr << "Unknown test case\n";
@@ -66,9 +66,9 @@ int executeAllTests(int argc, char **argv, CommandLineArguments &commandLineArgu
 }
 
 int printHelp() {
-    const auto filename = getBenchmarkFilename();
+    const auto filename = BenchmarkInfo::get().getBenchmarkFilename();
     // clang-format off
-    std::cout << getBenchmarkDescription() << "\n"
+    std::cout << BenchmarkInfo::get().getBenchmarkDescription() << "\n"
                  "\n"
                  "The benchmark works in two modes - all-tests mode and single-test mode. They are further described below. "
                  "Global parameters applicable for both modes:\n"
@@ -91,7 +91,7 @@ int printHelp() {
                  "\n"
                 "All available test cases with their parameters:\n";
     // clang-format on
-    for (const auto &entry : getTestMap()) {
+    for (const auto &entry : BenchmarkInfo::get().getTestMap()) {
         TestCaseInterface &testCase = *entry.second.get();
         std::cout << '\t' << testCase.getTestCaseName() << " - " << testCase.getHelp();
         const auto helpParameters = testCase.getHelpParameters();

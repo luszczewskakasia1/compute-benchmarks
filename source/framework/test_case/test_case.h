@@ -123,7 +123,8 @@ class TestCase : public TestCaseInterface {
         }
 
         // Verify if current test case is added to the test map
-        if (getTestMap().find(getTestCaseName()) == getTestMap().end()) {
+        const auto &testMap = BenchmarkInfo::get().getTestMap();
+        if (testMap.find(getTestCaseName()) == testMap.end()) {
             printTestMapWarning();
         }
 
@@ -203,7 +204,7 @@ class TestCase : public TestCaseInterface {
     }
 
     void printTestCaseNameLengthWarning(const std::string &testCaseNameWithConfig) const {
-        const static size_t columnWidth = getTestCaseNameColumnWidth();
+        const static size_t columnWidth = BenchmarkInfo::get().getTestCaseNameColumnWidth();
         static size_t maxWidth = columnWidth;
 
         const size_t currentWidth = testCaseNameWithConfig.length();

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "framework/benchmark_info.h"
 #include "framework/test_case_argument/enum/test_case_argument_api.h"
 #include "framework/test_case_argument/enum/test_case_argument_device_selection.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
@@ -9,8 +10,6 @@
 #include "framework/utility/command_line_argument.h"
 
 #include <memory>
-
-struct BenchmarkSpecificConfigurationBase;
 
 struct Configuration : TestCaseArgumentsBase {
     Configuration();
@@ -46,7 +45,7 @@ struct Configuration : TestCaseArgumentsBase {
     StringListTestCaseArgument argFilter;
     StringListTestCaseArgument testFilter;
 
-    BenchmarkSpecificConfigurationBase *benchmarkSpecificConfiguration = nullptr;
+    BenchmarkInfo::BenchmarkSpecificConfigurationBase *benchmarkSpecificConfiguration = nullptr;
 };
 
 extern Configuration configuration;

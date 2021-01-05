@@ -19,6 +19,6 @@ struct RegisterTestCase {
         static_assert(std::is_base_of_v<ExpectedBaseClass, ConcreteTestCase>, "ConcreteTestCase should derive from TestCase");
 
         auto testCase = std::unique_ptr<TestCaseInterface>(new ConcreteTestCase());
-        getTestMap()[testCase->getTestCaseName()] = std::move(testCase);
+        BenchmarkInfo::get().getTestMap()[testCase->getTestCaseName()] = std::move(testCase);
     }
 };

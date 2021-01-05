@@ -20,13 +20,13 @@ void Statistics::pushValue(Clock::duration time) {
     static_assert(std::is_floating_point_v<Value>, "Need floating point type for the above cast to work properly");
     const Value timeSeconds = std::chrono::duration_cast<std::chrono::duration<Value>>(time).count();
 
-    switch (getMeasurementUnit()) {
-    case MeasurementUnit::Microseconds: {
+    switch (BenchmarkInfo::get().getMeasurementUnit()) {
+    case BenchmarkInfo::MeasurementUnit::Microseconds: {
         const Value timeMicroseconds = timeSeconds * 1e6;
         this->pushValue(timeMicroseconds);
         break;
     }
-    case MeasurementUnit::GigabytesPerSecond:
+    case BenchmarkInfo::MeasurementUnit::GigabytesPerSecond:
         ERROR("Buffer size needs to be passed in bandwidth mode");
     default:
         ERROR("Unknown measurement unit");
@@ -37,13 +37,13 @@ void Statistics::pushValue(Clock::duration time, uint64_t size) {
     static_assert(std::is_floating_point_v<Value>, "Need floating point type for the above cast to work properly");
     const Value timeSeconds = std::chrono::duration_cast<std::chrono::duration<Value>>(time).count();
 
-    switch (getMeasurementUnit()) {
-    case MeasurementUnit::Microseconds: {
+    switch (BenchmarkInfo::get().getMeasurementUnit()) {
+    case BenchmarkInfo::MeasurementUnit::Microseconds: {
         const Value timeMicroseconds = timeSeconds * 1e6;
         this->pushValue(timeMicroseconds);
         break;
     }
-    case MeasurementUnit::GigabytesPerSecond: {
+    case BenchmarkInfo::MeasurementUnit::GigabytesPerSecond: {
         const Value timeNanoseconds = timeSeconds * 1e9;
         const Value bandwidth = size / timeNanoseconds; // Bytes/Nanoseconds = Gigabytes/Seconds
         this->pushValue(bandwidth);
@@ -77,7 +77,7 @@ struct ColumnInfo {
     bool printUnit;
 };
 const static ColumnInfo columns[] = {
-    {getTestCaseNameColumnWidth(), "TestCase", false},
+    {BenchmarkInfo::get().getTestCaseNameColumnWidth(), "TestCase", false},
     {15, "Mean", true},
     {15, "Median", true},
     {15, "StdDev", false},
@@ -95,11 +95,11 @@ static std::string getColumnName(const std::string &label, const std::string &un
 
 void Statistics::printStatisticsHeader(Configuration::PrintType printType) {
     std::string unit = "";
-    switch (getMeasurementUnit()) {
-    case MeasurementUnit::Microseconds:
+    switch (BenchmarkInfo::get().getMeasurementUnit()) {
+    case BenchmarkInfo::MeasurementUnit::Microseconds:
         unit = "us";
         break;
-    case MeasurementUnit::GigabytesPerSecond:
+    case BenchmarkInfo::MeasurementUnit::GigabytesPerSecond:
         unit = "GB/s";
         break;
     default:

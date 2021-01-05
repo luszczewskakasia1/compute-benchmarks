@@ -21,7 +21,7 @@ Configuration::Configuration()
       dumpErrorsImmediately(*this, "dumpErrorsImmediately", "print errors to stdout immediately after they happen, not at the end of the run"),
       argFilter(*this, "argFilter", "filter tests by their arguments"),
       testFilter(*this, "testFilter", "filter tests by their names"),
-      benchmarkSpecificConfiguration(BenchmarkSpecificConfigurationBase::create(*this).release()) {
+      benchmarkSpecificConfiguration(BenchmarkInfo::get().createBenchmarkSpecificConfiguration(*this).release()) {
 
     // OCL params
     oclPlatformIndex = 0;

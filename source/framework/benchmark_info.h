@@ -1,35 +1,40 @@
 #pragma once
 
-#include "framework/configuration.h"
 #include "framework/test_case/test_case_interface.h"
-#include "framework/test_case_argument/test_case_arguments.h"
 
+#include <memory>
 #include <unordered_map>
 
-using TestMap = std::unordered_map<std::string, std::unique_ptr<TestCaseInterface>>;
-inline TestMap &getTestMap() {
-    static TestMap testMap = {};
-    return testMap;
-}
+struct TestCaseArgumentsBase;
 
-std::string getBenchmarkName();
-inline std::string getBenchmarkFilename() {
-#ifdef WIN32
-    return getBenchmarkName() + ".exe";
-#else
-    return getBenchmarkName();
-#endif
-}
-std::string getBenchmarkDescription();
+// This class represent information specific to a specific benchmark, e.g. ulls_benchmark or memory_benchmark.
+// It is used to configure the behaviour of some framework classes.
+class BenchmarkInfo {
+  private:
+    static std::unique_ptr<BenchmarkInfo> create();
 
-enum class MeasurementUnit {
-    Microseconds,
-    GigabytesPerSecond,
-};
-MeasurementUnit getMeasurementUnit();
+  public:
+    static BenchmarkInfo &get();
 
-int getTestCaseNameColumnWidth();
+    // Test map allows finding all tests that are present and indexing them by name
+    using TestMap = std::unordered_map<std::string, std::unique_ptr<TestCaseInterface>>;
+    TestMap &getTestMap();
 
-struct BenchmarkSpecificConfigurationBase {
-    static std::unique_ptr<BenchmarkSpecificConfigurationBase> create(TestCaseArgumentsBase &testCaseArguments);
+    // General textual data
+    std::string getBenchmarkName();
+    std::string getBenchmarkFilename();
+    std::string getBenchmarkDescription();
+
+    // Unit of numbers that are returned by all tests in the given framework
+    enum class MeasurementUnit {
+        Microseconds,
+        GigabytesPerSecond,
+    };
+    MeasurementUnit getMeasurementUnit();
+
+    // Width of the first column containing names of test cases.
+    int getTestCaseNameColumnWidth();
+
+    struct BenchmarkSpecificConfigurationBase {};
+    std::unique_ptr<BenchmarkSpecificConfigurationBase> createBenchmarkSpecificConfiguration(TestCaseArgumentsBase &testCaseArguments);
 };
