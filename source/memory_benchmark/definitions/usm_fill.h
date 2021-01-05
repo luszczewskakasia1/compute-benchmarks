@@ -9,18 +9,20 @@
 struct UsmFillArguments : TestCaseArguments {
     MemoryPlacementTestCaseArgument memoryPlacement;
     ByteSizeTestCaseArgument bufferSize;
+    BufferContentsTestCaseArgument contents;
     ByteSizeTestCaseArgument patternSize;
+    BufferContentsTestCaseArgument patternContents;
     BooleanTestCaseArgument forceBlitter;
     BooleanTestCaseArgument useEvents;
-    BufferContentsTestCaseArgument patternContents;
 
     UsmFillArguments()
         : memoryPlacement(*this, "memory", "Placement of the buffer"),
           bufferSize(*this, "size", "Size of the buffer"),
+          contents(*this, "contents", "Contents of the buffer"),
           patternSize(*this, "patternSize", "Size of the fill pattern"),
+          patternContents(*this, "patternContents", "Select contents of the fill pattern"),
           forceBlitter(*this, "forceBlitter", CommonHelpMessage::forceBlitter()),
-          useEvents(*this, "useEvents", CommonHelpMessage::useEvents()),
-          patternContents(*this, "patternContents", "Select contents of the fill pattern") {}
+          useEvents(*this, "useEvents", CommonHelpMessage::useEvents()) {}
 };
 
 struct UsmFill : TestCase<UsmFillArguments> {
