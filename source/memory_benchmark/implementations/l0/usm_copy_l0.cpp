@@ -1,6 +1,7 @@
 #include "framework/l0/levelzero.h"
 #include "framework/l0/usm_helper.h"
 #include "framework/test_case/register_test_case.h"
+#include "framework/utility/l0/buffer_contents_helper_l0.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/usm_copy.h"
 
@@ -19,6 +20,8 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
     void *source{}, *destination{};
     ASSERT_ZE_RESULT_SUCCESS(UsmHelper::allocate(arguments.sourcePlacement, levelzero.context, levelzero.device, arguments.size, &source));
     ASSERT_ZE_RESULT_SUCCESS(UsmHelper::allocate(arguments.destinationPlacement, levelzero.context, levelzero.device, arguments.size, &destination));
+    ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, source, arguments.size));
+    ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, destination, arguments.size));
 
     // Create event
     ze_event_pool_handle_t eventPool{};
@@ -35,10 +38,6 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
         ASSERT_ZE_RESULT_SUCCESS(zeEventCreate(eventPool, &eventDesc, &event));
     }
 
-    // Make buffers resident
-    ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, source, arguments.size));
-    ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, destination, arguments.size));
-
     // Create command list
     ze_command_list_desc_t cmdListDesc{};
     cmdListDesc.commandQueueGroupOrdinal = levelzero.commandQueueDesc.ordinal;
@@ -53,6 +52,9 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
 
     // Benchmark
     for (auto i = 0; i < arguments.iterations; i++) {
+        ASSERT_ZE_RESULT_SUCCESS(BufferContentsHelperL0::fillBuffer(levelzero, source, arguments.size, arguments.contents));
+        ASSERT_ZE_RESULT_SUCCESS(BufferContentsHelperL0::fillBuffer(levelzero, destination, arguments.size, arguments.contents));
+
         timer.measureStart();
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));

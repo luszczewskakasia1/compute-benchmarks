@@ -1,6 +1,7 @@
 #include "framework/ocl/opencl.h"
 #include "framework/ocl/usm_helper.h"
 #include "framework/test_case/register_test_case.h"
+#include "framework/utility/ocl/buffer_contents_helper_ocl.h"
 #include "framework/utility/ocl/profiling_helper.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/usm_copy.h"
@@ -34,6 +35,9 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
+        ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillUsmBuffer(opencl.commandQueue, source, arguments.size, arguments.contents));
+        ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillUsmBuffer(opencl.commandQueue, destination, arguments.size, arguments.contents));
+
         cl_event profilingEvent{};
         cl_event *eventForEnqueue = arguments.useEvents ? &profilingEvent : nullptr;
 
