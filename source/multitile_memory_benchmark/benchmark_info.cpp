@@ -10,7 +10,7 @@ std::string BenchmarkInfo::getBenchmarkDescription() {
 }
 
 BenchmarkInfo::MeasurementUnit BenchmarkInfo::getMeasurementUnit() {
-    auto configuration = static_cast<BenchmarkSpecificConfiguration *>(::configuration.benchmarkSpecificConfiguration);
+    auto configuration = static_cast<BenchmarkSpecificConfiguration *>(Configuration::get().benchmarkSpecificConfiguration);
     if (configuration->printBandwidth) {
         return BenchmarkInfo::MeasurementUnit::GigabytesPerSecond;
     } else {

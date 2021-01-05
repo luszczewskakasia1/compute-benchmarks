@@ -14,7 +14,7 @@ RegisterPrintDeviceInfoFunction::RegisterPrintDeviceInfoFunction(Api api, PrintD
 void printDeviceInfo() {
     for (int apiIndex = static_cast<int>(Api::FIRST); apiIndex <= static_cast<int>(Api::LAST); apiIndex++) {
         const Api api = static_cast<Api>(apiIndex);
-        const Api selectedApi = ::configuration.selectedApi;
+        const Api selectedApi = Configuration::get().selectedApi;
         if (api != selectedApi && selectedApi != Api::All) {
             continue;
         }

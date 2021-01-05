@@ -2,7 +2,7 @@
 
 #include "framework/benchmark_info.h"
 
-Configuration configuration;
+std::unique_ptr<Configuration> Configuration::instance = {};
 
 Configuration::Configuration()
     : oclPlatformIndex(*this, "oclPlatformIndex", "OpenCL platform index"),
@@ -50,25 +50,35 @@ Configuration::~Configuration() {
     delete benchmarkSpecificConfiguration;
 }
 
-bool parseArgumentsForConfiguration(CommandLineArguments &arguments) {
+bool Configuration::parseArgumentsForConfiguration(CommandLineArguments &arguments) {
+    ERROR_IF(Configuration::instance != nullptr, "Configuration parsed multiple times");
+
+    auto configuration = std::make_unique<Configuration>();
+
     for (auto &argument : arguments) {
-        if (!::configuration.parseArgument(argument)) {
+        if (!configuration->parseArgument(argument)) {
             return false;
         }
     }
 
-    if (!::configuration.validateArguments()) {
+    if (!configuration->validateArguments()) {
         return false;
     }
 
-    if (::configuration.csv) {
-        ::configuration.printType = Configuration::PrintType::Csv;
+    if (configuration->csv) {
+        configuration->printType = Configuration::PrintType::Csv;
     }
-    if (::configuration.verbose) {
-        ::configuration.printType = Configuration::PrintType::Verbose;
+    if (configuration->verbose) {
+        configuration->printType = Configuration::PrintType::Verbose;
     }
 
+    Configuration::instance = std::move(configuration);
     return true;
+}
+
+Configuration &Configuration::get() {
+    ERROR_IF(Configuration::instance == nullptr, "Configuration was not parsed");
+    return *Configuration::instance;
 }
 
 bool Configuration::validateArgumentsExtra() const {

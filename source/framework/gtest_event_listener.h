@@ -15,10 +15,10 @@ class CustomEventListener : public ::testing::TestEventListener {
     } currentTestCaseErrorInfo{};
 
     void OnTestProgramStart(const ::testing::UnitTest &unitTest) override {
-        if (::configuration.printType != Configuration::PrintType::Csv) {
-            std::cout << "Running " << ::configuration.iterations << " iterations of each benchmark\n\n";
+        if (Configuration::get().printType != Configuration::PrintType::Csv) {
+            std::cout << "Running " << Configuration::get().iterations << " iterations of each benchmark\n\n";
         }
-        Statistics::printStatisticsHeader(::configuration.printType);
+        Statistics::printStatisticsHeader(Configuration::get().printType);
     }
     void OnTestProgramEnd(const ::testing::UnitTest &unitTest) override {
         dumpErrors();
@@ -50,7 +50,7 @@ class CustomEventListener : public ::testing::TestEventListener {
             currentTestCaseErrorInfo.name << testCase.test_case_name() << "." << testCase.name();
             errorInfos.push_back(std::move(currentTestCaseErrorInfo));
         }
-        if (::configuration.dumpErrorsImmediately) {
+        if (Configuration::get().dumpErrorsImmediately) {
             dumpErrors();
         }
     }

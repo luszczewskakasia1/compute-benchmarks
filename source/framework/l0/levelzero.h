@@ -26,7 +26,7 @@ struct LevelZero {
         // Get driver
         uint32_t driverCount = 0;
         EXPECT_ZE_RESULT_SUCCESS(zeDriverGet(&driverCount, nullptr));
-        const auto driverIndex = ::configuration.l0DriverIndex;
+        const auto driverIndex = Configuration::get().l0DriverIndex;
         if (driverIndex >= driverCount) {
             ERROR("Invalid LevelZero driver selected");
         }
@@ -37,7 +37,7 @@ struct LevelZero {
         // Create root device
         uint32_t deviceCount = 0;
         EXPECT_ZE_RESULT_SUCCESS(zeDeviceGet(driver, &deviceCount, nullptr));
-        const auto deviceIndex = ::configuration.l0DeviceIndex;
+        const auto deviceIndex = Configuration::get().l0DeviceIndex;
         if (deviceIndex >= deviceCount) {
             ERROR("Invalid LevelZero device selected");
         }

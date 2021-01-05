@@ -13,7 +13,7 @@ struct CompressionBooleanTestCaseArgument : BooleanTestCaseArgument {
 
   protected:
     std::string toStringValue() const override {
-        if (::configuration.noIntelExtensions) {
+        if (Configuration::get().noIntelExtensions) {
             return "?";
         }
         return BooleanTestCaseArgument::toStringValue();

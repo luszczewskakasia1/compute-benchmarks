@@ -20,7 +20,7 @@ struct Opencl {
         // Get Platform
         cl_uint numPlatforms;
         EXPECT_CL_SUCCESS(clGetPlatformIDs(0, nullptr, &numPlatforms));
-        const auto platformIndex = ::configuration.oclPlatformIndex;
+        const auto platformIndex = Configuration::get().oclPlatformIndex;
         if (platformIndex >= numPlatforms) {
             ERROR("Invalid platform selected");
         }
@@ -31,7 +31,7 @@ struct Opencl {
         // Create root device
         cl_uint numDevices;
         EXPECT_CL_SUCCESS(clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 0, nullptr, &numDevices));
-        const auto deviceIndex = ::configuration.oclDeviceIndex;
+        const auto deviceIndex = Configuration::get().oclDeviceIndex;
         if (deviceIndex >= numDevices) {
             ERROR("Invalid device selected");
         }

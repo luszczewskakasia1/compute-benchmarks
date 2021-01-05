@@ -73,7 +73,7 @@ int printHelp() {
                  "\n"
                  "The benchmark works in two modes - all-tests mode and single-test mode. They are further described below. "
                  "Global parameters applicable for both modes:\n"
-                 << ::configuration.getHelp(1u) << "\n"
+                 << Configuration::get().getHelp(1u) << "\n"
                  "\n"
                  "First mode is the default and it runs all available benchmarks in many predefined configurations. Underlying test engine "
                  "is googletest, so standard googletest arguments like --gtest_filter can be used, if necessary.\n"
@@ -115,7 +115,7 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    if (!parseArgumentsForConfiguration(commandLineArguments)) {
+    if (!Configuration::parseArgumentsForConfiguration(commandLineArguments)) {
         std::cerr << "Error parsing command line\n";
         return 1;
     }

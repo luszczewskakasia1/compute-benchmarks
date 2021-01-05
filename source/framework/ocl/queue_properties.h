@@ -17,7 +17,7 @@ struct QueueProperties {
 
     static QueueProperties create() {
         return QueueProperties()
-            .setDeviceSelection(::configuration.subDeviceSelection);
+            .setDeviceSelection(Configuration::get().subDeviceSelection);
     }
 
     QueueProperties &setProfiling(bool profiling) {
@@ -63,7 +63,7 @@ struct QueueProperties {
         if (this->profiling) {
             properties[1] |= CL_QUEUE_PROFILING_ENABLE;
         }
-        if (this->ooq == 1 || (this->ooq == -1 && ::configuration.oclUseOOQ)) {
+        if (this->ooq == 1 || (this->ooq == -1 && Configuration::get().oclUseOOQ)) {
             properties[1] |= CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
         }
         if (this->forceBlitter) {

@@ -12,6 +12,10 @@
 #include <memory>
 
 struct Configuration : TestCaseArgumentsBase {
+  private:
+    static std::unique_ptr<Configuration> instance;
+
+  public:
     Configuration();
     ~Configuration();
 
@@ -20,6 +24,9 @@ struct Configuration : TestCaseArgumentsBase {
         Csv,
         Verbose,
     } printType = PrintType::Default;
+
+    static bool parseArgumentsForConfiguration(CommandLineArguments &arguments);
+    static Configuration &get();
 
     bool validateArgumentsExtra() const override;
 
@@ -47,6 +54,3 @@ struct Configuration : TestCaseArgumentsBase {
 
     BenchmarkInfo::BenchmarkSpecificConfigurationBase *benchmarkSpecificConfiguration = nullptr;
 };
-
-extern Configuration configuration;
-bool parseArgumentsForConfiguration(CommandLineArguments &arguments);

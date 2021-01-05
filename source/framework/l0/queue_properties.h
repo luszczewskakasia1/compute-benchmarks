@@ -11,7 +11,7 @@ struct QueueProperties {
 
     static QueueProperties create() {
         return QueueProperties()
-            .setDeviceSelection(::configuration.subDeviceSelection);
+            .setDeviceSelection(Configuration::get().subDeviceSelection);
     }
 
     QueueProperties &allowCreationFail() {
