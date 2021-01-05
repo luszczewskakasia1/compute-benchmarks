@@ -8,16 +8,18 @@
 
 static const inline RegisterTestCase<FillBuffer> registerTestCase{};
 
-class FillBufferTest : public ::testing::TestWithParam<std::tuple<Api, size_t, size_t, bool, bool>> {
+class FillBufferTest : public ::testing::TestWithParam<std::tuple<Api, size_t, BufferContents, size_t, bool, bool, bool>> {
 };
 
 TEST_P(FillBufferTest, Test) {
     FillBufferArguments args;
     args.api = std::get<0>(GetParam());
     args.size = std::get<1>(GetParam());
-    args.patternSize = std::get<2>(GetParam());
-    args.compressed = std::get<3>(GetParam());
-    args.forceBlitter = std::get<4>(GetParam());
+    args.contents = std::get<2>(GetParam());
+    args.patternSize = std::get<3>(GetParam());
+    args.compressed = std::get<4>(GetParam());
+    args.forceBlitter = std::get<5>(GetParam());
+    args.useEvents = std::get<6>(GetParam());
 
     FillBuffer test;
     test.run(args);
@@ -30,6 +32,8 @@ INSTANTIATE_TEST_SUITE_P(
     ::testing::Combine(
         ::CommonGtestArgs::allApis(),
         ::testing::Values(128 * megaByte, 512 * megaByte),
+        ::testing::Values(BufferContents::Zeros),
         ::testing::Values(1, 16, 128),
         ::testing::Values(false, true),
-        ::testing::Values(false, true)));
+        ::testing::Values(false, true),
+        ::testing::Values(false)));
