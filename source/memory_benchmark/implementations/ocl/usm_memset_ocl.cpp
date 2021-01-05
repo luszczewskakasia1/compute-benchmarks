@@ -1,6 +1,8 @@
 #include "framework/ocl/opencl.h"
 #include "framework/ocl/usm_helper.h"
 #include "framework/test_case/register_test_case.h"
+#include "framework/utility/ocl/buffer_contents_helper_ocl.h"
+#include "framework/utility/ocl/profiling_helper.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/usm_memset.h"
 
@@ -32,11 +34,24 @@ static TestResult run(const UsmMemsetArguments &arguments, Statistics &statistic
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
+        ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillUsmBuffer(opencl.commandQueue, buffer, arguments.bufferSize, arguments.contents))
+
+        cl_event profilingEvent{};
+        cl_event *eventForEnqueue = arguments.useEvents ? &profilingEvent : nullptr;
+
         timer.measureStart();
-        ASSERT_CL_SUCCESS(clEnqueueMemsetINTEL(opencl.commandQueue, buffer, memsetValue, arguments.bufferSize, 0, nullptr, nullptr));
+        ASSERT_CL_SUCCESS(clEnqueueMemsetINTEL(opencl.commandQueue, buffer, memsetValue, arguments.bufferSize, 0, nullptr, eventForEnqueue));
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
-        statistics.pushValue(timer.get(), arguments.bufferSize);
+
+        if (eventForEnqueue) {
+            cl_ulong timeNs{};
+            ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
+            ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
+            statistics.pushValue(std::chrono::nanoseconds(timeNs), arguments.bufferSize);
+        } else {
+            statistics.pushValue(timer.get(), arguments.bufferSize);
+        }
     }
 
     ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, buffer));

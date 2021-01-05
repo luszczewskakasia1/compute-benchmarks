@@ -8,7 +8,7 @@
 
 static const inline RegisterTestCase<UsmMemset> registerTestCase{};
 
-class UsmMemsetTest : public ::testing::TestWithParam<std::tuple<Api, MemoryPlacement, size_t, bool>> {
+class UsmMemsetTest : public ::testing::TestWithParam<std::tuple<Api, MemoryPlacement, size_t, BufferContents, bool, bool>> {
 };
 
 TEST_P(UsmMemsetTest, Test) {
@@ -16,7 +16,9 @@ TEST_P(UsmMemsetTest, Test) {
     args.api = std::get<0>(GetParam());
     args.memoryPlacement = std::get<1>(GetParam());
     args.bufferSize = std::get<2>(GetParam());
-    args.forceBlitter = std::get<3>(GetParam());
+    args.contents = std::get<3>(GetParam());
+    args.forceBlitter = std::get<4>(GetParam());
+    args.useEvents = std::get<4>(GetParam());
 
     UsmMemset test;
     test.run(args);
@@ -30,4 +32,6 @@ INSTANTIATE_TEST_SUITE_P(
         ::CommonGtestArgs::allApis(),
         ::testing::Values(MemoryPlacement::Host, MemoryPlacement::Device, MemoryPlacement::Shared),
         ::testing::Values(128 * megaByte, 512 * megaByte),
-        ::testing::Values(false, true)));
+        ::testing::Values(BufferContents::Zeros),
+        ::testing::Values(false, true),
+        ::testing::Values(false)));
