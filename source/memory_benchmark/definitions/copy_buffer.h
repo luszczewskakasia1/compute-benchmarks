@@ -1,18 +1,21 @@
 #pragma once
 
 #include "framework/test_case/test_case.h"
+#include "framework/test_case_argument/enum/test_case_argument_buffer_contents.h"
 #include "framework/test_case_argument/enum/test_case_argument_device_selection.h"
 #include "framework/test_case_argument/test_case_argument_compression.h"
 #include "framework/utility/common_help_message.h"
 
 struct CopyBufferArguments : TestCaseArguments {
     ByteSizeTestCaseArgument size;
+    BufferContentsTestCaseArgument contents;
     CompressionBooleanTestCaseArgument compressedSource;
     CompressionBooleanTestCaseArgument compressedDestination;
     BooleanTestCaseArgument useEvents;
 
     CopyBufferArguments()
         : size(*this, "size", "Size of the buffers"),
+          contents(*this, "contents", "Contents of the buffers"),
           compressedSource(*this, "compressedSource", CommonHelpMessage::compression("source buffer")),
           compressedDestination(*this, "compressedDestination", CommonHelpMessage::compression("destination buffer")),
           useEvents(*this, "useEvents", CommonHelpMessage::useEvents()) {}
