@@ -4,6 +4,7 @@
 #include "framework/utility/error.h"
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <iomanip>
 #include <iostream>
@@ -75,16 +76,19 @@ struct ColumnInfo {
     int width;
     const char *label;
     bool printUnit;
+
+    static constexpr size_t getColumnCount() { return 6; }
+    static std::array<ColumnInfo, 6> getColumns() {
+        return {{
+            {BenchmarkInfo::get().getTestCaseNameColumnWidth(), "TestCase", false},
+            {15, "Mean", true},
+            {15, "Median", true},
+            {15, "StdDev", false},
+            {15, "Min", true},
+            {15, "Max", true},
+        }};
+    }
 };
-const static ColumnInfo columns[] = {
-    {BenchmarkInfo::get().getTestCaseNameColumnWidth(), "TestCase", false},
-    {15, "Mean", true},
-    {15, "Median", true},
-    {15, "StdDev", false},
-    {15, "Min", true},
-    {15, "Max", true},
-};
-const static int columnCount = sizeof(columns) / sizeof(columns[0]);
 
 static std::string getColumnName(const std::string &label, const std::string &unit, bool hasUnit) {
     if (hasUnit) {
@@ -106,6 +110,8 @@ void Statistics::printStatisticsHeader(Configuration::PrintType printType) {
         ERROR("Unknown measurement unit");
     }
 
+    const auto columns = ColumnInfo::getColumns();
+    const auto columnCount = ColumnInfo::getColumnCount();
     switch (printType) {
     case Configuration::PrintType::Verbose:
     case Configuration::PrintType::Default: {
@@ -131,6 +137,8 @@ void Statistics::printStatisticsHeader(Configuration::PrintType printType) {
 }
 
 void Statistics::printStatistics(const std::string &testCaseName) {
+    const auto columns = ColumnInfo::getColumns();
+    const auto columnCount = ColumnInfo::getColumnCount();
     switch (printType) {
     case Configuration::PrintType::Verbose:
     case Configuration::PrintType::Default: {
@@ -171,6 +179,8 @@ void Statistics::printStatistics(const std::string &testCaseName) {
 }
 
 void Statistics::printStatisticsString(const std::string &testCaseName, const std::string &message) {
+    const auto columns = ColumnInfo::getColumns();
+    const auto columnCount = ColumnInfo::getColumnCount();
     switch (printType) {
     case Configuration::PrintType::Verbose:
     case Configuration::PrintType::Default: {
