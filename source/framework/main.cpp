@@ -108,6 +108,8 @@ int printHelp() {
 }
 
 int main(int argc, char **argv) {
+    BenchmarkInfo::set(new BenchmarkInfoImpl());
+
     CommandLineArguments commandLineArguments = {};
     std::string commandLineArgumentsParsingErrors = {};
     if (!CommandLineArgument::parseArguments(argc, argv, commandLineArguments, commandLineArgumentsParsingErrors)) {

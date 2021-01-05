@@ -1,21 +1,21 @@
 #include "framework/benchmark_info.h"
 
-std::string BenchmarkInfo::getBenchmarkName() {
+std::string BenchmarkInfoImpl::getBenchmarkName() {
     return "api_overhead_benchmark";
 }
 
-std::string BenchmarkInfo::getBenchmarkDescription() {
+std::string BenchmarkInfoImpl::getBenchmarkDescription() {
     return "Api Overhead Benchmark is a set of tests aimed at measuring CPU-side execution duration of compute API calls.";
 }
 
-BenchmarkInfo::MeasurementUnit BenchmarkInfo::getMeasurementUnit() {
-    return BenchmarkInfo::MeasurementUnit::Microseconds;
+BenchmarkInfoImpl::MeasurementUnit BenchmarkInfoImpl::getMeasurementUnit() {
+    return BenchmarkInfoImpl::MeasurementUnit::Microseconds;
 }
 
-int BenchmarkInfo::getTestCaseNameColumnWidth() {
+int BenchmarkInfoImpl::getTestCaseNameColumnWidth() {
     return 68;
 }
 
-std::unique_ptr<BenchmarkInfo::BenchmarkSpecificConfigurationBase> BenchmarkInfo::createBenchmarkSpecificConfiguration(TestCaseArgumentsBase &testCaseArguments) {
-    return std::unique_ptr<BenchmarkInfo::BenchmarkSpecificConfigurationBase>{};
+std::unique_ptr<BenchmarkInfoImpl::BenchmarkSpecificConfigurationBase> BenchmarkInfoImpl::createBenchmarkSpecificConfiguration(TestCaseArgumentsBase &testCaseArguments) {
+    return std::unique_ptr<BenchmarkInfoImpl::BenchmarkSpecificConfigurationBase>{};
 }

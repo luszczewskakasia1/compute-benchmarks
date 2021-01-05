@@ -1,27 +1,27 @@
 #include "framework/configuration.h"
 #include "memory_benchmark/benchmark_specific_configuration.h"
 
-std::string BenchmarkInfo::getBenchmarkName() {
+std::string BenchmarkInfoImpl::getBenchmarkName() {
     return "memory_benchmark";
 }
 
-std::string BenchmarkInfo::getBenchmarkDescription() {
+std::string BenchmarkInfoImpl::getBenchmarkDescription() {
     return "Memory Benchmark is a set of tests aimed at measuring bandwidth of memory transfers.";
 }
 
-BenchmarkInfo::MeasurementUnit BenchmarkInfo::getMeasurementUnit() {
+BenchmarkInfoImpl::MeasurementUnit BenchmarkInfoImpl::getMeasurementUnit() {
     auto configuration = static_cast<BenchmarkSpecificConfiguration *>(Configuration::get().benchmarkSpecificConfiguration);
     if (configuration->printBandwidth) {
-        return BenchmarkInfo::MeasurementUnit::GigabytesPerSecond;
+        return BenchmarkInfoImpl::MeasurementUnit::GigabytesPerSecond;
     } else {
-        return BenchmarkInfo::MeasurementUnit::Microseconds;
+        return BenchmarkInfoImpl::MeasurementUnit::Microseconds;
     }
 }
 
-int BenchmarkInfo::getTestCaseNameColumnWidth() {
+int BenchmarkInfoImpl::getTestCaseNameColumnWidth() {
     return 121;
 }
 
-std::unique_ptr<BenchmarkInfo::BenchmarkSpecificConfigurationBase> BenchmarkInfo::createBenchmarkSpecificConfiguration(TestCaseArgumentsBase &testCaseArguments) {
-    return std::unique_ptr<BenchmarkInfo::BenchmarkSpecificConfigurationBase>{new BenchmarkSpecificConfiguration(testCaseArguments)};
+std::unique_ptr<BenchmarkInfoImpl::BenchmarkSpecificConfigurationBase> BenchmarkInfoImpl::createBenchmarkSpecificConfiguration(TestCaseArgumentsBase &testCaseArguments) {
+    return std::unique_ptr<BenchmarkInfoImpl::BenchmarkSpecificConfigurationBase>{new BenchmarkSpecificConfiguration(testCaseArguments)};
 }

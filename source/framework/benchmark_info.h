@@ -9,28 +9,35 @@ struct TestCaseArgumentsBase;
 // It is used to configure the behaviour of some framework classes.
 class BenchmarkInfo {
   private:
-    static std::unique_ptr<BenchmarkInfo> create();
+    static std::unique_ptr<BenchmarkInfo> instance;
 
   public:
-    static BenchmarkInfo &get();
-
-    // Test map allows finding all tests that are present and indexing them by name
+    static BenchmarkInfo &get() { return *instance; }
+    static void set(BenchmarkInfo *instance) { BenchmarkInfo::instance.reset(instance); }
 
     // General textual data
-    std::string getBenchmarkName();
+    virtual std::string getBenchmarkDescription() = 0;
+    virtual std::string getBenchmarkName() = 0;
     std::string getBenchmarkFilename();
-    std::string getBenchmarkDescription();
 
     // Unit of numbers that are returned by all tests in the given framework
     enum class MeasurementUnit {
         Microseconds,
         GigabytesPerSecond,
     };
-    MeasurementUnit getMeasurementUnit();
+    virtual MeasurementUnit getMeasurementUnit() = 0;
 
     // Width of the first column containing names of test cases.
-    int getTestCaseNameColumnWidth();
+    virtual int getTestCaseNameColumnWidth() = 0;
 
     struct BenchmarkSpecificConfigurationBase {};
-    std::unique_ptr<BenchmarkSpecificConfigurationBase> createBenchmarkSpecificConfiguration(TestCaseArgumentsBase &testCaseArguments);
+    virtual std::unique_ptr<BenchmarkSpecificConfigurationBase> createBenchmarkSpecificConfiguration(TestCaseArgumentsBase &testCaseArguments) = 0;
+};
+
+struct BenchmarkInfoImpl : BenchmarkInfo {
+    std::string getBenchmarkDescription() override;
+    std::string getBenchmarkName() override;
+    virtual MeasurementUnit getMeasurementUnit() override;
+    int getTestCaseNameColumnWidth() override;
+    std::unique_ptr<BenchmarkSpecificConfigurationBase> createBenchmarkSpecificConfiguration(TestCaseArgumentsBase &testCaseArguments) override;
 };
