@@ -36,12 +36,15 @@ class BufferContentsHelperOcl : public BufferContentsHelper {
     static cl_int fillBufferWithRandomBytes(cl_command_queue queue, cl_mem buffer, size_t bufferSize) {
         auto cpuBuffer = std::make_unique<uint8_t[]>(bufferSize);
         fillWithRandomBytes(cpuBuffer.get(), bufferSize);
-        return clEnqueueWriteBuffer(queue, buffer, CL_NON_BLOCKING, 0, bufferSize, cpuBuffer.get(), 0, nullptr, nullptr);
+        CL_SUCCESS_OR_RETURN(clEnqueueWriteBuffer(queue, buffer, CL_BLOCKING, 0, bufferSize, cpuBuffer.get(), 0, nullptr, nullptr));
+        return CL_SUCCESS;
     }
 
     static cl_int fillBufferWithZeros(cl_command_queue queue, cl_mem buffer, size_t bufferSize) {
         const cl_uint pattern[] = {0};
-        return clEnqueueFillBuffer(queue, buffer, pattern, sizeof(pattern), 0, bufferSize, 0, nullptr, nullptr);
+        CL_SUCCESS_OR_RETURN(clEnqueueFillBuffer(queue, buffer, pattern, sizeof(pattern), 0, bufferSize, 0, nullptr, nullptr));
+        CL_SUCCESS_OR_RETURN(clFinish(queue));
+        return CL_SUCCESS;
     }
 
     static cl_int fillUsmBufferWithRandomBytes(cl_command_queue queue, void *usmBuffer, size_t bufferSize) {
