@@ -38,4 +38,4 @@ INSTANTIATE_TEST_SUITE_P(
         ::testing::Values(1, 4, 16),
         ::testing::Values(BufferContents::Random),
         ::testing::Values(false, true),
-        ::testing::Values(false, true)));
+        ::testing::Values(false)));

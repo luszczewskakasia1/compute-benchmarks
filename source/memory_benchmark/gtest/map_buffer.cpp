@@ -34,4 +34,4 @@ INSTANTIATE_TEST_SUITE_P(
         ::testing::Values(BufferContents::Zeros),
         ::testing::Values(false, true),
         ::testing::Values(MapFlags::Read, MapFlags::Write, MapFlags::WriteInvalidate),
-        ::testing::Values(false, true)));
+        ::testing::Values(false)));
