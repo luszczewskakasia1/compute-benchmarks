@@ -1,22 +1,20 @@
 # Define Framework library
 file(GLOB SOURCES *.cpp *.h)
 set(TARGET_NAME compute_benchmarks_framework)
-add_library(${TARGET_NAME} STATIC ${SOURCES})
+add_library(${TARGET_NAME} SHARED ${SOURCES})
 target_link_libraries(${TARGET_NAME} PUBLIC gtest)
 target_include_directories(${TARGET_NAME} PUBLIC ${SOURCE_ROOT})
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_17)
 add_subdirectories()
 
-# Select version to print from binary
-if (BUILD_FOR_PUBLISHING OR INCLUDE_VERSION)
-    target_compile_definitions(${TARGET_NAME} PRIVATE BENCHMARK_VERSION="${BENCHMARK_VERSION}")
-else()
-    target_compile_definitions(${TARGET_NAME} PRIVATE BENCHMARK_VERSION="")
-endif()
-
 # Ignore CRT Warnings
 if (MSVC)
     target_compile_definitions(${TARGET_NAME} PUBLIC _CRT_SECURE_NO_WARNINGS)
+endif()
+
+# Export all symbols on VS builds (so __dllexport is not required)
+if (MSVC)
+    set_target_properties(${TARGET_NAME} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif()
 
 # Link to compute libraries

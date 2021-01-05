@@ -12,8 +12,8 @@ class BenchmarkInfo {
     static std::unique_ptr<BenchmarkInfo> instance;
 
   public:
-    static BenchmarkInfo &get() { return *instance; }
-    static void set(BenchmarkInfo *instance) { BenchmarkInfo::instance.reset(instance); }
+    static BenchmarkInfo &get();
+    static void set(BenchmarkInfo *instance);
 
     // General textual data
     virtual std::string getBenchmarkDescription() = 0;
