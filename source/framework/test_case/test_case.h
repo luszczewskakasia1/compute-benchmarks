@@ -123,7 +123,7 @@ class TestCase : public TestCaseInterface {
         }
 
         // Verify if current test case is added to the test map
-        const auto &testMap = BenchmarkInfo::get().getTestMap();
+        const auto &testMap = TestMap::get();
         if (testMap.find(getTestCaseName()) == testMap.end()) {
             printTestMapWarning();
         }

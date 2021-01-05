@@ -14,11 +14,6 @@ BenchmarkInfo &BenchmarkInfo::get() {
     return *benchmarkInfo;
 }
 
-BenchmarkInfo::TestMap &BenchmarkInfo::getTestMap() {
-    static TestMap testMap = {};
-    return testMap;
-}
-
 std::string BenchmarkInfo::getBenchmarkFilename() {
 #ifdef WIN32
     return getBenchmarkName() + ".exe";

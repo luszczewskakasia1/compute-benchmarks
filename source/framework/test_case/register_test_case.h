@@ -1,7 +1,7 @@
 #pragma once
 
-#include "framework/benchmark_info.h"
 #include "framework/test_case/test_case.h"
+#include "framework/test_map.h"
 
 template <typename TestCase>
 struct RegisterTestCaseImplementation {
@@ -19,6 +19,6 @@ struct RegisterTestCase {
         static_assert(std::is_base_of_v<ExpectedBaseClass, ConcreteTestCase>, "ConcreteTestCase should derive from TestCase");
 
         auto testCase = std::unique_ptr<TestCaseInterface>(new ConcreteTestCase());
-        BenchmarkInfo::get().getTestMap()[testCase->getTestCaseName()] = std::move(testCase);
+        TestMap::get()[testCase->getTestCaseName()] = std::move(testCase);
     }
 };

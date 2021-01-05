@@ -2,6 +2,7 @@
 #include "framework/configuration.h"
 #include "framework/gtest_event_listener.h"
 #include "framework/print_device_info.h"
+#include "framework/test_map.h"
 #include "framework/utility/common_help_message.h"
 #include "framework/utility/string_utils.h"
 
@@ -27,7 +28,7 @@ int executeSingleTest(const std::string &testName, CommandLineArguments &command
     printDeviceInfo();
     printVersion(false, "Benchmark version: ");
 
-    const BenchmarkInfo::TestMap &testMap = BenchmarkInfo::get().getTestMap();
+    const auto &testMap = TestMap::get();
     auto it = testMap.find(testName);
     if (it == testMap.end()) {
         std::cerr << "Unknown test case\n";
@@ -91,7 +92,7 @@ int printHelp() {
                  "\n"
                 "All available test cases with their parameters:\n";
     // clang-format on
-    for (const auto &entry : BenchmarkInfo::get().getTestMap()) {
+    for (const auto &entry : TestMap::get()) {
         TestCaseInterface &testCase = *entry.second.get();
         std::cout << '\t' << testCase.getTestCaseName() << " - " << testCase.getHelp();
         const auto helpParameters = testCase.getHelpParameters();

@@ -1,9 +1,7 @@
 #pragma once
 
-#include "framework/test_case/test_case_interface.h"
-
 #include <memory>
-#include <unordered_map>
+#include <string>
 
 struct TestCaseArgumentsBase;
 
@@ -17,8 +15,6 @@ class BenchmarkInfo {
     static BenchmarkInfo &get();
 
     // Test map allows finding all tests that are present and indexing them by name
-    using TestMap = std::unordered_map<std::string, std::unique_ptr<TestCaseInterface>>;
-    TestMap &getTestMap();
 
     // General textual data
     std::string getBenchmarkName();
