@@ -2,6 +2,7 @@
 #include "framework/ocl/map_flags_ocl.h"
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
+#include "framework/utility/ocl/buffer_contents_helper_ocl.h"
 #include "framework/utility/ocl/profiling_helper.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/map_buffer.h"
@@ -31,11 +32,6 @@ static TestResult run(const MapBufferArguments &arguments, Statistics &statistic
         return compressionStatus;
     }
 
-    // Fill buffers
-    const char pattern[] = {0};
-    ASSERT_CL_SUCCESS(clEnqueueFillBuffer(opencl.commandQueue, buffer, pattern, sizeof(pattern) / sizeof(pattern[0]), 0, arguments.size, 0, nullptr, nullptr));
-    ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
-
     // Warmup
     const auto mapFlags = convertMapFlags(arguments.mapFlags);
     void *ptr = clEnqueueMapBuffer(opencl.commandQueue, buffer, CL_BLOCKING, mapFlags, 0, arguments.size, 0, nullptr, nullptr, &retVal);
@@ -45,6 +41,8 @@ static TestResult run(const MapBufferArguments &arguments, Statistics &statistic
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
+        ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillBuffer(opencl.commandQueue, buffer, arguments.size, arguments.contents));
+
         cl_event profilingEvent{};
         cl_event *eventForEnqueue = arguments.useEvents ? &profilingEvent : nullptr;
 
