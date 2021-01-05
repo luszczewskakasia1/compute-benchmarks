@@ -12,23 +12,23 @@ struct TestResources {
         // Create events and signal them
         const ze_event_pool_desc_t eventPoolDesc = {ZE_STRUCTURE_TYPE_EVENT_POOL_DESC, nullptr, 0, static_cast<uint32_t>(eventsCount)};
         const ze_event_desc_t eventDesc = {ZE_STRUCTURE_TYPE_EVENT_DESC, nullptr, 0, ZE_EVENT_SCOPE_FLAG_HOST, ZE_EVENT_SCOPE_FLAG_DEVICE};
-        ZE_RESULT_SUCCESS_OR_TERMINATE(zeEventPoolCreate(levelzero.context, &eventPoolDesc, 0, nullptr, &this->eventPool));
+        ZE_RESULT_SUCCESS_OR_ERROR(zeEventPoolCreate(levelzero.context, &eventPoolDesc, 0, nullptr, &this->eventPool));
         for (size_t eventIndex = 0u; eventIndex < eventsCount; eventIndex++) {
             auto &event = this->events[eventIndex];
-            ZE_RESULT_SUCCESS_OR_TERMINATE(zeEventCreate(this->eventPool, &eventDesc, &event));
-            ZE_RESULT_SUCCESS_OR_TERMINATE(zeEventHostSignal(event));
+            ZE_RESULT_SUCCESS_OR_ERROR(zeEventCreate(this->eventPool, &eventDesc, &event));
+            ZE_RESULT_SUCCESS_OR_ERROR(zeEventHostSignal(event));
         }
 
         // Create command list
         ze_command_list_desc_t cmdListDesc{};
         cmdListDesc.commandQueueGroupOrdinal = levelzero.commandQueueDesc.ordinal;
-        ZE_RESULT_SUCCESS_OR_TERMINATE(zeCommandListCreate(levelzero.context, levelzero.device, &cmdListDesc, &this->cmdList));
-        ZE_RESULT_SUCCESS_OR_TERMINATE(zeCommandListAppendWriteGlobalTimestamp(this->cmdList, beginTimestamp, nullptr, 0, nullptr));
+        ZE_RESULT_SUCCESS_OR_ERROR(zeCommandListCreate(levelzero.context, levelzero.device, &cmdListDesc, &this->cmdList));
+        ZE_RESULT_SUCCESS_OR_ERROR(zeCommandListAppendWriteGlobalTimestamp(this->cmdList, beginTimestamp, nullptr, 0, nullptr));
         for (size_t commandIndex = 0u; commandIndex < eventsCount; commandIndex++) {
-            ZE_RESULT_SUCCESS_OR_TERMINATE(zeCommandListAppendWaitOnEvents(this->cmdList, 1, &this->events[commandIndex]));
+            ZE_RESULT_SUCCESS_OR_ERROR(zeCommandListAppendWaitOnEvents(this->cmdList, 1, &this->events[commandIndex]));
         }
-        ZE_RESULT_SUCCESS_OR_TERMINATE(zeCommandListAppendWriteGlobalTimestamp(this->cmdList, endTimestamp, nullptr, 0, nullptr));
-        ZE_RESULT_SUCCESS_OR_TERMINATE(zeCommandListClose(this->cmdList));
+        ZE_RESULT_SUCCESS_OR_ERROR(zeCommandListAppendWriteGlobalTimestamp(this->cmdList, endTimestamp, nullptr, 0, nullptr));
+        ZE_RESULT_SUCCESS_OR_ERROR(zeCommandListClose(this->cmdList));
     }
 
     ~TestResources() {

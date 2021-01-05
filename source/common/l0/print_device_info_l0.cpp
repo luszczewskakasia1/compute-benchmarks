@@ -8,11 +8,11 @@ static void printDeviceInfoL0() {
     LevelZero levelzero{QueueProperties::create().disable()};
 
     ze_driver_properties_t driverProperties{ZE_STRUCTURE_TYPE_DRIVER_PROPERTIES};
-    ZE_RESULT_SUCCESS_OR_TERMINATE(zeDriverGetProperties(levelzero.driver, &driverProperties));
+    ZE_RESULT_SUCCESS_OR_ERROR(zeDriverGetProperties(levelzero.driver, &driverProperties));
     std::cout << "LevelZero driver version: 0x" << std::hex << driverProperties.driverVersion << std::endl;
 
     ze_device_properties_t deviceProperties{ZE_STRUCTURE_TYPE_DEVICE_PROPERTIES};
-    ZE_RESULT_SUCCESS_OR_TERMINATE(zeDeviceGetProperties(levelzero.device, &deviceProperties));
+    ZE_RESULT_SUCCESS_OR_ERROR(zeDeviceGetProperties(levelzero.device, &deviceProperties));
     IntelProduct intelProduct = getIntelProduct(deviceProperties);
     IntelGen intelGen = getIntelGen(intelProduct);
     std::cout << "\tDevice: " << deviceProperties.name << std::endl;

@@ -97,7 +97,7 @@ struct Opencl {
         }
 
         if (queueProperties.requireCreationSuccess) {
-            ERROR_UNLESS_CL_SUCCESS(retVal, "Command queue creation failed");
+            CL_SUCCESS_OR_ERROR(retVal, "Command queue creation failed");
         }
 
         if (queue) {
@@ -136,7 +136,7 @@ struct Opencl {
         cl_int retVal{};
         cl_context context = clCreateContext(nullptr, static_cast<cl_uint>(devicesForContext.size()), devicesForContext.data(), nullptr, nullptr, &retVal);
         if (contextProperties.requireCreationSuccess) {
-            ERROR_UNLESS_CL_SUCCESS(retVal, "Context creation failed");
+            CL_SUCCESS_OR_ERROR(retVal, "Context creation failed");
         }
         return context;
     }
