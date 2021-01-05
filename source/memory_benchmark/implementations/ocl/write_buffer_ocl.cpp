@@ -1,6 +1,8 @@
 #include "framework/ocl/compression_helper.h"
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
+#include "framework/utility/ocl/buffer_contents_helper_ocl.h"
+#include "framework/utility/ocl/profiling_helper.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/write_buffer.h"
 
@@ -12,7 +14,8 @@ static TestResult run(const WriteBufferArguments &arguments, Statistics &statist
     }
 
     // Setup
-    Opencl opencl;
+    QueueProperties queueProperties = QueueProperties::create().setProfiling(arguments.useEvents);
+    Opencl opencl(queueProperties);
     Timer timer;
     cl_int retVal;
 
@@ -29,22 +32,29 @@ static TestResult run(const WriteBufferArguments &arguments, Statistics &statist
         return compressionStatus;
     }
 
-    // Fill buffers
-    const char pattern[] = {0};
-    ASSERT_CL_SUCCESS(clEnqueueFillBuffer(opencl.commandQueue, buffer, pattern, sizeof(pattern) / sizeof(pattern[0]), 0, arguments.size, 0, nullptr, nullptr));
-    ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
-
     // Warmup
     ASSERT_CL_SUCCESS(clEnqueueWriteBuffer(opencl.commandQueue, buffer, CL_BLOCKING, 0, arguments.size, cpuBuffer.get(), 0, nullptr, nullptr));
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
+        ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillBuffer(opencl.commandQueue, buffer, arguments.size, arguments.contents));
+
+        cl_event profilingEvent{};
+        cl_event *eventForEnqueue = arguments.useEvents ? &profilingEvent : nullptr;
+
         timer.measureStart();
-        ASSERT_CL_SUCCESS(clEnqueueWriteBuffer(opencl.commandQueue, buffer, CL_NON_BLOCKING, 0, arguments.size, cpuBuffer.get(), 0, nullptr, nullptr));
+        ASSERT_CL_SUCCESS(clEnqueueWriteBuffer(opencl.commandQueue, buffer, CL_NON_BLOCKING, 0, arguments.size, cpuBuffer.get(), 0, nullptr, eventForEnqueue));
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue))
         timer.measureEnd();
 
-        statistics.pushValue(timer.get(), arguments.size);
+        if (eventForEnqueue) {
+            cl_ulong timeNs{};
+            ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
+            ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
+            statistics.pushValue(std::chrono::nanoseconds(timeNs), arguments.size);
+        } else {
+            statistics.pushValue(timer.get(), arguments.size);
+        }
     }
 
     ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));
