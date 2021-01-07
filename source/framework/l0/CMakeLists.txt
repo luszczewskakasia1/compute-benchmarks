@@ -21,7 +21,7 @@ file(GLOB_RECURSE SOURCES *.cpp *.h)
 # Define target
 set(API_NAME l0)
 set(TARGET_NAME compute_benchmarks_framework_${API_NAME})
-add_library(${TARGET_NAME} SHARED ${SOURCES})
+add_library(${TARGET_NAME} STATIC ${SOURCES})
 target_link_libraries(${TARGET_NAME} PUBLIC ${LevelZero_LIBRARIES})
 target_link_libraries(${TARGET_NAME} PUBLIC compute_benchmarks_framework)
 target_include_directories(${TARGET_NAME} PUBLIC ${LevelZero_INCLUDE_DIRS})

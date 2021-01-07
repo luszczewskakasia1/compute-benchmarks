@@ -42,7 +42,7 @@ endif()
 # Gtest
 set(gtest_force_shared_crt OFF CACHE BOOL "")
 set(BUILD_GMOCK OFF CACHE BOOL "")
-set(BUILD_SHARED_LIBS ON CACHE BOOL "")
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "")
 add_subdirectory(third_party/googletest)
 if (MSVC)
     set_target_properties(gtest_main PROPERTIES FOLDER gtest)
