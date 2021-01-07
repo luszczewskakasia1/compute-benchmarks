@@ -1,4 +1,4 @@
-#include "ulls_benchmark/definitions/kernel_with_work.h"
+#include "definitions/kernel_with_work.h"
 
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/common_gtest_args.h"

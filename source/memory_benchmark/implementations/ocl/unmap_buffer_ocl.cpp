@@ -4,7 +4,8 @@
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
-#include "memory_benchmark/definitions/unmap_buffer.h"
+
+#include "definitions/unmap_buffer.h"
 
 #include <gtest/gtest.h>
 

@@ -1,8 +1,10 @@
-#include "memory_benchmark/definitions/copy_entire_image.h"
+#include "definitions/copy_entire_image.h"
 
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/common_gtest_args.h"
 #include "framework/utility/memory_constants.h"
+
+#include "definitions/map_buffer.h"
 
 #include <gtest/gtest.h>
 

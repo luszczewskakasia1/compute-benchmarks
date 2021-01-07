@@ -1,6 +1,7 @@
-#include "atomic_benchmark/definitions/separate_atomic.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/common_gtest_args.h"
+
+#include "definitions/separate_atomic.h"
 
 #include <gtest/gtest.h>
 

@@ -1,4 +1,4 @@
-#include "memory_benchmark/definitions/write_buffer_rect.h"
+#include "definitions/write_buffer_rect.h"
 
 #include "framework/test_case/register_test_case.h"
 

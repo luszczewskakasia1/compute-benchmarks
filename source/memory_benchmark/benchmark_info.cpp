@@ -1,5 +1,6 @@
 #include "framework/configuration.h"
-#include "memory_benchmark/benchmark_specific_configuration.h"
+
+#include "benchmark_specific_configuration.h"
 
 std::string BenchmarkInfoImpl::getBenchmarkName() {
     return "memory_benchmark";

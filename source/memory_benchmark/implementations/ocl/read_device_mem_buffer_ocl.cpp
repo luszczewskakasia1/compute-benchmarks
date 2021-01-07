@@ -5,7 +5,8 @@
 #include "framework/utility/load_binary_file.h"
 #include "framework/utility/memory_constants.h"
 #include "framework/utility/timer.h"
-#include "memory_benchmark/definitions/read_device_mem_buffer.h"
+
+#include "definitions/read_device_mem_buffer.h"
 
 #include <gtest/gtest.h>
 

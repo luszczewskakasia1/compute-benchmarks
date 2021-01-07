@@ -1,4 +1,4 @@
-#include "multitile_memory_benchmark/definitions/read_buffer.h"
+#include "definitions/read_buffer.h"
 
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/common_gtest_args.h"

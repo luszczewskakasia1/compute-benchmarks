@@ -1,4 +1,4 @@
-#include "memory_benchmark/definitions/usm_shared_migrate_gpu.h"
+#include "definitions/usm_shared_migrate_gpu.h"
 
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/common_gtest_args.h"

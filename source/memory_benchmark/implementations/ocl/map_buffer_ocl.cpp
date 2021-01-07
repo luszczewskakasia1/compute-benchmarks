@@ -5,7 +5,8 @@
 #include "framework/ocl/profiling_helper.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
-#include "memory_benchmark/definitions/map_buffer.h"
+
+#include "definitions/map_buffer.h"
 
 #include <gtest/gtest.h>
 

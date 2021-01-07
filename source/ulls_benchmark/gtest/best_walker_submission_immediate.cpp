@@ -1,4 +1,4 @@
-#include "ulls_benchmark/definitions/best_walker_submission_immediate.h"
+#include "definitions/best_walker_submission_immediate.h"
 
 #include "framework/test_case/register_test_case.h"
 

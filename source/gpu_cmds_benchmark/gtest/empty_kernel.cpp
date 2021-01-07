@@ -1,4 +1,4 @@
-#include "gpu_cmds_benchmark/definitions/empty_kernel.h"
+#include "definitions/empty_kernel.h"
 
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/common_gtest_args.h"

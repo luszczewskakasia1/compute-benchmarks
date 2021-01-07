@@ -1,4 +1,4 @@
-#include "ulls_benchmark/definitions/usm_shared_first_cpu_access.h"
+#include "definitions/usm_shared_first_cpu_access.h"
 
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/common_gtest_args.h"

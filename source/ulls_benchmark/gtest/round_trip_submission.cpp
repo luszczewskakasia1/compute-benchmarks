@@ -1,4 +1,4 @@
-#include "ulls_benchmark/definitions/round_trip_submission.h"
+#include "definitions/round_trip_submission.h"
 
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/common_gtest_args.h"

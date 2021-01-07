@@ -1,4 +1,4 @@
-#include "api_overhead_benchmark/definitions/enqueue_ndr_time.h"
+#include "definitions/enqueue_ndr_time.h"
 
 #include "framework/test_case/register_test_case.h"
 

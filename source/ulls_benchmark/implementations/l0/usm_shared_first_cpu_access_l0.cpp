@@ -1,7 +1,8 @@
 #include "framework/l0/levelzero.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
-#include "ulls_benchmark/definitions/usm_shared_first_cpu_access.h"
+
+#include "definitions/usm_shared_first_cpu_access.h"
 
 #include <gtest/gtest.h>
 

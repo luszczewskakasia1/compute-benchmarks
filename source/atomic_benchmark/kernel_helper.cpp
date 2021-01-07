@@ -1,4 +1,4 @@
-#include "atomic_benchmark/kernel_helper.h"
+#include "kernel_helper.h"
 
 #include "framework/utility/atomic_operation_helper.h"
 

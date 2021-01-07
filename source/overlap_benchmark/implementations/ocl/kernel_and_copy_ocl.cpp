@@ -2,7 +2,8 @@
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/load_binary_file.h"
 #include "framework/utility/timer.h"
-#include "overlap_benchmark/definitions/kernel_and_copy.h"
+
+#include "definitions/kernel_and_copy.h"
 
 #include <gtest/gtest.h>
 

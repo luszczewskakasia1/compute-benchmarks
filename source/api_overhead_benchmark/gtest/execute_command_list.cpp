@@ -1,4 +1,4 @@
-#include "api_overhead_benchmark/definitions/execute_command_list.h"
+#include "definitions/execute_command_list.h"
 
 #include "framework/test_case/register_test_case.h"
 

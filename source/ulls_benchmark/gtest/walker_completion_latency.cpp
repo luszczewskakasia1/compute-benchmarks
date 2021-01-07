@@ -1,4 +1,4 @@
-#include "ulls_benchmark/definitions/walker_completion_latency.h"
+#include "definitions/walker_completion_latency.h"
 
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/common_gtest_args.h"

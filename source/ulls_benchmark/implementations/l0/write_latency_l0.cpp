@@ -1,7 +1,8 @@
 #include "framework/l0/levelzero.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
-#include "ulls_benchmark/definitions/write_latency.h"
+
+#include "definitions/write_latency.h"
 
 #include <emmintrin.h>
 #include <gtest/gtest.h>

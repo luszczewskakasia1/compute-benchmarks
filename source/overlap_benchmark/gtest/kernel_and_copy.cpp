@@ -1,4 +1,4 @@
-#include "overlap_benchmark/definitions/kernel_and_copy.h"
+#include "definitions/kernel_and_copy.h"
 
 #include "framework/test_case/register_test_case.h"
 

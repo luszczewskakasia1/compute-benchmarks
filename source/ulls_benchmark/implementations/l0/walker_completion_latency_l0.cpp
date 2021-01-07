@@ -2,7 +2,8 @@
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/load_binary_file.h"
 #include "framework/utility/timer.h"
-#include "ulls_benchmark/definitions/walker_completion_latency.h"
+
+#include "definitions/walker_completion_latency.h"
 
 #include <emmintrin.h>
 #include <gtest/gtest.h>

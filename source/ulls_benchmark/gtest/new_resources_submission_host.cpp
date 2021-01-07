@@ -1,4 +1,4 @@
-#include "ulls_benchmark/definitions/new_resources_submission_host.h"
+#include "definitions/new_resources_submission_host.h"
 
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/common_gtest_args.h"

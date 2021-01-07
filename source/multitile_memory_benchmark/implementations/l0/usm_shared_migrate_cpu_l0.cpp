@@ -3,7 +3,8 @@
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/load_binary_file.h"
 #include "framework/utility/timer.h"
-#include "multitile_memory_benchmark/definitions/usm_shared_migrate_cpu.h"
+
+#include "definitions/usm_shared_migrate_cpu.h"
 
 #include <gtest/gtest.h>
 

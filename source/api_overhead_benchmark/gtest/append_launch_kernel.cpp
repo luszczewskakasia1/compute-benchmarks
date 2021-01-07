@@ -1,4 +1,4 @@
-#include "api_overhead_benchmark/definitions/append_launch_kernel.h"
+#include "definitions/append_launch_kernel.h"
 
 #include "framework/test_case/register_test_case.h"
 

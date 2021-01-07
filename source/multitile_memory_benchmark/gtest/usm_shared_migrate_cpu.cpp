@@ -1,4 +1,4 @@
-#include "multitile_memory_benchmark/definitions/usm_shared_migrate_cpu.h"
+#include "definitions/usm_shared_migrate_cpu.h"
 
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/common_gtest_args.h"

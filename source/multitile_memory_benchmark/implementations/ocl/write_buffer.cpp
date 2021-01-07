@@ -1,4 +1,4 @@
-#include "multitile_memory_benchmark/definitions/write_buffer.h"
+#include "definitions/write_buffer.h"
 
 #include "framework/ocl/compression_helper.h"
 #include "framework/ocl/opencl.h"

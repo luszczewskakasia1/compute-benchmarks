@@ -1,10 +1,11 @@
-#include "atomic_benchmark/definitions/one_atomic_explicit.h"
-#include "atomic_benchmark/kernel_helper.h"
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/atomic_operation_helper.h"
 #include "framework/utility/load_binary_file.h"
 #include "framework/utility/timer.h"
+
+#include "definitions/one_atomic_explicit.h"
+#include "kernel_helper.h"
 
 #include <cstring>
 #include <gtest/gtest.h>

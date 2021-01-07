@@ -1,4 +1,4 @@
-#include "memory_benchmark/definitions/read_device_mem_buffer.h"
+#include "definitions/read_device_mem_buffer.h"
 
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/memory_constants.h"

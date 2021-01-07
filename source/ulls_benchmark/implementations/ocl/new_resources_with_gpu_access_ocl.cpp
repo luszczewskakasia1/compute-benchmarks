@@ -1,7 +1,8 @@
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
-#include "ulls_benchmark/definitions/new_resources_with_gpu_access.h"
+
+#include "definitions/new_resources_with_gpu_access.h"
 
 #include <gtest/gtest.h>
 

@@ -1,4 +1,4 @@
-#include "gpu_cmds_benchmark/definitions/wait_on_event_hot.h"
+#include "definitions/wait_on_event_hot.h"
 
 #include "framework/test_case/register_test_case.h"
 

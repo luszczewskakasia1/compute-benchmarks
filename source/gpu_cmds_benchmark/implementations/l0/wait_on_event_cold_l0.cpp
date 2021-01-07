@@ -2,7 +2,8 @@
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/load_binary_file.h"
 #include "framework/utility/timer.h"
-#include "gpu_cmds_benchmark/definitions/wait_on_event_cold.h"
+
+#include "definitions/wait_on_event_cold.h"
 
 #include <gtest/gtest.h>
 

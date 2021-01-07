@@ -3,7 +3,8 @@
 #include "framework/ocl/profiling_helper.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
-#include "memory_benchmark/definitions/copy_entire_image.h"
+
+#include "definitions/copy_entire_image.h"
 
 #include <gtest/gtest.h>
 

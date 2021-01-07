@@ -1,4 +1,4 @@
-#include "memory_benchmark/definitions/map_buffer.h"
+#include "definitions/map_buffer.h"
 
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/common_gtest_args.h"
