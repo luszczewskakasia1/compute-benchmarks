@@ -17,15 +17,6 @@ if (MSVC)
     set_target_properties(${TARGET_NAME} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif()
 
-# Link to compute libraries
-function(tryLinkTo DEPENDENCY)
-    if(TARGET ${DEPENDENCY})
-        target_link_libraries(${TARGET_NAME} PUBLIC ${DEPENDENCY})
-    endif()
-endfunction()
-tryLinkTo(OclInterface)
-tryLinkTo(LevelZeroInterface)
-
 # Link to PciAccess
 if (USE_PCIACCESS)
     message(STATUS "Linking to libpciaccess.so")

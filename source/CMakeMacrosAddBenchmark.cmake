@@ -57,7 +57,10 @@ function (add_benchmark_for_api BASE_TARGET_NAME APPEND_API_TO_TARGET_NAME APIS)
 
     # Define target
     add_executable(${TARGET_NAME} CMakeLists.txt)
-    target_link_libraries(${TARGET_NAME} PRIVATE compute_benchmarks_framework ${APIS})
+    foreach(API ${APIS})
+        target_link_libraries(${TARGET_NAME} PRIVATE compute_benchmarks_framework_${API})
+    endforeach()
+
     set_target_properties(${TARGET_NAME} PROPERTIES FOLDER ${TARGET_FOLDER_NAME})
     if (BUILD_FOR_PUBLISHING)
         set_target_properties(${TARGET_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${BASE_TARGET_NAME})
