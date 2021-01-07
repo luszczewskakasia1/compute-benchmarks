@@ -5,6 +5,7 @@
 #include "framework/enum/api.h"
 #include "framework/test_case/test_case_interface.h"
 #include "framework/test_case/test_result.h"
+#include "framework/test_map.h"
 #include "framework/utility/common_help_message.h"
 #include "framework/utility/error.h"
 #include "framework/utility/statistics.h"

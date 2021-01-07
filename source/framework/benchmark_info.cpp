@@ -1,5 +1,3 @@
-#pragma once
-
 #include "benchmark_info.h"
 
 std::unique_ptr<BenchmarkInfo> BenchmarkInfo::instance = {};
