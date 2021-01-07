@@ -1,6 +1,7 @@
 #pragma once
 
 #include <unordered_map>
+#include <string>
 
 enum class TestResult {
     Success,                 // should be returned after a successful run
