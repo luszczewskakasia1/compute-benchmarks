@@ -52,7 +52,6 @@ function (add_benchmark_for_api BASE_TARGET_NAME APPEND_API_TO_TARGET_NAME APIS)
     set(TARGET_FOLDER_NAME "tests")
     if (APPEND_API_TO_TARGET_NAME)
         string(APPEND TARGET_NAME "_${APIS}")
-        string(APPEND TARGET_FOLDER_NAME "_${APIS}")
     endif()
 
     # Define target
