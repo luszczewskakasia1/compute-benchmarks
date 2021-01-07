@@ -1,7 +1,7 @@
+#include "framework/l0/buffer_contents_helper_l0.h"
 #include "framework/l0/levelzero.h"
 #include "framework/l0/usm_helper.h"
 #include "framework/test_case/register_test_case.h"
-#include "framework/utility/l0/buffer_contents_helper_l0.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/usm_fill.h"
 

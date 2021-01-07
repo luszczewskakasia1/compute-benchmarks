@@ -1,9 +1,10 @@
+#include "multitile_memory_benchmark/definitions/write_buffer.h"
+
 #include "framework/ocl/compression_helper.h"
 #include "framework/ocl/opencl.h"
+#include "framework/ocl/profiling_helper.h"
 #include "framework/test_case/register_test_case.h"
-#include "framework/utility/ocl/profiling_helper.h"
 #include "framework/utility/timer.h"
-#include "multitile_memory_benchmark/definitions/write_buffer.h"
 
 #include <gtest/gtest.h>
 
