@@ -49,7 +49,7 @@ inline std::vector<std::string> splitString(const std::string &string) {
 }
 
 template <typename T>
-using ToStringConverter = std::string(*)(T);
+using ToStringConverter = std::string (*)(T);
 
 template <typename T>
 inline std::string joinStrings(const std::string &separator, const std::vector<T> &objects, ToStringConverter<T> toString) {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "framework/enum/buffer_contents.h"
+
 #include <cstring>
 #include <random>
 

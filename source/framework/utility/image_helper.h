@@ -1,6 +1,7 @@
 #pragma once
 
 #include "framework/enum/image_type.h"
+
 #include <cstddef>
 
 struct ImageHelper {

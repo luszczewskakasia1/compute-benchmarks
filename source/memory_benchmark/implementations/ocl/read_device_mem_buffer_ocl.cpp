@@ -3,8 +3,8 @@
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/load_binary_file.h"
-#include "framework/utility/timer.h"
 #include "framework/utility/memory_constants.h"
+#include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/read_device_mem_buffer.h"
 
 #include <gtest/gtest.h>
@@ -21,7 +21,7 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     Opencl opencl(queueProperties);
 
     const size_t singleSendSizeInBytes = 128U;
-    const size_t numOfSends = 16U;      // per 128Byte in send, 2k-4k tiles in one loop iteration
+    const size_t numOfSends = 16U; // per 128Byte in send, 2k-4k tiles in one loop iteration
     const size_t numOfLoops = 500U;
     const auto threadTileSizeInSubgroup = singleSendSizeInBytes * numOfSends;
     const size_t subgroupSize = 8;
@@ -33,21 +33,25 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     IntelGen gpuGen = getIntelGen(intelProduct);
 
     const bool useLargeGRF = gpuGen == IntelGen::Gen12hp ? true : false;
-    const std::string largeGrfOpt = useLargeGRF?" -cl-intel-256-GRF-per-thread ":" ";
-    const std::string buildOptions = "-cl-std=CL2.0 -cl-mad-enable -cl-fast-relaxed-math " + std::string(" -D NUM_SENDS=") + std::to_string(numOfSends)
-          + std::string(" -D KERNEL_LOOP_ITERATIONS=") + std::to_string(numOfLoops) + " -D THREAD_TILE_SIZE="+ std::to_string(threadTileSizeInSubgroup)
-          + " -D SUBGROUP_SIZE=" + std::to_string(subgroupSize) + largeGrfOpt + std::string(" ");
+    const std::string largeGrfOpt = useLargeGRF ? " -cl-intel-256-GRF-per-thread " : " ";
+    const std::string buildOptions = std::string("-cl-std=CL2.0 -cl-mad-enable -cl-fast-relaxed-math ") +
+                                     " -D NUM_SENDS=" + std::to_string(numOfSends) +
+                                     " -D KERNEL_LOOP_ITERATIONS=" + std::to_string(numOfLoops) +
+                                     " -D THREAD_TILE_SIZE=" + std::to_string(threadTileSizeInSubgroup) +
+                                     " -D SUBGROUP_SIZE=" + std::to_string(subgroupSize) +
+                                     largeGrfOpt +
+                                     std::string(" ");
 
     // Create buffer
     const cl_mem_flags compressionHint = CompressionHelper::getCompressionFlags(arguments.compressed, arguments.noIntelExtensions);
     const cl_mem_flags memFlags = CL_MEM_READ_WRITE | compressionHint;
 
-    auto srcCpuBuffer = std::make_unique<float[]>(arguments.size/sizeof(float));
+    auto srcCpuBuffer = std::make_unique<float[]>(arguments.size / sizeof(float));
     float *pBuff = srcCpuBuffer.get();
     float floatVal1 = 0.0f;
     for (size_t i = 0; i < arguments.size / sizeof(float);) {
         for (size_t j = 0; j < 8; j++) {
-            *(pBuff++) = floatVal1+ (float)j;
+            *(pBuff++) = floatVal1 + (float)j;
         }
         floatVal1 += 10.0f;
         i += 8;
@@ -57,7 +61,7 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     const cl_mem destination = clCreateBuffer(opencl.context, memFlags, arguments.size, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
-    const uint32_t clearGpuBuffSize = 16*MemoryConstants::megaByte;
+    const uint32_t clearGpuBuffSize = 16 * MemoryConstants::megaByte;
     const cl_mem clearGpuBuff = clCreateBuffer(opencl.context, memFlags, clearGpuBuffSize, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
@@ -74,7 +78,7 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
         return compressionStatus;
     }
 
-    const char *programSrc = {
+    const char *programSrc =
         "__kernel void ClearCaches(__global unsigned int *pBuffer, unsigned int buffSize) {"
         "   unsigned int i = 0;"
         "   while (i++ < buffSize) {"
@@ -103,8 +107,7 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
         "   if (_out_data.x < 0.0f) {"
         "       pDstBuffer[gid] = _out_data;"
         "   }"
-        "}"
-    };
+        "}";
 
     // Create kernel
     const auto programSrcLen = strlen(programSrc);
@@ -130,38 +133,35 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     const size_t clearGws = 1;
     const size_t buffSizeInInts = clearGpuBuffSize / sizeof(cl_uint);
     retVal |= clSetKernelArg(clearCacheKernel, 0, sizeof(clearGpuBuff), &clearGpuBuff);
-    retVal |= clSetKernelArg(clearCacheKernel, 1, sizeof(buffSizeInInts), &buffSizeInInts );
+    retVal |= clSetKernelArg(clearCacheKernel, 1, sizeof(buffSizeInInts), &buffSizeInInts);
     retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, clearCacheKernel, 1, nullptr, &clearGws, NULL, 0, nullptr, nullptr);
     retVal |= clFinish(opencl.commandQueue);
     ASSERT_CL_SUCCESS(retVal);
 
     cl_uint sliceSize = 0, sliceMask = 1, slotMask = 1;
     const cl_uint numThreadsPerEu = (gpuGen == IntelGen::Gen12hp) ? 8 : 7;
-    const cl_uint numHwThreads = (useLargeGRF ? numThreadsPerEu/2 : 7) * static_cast<cl_uint>(euNum);
+    const cl_uint numHwThreads = (useLargeGRF ? numThreadsPerEu / 2 : 7) * static_cast<cl_uint>(euNum);
 
     const size_t lws = 8;
-    size_t gws = numHwThreads*subgroupSize;
+    size_t gws = numHwThreads * subgroupSize;
 
     if (intelProduct != IntelProduct::Unknown) {
         const cl_uint atsThreasLargeGRFMode = 4;
         // check if surface can be covered with more than one slice
-        if ( (2 *numHwThreads * threadTileSizeInSubgroup) < static_cast<cl_uint>(arguments.size) )
-        {
+        if ((2 * numHwThreads * threadTileSizeInSubgroup) < static_cast<cl_uint>(arguments.size)) {
             slotMask = numHwThreads;
-            sliceSize = numHwThreads*threadTileSizeInSubgroup;
+            sliceSize = numHwThreads * threadTileSizeInSubgroup;
             const auto numMaxSlices = static_cast<cl_uint>(arguments.size) / sliceSize;
             // can cover with more than one slice for all threads
             sliceMask = 1;
-            do
-            {
+            do {
                 sliceMask *= 2;
             } while (sliceMask <= numMaxSlices);
 
             sliceMask /= 2;
             sliceMask -= 1;
-        }
-        else {
-            slotMask = static_cast<cl_uint>(arguments.size)/threadTileSizeInSubgroup;
+        } else {
+            slotMask = static_cast<cl_uint>(arguments.size) / threadTileSizeInSubgroup;
             slotMask -= 1;
         }
     } else {
@@ -195,7 +195,7 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
         retVal |= clWaitForEvents(1, &evt);
         ASSERT_CL_SUCCESS(retVal);
 
-	retVal |= clGetEventProfilingInfo(evt, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &enqstart, NULL);
+        retVal |= clGetEventProfilingInfo(evt, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &enqstart, NULL);
         retVal |= clGetEventProfilingInfo(evt, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &enqend, NULL);
         ASSERT_CL_SUCCESS(retVal);
 
