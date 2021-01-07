@@ -1,12 +1,12 @@
-function(benchmark_option NAME DEFAULT_VALUE)
+macro(benchmark_option NAME DEFAULT_VALUE)
     if (NOT DEFINED ${NAME})
         set(${NAME} ${DEFAULT_VALUE})
     endif()
     message(STATUS "      ${NAME}=${${NAME}} ${ARGN}")
-endfunction()
-function (benchmark_option_group DESCRIPTION)
+endmacro()
+macro (benchmark_option_group DESCRIPTION)
     message(STATUS "   ${DESCRIPTION}:")
-endfunction()
+endmacro()
 message(STATUS "Build options:")
 
 # Selecting targets
