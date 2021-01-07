@@ -1,3 +1,7 @@
+if (NOT BUILD_OCL)
+    return()
+endif()
+
 # Get libraries and headers for the SDK
 find_package(OpenCL QUIET)
 if(NOT ${OpenCL_FOUND})

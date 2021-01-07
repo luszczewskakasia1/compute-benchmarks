@@ -1,3 +1,7 @@
+if (NOT BUILD_L0)
+    return()
+endif()
+
 # Get libraries and headers for the SDK
 find_package(LevelZero QUIET)
 if(NOT ${LevelZero_FOUND})
