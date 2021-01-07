@@ -1,5 +1,6 @@
 #pragma once
 
+#include "framework/benchmark_info.h"
 #include "framework/test_case_argument/enum/test_case_argument_api.h"
 #include "framework/test_case_argument/enum/test_case_argument_device_selection.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
@@ -10,9 +11,11 @@
 
 #include <memory>
 
-struct BenchmarkSpecificConfigurationBase;
-
 struct Configuration : TestCaseArgumentsBase {
+  private:
+    static std::unique_ptr<Configuration> instance;
+
+  public:
     Configuration();
     ~Configuration();
 
@@ -21,6 +24,9 @@ struct Configuration : TestCaseArgumentsBase {
         Csv,
         Verbose,
     } printType = PrintType::Default;
+
+    static bool parseArgumentsForConfiguration(CommandLineArguments &arguments);
+    static Configuration &get();
 
     bool validateArgumentsExtra() const override;
 
@@ -46,8 +52,5 @@ struct Configuration : TestCaseArgumentsBase {
     StringListTestCaseArgument argFilter;
     StringListTestCaseArgument testFilter;
 
-    BenchmarkSpecificConfigurationBase *benchmarkSpecificConfiguration = nullptr;
+    BenchmarkInfo::BenchmarkSpecificConfigurationBase *benchmarkSpecificConfiguration = nullptr;
 };
-
-extern Configuration configuration;
-bool parseArgumentsForConfiguration(CommandLineArguments &arguments);

@@ -5,28 +5,18 @@ add_library(${TARGET_NAME} STATIC ${SOURCES})
 target_link_libraries(${TARGET_NAME} PUBLIC gtest)
 target_include_directories(${TARGET_NAME} PUBLIC ${SOURCE_ROOT})
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_17)
+set_target_properties(${TARGET_NAME} PROPERTIES FOLDER framework)
 add_subdirectories()
-
-# Select version to print from binary
-if (BUILD_FOR_PUBLISHING OR INCLUDE_VERSION)
-    target_compile_definitions(${TARGET_NAME} PRIVATE BENCHMARK_VERSION="${BENCHMARK_VERSION}")
-else()
-    target_compile_definitions(${TARGET_NAME} PRIVATE BENCHMARK_VERSION="")
-endif()
 
 # Ignore CRT Warnings
 if (MSVC)
     target_compile_definitions(${TARGET_NAME} PUBLIC _CRT_SECURE_NO_WARNINGS)
 endif()
 
-# Link to compute libraries
-function(tryLinkTo DEPENDENCY)
-    if(TARGET ${DEPENDENCY})
-        target_link_libraries(${TARGET_NAME} PUBLIC ${DEPENDENCY})
-    endif()
-endfunction()
-tryLinkTo(OclInterface)
-tryLinkTo(LevelZeroInterface)
+# Export all symbols on VS builds (so __dllexport is not required)
+if (MSVC)
+    set_target_properties(${TARGET_NAME} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
+endif()
 
 # Link to PciAccess
 if (USE_PCIACCESS)

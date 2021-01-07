@@ -42,10 +42,16 @@ endif()
 # Gtest
 set(gtest_force_shared_crt OFF CACHE BOOL "")
 set(BUILD_GMOCK OFF CACHE BOOL "")
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "")
 add_subdirectory(third_party/googletest)
 if (MSVC)
-    set_target_properties(gtest PROPERTIES FOLDER gtest)
-    set_target_properties(gtest_main PROPERTIES FOLDER gtest)
+    set_target_properties(gtest_main PROPERTIES FOLDER framework)
+    set_target_properties(gtest PROPERTIES
+        FOLDER framework
+        LIBRARY_OUTPUT_DIRECTORY "${OUTPUT_DIR}"
+        RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIR}"
+        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+    )
 endif()
 
 # Benchmark

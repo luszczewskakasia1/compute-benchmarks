@@ -1,21 +1,21 @@
 #include "framework/benchmark_info.h"
 
-std::string getBenchmarkName() {
+std::string BenchmarkInfoImpl::getBenchmarkName() {
     return "gpu_cmds_benchmark";
 }
 
-std::string getBenchmarkDescription() {
+std::string BenchmarkInfoImpl::getBenchmarkDescription() {
     return "Gpu Commands Benchmark is a set of tests aimed at measuring GPU-side execution duration of various commands.";
 }
 
-MeasurementUnit getMeasurementUnit() {
-    return MeasurementUnit::Microseconds;
+BenchmarkInfoImpl::MeasurementUnit BenchmarkInfoImpl::getMeasurementUnit() {
+    return BenchmarkInfoImpl::MeasurementUnit::Microseconds;
 }
 
-int getTestCaseNameColumnWidth() {
+int BenchmarkInfoImpl::getTestCaseNameColumnWidth() {
     return 77;
 }
 
-std::unique_ptr<BenchmarkSpecificConfigurationBase> BenchmarkSpecificConfigurationBase::create(TestCaseArgumentsBase &testCaseArguments) {
-    return std::unique_ptr<BenchmarkSpecificConfigurationBase>{};
+std::unique_ptr<BenchmarkInfoImpl::BenchmarkSpecificConfigurationBase> BenchmarkInfoImpl::createBenchmarkSpecificConfiguration(TestCaseArgumentsBase &testCaseArguments) {
+    return std::unique_ptr<BenchmarkInfoImpl::BenchmarkSpecificConfigurationBase>{};
 }

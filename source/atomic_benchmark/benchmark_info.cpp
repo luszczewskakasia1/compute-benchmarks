@@ -1,21 +1,21 @@
 #include "framework/benchmark_info.h"
 
-std::string getBenchmarkName() {
+std::string BenchmarkInfoImpl::getBenchmarkName() {
     return "atomic_benchmark";
 }
 
-std::string getBenchmarkDescription() {
+std::string BenchmarkInfoImpl::getBenchmarkDescription() {
     return "Atomic Benchmark is a set of tests aimed at measuring performance of atomic operations inside kernels.";
 }
 
-MeasurementUnit getMeasurementUnit() {
-    return MeasurementUnit::Microseconds;
+BenchmarkInfoImpl::MeasurementUnit BenchmarkInfoImpl::getMeasurementUnit() {
+    return BenchmarkInfoImpl::MeasurementUnit::Microseconds;
 }
 
-int getTestCaseNameColumnWidth() {
+int BenchmarkInfoImpl::getTestCaseNameColumnWidth() {
     return 120;
 }
 
-std::unique_ptr<BenchmarkSpecificConfigurationBase> BenchmarkSpecificConfigurationBase::create(TestCaseArgumentsBase &testCaseArguments) {
-    return std::unique_ptr<BenchmarkSpecificConfigurationBase>{};
+std::unique_ptr<BenchmarkInfoImpl::BenchmarkSpecificConfigurationBase> BenchmarkInfoImpl::createBenchmarkSpecificConfiguration(TestCaseArgumentsBase &testCaseArguments) {
+    return std::unique_ptr<BenchmarkInfoImpl::BenchmarkSpecificConfigurationBase>{};
 }

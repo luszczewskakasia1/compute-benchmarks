@@ -1,7 +1,7 @@
 #pragma once
 
 #include "framework/ocl/cl.h"
-#include "framework/utility/error.h"
+#include "framework/ocl/error.h"
 #include "framework/utility/image_helper.h"
 
 struct ImageHelperOcl : ImageHelper {

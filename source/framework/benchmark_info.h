@@ -1,35 +1,43 @@
 #pragma once
 
-#include "framework/configuration.h"
-#include "framework/test_case/test_case_interface.h"
-#include "framework/test_case_argument/test_case_arguments.h"
+#include <memory>
+#include <string>
 
-#include <unordered_map>
+struct TestCaseArgumentsBase;
 
-using TestMap = std::unordered_map<std::string, std::unique_ptr<TestCaseInterface>>;
-inline TestMap &getTestMap() {
-    static TestMap testMap = {};
-    return testMap;
-}
+// This class represent information specific to a specific benchmark, e.g. ulls_benchmark or memory_benchmark.
+// It is used to configure the behaviour of some framework classes.
+class BenchmarkInfo {
+  private:
+    static std::unique_ptr<BenchmarkInfo> instance;
 
-std::string getBenchmarkName();
-inline std::string getBenchmarkFilename() {
-#ifdef WIN32
-    return getBenchmarkName() + ".exe";
-#else
-    return getBenchmarkName();
-#endif
-}
-std::string getBenchmarkDescription();
+  public:
+    static BenchmarkInfo &get();
+    static void set(BenchmarkInfo *instance);
 
-enum class MeasurementUnit {
-    Microseconds,
-    GigabytesPerSecond,
+    // General textual data
+    virtual std::string getBenchmarkDescription() = 0;
+    virtual std::string getBenchmarkName() = 0;
+    std::string getBenchmarkFilename();
+
+    // Unit of numbers that are returned by all tests in the given framework
+    enum class MeasurementUnit {
+        Microseconds,
+        GigabytesPerSecond,
+    };
+    virtual MeasurementUnit getMeasurementUnit() = 0;
+
+    // Width of the first column containing names of test cases.
+    virtual int getTestCaseNameColumnWidth() = 0;
+
+    struct BenchmarkSpecificConfigurationBase {};
+    virtual std::unique_ptr<BenchmarkSpecificConfigurationBase> createBenchmarkSpecificConfiguration(TestCaseArgumentsBase &testCaseArguments) = 0;
 };
-MeasurementUnit getMeasurementUnit();
 
-int getTestCaseNameColumnWidth();
-
-struct BenchmarkSpecificConfigurationBase {
-    static std::unique_ptr<BenchmarkSpecificConfigurationBase> create(TestCaseArgumentsBase &testCaseArguments);
+struct BenchmarkInfoImpl : BenchmarkInfo {
+    std::string getBenchmarkDescription() override;
+    std::string getBenchmarkName() override;
+    virtual MeasurementUnit getMeasurementUnit() override;
+    int getTestCaseNameColumnWidth() override;
+    std::unique_ptr<BenchmarkSpecificConfigurationBase> createBenchmarkSpecificConfiguration(TestCaseArgumentsBase &testCaseArguments) override;
 };

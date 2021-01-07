@@ -52,19 +52,27 @@ function (add_benchmark_for_api BASE_TARGET_NAME APPEND_API_TO_TARGET_NAME APIS)
     set(TARGET_FOLDER_NAME "tests")
     if (APPEND_API_TO_TARGET_NAME)
         string(APPEND TARGET_NAME "_${APIS}")
-        string(APPEND TARGET_FOLDER_NAME "_${APIS}")
     endif()
 
     # Define target
     add_executable(${TARGET_NAME} CMakeLists.txt)
-    target_link_libraries(${TARGET_NAME} PRIVATE compute_benchmarks_framework ${APIS})
+    foreach(API ${APIS})
+        target_link_libraries(${TARGET_NAME} PRIVATE compute_benchmarks_framework_${API})
+    endforeach()
+
     set_target_properties(${TARGET_NAME} PROPERTIES FOLDER ${TARGET_FOLDER_NAME})
     if (BUILD_FOR_PUBLISHING)
         set_target_properties(${TARGET_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${BASE_TARGET_NAME})
     endif()
+    if (BUILD_FOR_PUBLISHING OR INCLUDE_VERSION)
+        target_compile_definitions(${TARGET_NAME} PUBLIC BENCHMARK_VERSION="${BENCHMARK_VERSION}")
+    else()
+        target_compile_definitions(${TARGET_NAME} PUBLIC BENCHMARK_VERSION="")
+    endif()
 
     # API agnostic sources
     set(API_AGNOSTIC_SOURCE_DIRECTORIES
+        ${SOURCE_ROOT}/common
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/gtest
         ${CMAKE_CURRENT_SOURCE_DIR}/definitions

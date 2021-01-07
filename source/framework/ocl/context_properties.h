@@ -10,7 +10,7 @@ struct ContextProperties {
 
     static ContextProperties create() {
         return ContextProperties()
-            .setDeviceSelection(::configuration.subDeviceSelection);
+            .setDeviceSelection(Configuration::get().subDeviceSelection);
     }
 
     ContextProperties &setDeviceSelection(DeviceSelection deviceSelection) {

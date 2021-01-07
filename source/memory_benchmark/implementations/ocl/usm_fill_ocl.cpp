@@ -1,8 +1,8 @@
+#include "framework/ocl/buffer_contents_helper_ocl.h"
 #include "framework/ocl/opencl.h"
+#include "framework/ocl/profiling_helper.h"
 #include "framework/ocl/usm_helper.h"
 #include "framework/test_case/register_test_case.h"
-#include "framework/utility/ocl/buffer_contents_helper_ocl.h"
-#include "framework/utility/ocl/profiling_helper.h"
 #include "framework/utility/timer.h"
 #include "memory_benchmark/definitions/usm_fill.h"
 

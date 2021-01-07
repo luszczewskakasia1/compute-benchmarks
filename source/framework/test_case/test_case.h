@@ -5,6 +5,7 @@
 #include "framework/enum/api.h"
 #include "framework/test_case/test_case_interface.h"
 #include "framework/test_case/test_result.h"
+#include "framework/test_map.h"
 #include "framework/utility/common_help_message.h"
 #include "framework/utility/error.h"
 #include "framework/utility/statistics.h"
@@ -57,7 +58,7 @@ class TestCase : public TestCaseInterface {
         }
 
         // Try running with all possible APIs. If some are disabled, e.g. --api=ocl is passed, then the rest will be skipped in run() method
-        Statistics::printStatisticsHeader(::configuration.printType);
+        Statistics::printStatisticsHeader(Configuration::get().printType);
         for (int apiIndex = static_cast<int>(Api::FIRST); apiIndex <= static_cast<int>(Api::LAST); apiIndex++) {
             arguments.api = static_cast<Api>(apiIndex);
             run(arguments);
@@ -69,14 +70,14 @@ class TestCase : public TestCaseInterface {
         // Set iterations count from global configuration
         if (arguments.iterations != 0) {
             std::cerr << "WARNING: arguments.iterations was not zero. Overriding with value from global configuration - "
-                      << ::configuration.iterations << ".\n";
+                      << Configuration::get().iterations << ".\n";
         }
-        arguments.iterations = ::configuration.iterations;
-        arguments.noIntelExtensions = ::configuration.noIntelExtensions;
+        arguments.iterations = Configuration::get().iterations;
+        arguments.noIntelExtensions = Configuration::get().noIntelExtensions;
 
         // Create statistics object
-        const auto testCaseNameWithConfig = getTestCaseNameWithConfig(arguments, ::configuration.dumpCommandLines);
-        Statistics statistics{arguments.iterations, ::configuration.printType};
+        const auto testCaseNameWithConfig = getTestCaseNameWithConfig(arguments, Configuration::get().dumpCommandLines);
+        Statistics statistics{arguments.iterations, Configuration::get().printType};
 
         // Run test
         const auto testResult = runImpl(statistics, arguments, testCaseNameWithConfig);
@@ -100,7 +101,7 @@ class TestCase : public TestCaseInterface {
   private:
     TestResult runImpl(Statistics &statistics, const Arguments &arguments, const std::string &testCaseNameWithConfig) const {
         // Get API
-        const auto selectedApi = ::configuration.selectedApi;
+        const auto selectedApi = Configuration::get().selectedApi;
         if (arguments.api != selectedApi && selectedApi != Api::All) {
             return TestResult::SkippedApi;
         }
@@ -123,12 +124,13 @@ class TestCase : public TestCaseInterface {
         }
 
         // Verify if current test case is added to the test map
-        if (getTestMap().find(getTestCaseName()) == getTestMap().end()) {
+        const auto &testMap = TestMap::get();
+        if (testMap.find(getTestCaseName()) == testMap.end()) {
             printTestMapWarning();
         }
 
         // Check test filters
-        if (auto testFilters = ::configuration.testFilter.get(); testFilters.size() > 0) {
+        if (auto testFilters = Configuration::get().testFilter.get(); testFilters.size() > 0) {
             const auto testCaseName = getTestCaseName();
             const auto matches = [&](const std::string &testFilter) { return testFilter == testCaseName; };
             const auto requirementMet = std::any_of(testFilters.begin(), testFilters.end(), matches);
@@ -138,7 +140,7 @@ class TestCase : public TestCaseInterface {
         }
 
         // Check arg filters
-        for (const std::string &argFilter : ::configuration.argFilter.get()) {
+        for (const std::string &argFilter : Configuration::get().argFilter.get()) {
             const std::vector<TestCaseArgument *> &args = arguments.arguments;
             const auto matches = [&](TestCaseArgument *arg) { return arg->toString() == argFilter; };
             const bool requirementMet = std::any_of(args.begin(), args.end(), matches);
@@ -148,12 +150,12 @@ class TestCase : public TestCaseInterface {
         }
 
         // Check if test case name with config is not too long
-        if (!::configuration.dumpCommandLines && !arguments.isSingleTestMode) {
+        if (!Configuration::get().dumpCommandLines && !arguments.isSingleTestMode) {
             printTestCaseNameLengthWarning(testCaseNameWithConfig);
         }
 
         // Noop if required
-        if (::configuration.noop) {
+        if (Configuration::get().noop) {
             return TestResult::Nooped;
         }
 
@@ -203,7 +205,7 @@ class TestCase : public TestCaseInterface {
     }
 
     void printTestCaseNameLengthWarning(const std::string &testCaseNameWithConfig) const {
-        const static size_t columnWidth = getTestCaseNameColumnWidth();
+        const static size_t columnWidth = BenchmarkInfo::get().getTestCaseNameColumnWidth();
         static size_t maxWidth = columnWidth;
 
         const size_t currentWidth = testCaseNameWithConfig.length();

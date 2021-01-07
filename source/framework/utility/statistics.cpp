@@ -4,6 +4,7 @@
 #include "framework/utility/error.h"
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <iomanip>
 #include <iostream>
@@ -20,13 +21,13 @@ void Statistics::pushValue(Clock::duration time) {
     static_assert(std::is_floating_point_v<Value>, "Need floating point type for the above cast to work properly");
     const Value timeSeconds = std::chrono::duration_cast<std::chrono::duration<Value>>(time).count();
 
-    switch (getMeasurementUnit()) {
-    case MeasurementUnit::Microseconds: {
+    switch (BenchmarkInfo::get().getMeasurementUnit()) {
+    case BenchmarkInfo::MeasurementUnit::Microseconds: {
         const Value timeMicroseconds = timeSeconds * 1e6;
         this->pushValue(timeMicroseconds);
         break;
     }
-    case MeasurementUnit::GigabytesPerSecond:
+    case BenchmarkInfo::MeasurementUnit::GigabytesPerSecond:
         ERROR("Buffer size needs to be passed in bandwidth mode");
     default:
         ERROR("Unknown measurement unit");
@@ -37,13 +38,13 @@ void Statistics::pushValue(Clock::duration time, uint64_t size) {
     static_assert(std::is_floating_point_v<Value>, "Need floating point type for the above cast to work properly");
     const Value timeSeconds = std::chrono::duration_cast<std::chrono::duration<Value>>(time).count();
 
-    switch (getMeasurementUnit()) {
-    case MeasurementUnit::Microseconds: {
+    switch (BenchmarkInfo::get().getMeasurementUnit()) {
+    case BenchmarkInfo::MeasurementUnit::Microseconds: {
         const Value timeMicroseconds = timeSeconds * 1e6;
         this->pushValue(timeMicroseconds);
         break;
     }
-    case MeasurementUnit::GigabytesPerSecond: {
+    case BenchmarkInfo::MeasurementUnit::GigabytesPerSecond: {
         const Value timeNanoseconds = timeSeconds * 1e9;
         const Value bandwidth = size / timeNanoseconds; // Bytes/Nanoseconds = Gigabytes/Seconds
         this->pushValue(bandwidth);
@@ -75,16 +76,19 @@ struct ColumnInfo {
     int width;
     const char *label;
     bool printUnit;
+
+    static constexpr size_t getColumnCount() { return 6; }
+    static std::array<ColumnInfo, 6> getColumns() {
+        return {{
+            {BenchmarkInfo::get().getTestCaseNameColumnWidth(), "TestCase", false},
+            {15, "Mean", true},
+            {15, "Median", true},
+            {15, "StdDev", false},
+            {15, "Min", true},
+            {15, "Max", true},
+        }};
+    }
 };
-const static ColumnInfo columns[] = {
-    {getTestCaseNameColumnWidth(), "TestCase", false},
-    {15, "Mean", true},
-    {15, "Median", true},
-    {15, "StdDev", false},
-    {15, "Min", true},
-    {15, "Max", true},
-};
-const static int columnCount = sizeof(columns) / sizeof(columns[0]);
 
 static std::string getColumnName(const std::string &label, const std::string &unit, bool hasUnit) {
     if (hasUnit) {
@@ -95,17 +99,19 @@ static std::string getColumnName(const std::string &label, const std::string &un
 
 void Statistics::printStatisticsHeader(Configuration::PrintType printType) {
     std::string unit = "";
-    switch (getMeasurementUnit()) {
-    case MeasurementUnit::Microseconds:
+    switch (BenchmarkInfo::get().getMeasurementUnit()) {
+    case BenchmarkInfo::MeasurementUnit::Microseconds:
         unit = "us";
         break;
-    case MeasurementUnit::GigabytesPerSecond:
+    case BenchmarkInfo::MeasurementUnit::GigabytesPerSecond:
         unit = "GB/s";
         break;
     default:
         ERROR("Unknown measurement unit");
     }
 
+    const auto columns = ColumnInfo::getColumns();
+    const auto columnCount = ColumnInfo::getColumnCount();
     switch (printType) {
     case Configuration::PrintType::Verbose:
     case Configuration::PrintType::Default: {
@@ -131,6 +137,8 @@ void Statistics::printStatisticsHeader(Configuration::PrintType printType) {
 }
 
 void Statistics::printStatistics(const std::string &testCaseName) {
+    const auto columns = ColumnInfo::getColumns();
+    const auto columnCount = ColumnInfo::getColumnCount();
     switch (printType) {
     case Configuration::PrintType::Verbose:
     case Configuration::PrintType::Default: {
@@ -171,6 +179,8 @@ void Statistics::printStatistics(const std::string &testCaseName) {
 }
 
 void Statistics::printStatisticsString(const std::string &testCaseName, const std::string &message) {
+    const auto columns = ColumnInfo::getColumns();
+    const auto columnCount = ColumnInfo::getColumnCount();
     switch (printType) {
     case Configuration::PrintType::Verbose:
     case Configuration::PrintType::Default: {

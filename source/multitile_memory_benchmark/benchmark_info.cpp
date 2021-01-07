@@ -1,26 +1,27 @@
-#include "memory_benchmark/benchmark_specific_configuration.h"
+#include "framework/configuration.h"
+#include "multitile_memory_benchmark/benchmark_specific_configuration.h"
 
-std::string getBenchmarkName() {
+std::string BenchmarkInfoImpl::getBenchmarkName() {
     return "multitile_memory_benchmark";
 }
 
-std::string getBenchmarkDescription() {
+std::string BenchmarkInfoImpl::getBenchmarkDescription() {
     return "Multi-tile Memory Benchmark is a set of tests aimed at measuring bandwidth of memory transfers performed on a multi-tile device.";
 }
 
-MeasurementUnit getMeasurementUnit() {
-    auto configuration = static_cast<BenchmarkSpecificConfiguration *>(::configuration.benchmarkSpecificConfiguration);
+BenchmarkInfoImpl::MeasurementUnit BenchmarkInfoImpl::getMeasurementUnit() {
+    auto configuration = static_cast<BenchmarkSpecificConfiguration *>(Configuration::get().benchmarkSpecificConfiguration);
     if (configuration->printBandwidth) {
-        return MeasurementUnit::GigabytesPerSecond;
+        return BenchmarkInfoImpl::MeasurementUnit::GigabytesPerSecond;
     } else {
-        return MeasurementUnit::Microseconds;
+        return BenchmarkInfoImpl::MeasurementUnit::Microseconds;
     }
 }
 
-int getTestCaseNameColumnWidth() {
+int BenchmarkInfoImpl::getTestCaseNameColumnWidth() {
     return 136;
 }
 
-std::unique_ptr<BenchmarkSpecificConfigurationBase> BenchmarkSpecificConfigurationBase::create(TestCaseArgumentsBase &testCaseArguments) {
-    return std::unique_ptr<BenchmarkSpecificConfigurationBase>{new BenchmarkSpecificConfiguration(testCaseArguments)};
+std::unique_ptr<BenchmarkInfoImpl::BenchmarkSpecificConfigurationBase> BenchmarkInfoImpl::createBenchmarkSpecificConfiguration(TestCaseArgumentsBase &testCaseArguments) {
+    return std::unique_ptr<BenchmarkInfoImpl::BenchmarkSpecificConfigurationBase>{new BenchmarkSpecificConfiguration(testCaseArguments)};
 }

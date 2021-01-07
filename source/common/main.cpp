@@ -2,6 +2,7 @@
 #include "framework/configuration.h"
 #include "framework/gtest_event_listener.h"
 #include "framework/print_device_info.h"
+#include "framework/test_map.h"
 #include "framework/utility/common_help_message.h"
 #include "framework/utility/string_utils.h"
 
@@ -27,7 +28,7 @@ int executeSingleTest(const std::string &testName, CommandLineArguments &command
     printDeviceInfo();
     printVersion(false, "Benchmark version: ");
 
-    const TestMap &testMap = getTestMap();
+    const auto &testMap = TestMap::get();
     auto it = testMap.find(testName);
     if (it == testMap.end()) {
         std::cerr << "Unknown test case\n";
@@ -66,13 +67,13 @@ int executeAllTests(int argc, char **argv, CommandLineArguments &commandLineArgu
 }
 
 int printHelp() {
-    const auto filename = getBenchmarkFilename();
+    const auto filename = BenchmarkInfo::get().getBenchmarkFilename();
     // clang-format off
-    std::cout << getBenchmarkDescription() << "\n"
+    std::cout << BenchmarkInfo::get().getBenchmarkDescription() << "\n"
                  "\n"
                  "The benchmark works in two modes - all-tests mode and single-test mode. They are further described below. "
                  "Global parameters applicable for both modes:\n"
-                 << ::configuration.getHelp(1u) << "\n"
+                 << Configuration::get().getHelp(1u) << "\n"
                  "\n"
                  "First mode is the default and it runs all available benchmarks in many predefined configurations. Underlying test engine "
                  "is googletest, so standard googletest arguments like --gtest_filter can be used, if necessary.\n"
@@ -91,7 +92,7 @@ int printHelp() {
                  "\n"
                 "All available test cases with their parameters:\n";
     // clang-format on
-    for (const auto &entry : getTestMap()) {
+    for (const auto &entry : TestMap::get()) {
         TestCaseInterface &testCase = *entry.second.get();
         std::cout << '\t' << testCase.getTestCaseName() << " - " << testCase.getHelp();
         const auto helpParameters = testCase.getHelpParameters();
@@ -107,6 +108,8 @@ int printHelp() {
 }
 
 int main(int argc, char **argv) {
+    BenchmarkInfo::set(new BenchmarkInfoImpl());
+
     CommandLineArguments commandLineArguments = {};
     std::string commandLineArgumentsParsingErrors = {};
     if (!CommandLineArgument::parseArguments(argc, argv, commandLineArguments, commandLineArgumentsParsingErrors)) {
@@ -114,7 +117,7 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    if (!parseArgumentsForConfiguration(commandLineArguments)) {
+    if (!Configuration::parseArgumentsForConfiguration(commandLineArguments)) {
         std::cerr << "Error parsing command line\n";
         return 1;
     }
