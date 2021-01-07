@@ -73,8 +73,8 @@ function (add_benchmark_for_api BASE_TARGET_NAME APPEND_API_TO_TARGET_NAME APIS)
 
     # API agnostic sources
     set(API_AGNOSTIC_SOURCE_DIRECTORIES
+        ${SOURCE_ROOT}/common
         ${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/..
         ${CMAKE_CURRENT_SOURCE_DIR}/gtest
         ${CMAKE_CURRENT_SOURCE_DIR}/definitions
     )
