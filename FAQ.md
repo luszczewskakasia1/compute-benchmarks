@@ -23,7 +23,7 @@ Binaries named with *_ocl* and *_l0* suffixes such as *memory_benchmark_ocl* are
 
 
 ### Does it work on the XXX GPU?
-Generally yes. Benchmarks are regularly run on multiple platforms, including (but not limited to) DG1, DG2 and ATS and have thus been proven to be functional. If you get any errors and crashes, it is very likely to be related to improper configuration or some fundamental flaws in the drivers. If your environment is confirmed to be correct and you still experience problems, please contact <maciej.dziuban@intel.com>.
+Generally yes. Benchmarks are regularly run on multiple platforms, including (but not limited to) DG1, DG2, and ATS and have thus been proven to be functional. If you get any errors and crashes, it is very likely to be related to improper configuration or some fundamental flaws in the drivers. If your environment is confirmed to be correct and you still experience problems, please contact <maciej.dziuban@intel.com>.
 
 
 
