@@ -1,0 +1,10 @@
+include(CMakeMacrosAddBenchmark.cmake)
+
+set(BENCHMARKS_SOURCE_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+add_subdirectory(atomic_benchmark)
+add_subdirectory(api_overhead_benchmark)
+add_subdirectory(gpu_cmds_benchmark)
+add_subdirectory(memory_benchmark)
+add_subdirectory(multitile_memory_benchmark)
+add_subdirectory(overlap_benchmark)
+add_subdirectory(ulls_benchmark)
