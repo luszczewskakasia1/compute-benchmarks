@@ -2,7 +2,7 @@
 
 #include "framework/benchmark_info.h"
 #include "framework/configuration.h"
-#include "framework/utility/statistics.h"
+#include "framework/test_case/test_case_statistics.h"
 
 #include <gtest/gtest.h>
 #include <sstream>
@@ -18,7 +18,7 @@ class CustomEventListener : public ::testing::TestEventListener {
         if (Configuration::get().printType != Configuration::PrintType::Csv) {
             std::cout << "Running " << Configuration::get().iterations << " iterations of each benchmark\n\n";
         }
-        Statistics::printStatisticsHeader(Configuration::get().printType);
+        TestCaseStatistics::printStatisticsHeader(Configuration::get().printType);
     }
     void OnTestProgramEnd(const ::testing::UnitTest &unitTest) override {
         dumpErrors();
