@@ -57,9 +57,10 @@ class Workload {
     }
 
     ProcessResult run(const ParametersT &parameters) {
-        WorkloadStatistics statistics{};
+        WorkloadStatistics statistics{parameters.iterations};
         TestResult result = runImpl(parameters, statistics);
         if (result == TestResult::Success) {
+            ERROR_UNLESS(statistics.isFull(), "test did not generate as many values as expected");
             statistics.printStatistics();
         }
         return toProcessResult(result);
