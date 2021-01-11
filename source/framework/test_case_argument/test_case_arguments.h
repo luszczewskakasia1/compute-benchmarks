@@ -1,17 +1,20 @@
 #pragma once
 
 #include "framework/enum/api.h"
+#include "framework/utility/command_line_argument.h"
 
 #include <string>
 #include <vector>
 
 struct TestCaseArgument;
-class CommandLineArgument;
 
 struct TestCaseArgumentsBase {
     bool parseArgument(CommandLineArgument &commandLineArgument);
+    bool parseArguments(CommandLineArguments &commandLineArguments);
     virtual bool validateArguments() const;
     std::string getHelp(size_t indent) const;
+
+    std::vector<const TestCaseArgument *> getUnparsedArguments() const;
 
     std::vector<TestCaseArgument *> arguments;
 
@@ -22,7 +25,6 @@ struct TestCaseArgumentsBase {
 struct TestCaseArguments : TestCaseArgumentsBase {
 
     std::string getCurrentConfig(bool commandLine) const;
-    std::vector<const TestCaseArgument *> getUnparsedArguments() const;
     bool validateArguments() const override;
 
     Api api = Api::Unknown;

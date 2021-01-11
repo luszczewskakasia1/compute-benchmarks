@@ -13,6 +13,7 @@ class BenchmarkInfo {
 
   public:
     static BenchmarkInfo &get();
+    static bool isSet();
     static void set(BenchmarkInfo *instance);
 
     // General textual data

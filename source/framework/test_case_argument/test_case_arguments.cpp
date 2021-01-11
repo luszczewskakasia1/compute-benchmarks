@@ -11,6 +11,15 @@ bool TestCaseArgumentsBase::parseArgument(CommandLineArgument &commandLineArgume
     return true;
 }
 
+bool TestCaseArgumentsBase::parseArguments(CommandLineArguments &commandLineArguments) {
+    for (CommandLineArgument &commandLineArgument : commandLineArguments) {
+        if (!this->parseArgument(commandLineArgument)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 bool TestCaseArgumentsBase::validateArguments() const {
     for (const auto &argument : arguments) {
         if (!argument->validate()) {
@@ -50,7 +59,7 @@ std::string TestCaseArguments::getCurrentConfig(bool commandLine) const {
     return result.str();
 }
 
-std::vector<const TestCaseArgument *> TestCaseArguments::getUnparsedArguments() const {
+std::vector<const TestCaseArgument *> TestCaseArgumentsBase::getUnparsedArguments() const {
     std::vector<const TestCaseArgument *> result = {};
     for (const auto &argument : arguments) {
         if (!argument->wasParsed()) {

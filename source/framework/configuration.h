@@ -26,6 +26,7 @@ struct Configuration : TestCaseArgumentsBase {
     } printType = PrintType::Default;
 
     static bool parseArgumentsForConfiguration(CommandLineArguments &arguments);
+    static void loadDefaultConfiguration();
     static Configuration &get();
 
     bool validateArgumentsExtra() const override;
@@ -53,4 +54,7 @@ struct Configuration : TestCaseArgumentsBase {
     StringListTestCaseArgument testFilter;
 
     BenchmarkInfo::BenchmarkSpecificConfigurationBase *benchmarkSpecificConfiguration = nullptr;
+
+  private:
+    BenchmarkInfo::BenchmarkSpecificConfigurationBase *createBenchmarkSpecificConfiguration();
 };

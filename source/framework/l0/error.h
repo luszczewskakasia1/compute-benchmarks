@@ -30,6 +30,9 @@
 #define ZE_RESULT_SUCCESS_OR_RETURN_FALSE(retVal) \
     ZE_RESULT_SUCCESS_OR_RETURN_VALUE((retVal), false)
 
+#define ZE_RESULT_SUCCESS_OR_RETURN_ERROR(retVal) \
+    ZE_RESULT_SUCCESS_OR_RETURN_VALUE((retVal), TestResult::Error)
+
 #define ZE_RESULT_SUCCESS_OR_RETURN(retVal)                                    \
     {                                                                          \
         const auto tempVarForDefine = (retVal);                                \
