@@ -62,6 +62,9 @@ void Process::run() {
         retVal = SetEnvironmentVariableA(envVariable.first.c_str(), envVariable.second.c_str());
     }
 
+    // Prepare exeName (.exe extension is Windows-specific)
+    const auto exeNameWithExtension = this->exeName + ".exe";
+
     // Start child process
     STARTUPINFOA startupInfo{};
     startupInfo.cb = sizeof(STARTUPINFO);
@@ -71,7 +74,7 @@ void Process::run() {
     startupInfo.dwFlags |= STARTF_USESTDHANDLES;
     PROCESS_INFORMATION processInfo{};
     auto result = CreateProcessA(
-        this->exeName.c_str(),
+        exeNameWithExtension.c_str(),
         this->commandLine.str().data(),
         NULL,
         NULL,

@@ -26,7 +26,7 @@ static TestResult run(const MultiProcessComputeArguments &arguments, Statistics 
     }
 
     // Prepare processes
-    ProcessGroup processes{"compute_workload_l0.exe", tilesForExecution.size()};
+    ProcessGroup processes{"compute_workload_l0", tilesForExecution.size()};
     processes.addArgumentAll("iterations", std::to_string(arguments.iterations));
     processes.addArgumentAll("size", std::to_string(arguments.bufferSize));
     for (auto i = 0u; i < processes.size(); i++) {
