@@ -45,7 +45,7 @@ static TestResult run(const MultiProcessComputeArguments &arguments, Statistics 
     const std::vector<uint64_t> results = processes.getAverageMeasurementsAll(arguments.iterations);
     for (const auto result : results) {
         auto time = std::chrono::nanoseconds(result);
-        time /= arguments.iterations;
+        time /= processes.size();
         statistics.pushValue(time);
     }
 

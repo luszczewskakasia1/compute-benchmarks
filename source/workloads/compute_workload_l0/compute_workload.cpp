@@ -26,6 +26,7 @@ TestResult run(ComputeWorkloadParameters &arguments, WorkloadStatistics &statist
     uint32_t tilesCount = {};
     ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeDeviceGetSubDevices(levelzero.device, &tilesCount, nullptr));
     if (tilesCount > 1) {
+        std::cerr << "This workload should run on a single tile\n";
         return TestResult::DeviceNotCapable;
     }
 
