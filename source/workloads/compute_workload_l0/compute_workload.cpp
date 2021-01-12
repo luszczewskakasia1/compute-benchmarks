@@ -22,6 +22,13 @@ TestResult run(ComputeWorkloadParameters &arguments, WorkloadStatistics &statist
     ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, arguments.bufferSize, 0, levelzero.device, &buffer));
     ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeContextMakeMemoryResident(levelzero.context, levelzero.device, buffer, arguments.bufferSize))
 
+    // Ensure we're running on a single tile
+    uint32_t tilesCount = {};
+    ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeDeviceGetSubDevices(levelzero.device, &tilesCount, nullptr));
+    if (tilesCount > 1) {
+        return TestResult::DeviceNotCapable;
+    }
+
     // Create kernel
     auto spirvModule = loadBinaryFile("compute_workload_increment.spv");
     if (spirvModule.size() == 0) {

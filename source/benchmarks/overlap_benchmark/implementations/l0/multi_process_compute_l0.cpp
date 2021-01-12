@@ -1,5 +1,6 @@
 #include "framework/l0/levelzero.h"
 #include "framework/test_case/register_test_case.h"
+#include "framework/utility/affinity_mask_helper.h"
 #include "framework/utility/process.h"
 
 #include "definitions/multi_process_compute.h"
@@ -27,6 +28,7 @@ static TestResult run(const MultiProcessComputeArguments &arguments, Statistics 
         processes.emplace_back("compute_workload_l0.exe");
         processes.back().addArgument("iterations", std::to_string(arguments.iterations));
         processes.back().addArgument("size", std::to_string(arguments.bufferSize));
+        processes.back().addEnvVariable("ZE_AFFINITY_MASK", AffinityMaskHelper::createAffinityMask(Configuration::get().l0DeviceIndex, tile));
     }
 
     // Run processes
