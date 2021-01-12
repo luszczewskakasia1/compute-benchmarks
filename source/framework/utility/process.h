@@ -4,6 +4,7 @@
 
 #include <sstream>
 #include <string>
+#include <vector>
 
 class Process {
   public:
@@ -12,6 +13,7 @@ class Process {
     Process &operator=(Process &&other);
     ~Process();
     void addArgument(const std::string &key, const std::string &value);
+    void addEnvVariable(const std::string &key, const std::string &value);
 
     // OS-specific methods
     void run();
@@ -24,5 +26,6 @@ class Process {
 
     std::string exeName;
     std::ostringstream commandLine;
+    std::vector<std::pair<std::string, std::string>> envVariables;
     void *osSpecificData = nullptr;
 };

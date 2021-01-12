@@ -19,6 +19,30 @@ struct ProcessDataWindows {
     std::string stdOut = {};
 };
 
+class EnvironmentRestorer {
+  public:
+    EnvironmentRestorer() {
+        const char *environment = GetEnvironmentStringsA();
+        size_t environmentSize = 0;
+        while (environment[environmentSize] != '\0' || environment[environmentSize - 1] != '\0') {
+            environmentSize++;
+        }
+        environmentSize++;
+
+        this->storedEnv = std::make_unique<char[]>(environmentSize);
+        std::memcpy(this->storedEnv.get(), environment, environmentSize);
+        this->storedEnvSize = environmentSize;
+    }
+
+    ~EnvironmentRestorer() {
+        SetEnvironmentStringsA(this->storedEnv.get());
+    }
+
+  private:
+    std::unique_ptr<char[]> storedEnv = {};
+    size_t storedEnvSize = {};
+};
+
 void Process::run() {
     auto processDataWindows = std::make_unique<ProcessDataWindows>();
 
@@ -31,6 +55,12 @@ void Process::run() {
     BOOL retVal = CreatePipe(&processDataWindows->processStdOut.read, &processDataWindows->processStdOut.write, &pipeSecutrityAttributes, 0);
     retVal = CreatePipe(&processDataWindows->processStdIn.read, &processDataWindows->processStdIn.write, &pipeSecutrityAttributes, 0);
     retVal = SetHandleInformation(processDataWindows->processStdOut.read, HANDLE_FLAG_INHERIT, 0);
+
+    // Prepare env variables - create RAII restorer and update existing ones, so the child process inherits them
+    EnvironmentRestorer envRestorer = {};
+    for (const auto &envVariable : envVariables) {
+        retVal = SetEnvironmentVariableA(envVariable.first.c_str(), envVariable.second.c_str());
+    }
 
     // Start child process
     STARTUPINFOA startupInfo{};

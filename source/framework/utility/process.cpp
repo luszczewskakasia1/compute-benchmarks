@@ -8,6 +8,7 @@ Process::Process(const std::string &exeName)
 Process::Process(Process &&other)
     : exeName(std::move(other.exeName)),
       commandLine(std::move(other.commandLine)),
+      envVariables(std::move(other.envVariables)),
       osSpecificData(std::move(other.osSpecificData)) {
     other.osSpecificData = nullptr;
 }
@@ -15,6 +16,7 @@ Process::Process(Process &&other)
 Process &Process::operator=(Process &&other) {
     exeName = std::move(other.exeName);
     commandLine = std::move(other.commandLine);
+    envVariables = std::move(other.envVariables);
     osSpecificData = std::move(other.osSpecificData);
     other.osSpecificData = nullptr;
     return *this;
@@ -26,4 +28,8 @@ Process::~Process() {
 
 void Process::addArgument(const std::string &key, const std::string &value) {
     commandLine << "--" << key << "=" << value << " ";
+}
+
+void Process::addEnvVariable(const std::string &key, const std::string &value) {
+    envVariables.emplace_back(key, value);
 }
