@@ -1,7 +1,7 @@
 #include "framework/l0/levelzero.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/affinity_mask_helper.h"
-#include "framework/utility/process.h"
+#include "framework/utility/process_group.h"
 
 #include "definitions/multi_process_compute.h"
 
@@ -17,46 +17,33 @@ static TestResult run(const MultiProcessComputeArguments &arguments, Statistics 
         tilesCount = 1;
     }
 
-    // Prepare processes to run
+    // Get tiles for execution, validate if they are available
     std::vector<DeviceSelection> tilesForExecution = DeviceSelectionHelper::split(arguments.deviceSelection);
-    std::vector<Process> processes = {};
     for (DeviceSelection tile : tilesForExecution) {
         if (DeviceSelectionHelper::getSubDeviceIndex(tile) > tilesCount - 1) {
             return TestResult::DeviceNotCapable;
         }
+    }
 
-        processes.emplace_back("compute_workload_l0.exe");
-        processes.back().addArgument("iterations", std::to_string(arguments.iterations));
-        processes.back().addArgument("size", std::to_string(arguments.bufferSize));
-        processes.back().addEnvVariable("ZE_AFFINITY_MASK", AffinityMaskHelper::createAffinityMask(Configuration::get().l0DeviceIndex, tile));
+    // Prepare processes
+    ProcessGroup processes{"compute_workload_l0.exe", tilesForExecution.size()};
+    processes.addArgumentAll("iterations", std::to_string(arguments.iterations));
+    processes.addArgumentAll("size", std::to_string(arguments.bufferSize));
+    for (auto i = 0u; i < processes.size(); i++) {
+        const auto affinityMask = AffinityMaskHelper::createAffinityMask(Configuration::get().l0DeviceIndex, tilesForExecution[i]);
+        processes[i].addEnvVariable("ZE_AFFINITY_MASK", affinityMask);
     }
 
     // Run processes
-    for (Process &process : processes) {
-        process.run();
-    }
-
-    // Wait for all processes to end
-    for (Process &process : processes) {
-        const TestResult result = process.getResult();
-        if (result != TestResult::Success) {
-            return result;
-        }
+    processes.runAll();
+    processes.waitForFinishAll();
+    if (TestResult result = processes.getResultAll(); result != TestResult::Success) {
+        return result;
     }
 
     // Get results
-    std::vector<uint64_t> results(arguments.iterations);
-    for (Process &process : processes) {
-        const auto stdOut = process.getStdout();
-        const auto stdOutSplit = splitString(stdOut);
-        for (auto resultIndex = 0u; resultIndex < stdOutSplit.size(); resultIndex++) {
-            const auto result = std::atoll(stdOutSplit[resultIndex].c_str());
-            results[resultIndex] += result;
-        }
-    }
-
-    // Push average values to statistics
-    for (auto result : results) {
+    const std::vector<uint64_t> results = processes.getAverageMeasurementsAll(arguments.iterations);
+    for (const auto result : results) {
         auto time = std::chrono::nanoseconds(result);
         time /= arguments.iterations;
         statistics.pushValue(time);
