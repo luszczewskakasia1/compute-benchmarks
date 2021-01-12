@@ -5,12 +5,14 @@
 #include "framework/test_case_argument/test_case_argument_basic.h"
 
 struct MultiProcessComputeArguments : TestCaseArguments {
-    PositiveIntegerTestCaseArgument bufferSize;
     MultipleTilesSelectionTestCaseArgument deviceSelection;
+    ByteSizeTestCaseArgument bufferSize;
+    PositiveIntegerTestCaseArgument processesPerTile;
 
     MultiProcessComputeArguments()
-        : bufferSize(*this, "size", "Size of the buffer"),
-          deviceSelection(*this, "tiles", "Tiles for execution") {}
+        : deviceSelection(*this, "tiles", "Tiles for execution"),
+          bufferSize(*this, "size", "Size of the buffer"),
+          processesPerTile(*this, "processesPerTile", "Number of processes that will be started on each of the tiles specified") {}
 };
 
 struct MultiProcessCompute : TestCase<MultiProcessComputeArguments> {
@@ -21,8 +23,8 @@ struct MultiProcessCompute : TestCase<MultiProcessComputeArguments> {
     }
 
     std::string getHelp() const override {
-        return "Creates a separate process for each tile specified performing a compute workload "
-               "and measures average time to complete all of them. Processes will use affinity "
-               "mask to select specific sub-devices for the execution";
+        return "Creates a number of separate processes for each tile specified performing a "
+               "compute workload and measures average time to complete all of them. Processes "
+               "will use affinity mask to select specific sub-devices for the execution";
     }
 };

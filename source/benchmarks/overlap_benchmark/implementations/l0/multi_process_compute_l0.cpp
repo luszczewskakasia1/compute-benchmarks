@@ -24,6 +24,12 @@ static TestResult run(const MultiProcessComputeArguments &arguments, Statistics 
             return TestResult::DeviceNotCapable;
         }
     }
+    const auto tilesForExecutionCount = tilesForExecution.size();
+    for (auto i = 1u; i < arguments.processesPerTile; i++) {
+        for (auto j = 0u; j < tilesForExecutionCount; j++) {
+            tilesForExecution.push_back(tilesForExecution[j]);
+        }
+    }
 
     // Prepare processes
     ProcessGroup processes{"compute_workload_l0", tilesForExecution.size()};
