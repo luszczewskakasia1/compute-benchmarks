@@ -1,6 +1,7 @@
 #include "framework/utility/buffer_contents_helper.h"
 
 #include "framework/utility/error.h"
+#include <cstring>
 
 thread_local std::mt19937 BufferContentsHelper::generator{std::random_device{}()};
 std::vector<uint8_t> BufferContentsHelper::cachedRandomData{};

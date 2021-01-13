@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include "framework/enum/image_type.h"
 
 #include <cstddef>
