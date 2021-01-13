@@ -2,7 +2,6 @@
 
 #include "framework/test_case/test_result.h"
 
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -25,7 +24,7 @@ class Process {
     void freeOsSpecificData();
 
     std::string exeName;
-    std::ostringstream commandLine;
+    std::vector<std::pair<std::string, std::string>> arguments;
     std::vector<std::pair<std::string, std::string>> envVariables;
     void *osSpecificData = nullptr;
 };

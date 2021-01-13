@@ -1,6 +1,8 @@
 #include "framework/utility/process.h"
 #include "framework/utility/windows/windows.h"
 
+#include <sstream>
+
 struct ProcessDataWindows {
     // Resources to be freed
     PROCESS_INFORMATION processInfo{};
@@ -56,6 +58,17 @@ void Process::run() {
     retVal = CreatePipe(&processDataWindows->processStdIn.read, &processDataWindows->processStdIn.write, &pipeSecutrityAttributes, 0);
     retVal = SetHandleInformation(processDataWindows->processStdOut.read, HANDLE_FLAG_INHERIT, 0);
 
+    // Prepare arguments
+    std::ostringstream commandLineStream = {};
+    for (const auto &argument : this->arguments) {
+        commandLine << "--" << argument.first;
+        if (!argument.second.empty()) {
+            commandLine << "=" << argument.second;
+        }
+        commandLine << ' ';
+    }
+    const std::string commandLine = commandLineStream.str();
+
     // Prepare env variables - create RAII restorer and update existing ones, so the child process inherits them
     EnvironmentRestorer envRestorer = {};
     for (const auto &envVariable : envVariables) {
@@ -75,7 +88,7 @@ void Process::run() {
     PROCESS_INFORMATION processInfo{};
     auto result = CreateProcessA(
         exeNameWithExtension.c_str(),
-        this->commandLine.str().data(),
+        commandLine.str().data(),
         NULL,
         NULL,
         TRUE,

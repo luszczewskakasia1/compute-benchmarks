@@ -1,13 +1,13 @@
 #include "process.h"
-
+#include <iostream>
 Process::Process(const std::string &exeName)
     : exeName(exeName) {
-    commandLine << exeName << ' ';
+    arguments.emplace_back(exeName, std::string{});
 }
 
 Process::Process(Process &&other)
     : exeName(std::move(other.exeName)),
-      commandLine(std::move(other.commandLine)),
+      arguments(std::move(other.arguments)),
       envVariables(std::move(other.envVariables)),
       osSpecificData(std::move(other.osSpecificData)) {
     other.osSpecificData = nullptr;
@@ -15,7 +15,7 @@ Process::Process(Process &&other)
 
 Process &Process::operator=(Process &&other) {
     exeName = std::move(other.exeName);
-    commandLine = std::move(other.commandLine);
+    arguments = std::move(other.arguments);
     envVariables = std::move(other.envVariables);
     osSpecificData = std::move(other.osSpecificData);
     other.osSpecificData = nullptr;
@@ -27,7 +27,7 @@ Process::~Process() {
 }
 
 void Process::addArgument(const std::string &key, const std::string &value) {
-    commandLine << "--" << key << "=" << value << " ";
+    arguments.emplace_back(std::string("--") + key, value);
 }
 
 void Process::addEnvVariable(const std::string &key, const std::string &value) {
