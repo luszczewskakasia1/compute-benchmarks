@@ -13,7 +13,7 @@ class Workload {
   public:
     using ParametersT = _ParametersT;
     static_assert(std::is_base_of_v<WorkloadParameters, ParametersT>, "Parameters class should derive from WorkloadArguments");
-    using WorkloadImplementation = std::function<TestResult(ParametersT, WorkloadStatistics &)>;
+    using WorkloadImplementation = std::function<TestResult(const ParametersT&, Statistics &)>;
     using ProcessResult = int;
 
     static inline WorkloadImplementation implementation = {};

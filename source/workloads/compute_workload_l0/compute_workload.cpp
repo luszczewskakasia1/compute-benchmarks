@@ -12,7 +12,7 @@ struct ComputeWorkloadParameters : WorkloadParameters {
 
 struct ComputeWorkload : Workload<ComputeWorkloadParameters> {};
 
-TestResult run(ComputeWorkloadParameters &arguments, WorkloadStatistics &statistics) {
+TestResult run(const ComputeWorkloadParameters &arguments, Statistics &statistics) {
     LevelZero levelzero{};
     Timer timer{};
 
@@ -82,9 +82,8 @@ TestResult run(ComputeWorkloadParameters &arguments, WorkloadStatistics &statist
     return TestResult::Success;
 }
 
-static RegisterWorkloadImplementation<ComputeWorkload> registerImplementation{run};
-
 int main(int argc, char **argv) {
     ComputeWorkload workload;
+    ComputeWorkload::implementation = run;
     return workload.runFromCommandLine(argc, argv);
 }
