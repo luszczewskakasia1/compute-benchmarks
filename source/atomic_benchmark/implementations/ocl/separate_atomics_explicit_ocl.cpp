@@ -24,8 +24,8 @@ static TestResult run(const SeparateAtomicsExplicitArguments &arguments, Statist
     // Prepare data
     const size_t lws = arguments.workgroupSize;
     const size_t gws = arguments.workgroupSize * arguments.workgroupCount;
-    const size_t totalThreadsCount = gws * (arguments.iterations + 1);
-    const auto data = KernelHelper::getDataForKernel(arguments.dataType, arguments.atomicOperation, totalThreadsCount);
+    const size_t threadsPerAtomicCount = arguments.iterations + 1;
+    const auto data = KernelHelper::getDataForKernel(arguments.dataType, arguments.atomicOperation, threadsPerAtomicCount);
 
     // Buffer sizes
     const size_t cachelinesCount = gws / arguments.atomicsPerCacheline;
