@@ -4,11 +4,11 @@
 #include "framework/configuration.h"
 #include "framework/enum/api.h"
 #include "framework/test_case/test_case_interface.h"
+#include "framework/test_case/test_case_statistics.h"
 #include "framework/test_case/test_result.h"
 #include "framework/test_map.h"
 #include "framework/utility/common_help_message.h"
 #include "framework/utility/error.h"
-#include "framework/utility/statistics.h"
 #include "framework/utility/string_utils.h"
 
 #include <functional>
@@ -58,7 +58,7 @@ class TestCase : public TestCaseInterface {
         }
 
         // Try running with all possible APIs. If some are disabled, e.g. --api=ocl is passed, then the rest will be skipped in run() method
-        Statistics::printStatisticsHeader(Configuration::get().printType);
+        TestCaseStatistics::printStatisticsHeader(Configuration::get().printType);
         for (int apiIndex = static_cast<int>(Api::FIRST); apiIndex <= static_cast<int>(Api::LAST); apiIndex++) {
             arguments.api = static_cast<Api>(apiIndex);
             run(arguments);
@@ -77,7 +77,7 @@ class TestCase : public TestCaseInterface {
 
         // Create statistics object
         const auto testCaseNameWithConfig = getTestCaseNameWithConfig(arguments, Configuration::get().dumpCommandLines);
-        Statistics statistics{arguments.iterations, Configuration::get().printType};
+        TestCaseStatistics statistics{arguments.iterations, Configuration::get().printType};
 
         // Run test
         const auto testResult = runImpl(statistics, arguments, testCaseNameWithConfig);

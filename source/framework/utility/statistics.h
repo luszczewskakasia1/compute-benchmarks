@@ -1,46 +1,26 @@
 #pragma once
 
-#include "framework/configuration.h"
+#include "framework/utility/error.h"
 
 #include <chrono>
-#include <memory>
-#include <string>
 
 class Statistics {
   public:
     using Clock = std::chrono::high_resolution_clock;
-    using Value = double;
 
-    explicit Statistics(size_t maxSamplesCount, Configuration::PrintType printType);
+    Statistics(size_t maxSamplesCount) : maxSamplesCount(maxSamplesCount) {}
 
-    void pushValue(Clock::duration time);
-    void pushValue(Clock::duration time, uint64_t size);
+    virtual void pushValue(Clock::duration time) = 0;
+    virtual void pushValue(Clock::duration time, uint64_t size) = 0;
 
-    bool isEmpty();
-    bool isFull();
+    bool isEmpty() const { return samplesCount == 0; }
+    bool isFull() const { return samplesCount == maxSamplesCount; }
 
-    static void printStatisticsHeader(Configuration::PrintType printType);
-    void printStatistics(const std::string &testCaseName);
-    void printStatisticsString(const std::string &testCaseName, const std::string &message);
-
-  private:
-    void pushValue(Value value);
-    Value min() const;
-    Value max() const;
-    Value mean() const;
-    Value median() const;
-    Value standardDeviation() const;
-
-    std::string minString() const;
-    std::string maxString() const;
-    std::string meanString() const;
-    std::string medianString() const;
-    std::string standardDeviationString() const;
-    static std::string generateMetricString(Value value);
-
-    const size_t maxSamplesCount;
-    const Configuration::PrintType printType;
-    const std::unique_ptr<Value[]> samples;
+  protected:
+    void incrementSamplesCount() {
+        ERROR_IF(samplesCount > maxSamplesCount, "Too much values pushed by the test");
+        samplesCount++;
+    }
+    const size_t maxSamplesCount = 0;
     size_t samplesCount = 0;
-    bool reachedInfinity = false;
 };

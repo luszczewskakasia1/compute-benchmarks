@@ -6,6 +6,10 @@ BenchmarkInfo &BenchmarkInfo::get() {
     return *BenchmarkInfo::instance;
 }
 
+bool BenchmarkInfo::isSet() {
+    return BenchmarkInfo::instance.get() != nullptr;
+}
+
 void BenchmarkInfo::set(BenchmarkInfo *instance) {
     BenchmarkInfo::instance.reset(instance);
 }

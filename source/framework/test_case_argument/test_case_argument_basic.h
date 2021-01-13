@@ -1,6 +1,7 @@
 #pragma once
 
 #include "framework/test_case_argument/abstract/test_case_argument.h"
+#include "framework/utility/string_utils.h"
 
 struct IntegerTestCaseArgument : TestCaseArgument {
     using TestCaseArgument::TestCaseArgument;

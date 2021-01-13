@@ -21,7 +21,7 @@ Configuration::Configuration()
       dumpErrorsImmediately(*this, "dumpErrorsImmediately", "print errors to stdout immediately after they happen, not at the end of the run"),
       argFilter(*this, "argFilter", "filter tests by their arguments"),
       testFilter(*this, "testFilter", "filter tests by their names"),
-      benchmarkSpecificConfiguration(BenchmarkInfo::get().createBenchmarkSpecificConfiguration(*this).release()) {
+      benchmarkSpecificConfiguration(createBenchmarkSpecificConfiguration()) {
 
     // OCL params
     oclPlatformIndex = 0;
@@ -51,9 +51,8 @@ Configuration::~Configuration() {
 }
 
 bool Configuration::parseArgumentsForConfiguration(CommandLineArguments &arguments) {
-    ERROR_IF(Configuration::instance != nullptr, "Configuration parsed multiple times");
-
-    auto configuration = std::make_unique<Configuration>();
+    loadDefaultConfiguration();
+    auto configuration = Configuration::instance.get();
 
     for (auto &argument : arguments) {
         if (!configuration->parseArgument(argument)) {
@@ -72,8 +71,12 @@ bool Configuration::parseArgumentsForConfiguration(CommandLineArguments &argumen
         configuration->printType = Configuration::PrintType::Verbose;
     }
 
-    Configuration::instance = std::move(configuration);
     return true;
+}
+
+void Configuration::loadDefaultConfiguration() {
+    ERROR_IF(Configuration::instance != nullptr, "Configuration parsed multiple times");
+    Configuration::instance = std::make_unique<Configuration>();
 }
 
 Configuration &Configuration::get() {
@@ -86,4 +89,11 @@ bool Configuration::validateArgumentsExtra() const {
         return false;
     }
     return true;
+}
+
+BenchmarkInfo::BenchmarkSpecificConfigurationBase *Configuration::createBenchmarkSpecificConfiguration() {
+    if (BenchmarkInfo::isSet()) {
+        return BenchmarkInfo::get().createBenchmarkSpecificConfiguration(*this).release();
+    }
+    return nullptr;
 }
