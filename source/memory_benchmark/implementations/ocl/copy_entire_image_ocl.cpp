@@ -33,8 +33,8 @@ static TestResult run(const CopyEntireImageArguments &arguments, Statistics &sta
     imageDescription.image_array_size = 1u;
     imageDescription.image_row_pitch = 0u;
     imageDescription.image_slice_pitch = 0u;
-    imageDescription.num_mip_levels = 1u;
-    imageDescription.num_samples = 1u;
+    imageDescription.num_mip_levels = 0u;
+    imageDescription.num_samples = 0u;
     cl_mem srcImage = clCreateImage(opencl.context, 0, &imageFormat, &imageDescription, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
     cl_mem dstImage = clCreateImage(opencl.context, 0, &imageFormat, &imageDescription, nullptr, &retVal);
