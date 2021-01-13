@@ -59,15 +59,14 @@ void Process::run() {
     retVal = SetHandleInformation(processDataWindows->processStdOut.read, HANDLE_FLAG_INHERIT, 0);
 
     // Prepare arguments
-    std::ostringstream commandLineStream = {};
+    std::ostringstream commandLine = {};
     for (const auto &argument : this->arguments) {
-        commandLine << "--" << argument.first;
+        commandLine << argument.first;
         if (!argument.second.empty()) {
             commandLine << "=" << argument.second;
         }
         commandLine << ' ';
     }
-    const std::string commandLine = commandLineStream.str();
 
     // Prepare env variables - create RAII restorer and update existing ones, so the child process inherits them
     EnvironmentRestorer envRestorer = {};
