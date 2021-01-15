@@ -70,3 +70,22 @@ function (add_benchmark_for_api BASE_TARGET_NAME APPEND_API_TO_TARGET_NAME APIS)
     # Create directory structure in Visual Studio
     setup_vs_folders(${TARGET_NAME} ${BENCHMARKS_SOURCE_ROOT})
 endfunction()
+
+function(add_benchmark_dependency_on_workload BENCHMARK_BASE_NAME WORKLOAD API)
+    foreach(BENCHMARK "${BENCHMARK_BASE_NAME}_${API}" "${BENCHMARK_BASE_NAME}")
+        if (NOT TARGET ${WORKLOAD})
+            message(FATAL_ERROR "Workload \"${WORKLOAD}\" does not exist")
+        endif()
+        if (TARGET "${BENCHMARK}")
+            add_dependencies(${BENCHMARK} ${WORKLOAD})
+            add_custom_command(
+                TARGET ${BENCHMARK}
+                POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy
+                $<TARGET_FILE:${WORKLOAD}>
+                $<TARGET_FILE_DIR:${BENCHMARK}>/$<TARGET_FILE_NAME:${WORKLOAD}>
+            )
+            copy_kernels_to_bin_directory_of_target(${BENCHMARK} ${WORKLOAD})
+        endif()
+    endforeach()
+endfunction()
