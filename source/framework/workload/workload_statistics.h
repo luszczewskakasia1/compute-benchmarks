@@ -16,6 +16,6 @@ class WorkloadStatistics : public Statistics {
     void pushValue(Clock::duration time, uint64_t size) override;
 
   private:
-    std::ostringstream result = {};
+    std::ostringstream result{};
     size_t samplesCount = 0;
 };

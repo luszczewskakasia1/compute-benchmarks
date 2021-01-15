@@ -6,6 +6,7 @@
  #include <unistd.h>
  #include <memory>
  #include <string.h>
+ #include <sstream>
 
 static std::string getErrorFromErrno() {
     std::ostringstream result{};
@@ -153,7 +154,7 @@ const std::string &Process::getStdout() {
     if (!processDataLinux->hasStdOut) {
         waitForFinish();
 
-        std::ostringstream output = {};
+        std::ostringstream output{};
         const static size_t bufferSize = 1024u;
         char buffer[bufferSize];
         while (true) {
