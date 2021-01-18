@@ -4,7 +4,7 @@
 #include "framework/workload/register_workload.h"
 
 struct ComputeWorkloadParameters : WorkloadParameters {
-    PositiveIntegerTestCaseArgument bufferSize;
+    ByteSizeTestCaseArgument bufferSize;
 
     ComputeWorkloadParameters()
         : bufferSize(*this, "size", "Size of the buffer") {}
