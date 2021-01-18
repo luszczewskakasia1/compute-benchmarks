@@ -5,13 +5,18 @@
 
 #include <iostream>
 
-WorkloadSynchronization::WorkloadSynchronization(size_t iterationsCount)
-    : expectedSynchronizationCount(iterationsCount) {
+WorkloadSynchronization::WorkloadSynchronization(size_t iterationsCount, bool synchronizationEnabled)
+    : expectedSynchronizationCount(iterationsCount),
+      synchronizationEnabled(synchronizationEnabled) {
 }
 
 void WorkloadSynchronization::synchronize() {
     ERROR_IF(synchronizationCount == expectedSynchronizationCount, "Too many iterations signalled during workload synchronization");
     synchronizationCount++;
+
+    if (!synchronizationEnabled) {
+        return;
+    }
 
     // Signal that we're ready
     std::cout << ProcessSynchronizationHelper::synchronizationChar;

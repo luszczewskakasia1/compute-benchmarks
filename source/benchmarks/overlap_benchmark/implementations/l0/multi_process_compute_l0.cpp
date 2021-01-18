@@ -35,6 +35,7 @@ static TestResult run(const MultiProcessComputeArguments &arguments, Statistics 
     ProcessGroup processes{"compute_workload_l0", tilesForExecution.size()};
     processes.addArgumentAll("iterations", std::to_string(arguments.iterations));
     processes.addArgumentAll("size", std::to_string(arguments.bufferSize));
+    processes.addArgumentAll("synchronize", "1");
     for (auto i = 0u; i < processes.size(); i++) {
         const auto affinityMask = AffinityMaskHelper::createAffinityMask(Configuration::get().l0DeviceIndex, tilesForExecution[i]);
         processes[i].addEnvVariable("ZE_AFFINITY_MASK", affinityMask);

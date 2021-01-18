@@ -3,7 +3,9 @@
 
 struct WorkloadParameters : TestCaseArgumentsBase {
     PositiveIntegerTestCaseArgument iterations;
+    BooleanTestCaseArgument synchronize;
 
     WorkloadParameters()
-        : iterations(*this, "iterations", "Number of iterations to perform") {}
+        : iterations(*this, "iterations", "Number of iterations to perform"),
+          synchronize(*this, "synchronize", "Wait for synchronization before each iteration") {}
 };
