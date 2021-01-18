@@ -44,15 +44,15 @@ static TestResult run(const CopyBufferArguments &arguments, Statistics &statisti
         }
     }
 
+    ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillBuffer(opencl.commandQueue, source, arguments.size, arguments.contents));
+    ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillBuffer(opencl.commandQueue, destination, arguments.size, arguments.contents));
+
     // Warmup
     ASSERT_CL_SUCCESS(clEnqueueCopyBuffer(opencl.commandQueue, source, destination, 0, 0, arguments.size, 0, nullptr, nullptr));
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
-        ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillBuffer(opencl.commandQueue, source, arguments.size, arguments.contents));
-        ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillBuffer(opencl.commandQueue, destination, arguments.size, arguments.contents));
-
         cl_event profilingEvent{};
         cl_event *eventForEnqueue = arguments.useEvents ? &profilingEvent : nullptr;
 
