@@ -1,4 +1,5 @@
 #include "framework/utility/process.h"
+#include "framework/utility/process_synchronization_helper.h"
 #include "framework/utility/windows/windows.h"
 
 #include <sstream>
@@ -171,4 +172,20 @@ const std::string &Process::getStdout() {
         processDataWindows->stdOut = output.str();
     }
     return processDataWindows->stdOut;
+}
+
+void Process::synchronizationSignal() {
+    ProcessDataWindows *processDataWindows = static_cast<ProcessDataWindows *>(this->osSpecificData);
+
+    char buffer = ProcessSynchronizationHelper::synchronizationChar;
+    DWORD numberOfBytesWritten = {};
+    BOOL retVal = WriteFile(processDataWindows->processStdIn.write, &buffer, 1, &numberOfBytesWritten, nullptr);
+}
+
+void Process::synchronizationWait() {
+    ProcessDataWindows *processDataWindows = static_cast<ProcessDataWindows *>(this->osSpecificData);
+
+    char buffer = {};
+    DWORD numberOfBytesRead = {};
+    BOOL retVal = ReadFile(processDataWindows->processStdOut.read, &buffer, 1, &numberOfBytesRead, NULL);
 }

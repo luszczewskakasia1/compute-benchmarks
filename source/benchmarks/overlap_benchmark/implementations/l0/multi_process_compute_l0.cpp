@@ -42,6 +42,7 @@ static TestResult run(const MultiProcessComputeArguments &arguments, Statistics 
 
     // Run processes
     processes.runAll();
+    processes.synchronizeAll(arguments.iterations);
     processes.waitForFinishAll();
     if (TestResult result = processes.getResultAll(); result != TestResult::Success) {
         return result;

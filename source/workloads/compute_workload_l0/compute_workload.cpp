@@ -12,7 +12,7 @@ struct ComputeWorkloadParameters : WorkloadParameters {
 
 struct ComputeWorkload : Workload<ComputeWorkloadParameters> {};
 
-TestResult run(const ComputeWorkloadParameters &arguments, Statistics &statistics) {
+TestResult run(const ComputeWorkloadParameters &arguments, Statistics &statistics, WorkloadSynchronization &synchronization) {
     LevelZero levelzero{};
     Timer timer{};
 
@@ -64,6 +64,8 @@ TestResult run(const ComputeWorkloadParameters &arguments, Statistics &statistic
 
     // Benchmark
     for (auto i = 0; i < arguments.iterations; i++) {
+        synchronization.synchronize();
+
         timer.measureStart();
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));

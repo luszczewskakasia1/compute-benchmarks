@@ -1,0 +1,31 @@
+#include "workload_synchronization.h"
+
+#include "framework/utility/error.h"
+#include "framework/utility/process_synchronization_helper.h"
+
+#include <iostream>
+
+WorkloadSynchronization::WorkloadSynchronization(size_t iterationsCount)
+    : expectedSynchronizationCount(iterationsCount) {
+}
+
+void WorkloadSynchronization::synchronize() {
+    ERROR_IF(synchronizationCount == expectedSynchronizationCount, "Too many iterations signalled during workload synchronization");
+    synchronizationCount++;
+
+    // Signal that we're ready
+    std::cout << ProcessSynchronizationHelper::synchronizationChar;
+
+    // Wait for signal from master
+    char character = {};
+    do {
+        character = std::cin.get();
+    } while (character == '\n' || character == '\r');
+
+    ERROR_IF(character != ProcessSynchronizationHelper::synchronizationChar,
+             std::string("Invalid synchronization char. Expected '") + ProcessSynchronizationHelper::synchronizationChar + "'");
+}
+
+bool WorkloadSynchronization::validate() {
+    return synchronizationCount == expectedSynchronizationCount;
+}

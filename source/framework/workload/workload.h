@@ -5,6 +5,7 @@
 #include "framework/workload/workload.h"
 #include "framework/workload/workload_parameters.h"
 #include "framework/workload/workload_statistics.h"
+#include "framework/workload/workload_synchronization.h"
 
 #include <functional>
 
@@ -13,7 +14,7 @@ class Workload {
   public:
     using ParametersT = _ParametersT;
     static_assert(std::is_base_of_v<WorkloadParameters, ParametersT>, "Parameters class should derive from WorkloadArguments");
-    using WorkloadImplementation = std::function<TestResult(const ParametersT&, Statistics &)>;
+    using WorkloadImplementation = std::function<TestResult(const ParametersT &, Statistics &, WorkloadSynchronization &)>;
     using ProcessResult = int;
 
     static inline WorkloadImplementation implementation = {};
@@ -58,16 +59,18 @@ class Workload {
 
     ProcessResult run(const ParametersT &parameters) {
         WorkloadStatistics statistics{parameters.iterations};
-        TestResult result = runImpl(parameters, statistics);
+        WorkloadSynchronization synchronization{parameters.iterations};
+        TestResult result = runImpl(parameters, statistics, synchronization);
         if (result == TestResult::Success) {
             ERROR_UNLESS(statistics.isFull(), "test did not generate as many values as expected");
+            ERROR_UNLESS(synchronization.validate(), "test did not synchronize the correct amount of times");
             statistics.printStatistics();
         }
         return toProcessResult(result);
     }
 
   private:
-    TestResult runImpl(const ParametersT &parameters, WorkloadStatistics &statistics) {
+    TestResult runImpl(const ParametersT &parameters, WorkloadStatistics &statistics, WorkloadSynchronization &synchronization) {
         if (implementation == nullptr) {
             return TestResult::NoImplementation;
         }
@@ -76,7 +79,7 @@ class Workload {
             return TestResult::InvalidArgs;
         }
 
-        return implementation(parameters, statistics);
+        return implementation(parameters, statistics, synchronization);
     }
 
     static ProcessResult toProcessResult(TestResult testResult) {

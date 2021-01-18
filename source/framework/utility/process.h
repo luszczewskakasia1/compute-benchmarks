@@ -19,6 +19,8 @@ class Process {
     void waitForFinish();
     TestResult getResult();
     const std::string &getStdout();
+    void synchronizationSignal();
+    void synchronizationWait();
 
   private:
     void freeOsSpecificData();

@@ -28,6 +28,18 @@ void ProcessGroup::runAll() {
     }
 }
 
+void ProcessGroup::synchronizeAll(size_t iterationsCount) {
+    for (auto iteration = 0u; iteration < iterationsCount; iteration++) {
+        for (Process &process : processes) {
+            process.synchronizationWait();
+        }
+
+        for (Process &process : processes) {
+            process.synchronizationSignal();
+        }
+    }
+}
+
 void ProcessGroup::waitForFinishAll() {
     for (Process &process : processes) {
         process.waitForFinish();

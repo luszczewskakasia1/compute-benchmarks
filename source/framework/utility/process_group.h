@@ -12,6 +12,7 @@ class ProcessGroup {
     void addArgumentAll(const std::string &key, const std::string &value);
     void addEnvVariableAll(const std::string &key, const std::string &value);
     void runAll();
+    void synchronizeAll(size_t iterationsCount);
     void waitForFinishAll();
     TestResult getResultAll();
 

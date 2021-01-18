@@ -1,12 +1,13 @@
 #include "framework/utility/error.h"
 #include "framework/utility/process.h"
+#include "framework/utility/process_synchronization_helper.h"
 
- #include <sys/types.h>
- #include <sys/wait.h>
- #include <unistd.h>
- #include <memory>
- #include <string.h>
- #include <sstream>
+#include <memory>
+#include <sstream>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
 static std::string getErrorFromErrno() {
     std::ostringstream result{};
@@ -20,8 +21,8 @@ static std::string getErrorFromErrno() {
 struct ProcessDataLinux {
     struct ProcessPipes {
         int pipes[2];
-        int &read() { return pipes[0];}
-        int &write() { return pipes[1];}
+        int &read() { return pipes[0]; }
+        int &write() { return pipes[1]; }
     };
     ProcessPipes processStdOut = {};
     ProcessPipes processStdIn = {};
@@ -125,7 +126,7 @@ void Process::waitForFinish() {
         return;
     }
 
-    while(true) {
+    while (true) {
         int status{};
         int pid = waitpid(processDataLinux->childPid, &status, 0);
         ERROR_IF(pid == -1, std::string("waitpid() returned an error, ") + getErrorFromErrno());
@@ -173,4 +174,23 @@ const std::string &Process::getStdout() {
     }
 
     return processDataLinux->stdOut;
+}
+
+void Process::synchronizationSignal() {
+    ProcessDataLinux *processDataLinux = static_cast<ProcessDataLinux *>(this->osSpecificData);
+
+    char buffer = ProcessSynchronizationHelper::synchronizationChar;
+    ssize_t numberOfBytesWritten = write(processDataLinux->processStdIn.write(), &buffer, 1);
+    ERROR_IF_SYS_CALL_FAILED(numberOfBytesWritten, "reading a child process stdOut failed");
+    ERROR_IF(numberOfBytesWritten == 0, "No character was written when waiting on a child process");
+}
+
+void Process::synchronizationWait() {
+    ProcessDataLinux *processDataLinux = static_cast<ProcessDataLinux *>(this->osSpecificData);
+
+    char buffer = {};
+    ssize_t numberOfBytesRead = read(processDataLinux->processStdOut.read(), &buffer, 1u);
+    ERROR_IF_SYS_CALL_FAILED(numberOfBytesRead, "reading a child process stdOut failed");
+    ERROR_IF(numberOfBytesRead == 0, "No character was read when waiting on a child process");
+    ERROR_IF(buffer != ProcessSynchronizationHelper::synchronizationChar, "invalid synchronization character detected");
 }
