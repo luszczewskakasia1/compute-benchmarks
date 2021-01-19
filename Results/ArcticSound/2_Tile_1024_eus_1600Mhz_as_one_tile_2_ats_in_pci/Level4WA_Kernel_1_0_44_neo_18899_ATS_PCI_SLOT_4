@@ -1,0 +1,217 @@
+./memory_benchmark_ocl
+Non-default value of debug variable: PrintDebugSettings = 1
+Non-default value of debug variable: CreateMultipleSubDevices = 1
+OpenCL Platform: Intel(R) OpenCL HD Graphics
+        Device: Intel(R) Graphics [0x020f]
+                driverVersion: 21.02.0
+                computeUnits:  512
+                clockFreq:     1600
+                intelProduct:  Ats (intelGen: Gen12hp)
+
+Running 10 iterations of each benchmark
+
+                                                                                                                 TestCase    Mean [GB/s]  Median [GB/s]         StdDev     Min [GB/s]     Max [GB/s]
+                         CopyBuffer(api=ocl size=1 contents=Zeros compressedSource=0 compressedDestination=0 useEvents=0)          0.000          0.000         32.03%          0.000          0.000
+                         CopyBuffer(api=ocl size=1 contents=Zeros compressedSource=0 compressedDestination=1 useEvents=0)          0.000          0.000         30.14%          0.000          0.000
+                         CopyBuffer(api=ocl size=1 contents=Zeros compressedSource=1 compressedDestination=0 useEvents=0)          0.000          0.000         28.30%          0.000          0.000
+                         CopyBuffer(api=ocl size=1 contents=Zeros compressedSource=1 compressedDestination=1 useEvents=0)          0.000          0.000         23.39%          0.000          0.000
+                     CopyBuffer(api=ocl size=128MB contents=Zeros compressedSource=0 compressedDestination=0 useEvents=0)        108.742        109.117          1.72%        103.705        110.367
+                     CopyBuffer(api=ocl size=128MB contents=Zeros compressedSource=0 compressedDestination=1 useEvents=0)        146.531        147.929          2.48%        135.807        148.338
+                     CopyBuffer(api=ocl size=128MB contents=Zeros compressedSource=1 compressedDestination=0 useEvents=0)        133.581        134.169          1.59%        129.490        136.124
+                     CopyBuffer(api=ocl size=128MB contents=Zeros compressedSource=1 compressedDestination=1 useEvents=0)        133.042        133.567          1.99%        125.305        135.250
+                     CopyBuffer(api=ocl size=512MB contents=Zeros compressedSource=0 compressedDestination=0 useEvents=0)        114.664        114.717          0.48%        113.215        115.372
+                     CopyBuffer(api=ocl size=512MB contents=Zeros compressedSource=0 compressedDestination=1 useEvents=0)        153.183        153.375          0.74%        150.059        154.459
+                     CopyBuffer(api=ocl size=512MB contents=Zeros compressedSource=1 compressedDestination=0 useEvents=0)        139.797        140.173          0.76%        137.251        140.852
+                     CopyBuffer(api=ocl size=512MB contents=Zeros compressedSource=1 compressedDestination=1 useEvents=0)        138.884        138.695          0.88%        137.340        140.461
+                                                        CopyEntireImage(api=ocl size=8192:1:1 forceBlitter=0 useEvents=0)          1.413          1.405          2.91%          1.331          1.497
+                                                       CopyEntireImage(api=ocl size=16384:1:1 forceBlitter=0 useEvents=0)          2.755          2.785          3.57%          2.532          2.911
+                                                       CopyEntireImage(api=ocl size=256:512:1 forceBlitter=0 useEvents=0)         18.243         18.583          4.73%         16.069         19.103
+                                                       CopyEntireImage(api=ocl size=512:512:1 forceBlitter=0 useEvents=0)         29.479         30.862         10.12%         21.812         31.395
+                                                       CopyEntireImage(api=ocl size=512:512:2 forceBlitter=0 useEvents=0)         15.365         15.751          5.16%         13.919         16.194
+                                                      CopyEntireImage(api=ocl size=512:512:64 forceBlitter=0 useEvents=0)         16.825         16.792          0.82%         16.631         17.090
+                      FillBuffer(api=ocl size=128MB contents=Zeros patternSize=1 compressed=0 forceBlitter=0 useEvents=0)        172.876        176.291          5.10%        158.524        182.567
+                      FillBuffer(api=ocl size=128MB contents=Zeros patternSize=1 compressed=0 forceBlitter=1 useEvents=0)        172.965        176.109          6.66%        157.440        187.891
+                      FillBuffer(api=ocl size=128MB contents=Zeros patternSize=1 compressed=1 forceBlitter=0 useEvents=0)        172.810        178.325          6.69%        157.454        189.280
+                      FillBuffer(api=ocl size=128MB contents=Zeros patternSize=1 compressed=1 forceBlitter=1 useEvents=0)        174.841        178.119          5.44%        157.639        185.215
+                     FillBuffer(api=ocl size=128MB contents=Zeros patternSize=16 compressed=0 forceBlitter=0 useEvents=0)        174.982        177.215          5.45%        155.480        187.120
+                     FillBuffer(api=ocl size=128MB contents=Zeros patternSize=16 compressed=0 forceBlitter=1 useEvents=0)        161.629        160.358          4.87%        150.082        176.564
+                     FillBuffer(api=ocl size=128MB contents=Zeros patternSize=16 compressed=1 forceBlitter=0 useEvents=0)        177.516        181.465          6.11%        155.826        189.959
+                     FillBuffer(api=ocl size=128MB contents=Zeros patternSize=16 compressed=1 forceBlitter=1 useEvents=0)        170.835        164.894          6.43%        158.936        187.518
+                    FillBuffer(api=ocl size=128MB contents=Zeros patternSize=128 compressed=0 forceBlitter=0 useEvents=0)        173.872        175.711          5.08%        157.478        186.784
+                    FillBuffer(api=ocl size=128MB contents=Zeros patternSize=128 compressed=0 forceBlitter=1 useEvents=0)        173.115        177.948          6.74%        153.679        187.638
+                    FillBuffer(api=ocl size=128MB contents=Zeros patternSize=128 compressed=1 forceBlitter=0 useEvents=0)        176.952        183.639          9.11%        134.309        189.045
+                    FillBuffer(api=ocl size=128MB contents=Zeros patternSize=128 compressed=1 forceBlitter=1 useEvents=0)        190.065        191.487          2.12%        178.963        194.277
+                      FillBuffer(api=ocl size=512MB contents=Zeros patternSize=1 compressed=0 forceBlitter=0 useEvents=0)        297.420        297.192          1.24%        288.698        301.633
+                      FillBuffer(api=ocl size=512MB contents=Zeros patternSize=1 compressed=0 forceBlitter=1 useEvents=0)        297.419        297.687          0.65%        294.200        300.975
+                      FillBuffer(api=ocl size=512MB contents=Zeros patternSize=1 compressed=1 forceBlitter=0 useEvents=0)        293.402        295.357          1.46%        284.933        296.911
+                      FillBuffer(api=ocl size=512MB contents=Zeros patternSize=1 compressed=1 forceBlitter=1 useEvents=0)        292.108        293.687          1.64%        279.701        296.075
+                     FillBuffer(api=ocl size=512MB contents=Zeros patternSize=16 compressed=0 forceBlitter=0 useEvents=0)        297.652        296.760          1.69%        289.847        310.117
+                     FillBuffer(api=ocl size=512MB contents=Zeros patternSize=16 compressed=0 forceBlitter=1 useEvents=0)        297.337        296.773          0.85%        294.443        301.912
+                     FillBuffer(api=ocl size=512MB contents=Zeros patternSize=16 compressed=1 forceBlitter=0 useEvents=0)        294.674        295.001          0.69%        290.384        298.173
+                     FillBuffer(api=ocl size=512MB contents=Zeros patternSize=16 compressed=1 forceBlitter=1 useEvents=0)        295.092        295.435          0.35%        292.733        296.302
+                    FillBuffer(api=ocl size=512MB contents=Zeros patternSize=128 compressed=0 forceBlitter=0 useEvents=0)        295.488        297.248          1.82%        280.683        301.295
+                    FillBuffer(api=ocl size=512MB contents=Zeros patternSize=128 compressed=0 forceBlitter=1 useEvents=0)        297.573        297.888          0.80%        292.885        301.362
+                    FillBuffer(api=ocl size=512MB contents=Zeros patternSize=128 compressed=1 forceBlitter=0 useEvents=0)        294.510        296.358          1.49%        285.181        298.780
+                    FillBuffer(api=ocl size=512MB contents=Zeros patternSize=128 compressed=1 forceBlitter=1 useEvents=0)        292.776        293.733          1.22%        284.930        296.676
+                                      MapBuffer(api=ocl size=128MB contents=Zeros compressed=0 mapFlags=Read useEvents=0)         21.896         21.869          0.50%         21.801         22.191
+                                     MapBuffer(api=ocl size=128MB contents=Zeros compressed=0 mapFlags=Write useEvents=0)         22.253         22.265          0.29%         22.089         22.305
+                           MapBuffer(api=ocl size=128MB contents=Zeros compressed=0 mapFlags=WriteInvalidate useEvents=0)         22.274         22.277          0.12%         22.231         22.316
+                                      MapBuffer(api=ocl size=128MB contents=Zeros compressed=1 mapFlags=Read useEvents=0)         21.952         21.930          0.46%         21.873         22.238
+                                     MapBuffer(api=ocl size=128MB contents=Zeros compressed=1 mapFlags=Write useEvents=0)         22.259         22.286          0.23%         22.152         22.308
+                           MapBuffer(api=ocl size=128MB contents=Zeros compressed=1 mapFlags=WriteInvalidate useEvents=0)         22.286         22.295          0.10%         22.226         22.308
+                                      MapBuffer(api=ocl size=512MB contents=Zeros compressed=0 mapFlags=Read useEvents=0)         22.464         22.448          0.25%         22.402         22.608
+                                     MapBuffer(api=ocl size=512MB contents=Zeros compressed=0 mapFlags=Write useEvents=0)         20.769         22.530         25.54%          4.856         22.595
+                           MapBuffer(api=ocl size=512MB contents=Zeros compressed=0 mapFlags=WriteInvalidate useEvents=0)         22.556         22.556          0.18%         22.490         22.614
+                                      MapBuffer(api=ocl size=512MB contents=Zeros compressed=1 mapFlags=Read useEvents=0)         22.502         22.512          0.11%         22.464         22.535
+                                     MapBuffer(api=ocl size=512MB contents=Zeros compressed=1 mapFlags=Write useEvents=0)         20.714         22.436         25.23%          5.035         22.587
+                           MapBuffer(api=ocl size=512MB contents=Zeros compressed=1 mapFlags=WriteInvalidate useEvents=0)         22.446         22.418          0.33%         22.370         22.603
+                                                   ReadBuffer(api=ocl size=128MB contents=Zeros compressed=0 useEvents=0)          6.316          6.452          6.72%          5.049          6.517
+                                                   ReadBuffer(api=ocl size=128MB contents=Zeros compressed=1 useEvents=0)          6.368          6.538          6.94%          5.051          6.562
+                                                   ReadBuffer(api=ocl size=512MB contents=Zeros compressed=0 useEvents=0)          6.584          6.743          7.15%          5.176          6.788
+                                                   ReadBuffer(api=ocl size=512MB contents=Zeros compressed=1 useEvents=0)          6.580          6.737          7.08%          5.186          6.781
+                                                                      ReadDeviceMemBuffer(api=ocl size=64KB compressed=0)          0.026          0.026          0.89%          0.025          0.026
+                                                                      ReadDeviceMemBuffer(api=ocl size=64KB compressed=1)          0.026          0.026          0.64%          0.026          0.026
+                                                                     ReadDeviceMemBuffer(api=ocl size=128KB compressed=0)          0.052          0.052          0.83%          0.052          0.053
+                                                                     ReadDeviceMemBuffer(api=ocl size=128KB compressed=1)          0.053          0.053          0.71%          0.052          0.053
+                                                                     ReadDeviceMemBuffer(api=ocl size=512KB compressed=0)          0.206          0.205          1.02%          0.203          0.209
+                                                                     ReadDeviceMemBuffer(api=ocl size=512KB compressed=1)          0.206          0.206          0.41%          0.205          0.207
+                                                                       ReadDeviceMemBuffer(api=ocl size=1MB compressed=0)          0.407          0.408          0.87%          0.400          0.412
+                                                                       ReadDeviceMemBuffer(api=ocl size=1MB compressed=1)          0.408          0.409          0.53%          0.403          0.410
+                                                                       ReadDeviceMemBuffer(api=ocl size=4MB compressed=0)          1.606          1.609          0.83%          1.572          1.621
+                                                                       ReadDeviceMemBuffer(api=ocl size=4MB compressed=1)          1.618          1.617          0.59%          1.605          1.633
+                                                                      ReadDeviceMemBuffer(api=ocl size=32MB compressed=0)          7.202          7.249          6.47%          6.289          8.035
+                                                                      ReadDeviceMemBuffer(api=ocl size=32MB compressed=1)         11.592         11.594          0.33%         11.530         11.668
+                                                                      ReadDeviceMemBuffer(api=ocl size=64MB compressed=0)          9.156          9.240          3.92%          8.173          9.466
+                                                                      ReadDeviceMemBuffer(api=ocl size=64MB compressed=1)         14.014         14.012          5.76%         12.261         14.920
+                                                                     ReadDeviceMemBuffer(api=ocl size=128MB compressed=0)         16.253         16.678          5.04%         14.606         16.937
+                                                                     ReadDeviceMemBuffer(api=ocl size=128MB compressed=1)         17.018         17.063          1.13%         16.713         17.273
+                                                                     ReadDeviceMemBuffer(api=ocl size=256MB compressed=0)         31.175         31.556          4.89%         28.933         33.406
+                                                                     ReadDeviceMemBuffer(api=ocl size=256MB compressed=1)         29.698         29.756          0.86%         29.130         29.999
+                                    UnmapBuffer(api=ocl size=128MB contents=Zeros compressed=0 mapFlags=Read useEvents=0)      45771.802      46929.327          6.65%      39222.013      49381.063
+                                   UnmapBuffer(api=ocl size=128MB contents=Zeros compressed=0 mapFlags=Write useEvents=0)         20.360         20.368          0.33%         20.195         20.458
+                         UnmapBuffer(api=ocl size=128MB contents=Zeros compressed=0 mapFlags=WriteInvalidate useEvents=0)         20.375         20.395          0.40%         20.209         20.481
+                                    UnmapBuffer(api=ocl size=128MB contents=Zeros compressed=1 mapFlags=Read useEvents=0)      51793.026      51711.798          5.20%      48297.131      57162.576
+                                   UnmapBuffer(api=ocl size=128MB contents=Zeros compressed=1 mapFlags=Write useEvents=0)         20.419         20.427          0.23%         20.313         20.471
+                         UnmapBuffer(api=ocl size=128MB contents=Zeros compressed=1 mapFlags=WriteInvalidate useEvents=0)         20.399         20.424          0.49%         20.138         20.501
+                                    UnmapBuffer(api=ocl size=512MB contents=Zeros compressed=0 mapFlags=Read useEvents=0)     181859.379     194909.166         14.34%     112527.963     202363.706
+                                   UnmapBuffer(api=ocl size=512MB contents=Zeros compressed=0 mapFlags=Write useEvents=0)         20.385         20.387          0.32%         20.293         20.485
+                         UnmapBuffer(api=ocl size=512MB contents=Zeros compressed=0 mapFlags=WriteInvalidate useEvents=0)         20.397         20.400          0.14%         20.338         20.434
+                                    UnmapBuffer(api=ocl size=512MB contents=Zeros compressed=1 mapFlags=Read useEvents=0)     185680.116     189088.810         10.35%     133251.654     208331.747
+                                   UnmapBuffer(api=ocl size=512MB contents=Zeros compressed=1 mapFlags=Write useEvents=0)         20.437         20.446          0.23%         20.327         20.497
+                         UnmapBuffer(api=ocl size=512MB contents=Zeros compressed=1 mapFlags=WriteInvalidate useEvents=0)         20.394         20.392          0.14%         20.346         20.447
+                              UsmCopy(api=ocl src=Device dst=Device size=128MB contents=Zeros forceBlitter=0 useEvents=0)        104.169        104.275          0.69%        102.771        105.404
+                              UsmCopy(api=ocl src=Device dst=Device size=128MB contents=Zeros forceBlitter=1 useEvents=0)        103.948        103.841          0.66%        103.034        105.714
+                              UsmCopy(api=ocl src=Device dst=Device size=512MB contents=Zeros forceBlitter=0 useEvents=0)        112.448        112.539          0.41%        111.233        112.917
+                              UsmCopy(api=ocl src=Device dst=Device size=512MB contents=Zeros forceBlitter=1 useEvents=0)        112.519        112.466          0.39%        111.997        113.495
+                                UsmCopy(api=ocl src=Device dst=Host size=128MB contents=Zeros forceBlitter=0 useEvents=0)         22.131         22.142          0.29%         22.005         22.205
+                                UsmCopy(api=ocl src=Device dst=Host size=128MB contents=Zeros forceBlitter=1 useEvents=0)         22.109         22.154          0.44%         21.900         22.240
+                                UsmCopy(api=ocl src=Device dst=Host size=512MB contents=Zeros forceBlitter=0 useEvents=0)         22.515         22.521          0.18%         22.452         22.564
+                                UsmCopy(api=ocl src=Device dst=Host size=512MB contents=Zeros forceBlitter=1 useEvents=0)         22.483         22.486          0.22%         22.368         22.562
+                              UsmCopy(api=ocl src=Device dst=Shared size=128MB contents=Zeros forceBlitter=0 useEvents=0)        107.936        107.742          0.95%        106.918        110.655
+                              UsmCopy(api=ocl src=Device dst=Shared size=128MB contents=Zeros forceBlitter=1 useEvents=0)        106.630        106.514          1.24%        104.356        109.582
+                              UsmCopy(api=ocl src=Device dst=Shared size=512MB contents=Zeros forceBlitter=0 useEvents=0)        115.370        115.466          0.47%        113.938        115.883
+                              UsmCopy(api=ocl src=Device dst=Shared size=512MB contents=Zeros forceBlitter=1 useEvents=0)        115.401        115.477          0.44%        114.583        116.582
+                                UsmCopy(api=ocl src=Host dst=Device size=128MB contents=Zeros forceBlitter=0 useEvents=0)         19.852         19.985          2.04%         18.680         20.119
+                                UsmCopy(api=ocl src=Host dst=Device size=128MB contents=Zeros forceBlitter=1 useEvents=0)         20.020         20.018          0.33%         19.912         20.134
+                                UsmCopy(api=ocl src=Host dst=Device size=512MB contents=Zeros forceBlitter=0 useEvents=0)         20.276         20.263          0.18%         20.225         20.346
+                                UsmCopy(api=ocl src=Host dst=Device size=512MB contents=Zeros forceBlitter=1 useEvents=0)         20.264         20.274          0.22%         20.196         20.327
+                                  UsmCopy(api=ocl src=Host dst=Host size=128MB contents=Zeros forceBlitter=0 useEvents=0)         14.331         14.329          0.33%         14.246         14.395
+                                  UsmCopy(api=ocl src=Host dst=Host size=128MB contents=Zeros forceBlitter=1 useEvents=0)         14.372         14.387          0.33%         14.288         14.433
+                                  UsmCopy(api=ocl src=Host dst=Host size=512MB contents=Zeros forceBlitter=0 useEvents=0)         14.483         14.491          0.19%         14.422         14.510
+                                  UsmCopy(api=ocl src=Host dst=Host size=512MB contents=Zeros forceBlitter=1 useEvents=0)         14.459         14.458          0.19%         14.403         14.509
+                                UsmCopy(api=ocl src=Host dst=Shared size=128MB contents=Zeros forceBlitter=0 useEvents=0)         20.046         20.063          0.39%         19.897         20.149
+                                UsmCopy(api=ocl src=Host dst=Shared size=128MB contents=Zeros forceBlitter=1 useEvents=0)         20.052         20.056          0.49%         19.860         20.261
+                                UsmCopy(api=ocl src=Host dst=Shared size=512MB contents=Zeros forceBlitter=0 useEvents=0)         20.294         20.297          0.25%         20.213         20.373
+                                UsmCopy(api=ocl src=Host dst=Shared size=512MB contents=Zeros forceBlitter=1 useEvents=0)         20.266         20.271          0.24%         20.181         20.327
+                              UsmCopy(api=ocl src=Shared dst=Device size=128MB contents=Zeros forceBlitter=0 useEvents=0)        107.957        107.691          0.83%        107.365        110.527
+                              UsmCopy(api=ocl src=Shared dst=Device size=128MB contents=Zeros forceBlitter=1 useEvents=0)        107.562        107.543          1.29%        104.761        110.616
+                              UsmCopy(api=ocl src=Shared dst=Device size=512MB contents=Zeros forceBlitter=0 useEvents=0)        116.775        116.625          0.46%        116.050        118.122
+                              UsmCopy(api=ocl src=Shared dst=Device size=512MB contents=Zeros forceBlitter=1 useEvents=0)        116.476        116.460          0.36%        115.782        117.264
+                                UsmCopy(api=ocl src=Shared dst=Host size=128MB contents=Zeros forceBlitter=0 useEvents=0)         22.120         22.130          0.46%         21.934         22.240
+                                UsmCopy(api=ocl src=Shared dst=Host size=128MB contents=Zeros forceBlitter=1 useEvents=0)         22.186         22.178          0.32%         22.075         22.355
+                                UsmCopy(api=ocl src=Shared dst=Host size=512MB contents=Zeros forceBlitter=0 useEvents=0)         22.525         22.531          0.15%         22.454         22.573
+                                UsmCopy(api=ocl src=Shared dst=Host size=512MB contents=Zeros forceBlitter=1 useEvents=0)         22.503         22.509          0.18%         22.441         22.575
+                              UsmCopy(api=ocl src=Shared dst=Shared size=128MB contents=Zeros forceBlitter=0 useEvents=0)        108.783        108.497          1.37%        107.198        112.649
+                              UsmCopy(api=ocl src=Shared dst=Shared size=128MB contents=Zeros forceBlitter=1 useEvents=0)        108.919        108.859          1.08%        107.324        111.560
+                              UsmCopy(api=ocl src=Shared dst=Shared size=512MB contents=Zeros forceBlitter=0 useEvents=0)        118.091        117.927          0.44%        117.537        119.511
+                              UsmCopy(api=ocl src=Shared dst=Shared size=512MB contents=Zeros forceBlitter=1 useEvents=0)        117.970        118.055          0.30%        117.247        118.384
+   UsmFill(api=ocl memory=Host size=128MB contents=Zeros patternSize=1 patternContents=Random forceBlitter=0 useEvents=0)         22.362         22.387          0.27%         22.254         22.435
+   UsmFill(api=ocl memory=Host size=128MB contents=Zeros patternSize=1 patternContents=Random forceBlitter=1 useEvents=0)         22.373         22.400          0.30%         22.247         22.435
+   UsmFill(api=ocl memory=Host size=128MB contents=Zeros patternSize=4 patternContents=Random forceBlitter=0 useEvents=0)         22.318         22.317          0.17%         22.243         22.364
+   UsmFill(api=ocl memory=Host size=128MB contents=Zeros patternSize=4 patternContents=Random forceBlitter=1 useEvents=0)         22.311         22.303          0.21%         22.240         22.395
+  UsmFill(api=ocl memory=Host size=128MB contents=Zeros patternSize=16 patternContents=Random forceBlitter=0 useEvents=0)         22.313         22.321          0.32%         22.182         22.397
+  UsmFill(api=ocl memory=Host size=128MB contents=Zeros patternSize=16 patternContents=Random forceBlitter=1 useEvents=0)         22.335         22.355          0.29%         22.207         22.432
+   UsmFill(api=ocl memory=Host size=512MB contents=Zeros patternSize=1 patternContents=Random forceBlitter=0 useEvents=0)         22.516         22.518          0.17%         22.451         22.601
+   UsmFill(api=ocl memory=Host size=512MB contents=Zeros patternSize=1 patternContents=Random forceBlitter=1 useEvents=0)         22.520         22.527          0.10%         22.483         22.559
+   UsmFill(api=ocl memory=Host size=512MB contents=Zeros patternSize=4 patternContents=Random forceBlitter=0 useEvents=0)         22.541         22.527          0.18%         22.495         22.617
+   UsmFill(api=ocl memory=Host size=512MB contents=Zeros patternSize=4 patternContents=Random forceBlitter=1 useEvents=0)         22.525         22.532          0.13%         22.474         22.555
+  UsmFill(api=ocl memory=Host size=512MB contents=Zeros patternSize=16 patternContents=Random forceBlitter=0 useEvents=0)         22.543         22.541          0.13%         22.493         22.586
+  UsmFill(api=ocl memory=Host size=512MB contents=Zeros patternSize=16 patternContents=Random forceBlitter=1 useEvents=0)         22.528         22.532          0.15%         22.465         22.580
+ UsmFill(api=ocl memory=Device size=128MB contents=Zeros patternSize=1 patternContents=Random forceBlitter=0 useEvents=0)        292.031        294.300          2.93%        279.546        301.320
+ UsmFill(api=ocl memory=Device size=128MB contents=Zeros patternSize=1 patternContents=Random forceBlitter=1 useEvents=0)        295.578        297.433          2.14%        278.147        301.820
+ UsmFill(api=ocl memory=Device size=128MB contents=Zeros patternSize=4 patternContents=Random forceBlitter=0 useEvents=0)        298.070        298.402          1.19%        289.392        301.592
+ UsmFill(api=ocl memory=Device size=128MB contents=Zeros patternSize=4 patternContents=Random forceBlitter=1 useEvents=0)        294.290        297.237          2.59%        279.309        301.653
+UsmFill(api=ocl memory=Device size=128MB contents=Zeros patternSize=16 patternContents=Random forceBlitter=0 useEvents=0)        295.424        296.782          2.30%        275.878        301.964
+UsmFill(api=ocl memory=Device size=128MB contents=Zeros patternSize=16 patternContents=Random forceBlitter=1 useEvents=0)        294.842        294.978          1.50%        288.966        301.350
+ UsmFill(api=ocl memory=Device size=512MB contents=Zeros patternSize=1 patternContents=Random forceBlitter=0 useEvents=0)        346.204        345.494          1.07%        341.754        353.765
+ UsmFill(api=ocl memory=Device size=512MB contents=Zeros patternSize=1 patternContents=Random forceBlitter=1 useEvents=0)        344.138        344.476          0.83%        339.123        349.926
+ UsmFill(api=ocl memory=Device size=512MB contents=Zeros patternSize=4 patternContents=Random forceBlitter=0 useEvents=0)        345.821        345.887          1.32%        337.036        351.878
+ UsmFill(api=ocl memory=Device size=512MB contents=Zeros patternSize=4 patternContents=Random forceBlitter=1 useEvents=0)        346.378        345.624          1.06%        341.304        352.344
+UsmFill(api=ocl memory=Device size=512MB contents=Zeros patternSize=16 patternContents=Random forceBlitter=0 useEvents=0)        340.642        344.312          1.89%        325.905        347.294
+UsmFill(api=ocl memory=Device size=512MB contents=Zeros patternSize=16 patternContents=Random forceBlitter=1 useEvents=0)        345.762        345.703          1.60%        332.889        353.341
+ UsmFill(api=ocl memory=Shared size=128MB contents=Zeros patternSize=1 patternContents=Random forceBlitter=0 useEvents=0)        309.325        310.352          1.06%        302.362        313.089
+ UsmFill(api=ocl memory=Shared size=128MB contents=Zeros patternSize=1 patternContents=Random forceBlitter=1 useEvents=0)        309.343        311.265          1.61%        297.695        313.528
+ UsmFill(api=ocl memory=Shared size=128MB contents=Zeros patternSize=4 patternContents=Random forceBlitter=0 useEvents=0)        309.796        310.136          1.71%        296.014        314.950
+ UsmFill(api=ocl memory=Shared size=128MB contents=Zeros patternSize=4 patternContents=Random forceBlitter=1 useEvents=0)        310.235        312.117          1.32%        303.116        315.628
+UsmFill(api=ocl memory=Shared size=128MB contents=Zeros patternSize=16 patternContents=Random forceBlitter=0 useEvents=0)        289.706        289.627          0.70%        286.734        293.420
+UsmFill(api=ocl memory=Shared size=128MB contents=Zeros patternSize=16 patternContents=Random forceBlitter=1 useEvents=0)        283.502        289.374          4.15%        254.437        292.166
+ UsmFill(api=ocl memory=Shared size=512MB contents=Zeros patternSize=1 patternContents=Random forceBlitter=0 useEvents=0)        345.796        345.592          0.81%        340.075        351.596
+ UsmFill(api=ocl memory=Shared size=512MB contents=Zeros patternSize=1 patternContents=Random forceBlitter=1 useEvents=0)        347.063        345.393          1.29%        342.121        356.671
+ UsmFill(api=ocl memory=Shared size=512MB contents=Zeros patternSize=4 patternContents=Random forceBlitter=0 useEvents=0)        353.143        353.892          1.25%        344.719        360.303
+ UsmFill(api=ocl memory=Shared size=512MB contents=Zeros patternSize=4 patternContents=Random forceBlitter=1 useEvents=0)        355.089        356.522          1.57%        345.506        362.718
+UsmFill(api=ocl memory=Shared size=512MB contents=Zeros patternSize=16 patternContents=Random forceBlitter=0 useEvents=0)        353.161        354.157          1.30%        346.828        360.888
+UsmFill(api=ocl memory=Shared size=512MB contents=Zeros patternSize=16 patternContents=Random forceBlitter=1 useEvents=0)        354.995        355.610          1.79%        344.981        364.409
+        UsmFillSpecificPattern(api=ocl memory=Host size=128MB contents=Zeros pattern=0x01AA0B forceBlitter=0 useEvents=0)         22.300         22.302          0.24%         22.195         22.364
+        UsmFillSpecificPattern(api=ocl memory=Host size=128MB contents=Zeros pattern=0x01AA0B forceBlitter=1 useEvents=0)         22.346         22.334          0.16%         22.314         22.416
+        UsmFillSpecificPattern(api=ocl memory=Host size=512MB contents=Zeros pattern=0x01AA0B forceBlitter=0 useEvents=0)         22.539         22.544          0.15%         22.475         22.597
+        UsmFillSpecificPattern(api=ocl memory=Host size=512MB contents=Zeros pattern=0x01AA0B forceBlitter=1 useEvents=0)         22.532         22.532          0.13%         22.476         22.588
+      UsmFillSpecificPattern(api=ocl memory=Device size=128MB contents=Zeros pattern=0x01AA0B forceBlitter=0 useEvents=0)        294.880        298.346          3.08%        269.163        301.295
+      UsmFillSpecificPattern(api=ocl memory=Device size=128MB contents=Zeros pattern=0x01AA0B forceBlitter=1 useEvents=0)        296.000        298.890          3.10%        268.697        300.740
+      UsmFillSpecificPattern(api=ocl memory=Device size=512MB contents=Zeros pattern=0x01AA0B forceBlitter=0 useEvents=0)        347.487        348.014          1.05%        339.705        352.045
+      UsmFillSpecificPattern(api=ocl memory=Device size=512MB contents=Zeros pattern=0x01AA0B forceBlitter=1 useEvents=0)        343.596        343.958          1.97%        331.101        351.965
+      UsmFillSpecificPattern(api=ocl memory=Shared size=128MB contents=Zeros pattern=0x01AA0B forceBlitter=0 useEvents=0)        309.070        311.203          2.27%        290.916        317.611
+      UsmFillSpecificPattern(api=ocl memory=Shared size=128MB contents=Zeros pattern=0x01AA0B forceBlitter=1 useEvents=0)        310.889        311.419          0.74%        305.017        312.998
+      UsmFillSpecificPattern(api=ocl memory=Shared size=512MB contents=Zeros pattern=0x01AA0B forceBlitter=0 useEvents=0)        355.365        353.880          1.03%        350.408        360.793
+      UsmFillSpecificPattern(api=ocl memory=Shared size=512MB contents=Zeros pattern=0x01AA0B forceBlitter=1 useEvents=0)        355.045        355.763          1.27%        345.075        363.465
+                                      UsmMemset(api=ocl memory=Host size=128MB contents=Zeros forceBlitter=0 useEvents=0)         22.249         22.245          0.33%         22.073         22.341
+                                      UsmMemset(api=ocl memory=Host size=128MB contents=Zeros forceBlitter=1 useEvents=1)         24.503         24.499          0.24%         24.434         24.639
+                                      UsmMemset(api=ocl memory=Host size=512MB contents=Zeros forceBlitter=0 useEvents=0)         22.541         22.519          0.19%         22.497         22.630
+                                      UsmMemset(api=ocl memory=Host size=512MB contents=Zeros forceBlitter=1 useEvents=1)         23.087         23.086          0.13%         23.048         23.150
+                                    UsmMemset(api=ocl memory=Device size=128MB contents=Zeros forceBlitter=0 useEvents=0)        293.310        299.491          4.11%        267.130        304.659
+                                    UsmMemset(api=ocl memory=Device size=128MB contents=Zeros forceBlitter=1 useEvents=1)        369.118        368.568          0.63%        365.357        373.491
+                                    UsmMemset(api=ocl memory=Device size=512MB contents=Zeros forceBlitter=0 useEvents=0)        339.141        338.765          1.98%        330.520        350.632
+                                    UsmMemset(api=ocl memory=Device size=512MB contents=Zeros forceBlitter=1 useEvents=1)        370.360        372.104          1.12%        360.297        374.324
+                                    UsmMemset(api=ocl memory=Shared size=128MB contents=Zeros forceBlitter=0 useEvents=0)        296.823        291.212          2.97%        289.608        311.417
+                                    UsmMemset(api=ocl memory=Shared size=128MB contents=Zeros forceBlitter=1 useEvents=1)        390.263        390.895          1.02%        381.474        395.689
+                                    UsmMemset(api=ocl memory=Shared size=512MB contents=Zeros forceBlitter=0 useEvents=0)        351.681        351.008          1.51%        344.312        363.073
+                                    UsmMemset(api=ocl memory=Shared size=512MB contents=Zeros forceBlitter=1 useEvents=1)        384.661        384.757          0.56%        380.652        387.509
+                                                                 UsmSharedMigrateCpu(api=ocl accessAllBytes=0 size=128MB)         21.021         21.046          0.60%         20.687         21.130
+                                                                 UsmSharedMigrateCpu(api=ocl accessAllBytes=0 size=256MB)         21.185         21.209          0.25%         21.064         21.244
+                                                                 UsmSharedMigrateCpu(api=ocl accessAllBytes=1 size=128MB)          1.529          1.532          0.72%          1.501          1.539
+                                                                 UsmSharedMigrateCpu(api=ocl accessAllBytes=1 size=256MB)          1.526          1.531          0.95%          1.488          1.540
+                                                                                  UsmSharedMigrateGpu(api=ocl size=128MB)         17.982         18.001          0.21%         17.889         18.024
+                                                                                  UsmSharedMigrateGpu(api=ocl size=256MB)         18.102         18.112          0.16%         18.051         18.151
+                                                  WriteBuffer(api=ocl size=128MB contents=Zeros compressed=0 useEvents=0)          6.307          6.425          6.62%          5.061          6.509
+                                                  WriteBuffer(api=ocl size=128MB contents=Zeros compressed=1 useEvents=0)          6.097          6.376          8.96%          5.016          6.511
+                                                  WriteBuffer(api=ocl size=512MB contents=Zeros compressed=0 useEvents=0)          6.497          6.652          7.24%          5.088          6.695
+                                                  WriteBuffer(api=ocl size=512MB contents=Zeros compressed=1 useEvents=0)          6.403          6.648          7.67%          5.165          6.722
+                     WriteBufferRect(api=ocl size=16KB compressed=0 origin=0:0:0 region=128:128:1 rPitch=128 sPitch=16KB)          0.031          0.031          7.27%          0.028          0.034
+                    WriteBufferRect(api=ocl size=2MB compressed=0 origin=0:0:0 region=128:128:128 rPitch=128 sPitch=16KB)          1.204          1.212          1.42%          1.177          1.221
+               WriteBufferRect(api=ocl size=128MB compressed=0 origin=0:0:0 region=128:1024:1024 rPitch=128 sPitch=128KB)          1.913          1.914          3.23%          1.772          2.048
+                  WriteBufferRect(api=ocl size=16MB compressed=0 origin=0:0:0 region=1024:16:1024 rPitch=1KB sPitch=16KB)          2.887          2.819          6.81%          2.800          3.476
+                   WriteBufferRect(api=ocl size=16MB compressed=0 origin=0:0:0 region=1024:1024:16 rPitch=1KB sPitch=1MB)          4.265          4.133         10.60%          4.071          5.619
+                     WriteBufferRect(api=ocl size=16KB compressed=1 origin=0:0:0 region=128:128:1 rPitch=128 sPitch=16KB)          0.032          0.031         12.35%          0.027          0.039
+                    WriteBufferRect(api=ocl size=2MB compressed=1 origin=0:0:0 region=128:128:128 rPitch=128 sPitch=16KB)          1.227          1.207          5.57%          1.191          1.431
+               WriteBufferRect(api=ocl size=128MB compressed=1 origin=0:0:0 region=128:1024:1024 rPitch=128 sPitch=128KB)          1.935          1.918          2.81%          1.912          2.098
+                  WriteBufferRect(api=ocl size=16MB compressed=1 origin=0:0:0 region=1024:16:1024 rPitch=1KB sPitch=16KB)          2.836          2.777          6.35%          2.747          3.374
+                   WriteBufferRect(api=ocl size=16MB compressed=1 origin=0:0:0 region=1024:1024:16 rPitch=1KB sPitch=1MB)          4.317          4.163         10.84%          4.139          5.721
