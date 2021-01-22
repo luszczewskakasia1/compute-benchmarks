@@ -11,6 +11,8 @@ cl_int BufferContentsHelperOcl::fillBuffer(cl_command_queue queue, cl_mem buffer
         return fillBufferWithZeros(queue, buffer, bufferSize);
     case BufferContents::Random:
         return fillBufferWithRandomBytes(queue, buffer, bufferSize);
+    case BufferContents::IncreasingBytes:
+        return fillBufferWithIncreasingBytes(queue, buffer, bufferSize);
     default:
         ERROR("Unknown buffer contents");
     }
@@ -38,6 +40,13 @@ cl_int BufferContentsHelperOcl::fillBufferWithZeros(cl_command_queue queue, cl_m
     const cl_uint pattern[] = {0};
     CL_SUCCESS_OR_RETURN(clEnqueueFillBuffer(queue, buffer, pattern, sizeof(pattern), 0, bufferSize, 0, nullptr, nullptr));
     CL_SUCCESS_OR_RETURN(clFinish(queue));
+    return CL_SUCCESS;
+}
+
+cl_int BufferContentsHelperOcl::fillBufferWithIncreasingBytes(cl_command_queue queue, cl_mem buffer, size_t bufferSize) {
+    auto cpuBuffer = std::make_unique<uint8_t[]>(bufferSize);
+    BufferContentsHelper::fillWithIncreasingBytes(cpuBuffer.get(), bufferSize);
+    CL_SUCCESS_OR_RETURN(clEnqueueWriteBuffer(queue, buffer, CL_BLOCKING, 0, bufferSize, cpuBuffer.get(), 0, nullptr, nullptr));
     return CL_SUCCESS;
 }
 

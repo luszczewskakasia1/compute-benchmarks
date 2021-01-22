@@ -4,4 +4,5 @@ enum class BufferContents {
     Unknown,
     Zeros,
     Random,
+    IncreasingBytes,
 };

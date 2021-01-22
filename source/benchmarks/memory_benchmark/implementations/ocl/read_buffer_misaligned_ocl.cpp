@@ -21,6 +21,7 @@ static TestResult run(const ReadBufferMisalignedArguments &arguments, Statistics
     // Create buffer
     const cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, arguments.size, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
+    ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillBuffer(opencl.commandQueue, buffer, arguments.size, BufferContents::IncreasingBytes));
     auto cpuBuffer = CpuAllocationHelper::allocateMisalignedAllocation(arguments.size, MemoryConstants::cachelineSize, arguments.misalignmentFromCacheline);
 
     // Warmup
@@ -43,6 +44,15 @@ static TestResult run(const ReadBufferMisalignedArguments &arguments, Statistics
             statistics.pushValue(std::chrono::nanoseconds(timeNs), arguments.size);
         } else {
             statistics.pushValue(timer.get(), arguments.size);
+        }
+    }
+
+    // Verify
+    for (auto index = 0u; index < arguments.size; index++) {
+        const uint8_t expected = static_cast<uint8_t>(index);
+        const uint8_t actual = static_cast<uint8_t>(cpuBuffer.get()[index]);
+        if (expected != actual) {
+            return TestResult::VerificationFail;
         }
     }
 
