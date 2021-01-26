@@ -44,16 +44,16 @@ LevelZero::LevelZero(const QueueProperties &queueProperties, const ContextProper
     EXPECT_ZE_RESULT_SUCCESS(zeContextCreate(driver, &contextDesc, &context));
 
     // Create queue
-    const auto queueCreationResults = createQueue(queueProperties);
-    this->commandQueue = std::get<ze_command_queue_handle_t>(queueCreationResults);
-    this->commandQueueDesc = std::get<QueueInfo>(queueCreationResults).desc;
-    this->commandQueueDevice = std::get<QueueInfo>(queueCreationResults).device;
-    this->commandQueueMaxFillSize = std::get<QueueInfo>(queueCreationResults).maxFillSize;
+    const auto [queue, queueInfo] = createQueue(queueProperties);
+    this->commandQueue = queue;
+    this->commandQueueDesc = queueInfo.desc;
+    this->commandQueueDevice = queueInfo.device;
+    this->commandQueueMaxFillSize = queueInfo.maxFillSize;
 }
 
 LevelZero::~LevelZero() {
-    if (commandQueue != nullptr) {
-        EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueDestroy(commandQueue));
+    for (auto &queue : commandQueues) {
+        EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueDestroy(queue));
     }
     if (context != nullptr) {
         EXPECT_ZE_RESULT_SUCCESS(zeContextDestroy(context));
@@ -131,6 +131,7 @@ std::pair<ze_command_queue_handle_t, LevelZero::QueueInfo> LevelZero::createQueu
     // Create
     ze_command_queue_handle_t commandQueue = {};
     EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueCreate(this->context, queueInfo->device, &queueInfo->desc, &commandQueue));
+    this->commandQueues.push_back(commandQueue);
     return std::make_pair(commandQueue, *queueInfo);
 }
 } // namespace L0

@@ -39,6 +39,14 @@ struct LevelZero {
     LevelZero(const QueueProperties &queueProperties, const ContextProperties &contextProperties);
     ~LevelZero();
 
+    // Queries available queue families on the device and returns their descriptions.
+    static std::vector<QueueInfo> queryQueueFamilies(ze_device_handle_t device);
+
+    // Creates queue with given properties. It doesn't needed to be called by the user in scenarios with only one queue.
+    // Queue will be created by default, unless disabled in QueueProperties. This method allows the user to create
+    // additional queues. Queues are tracked internally and will be released automatically.
+    std::pair<ze_command_queue_handle_t, QueueInfo> createQueue(const QueueProperties &queueProperties);
+
     // Returns device for given DeviceSelection. Getting multiple devices at once, e.g. Tile0|Tile1 is forbidden.
     ze_device_handle_t getDevice(DeviceSelection deviceSelection) const;
 
@@ -58,15 +66,10 @@ struct LevelZero {
     // specified some subDevices in ContextProperties
     void createSubDevices(bool requireSuccess);
 
-    // Queries available queue families on the device and returns their descriptions
-    static std::vector<QueueInfo> queryQueueFamilies(ze_device_handle_t device);
-
-    // Creates queue with given properties
-    std::pair<ze_command_queue_handle_t, QueueInfo> createQueue(const QueueProperties &queueProperties);
-
     // Internal fields managed by the LevelZero class
     ze_device_handle_t rootDevice{};
     std::vector<ze_device_handle_t> subDevices{};
+    std::vector<ze_command_queue_handle_t> commandQueues{};
 };
 } // namespace L0
 
