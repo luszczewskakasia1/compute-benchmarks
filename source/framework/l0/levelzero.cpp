@@ -1,0 +1,137 @@
+#include "levelzero.h"
+
+namespace L0 {
+LevelZero::LevelZero(const QueueProperties &queueProperties, const ContextProperties &contextProperties) {
+    EXPECT_ZE_RESULT_SUCCESS(zeInit(ZE_INIT_FLAG_GPU_ONLY));
+
+    // Get driver
+    uint32_t driverCount = 0;
+    EXPECT_ZE_RESULT_SUCCESS(zeDriverGet(&driverCount, nullptr));
+    const auto driverIndex = Configuration::get().l0DriverIndex;
+    if (driverIndex >= driverCount) {
+        ERROR("Invalid LevelZero driver selected");
+    }
+    auto drivers = std::make_unique<ze_driver_handle_t[]>(driverCount);
+    EXPECT_ZE_RESULT_SUCCESS(zeDriverGet(&driverCount, drivers.get()));
+    this->driver = drivers[driverIndex];
+
+    // Create root device
+    uint32_t deviceCount = 0;
+    EXPECT_ZE_RESULT_SUCCESS(zeDeviceGet(driver, &deviceCount, nullptr));
+    const auto deviceIndex = Configuration::get().l0DeviceIndex;
+    if (deviceIndex >= deviceCount) {
+        ERROR("Invalid LevelZero device selected");
+    }
+    auto devices = std::make_unique<ze_device_handle_t[]>(deviceCount);
+    EXPECT_ZE_RESULT_SUCCESS(zeDeviceGet(driver, &deviceCount, devices.get()));
+    this->rootDevice = devices[deviceIndex];
+
+    // Create subDevices if needed
+    if (DeviceSelectionHelper::hasAnySubDevice(contextProperties.deviceSelection)) {
+        this->createSubDevices(contextProperties.requireCreationSuccess);
+        if (this->subDevices.size() == 0) {
+            return;
+        }
+    }
+
+    // Set the default device
+    if (DeviceSelectionHelper::hasSingleDevice(contextProperties.deviceSelection)) {
+        this->device = getDevice(contextProperties.deviceSelection);
+    }
+
+    // Create context
+    const ze_context_desc_t contextDesc{ZE_STRUCTURE_TYPE_CONTEXT_DESC};
+    EXPECT_ZE_RESULT_SUCCESS(zeContextCreate(driver, &contextDesc, &context));
+
+    // Create queue
+    const auto queueCreationResults = createQueue(queueProperties);
+    this->commandQueue = std::get<ze_command_queue_handle_t>(queueCreationResults);
+    this->commandQueueDesc = std::get<ze_command_queue_desc_t>(queueCreationResults);
+    this->commandQueueDevice = std::get<ze_device_handle_t>(queueCreationResults);
+    this->commandQueueMaxFillSize = std::get<size_t>(queueCreationResults);
+}
+
+LevelZero::~LevelZero() {
+    if (commandQueue != nullptr) {
+        EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueDestroy(commandQueue));
+    }
+    if (context != nullptr) {
+        EXPECT_ZE_RESULT_SUCCESS(zeContextDestroy(context));
+    }
+}
+
+ze_device_handle_t LevelZero::getDevice(DeviceSelection deviceSelection) const {
+    ERROR_IF(DeviceSelectionHelper::hasHost(deviceSelection), "Cannot get ze_device_handle_t for host");
+    ERROR_UNLESS(DeviceSelectionHelper::hasSingleDevice(deviceSelection), "Cannot get multiple devices");
+    if (deviceSelection == DeviceSelection::Root) {
+        return this->rootDevice;
+    }
+
+    const auto subDeviceIndex = DeviceSelectionHelper::getSubDeviceIndex(deviceSelection);
+    ERROR_UNLESS((subDeviceIndex < this->subDevices.size()), "Invalid subDevice index");
+    return this->subDevices[subDeviceIndex];
+}
+
+void LevelZero::createSubDevices(bool requireSuccess) {
+    uint32_t numSubDevices{};
+    EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetSubDevices(this->rootDevice, &numSubDevices, nullptr));
+    if (numSubDevices == 0) {
+        ERROR_IF(requireSuccess, "SubDevice was selected, but device has 0 subDevices");
+        return;
+    }
+
+    subDevices.resize(numSubDevices);
+    EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetSubDevices(this->rootDevice, &numSubDevices, subDevices.data()));
+}
+
+std::vector<LevelZero::QueueDesc> LevelZero::queryQueueFamilies(ze_device_handle_t device) {
+    // Get queue ordinals
+    uint32_t numQueueGroups = 0;
+    EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetCommandQueueGroupProperties(device, &numQueueGroups, nullptr));
+    ERROR_IF(numQueueGroups == 0, "No queue groups found!");
+    std::vector<ze_command_queue_group_properties_t> queueProperties(numQueueGroups);
+    EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetCommandQueueGroupProperties(device, &numQueueGroups, queueProperties.data()));
+
+    // Iterate over queue groups
+    std::vector<QueueDesc> result{};
+    for (uint32_t i = 0; i < numQueueGroups; i++) {
+        const bool isCompute = queueProperties[i].flags & ZE_COMMAND_QUEUE_GROUP_PROPERTY_FLAG_COMPUTE;
+        const bool isCopy = queueProperties[i].flags & ZE_COMMAND_QUEUE_GROUP_PROPERTY_FLAG_COPY;
+        const bool isCopyOnly = !isCompute && isCopy;
+        const size_t maxFillSize = queueProperties[i].maxMemoryFillPatternSize;
+
+        // Add compute and copy only queue
+        if (isCopyOnly || isCompute) {
+            ze_command_queue_desc_t desc = {};
+            desc.stype = ZE_STRUCTURE_TYPE_COMMAND_QUEUE_DESC;
+            desc.mode = ZE_COMMAND_QUEUE_MODE_ASYNCHRONOUS;
+            desc.ordinal = i;
+            result.push_back({isCopyOnly, maxFillSize, desc});
+        }
+    }
+    return result;
+}
+
+std::tuple<ze_command_queue_handle_t, ze_command_queue_desc_t, ze_device_handle_t, size_t> LevelZero::createQueue(const QueueProperties &queueProperties) {
+    if (!queueProperties.createQueue) {
+        return {};
+    }
+
+    // Get device
+    const ze_device_handle_t deviceForQueue = getDevice(queueProperties.deviceSelection);
+
+    // Get desc
+    const auto queueFamilies = queryQueueFamilies(deviceForQueue);
+    auto descEntry = std::find_if(queueFamilies.begin(), queueFamilies.end(), [queueProperties](const QueueDesc &d) { return d.isCopyOnly == queueProperties.forceBlitter; });
+    if (descEntry == queueFamilies.end()) {
+        ERROR_IF(queueProperties.requireCreationSuccess, "Device does not support such queue");
+        return {};
+    }
+    const ze_command_queue_desc_t commandQueueDesc = descEntry->desc;
+
+    // Create
+    ze_command_queue_handle_t commandQueue = {};
+    EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueCreate(this->context, deviceForQueue, &commandQueueDesc, &commandQueue));
+    return std::make_tuple(commandQueue, commandQueueDesc, deviceForQueue, descEntry->maxFillSize);
+}
+} // namespace L0
