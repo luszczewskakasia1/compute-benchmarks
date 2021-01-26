@@ -17,9 +17,10 @@ namespace L0 {
 // LevelZero performs it's own cleanup.
 struct LevelZero {
     // Additional data of the command queue, which cannot be queried after creation
-    struct QueueDesc {
+    struct QueueInfo {
         bool isCopyOnly = {};
-        size_t maxFillSize;
+        size_t maxFillSize = {};
+        ze_device_handle_t device = {};
         ze_command_queue_desc_t desc = {};
     };
 
@@ -58,10 +59,10 @@ struct LevelZero {
     void createSubDevices(bool requireSuccess);
 
     // Queries available queue families on the device and returns their descriptions
-    static std::vector<QueueDesc> queryQueueFamilies(ze_device_handle_t device);
+    static std::vector<QueueInfo> queryQueueFamilies(ze_device_handle_t device);
 
     // Creates queue with given properties
-    std::tuple<ze_command_queue_handle_t, ze_command_queue_desc_t, ze_device_handle_t, size_t> createQueue(const QueueProperties &queueProperties);
+    std::pair<ze_command_queue_handle_t, QueueInfo> createQueue(const QueueProperties &queueProperties);
 
     // Internal fields managed by the LevelZero class
     ze_device_handle_t rootDevice{};
