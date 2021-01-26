@@ -3,16 +3,16 @@
 #include "framework/utility/timer.h"
 #include "framework/workload/register_workload.h"
 
-struct ComputeWorkloadParameters : WorkloadParameters {
+struct SingleQueueWorkloadParameters : WorkloadParameters {
     ByteSizeTestCaseArgument bufferSize;
 
-    ComputeWorkloadParameters()
+    SingleQueueWorkloadParameters()
         : bufferSize(*this, "size", "Size of the buffer") {}
 };
 
-struct ComputeWorkload : Workload<ComputeWorkloadParameters> {};
+struct SingleQueueWorkload : Workload<SingleQueueWorkloadParameters> {};
 
-TestResult run(const ComputeWorkloadParameters &arguments, Statistics &statistics, WorkloadSynchronization &synchronization) {
+TestResult run(const SingleQueueWorkloadParameters &arguments, Statistics &statistics, WorkloadSynchronization &synchronization) {
     LevelZero levelzero{};
     Timer timer{};
 
@@ -31,7 +31,7 @@ TestResult run(const ComputeWorkloadParameters &arguments, Statistics &statistic
     }
 
     // Create kernel
-    auto spirvModule = loadBinaryFile("compute_workload_increment.spv");
+    auto spirvModule = loadBinaryFile("single_queue_workload_increment.spv");
     if (spirvModule.size() == 0) {
         return TestResult::KernelNotFound;
     }
@@ -85,7 +85,7 @@ TestResult run(const ComputeWorkloadParameters &arguments, Statistics &statistic
 }
 
 int main(int argc, char **argv) {
-    ComputeWorkload workload;
-    ComputeWorkload::implementation = run;
+    SingleQueueWorkload workload;
+    SingleQueueWorkload::implementation = run;
     return workload.runFromCommandLine(argc, argv);
 }

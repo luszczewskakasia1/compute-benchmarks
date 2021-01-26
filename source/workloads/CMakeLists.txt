@@ -14,4 +14,4 @@ function(add_workload TARGET_NAME API)
     setup_vs_folders(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
 endfunction()
 
-add_subdirectory(compute_workload_l0)
+add_subdirectory(single_queue_workload_l0)
