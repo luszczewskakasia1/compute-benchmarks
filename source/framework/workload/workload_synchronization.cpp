@@ -34,3 +34,9 @@ void WorkloadSynchronization::synchronize() {
 bool WorkloadSynchronization::validate() {
     return synchronizationCount == expectedSynchronizationCount;
 }
+
+void WorkloadSynchronization::executeRemainingSynchronizations() {
+    while (synchronizationCount < expectedSynchronizationCount) {
+        synchronize();
+    }
+}

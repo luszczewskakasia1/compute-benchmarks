@@ -65,6 +65,8 @@ class Workload {
             ERROR_UNLESS(statistics.isFull(), "test did not generate as many values as expected");
             ERROR_UNLESS(synchronization.validate(), "test did not synchronize the correct amount of times");
             statistics.printStatistics();
+        } else {
+            synchronization.executeRemainingSynchronizations();
         }
         return toProcessResult(result);
     }
