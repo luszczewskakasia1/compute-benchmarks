@@ -1,6 +1,6 @@
 #include "framework/l0/levelzero.h"
 #include "framework/test_case/register_test_case.h"
-#include "framework/utility/load_binary_file.h"
+#include "framework/utility/file_helper.h"
 #include "framework/utility/timer.h"
 
 #include "definitions/usm_shared_first_gpu_access.h"
@@ -21,7 +21,7 @@ static TestResult run(const UsmSharedFirstGpuAccessArguments &arguments, Statist
     void *buffer{};
 
     // Create kernel
-    const auto kernelBinary = loadBinaryFile("ulls_benchmark_write_one.spv");
+    const auto kernelBinary = FileHelper::loadBinaryFile("ulls_benchmark_write_one.spv");
     if (kernelBinary.size() == 0) {
         return TestResult::KernelNotFound;
     }

@@ -1,6 +1,6 @@
 #include "framework/l0/levelzero.h"
 #include "framework/test_case/register_test_case.h"
-#include "framework/utility/load_binary_file.h"
+#include "framework/utility/file_helper.h"
 #include "framework/utility/timer.h"
 
 #include "definitions/new_resources_submission_host.h"
@@ -12,7 +12,7 @@ static TestResult run(const NewResourcesSubmissionHostArguments &arguments, Stat
     Timer timer;
 
     // Create kernel
-    auto kernelBinary = loadBinaryFile("ulls_benchmark_write_one.spv");
+    auto kernelBinary = FileHelper::loadBinaryFile("ulls_benchmark_write_one.spv");
     if (kernelBinary.size() == 0) {
         return TestResult::KernelNotFound;
     }

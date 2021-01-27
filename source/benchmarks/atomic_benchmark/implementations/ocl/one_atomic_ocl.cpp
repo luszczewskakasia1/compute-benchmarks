@@ -1,7 +1,7 @@
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/atomic_operation_helper.h"
-#include "framework/utility/load_binary_file.h"
+#include "framework/utility/file_helper.h"
 #include "framework/utility/timer.h"
 
 #include "definitions/one_atomic.h"
@@ -40,7 +40,7 @@ static TestResult run(const OneAtomicArguments &arguments, Statistics &statistic
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
     // Create kernel
-    const std::vector<uint8_t> kernelSource = loadBinaryFile("atomic_benchmark_kernel.cl");
+    const std::vector<uint8_t> kernelSource = FileHelper::loadTextFile("atomic_benchmark_kernel.cl");
     if (kernelSource.size() == 0) {
         return TestResult::KernelNotFound;
     }

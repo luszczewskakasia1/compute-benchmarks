@@ -1,6 +1,6 @@
 #include "framework/l0/levelzero.h"
 #include "framework/test_case/register_test_case.h"
-#include "framework/utility/load_binary_file.h"
+#include "framework/utility/file_helper.h"
 #include "framework/utility/timer.h"
 
 #include "definitions/append_launch_kernel.h"
@@ -13,7 +13,7 @@ static TestResult run(const AppendLaunchKernelArguments &arguments, Statistics &
     Timer timer;
 
     // Create kernel
-    auto spirvModule = loadBinaryFile("api_overhead_benchmark_empty_kernel.spv");
+    auto spirvModule = FileHelper::loadBinaryFile("api_overhead_benchmark_empty_kernel.spv");
     if (spirvModule.size() == 0) {
         return TestResult::KernelNotFound;
     }

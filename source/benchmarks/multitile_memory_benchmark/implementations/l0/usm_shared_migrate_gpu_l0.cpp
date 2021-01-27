@@ -1,7 +1,7 @@
 #include "framework/l0/levelzero.h"
 #include "framework/l0/usm_helper.h"
 #include "framework/test_case/register_test_case.h"
-#include "framework/utility/load_binary_file.h"
+#include "framework/utility/file_helper.h"
 #include "framework/utility/timer.h"
 
 #include "definitions/usm_shared_migrate_gpu.h"
@@ -25,7 +25,7 @@ static TestResult run(const UsmSharedMigrateGpuArguments &arguments, Statistics 
     const size_t elementsCount = arguments.bufferSize / sizeof(uint32_t);
 
     // Create kernel
-    const auto kernelBinary = loadBinaryFile("multitile_memory_benchmark_fill_with_ones.spv");
+    const auto kernelBinary = FileHelper::loadBinaryFile("multitile_memory_benchmark_fill_with_ones.spv");
     if (kernelBinary.size() == 0) {
         return TestResult::KernelNotFound;
     }

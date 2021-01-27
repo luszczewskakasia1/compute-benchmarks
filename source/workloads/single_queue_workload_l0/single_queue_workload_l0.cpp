@@ -1,5 +1,5 @@
 #include "framework/l0/levelzero.h"
-#include "framework/utility/load_binary_file.h"
+#include "framework/utility/file_helper.h"
 #include "framework/utility/timer.h"
 #include "framework/workload/register_workload.h"
 
@@ -46,7 +46,7 @@ TestResult run(const SingleQueueWorkloadParameters &arguments, Statistics &stati
     ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeContextMakeMemoryResident(levelzero.context, levelzero.device, buffer, bufferSizeInBytes));
 
     // Create kernel
-    auto spirvModule = loadBinaryFile("single_queue_workload_increment.spv");
+    auto spirvModule = FileHelper::loadBinaryFile("single_queue_workload_increment.spv");
     if (spirvModule.size() == 0) {
         return TestResult::KernelNotFound;
     }

@@ -1,6 +1,6 @@
 #include "framework/l0/levelzero.h"
 #include "framework/test_case/register_test_case.h"
-#include "framework/utility/load_binary_file.h"
+#include "framework/utility/file_helper.h"
 #include "framework/utility/timer.h"
 
 #include "definitions/usm_shared_migrate_cpu.h"
@@ -20,7 +20,7 @@ static TestResult run(const UsmSharedMigrateCpuArguments &arguments, Statistics 
     const size_t elementsCount = arguments.bufferSize / sizeof(uint32_t);
 
     // Create kernel
-    const auto kernelBinary = loadBinaryFile("memory_benchmark_fill_with_ones.spv");
+    const auto kernelBinary = FileHelper::loadBinaryFile("memory_benchmark_fill_with_ones.spv");
     if (kernelBinary.size() == 0) {
         return TestResult::KernelNotFound;
     }

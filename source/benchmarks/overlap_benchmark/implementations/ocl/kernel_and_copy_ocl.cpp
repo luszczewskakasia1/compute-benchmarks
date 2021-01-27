@@ -1,6 +1,6 @@
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
-#include "framework/utility/load_binary_file.h"
+#include "framework/utility/file_helper.h"
 #include "framework/utility/timer.h"
 
 #include "definitions/kernel_and_copy.h"

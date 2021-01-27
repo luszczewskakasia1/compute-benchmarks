@@ -1,6 +1,6 @@
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
-#include "framework/utility/load_binary_file.h"
+#include "framework/utility/file_helper.h"
 #include "framework/utility/timer.h"
 
 #include "definitions/kernel_with_work.h"
@@ -21,7 +21,7 @@ static TestResult run(const KernelWithWorkArguments &arguments, Statistics &stat
     ASSERT_CL_SUCCESS(retVal);
 
     // Create kernel
-    auto spirvModule = loadBinaryFile(selectKernel(arguments.usedIds));
+    auto spirvModule = FileHelper::loadBinaryFile(selectKernel(arguments.usedIds));
     if (spirvModule.size() == 0) {
         return TestResult::KernelNotFound;
     }

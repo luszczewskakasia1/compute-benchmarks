@@ -1,7 +1,7 @@
 #include "framework/l0/levelzero.h"
 #include "framework/l0/usm_helper.h"
 #include "framework/test_case/register_test_case.h"
-#include "framework/utility/load_binary_file.h"
+#include "framework/utility/file_helper.h"
 #include "framework/utility/timer.h"
 
 #include "definitions/usm_copy_kernel.h"
@@ -24,7 +24,7 @@ static TestResult run(const UsmCopyKernelArguments &arguments, Statistics &stati
     ASSERT_ZE_RESULT_SUCCESS(UsmHelper::allocate(arguments.dstPlacement, levelzero, arguments.size, &dst));
 
     // Create kernel
-    const auto kernelBinary = loadBinaryFile("multitile_memory_benchmark_copy_buffer.spv");
+    const auto kernelBinary = FileHelper::loadBinaryFile("multitile_memory_benchmark_copy_buffer.spv");
     if (kernelBinary.size() == 0) {
         return TestResult::KernelNotFound;
     }
