@@ -5,7 +5,7 @@
 #include <vector>
 
 inline std::vector<uint8_t> loadBinaryFile(const std::string &filePath) {
-    std::ifstream stream(filePath, std::ios::in);
+    std::ifstream stream(filePath, std::ios::in | std::ios::binary);
     if (!stream.good()) {
         return {};
     }

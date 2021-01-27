@@ -4,10 +4,12 @@
 #include "framework/workload/register_workload.h"
 
 struct SingleQueueWorkloadParameters : WorkloadParameters {
-    ByteSizeTestCaseArgument bufferSize;
+    PositiveIntegerTestCaseArgument operationsCount;
+    PositiveIntegerTestCaseArgument workgroupCount;
 
     SingleQueueWorkloadParameters()
-        : bufferSize(*this, "size", "Size of the buffer") {}
+        : operationsCount(*this, "operationsCount", "Number of redundant operations performed in kernel to make it take longer"),
+          workgroupCount(*this, "wgc", "Number of workgroups enqueued") {}
 };
 
 struct SingleQueueWorkload : Workload<SingleQueueWorkloadParameters> {};
@@ -16,12 +18,6 @@ TestResult run(const SingleQueueWorkloadParameters &arguments, Statistics &stati
     LevelZero levelzero{};
     Timer timer{};
 
-    // Create buffer
-    void *buffer = nullptr;
-    const ze_device_mem_alloc_desc_t deviceAllocationDesc{ZE_STRUCTURE_TYPE_DEVICE_MEM_ALLOC_DESC};
-    ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, arguments.bufferSize, 0, levelzero.device, &buffer));
-    ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeContextMakeMemoryResident(levelzero.context, levelzero.device, buffer, arguments.bufferSize))
-
     // Ensure we're running on a single tile
     uint32_t tilesCount = {};
     ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeDeviceGetSubDevices(levelzero.device, &tilesCount, nullptr));
@@ -29,6 +25,25 @@ TestResult run(const SingleQueueWorkloadParameters &arguments, Statistics &stati
         std::cerr << "This workload should run on a single tile\n";
         return TestResult::DeviceNotCapable;
     }
+
+    // Compute work size
+    const ze_device_compute_properties_t deviceComputeProperties = levelzero.getDeviceComputeProperties();
+    const uint32_t groupSize = deviceComputeProperties.maxTotalGroupSize;
+    const uint32_t groupCountX = static_cast<uint32_t>(arguments.workgroupCount);
+    const uint32_t totalThreadsCount = groupSize * groupCountX;
+    if (totalThreadsCount == 0) {
+        return TestResult::DeviceNotCapable;
+    }
+    const ze_group_count_t groupCount{groupCountX, 1, 1};
+    const uint32_t operationsCount = static_cast<uint32_t>(arguments.operationsCount);
+
+    // Create buffer
+    const size_t bufferSizeInElements = groupCount.groupCountX * groupSize;
+    const size_t bufferSizeInBytes = bufferSizeInElements * sizeof(uint32_t);
+    void *buffer = nullptr;
+    const ze_device_mem_alloc_desc_t deviceAllocationDesc{ZE_STRUCTURE_TYPE_DEVICE_MEM_ALLOC_DESC};
+    ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, bufferSizeInBytes, 0, levelzero.device, &buffer));
+    ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeContextMakeMemoryResident(levelzero.context, levelzero.device, buffer, bufferSizeInBytes));
 
     // Create kernel
     auto spirvModule = loadBinaryFile("single_queue_workload_increment.spv");
@@ -44,11 +59,10 @@ TestResult run(const SingleQueueWorkloadParameters &arguments, Statistics &stati
     ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeModuleCreate(levelzero.context, levelzero.device, &moduleDesc, &module, nullptr));
     ze_kernel_desc_t kernelDesc{ZE_STRUCTURE_TYPE_KERNEL_DESC};
     kernelDesc.pKernelName = "increment";
-    const uint32_t groupSize = 256;
-    const ze_group_count_t groupCount{static_cast<uint32_t>(arguments.bufferSize) / groupSize, 1, 1};
     ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeKernelCreate(module, &kernelDesc, &kernel));
     ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeKernelSetGroupSize(kernel, groupSize, 1u, 1u));
     ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeKernelSetArgumentValue(kernel, 0, sizeof(buffer), &buffer));
+    ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeKernelSetArgumentValue(kernel, 1, sizeof(operationsCount), &operationsCount));
 
     // Create command list
     ze_command_list_desc_t cmdListDesc{};
@@ -75,7 +89,7 @@ TestResult run(const SingleQueueWorkloadParameters &arguments, Statistics &stati
     }
 
     // Evict buffer
-    ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeContextEvictMemory(levelzero.context, levelzero.device, buffer, arguments.bufferSize));
+    ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeContextEvictMemory(levelzero.context, levelzero.device, buffer, bufferSizeInBytes));
 
     ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeCommandListDestroy(cmdList));
     ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeKernelDestroy(kernel));

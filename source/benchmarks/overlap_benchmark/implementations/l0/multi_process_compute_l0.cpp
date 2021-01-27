@@ -31,11 +31,20 @@ static TestResult run(const MultiProcessComputeArguments &arguments, Statistics 
         }
     }
 
+    // Prepare total number of workgroups each tile will execute. In case many processes are
+    // submitted per tile, they will get proportionately less workgroups, so the total number
+    // stays the same.
+    const size_t totalWorkgroupsPerTile = 4;
+    if (totalWorkgroupsPerTile % arguments.processesPerTile != 0) {
+        return TestResult::InvalidArgs;
+    }
+
     // Prepare processes
     ProcessGroup processes{"single_queue_workload_l0", tilesForExecution.size()};
     processes.addArgumentAll("iterations", std::to_string(arguments.iterations));
-    processes.addArgumentAll("size", std::to_string(arguments.bufferSize));
     processes.addArgumentAll("synchronize", "1");
+    processes.addArgumentAll("wgc", std::to_string(totalWorkgroupsPerTile / arguments.processesPerTile));
+    processes.addArgumentAll("operationsCount", "1000000");
     for (auto i = 0u; i < processes.size(); i++) {
         const auto affinityMask = AffinityMaskHelper::createAffinityMask(Configuration::get().l0DeviceIndex, tilesForExecution[i]);
         processes[i].addEnvVariable("ZE_AFFINITY_MASK", affinityMask);

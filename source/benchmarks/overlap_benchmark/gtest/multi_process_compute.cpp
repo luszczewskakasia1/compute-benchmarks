@@ -34,4 +34,4 @@ INSTANTIATE_TEST_SUITE_P(
             DeviceSelection::Tile0 | DeviceSelection::Tile1,
             DeviceSelection::Tile0 | DeviceSelection::Tile1 | DeviceSelection::Tile2 | DeviceSelection::Tile3),
         ::testing::Values(128 * megaByte),
-        ::testing::Values(1, 4)));
+        ::testing::Values(1, 2, 4)));
