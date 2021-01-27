@@ -99,6 +99,7 @@ std::vector<LevelZero::QueueInfo> LevelZero::queryQueueFamilies(ze_device_handle
         const bool isCopy = queueProperties[i].flags & ZE_COMMAND_QUEUE_GROUP_PROPERTY_FLAG_COPY;
         const bool isCopyOnly = !isCompute && isCopy;
         const size_t maxFillSize = queueProperties[i].maxMemoryFillPatternSize;
+        const size_t count = queueProperties[i].numQueues;
 
         // Add compute and copy only queue
         if (isCopyOnly || isCompute) {
@@ -106,7 +107,7 @@ std::vector<LevelZero::QueueInfo> LevelZero::queryQueueFamilies(ze_device_handle
             desc.stype = ZE_STRUCTURE_TYPE_COMMAND_QUEUE_DESC;
             desc.mode = ZE_COMMAND_QUEUE_MODE_ASYNCHRONOUS;
             desc.ordinal = i;
-            result.push_back({isCopyOnly, maxFillSize, device, desc});
+            result.push_back({isCopyOnly, maxFillSize, count, device, desc});
         }
     }
     return result;
@@ -122,16 +123,22 @@ std::pair<ze_command_queue_handle_t, LevelZero::QueueInfo> LevelZero::createQueu
 
     // Get queue info, which matches our requirements passed in QueueProperties
     const auto queueFamilies = queryQueueFamilies(deviceForQueue);
-    auto queueInfo = std::find_if(queueFamilies.begin(), queueFamilies.end(), [queueProperties](const QueueInfo &d) { return d.isCopyOnly == queueProperties.forceBlitter; });
+    const auto queueInfo = std::find_if(queueFamilies.begin(), queueFamilies.end(), [queueProperties](const QueueInfo &d) { return d.isCopyOnly == queueProperties.forceBlitter; });
     if (queueInfo == queueFamilies.end()) {
         ERROR_IF(queueProperties.requireCreationSuccess, "Device does not support such queue");
         return {};
     }
 
     // Create
-    ze_command_queue_handle_t commandQueue = {};
-    EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueCreate(this->context, queueInfo->device, &queueInfo->desc, &commandQueue));
-    this->commandQueues.push_back(commandQueue);
-    return std::make_pair(commandQueue, *queueInfo);
+    const ze_command_queue_handle_t queue = createQueue(queueInfo->device, queueInfo->desc);
+    return std::make_pair(queue, *queueInfo);
 }
+
+ze_command_queue_handle_t LevelZero::createQueue(ze_device_handle_t device, ze_command_queue_desc_t desc) {
+    ze_command_queue_handle_t queue = {};
+    EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueCreate(this->context, device, &desc, &queue));
+    this->commandQueues.push_back(queue);
+    return queue;
+}
+
 } // namespace L0

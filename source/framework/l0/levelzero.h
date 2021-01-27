@@ -20,6 +20,7 @@ struct LevelZero {
     struct QueueInfo {
         bool isCopyOnly = {};
         size_t maxFillSize = {};
+        size_t count;
         ze_device_handle_t device = {};
         ze_command_queue_desc_t desc = {};
     };
@@ -42,10 +43,11 @@ struct LevelZero {
     // Queries available queue families on the device and returns their descriptions.
     static std::vector<QueueInfo> queryQueueFamilies(ze_device_handle_t device);
 
-    // Creates queue with given properties. It doesn't needed to be called by the user in scenarios with only one queue.
-    // Queue will be created by default, unless disabled in QueueProperties. This method allows the user to create
+    // Creates queue with given properties. These methods aren't needed to be called by the user in scenarios with only one queue.
+    // Queue will be created by default, unless disabled in QueueProperties. These methods allow the user to create
     // additional queues. Queues are tracked internally and will be released automatically.
     std::pair<ze_command_queue_handle_t, QueueInfo> createQueue(const QueueProperties &queueProperties);
+    ze_command_queue_handle_t createQueue(ze_device_handle_t device, ze_command_queue_desc_t desc);
 
     // Returns device for given DeviceSelection. Getting multiple devices at once, e.g. Tile0|Tile1 is forbidden.
     ze_device_handle_t getDevice(DeviceSelection deviceSelection) const;
