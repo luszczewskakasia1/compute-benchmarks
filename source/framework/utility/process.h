@@ -13,6 +13,7 @@ class Process {
     ~Process();
     void addArgument(const std::string &key, const std::string &value);
     void addEnvVariable(const std::string &key, const std::string &value);
+    std::vector<uint64_t> getMeasurements(size_t expectedCount);
 
     // OS-specific methods
     void run();

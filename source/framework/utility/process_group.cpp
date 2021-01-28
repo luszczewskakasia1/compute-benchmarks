@@ -59,21 +59,9 @@ TestResult ProcessGroup::getResultAll() {
 std::vector<std::vector<uint64_t>> ProcessGroup::getMeasurementsAll(size_t expectedCount) {
     std::vector<std::vector<uint64_t>> result = {};
     result.reserve(processes.size());
-
-    for (auto processIndex = 0; processIndex < processes.size(); processIndex++) {
-        const auto stdOut = processes[processIndex].getStdout();
-        const auto stdOutSplit = splitString(stdOut);
-        ERROR_IF(stdOutSplit.size() != expectedCount, "Child process returned an invalid number of measurements");
-
-        std::vector<uint64_t> measurementsFromProcess = {};
-        for (const auto measurementString : stdOutSplit) {
-            const auto measurement = std::atoll(measurementString.c_str());
-            measurementsFromProcess.push_back(measurement);
-        }
-
-        result.push_back(std::move(measurementsFromProcess));
+    for (Process &process : processes) {
+        result.push_back(process.getMeasurements(expectedCount));
     }
-
     return result;
 }
 

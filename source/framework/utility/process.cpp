@@ -1,5 +1,10 @@
 #include "process.h"
+
+#include "framework/utility/error.h"
+#include "framework/utility/string_utils.h"
+
 #include <iostream>
+
 Process::Process(const std::string &exeName)
     : exeName(exeName) {
     arguments.emplace_back(exeName, std::string{});
@@ -32,4 +37,18 @@ void Process::addArgument(const std::string &key, const std::string &value) {
 
 void Process::addEnvVariable(const std::string &key, const std::string &value) {
     envVariables.emplace_back(key, value);
+}
+
+std::vector<uint64_t> Process::getMeasurements(size_t expectedCount) {
+    const auto stdOut = getStdout();
+    const auto stdOutSplit = splitString(stdOut);
+    ERROR_IF(stdOutSplit.size() != expectedCount, "Child process returned an invalid number of measurements");
+
+    std::vector<uint64_t> measurementsFromProcess = {};
+    for (const auto measurementString : stdOutSplit) {
+        const auto measurement = std::atoll(measurementString.c_str());
+        measurementsFromProcess.push_back(measurement);
+    }
+
+    return measurementsFromProcess;
 }
