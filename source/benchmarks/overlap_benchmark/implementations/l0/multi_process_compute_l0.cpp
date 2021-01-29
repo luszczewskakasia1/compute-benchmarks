@@ -48,6 +48,10 @@ static TestResult run(const MultiProcessComputeArguments &arguments, Statistics 
     for (auto i = 0u; i < processes.size(); i++) {
         const auto affinityMask = AffinityMaskHelper::createAffinityMask(Configuration::get().l0DeviceIndex, tilesForExecution[i]);
         processes[i].addEnvVariable("ZE_AFFINITY_MASK", affinityMask);
+
+        std::ostringstream processName{};
+        processName << "process" << i << " (" << DeviceSelectionHelper::toString(tilesForExecution[i]) << ")";
+        processes[i].setName(processName.str());
     }
 
     // Run processes
@@ -57,14 +61,7 @@ static TestResult run(const MultiProcessComputeArguments &arguments, Statistics 
     if (TestResult result = processes.getResultAll(); result != TestResult::Success) {
         return result;
     }
-
-    // Get results
-    const std::vector<uint64_t> results = processes.getAverageMeasurementsAll(arguments.iterations);
-    for (const auto result : results) {
-        auto time = std::chrono::nanoseconds(result);
-        time /= processes.size();
-        statistics.pushValue(time);
-    }
+    processes.pushMeasurementsToStatistics(arguments.iterations, statistics, (processes.size() > 1), true);
 
     return TestResult::Success;
 }

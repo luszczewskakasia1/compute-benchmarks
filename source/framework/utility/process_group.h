@@ -4,6 +4,8 @@
 
 #include <string>
 
+class Statistics;
+
 class ProcessGroup {
   public:
     ProcessGroup(const std::string &binaryName, size_t count);
@@ -17,8 +19,7 @@ class ProcessGroup {
     TestResult getResultAll();
 
     // Operations involving all processes
-    std::vector<std::vector<uint64_t>> getMeasurementsAll(size_t expectedCount);
-    std::vector<uint64_t> getAverageMeasurementsAll(size_t expectedCount);
+    void pushMeasurementsToStatistics(size_t expectedCount, Statistics &statistics, bool pushIndividualProcessesMeasurements, bool pushAveragedMeasurements);
 
     // Container-like methods
     Process &operator[](size_t index);

@@ -1,6 +1,7 @@
 #include "process_group.h"
 
 #include "framework/utility/error.h"
+#include "framework/utility/statistics.h"
 #include "framework/utility/string_utils.h"
 
 ProcessGroup::ProcessGroup(const std::string &binaryName, size_t count)
@@ -56,23 +57,32 @@ TestResult ProcessGroup::getResultAll() {
     return TestResult::Success;
 }
 
-std::vector<std::vector<uint64_t>> ProcessGroup::getMeasurementsAll(size_t expectedCount) {
-    std::vector<std::vector<uint64_t>> result = {};
-    result.reserve(processes.size());
-    for (Process &process : processes) {
-        result.push_back(process.getMeasurements(expectedCount));
-    }
-    return result;
-}
+void ProcessGroup::pushMeasurementsToStatistics(size_t expectedCount, Statistics &statistics,
+                                                bool pushIndividualProcessesMeasurements, bool pushAveragedMeasurements) {
+    std::vector<uint64_t> averagedMeasurements(expectedCount);
 
-std::vector<uint64_t> ProcessGroup::getAverageMeasurementsAll(size_t expectedCount) {
-    std::vector<uint64_t> result(expectedCount);
-    for (const auto &measurementsFromProcess : getMeasurementsAll(expectedCount)) {
-        for (auto i = 0u; i < measurementsFromProcess.size(); i++) {
-            result[i] += measurementsFromProcess[i];
+    for (Process &process : processes) {
+        const auto measurementsFromProcesses = process.getMeasurements(expectedCount);
+
+        for (auto measurementIndex = 0u; measurementIndex < measurementsFromProcesses.size(); measurementIndex++) {
+            const auto &measurement = measurementsFromProcesses[measurementIndex];
+
+            if (pushIndividualProcessesMeasurements) {
+                statistics.pushValue(std::chrono::nanoseconds(measurement), process.getName());
+            }
+
+            if (pushAveragedMeasurements) {
+                averagedMeasurements[measurementIndex] += measurement;
+            }
         }
     }
-    return result;
+
+    if (pushAveragedMeasurements) {
+        for (auto &averagedMeasurement : averagedMeasurements) {
+            averagedMeasurement /= processes.size();
+            statistics.pushValue(std::chrono::nanoseconds(averagedMeasurement));
+        }
+    }
 }
 
 Process &ProcessGroup::operator[](size_t index) {

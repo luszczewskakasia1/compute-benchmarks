@@ -14,6 +14,8 @@ class Process {
     void addArgument(const std::string &key, const std::string &value);
     void addEnvVariable(const std::string &key, const std::string &value);
     std::vector<uint64_t> getMeasurements(size_t expectedCount);
+    void setName(const std::string &string) { this->processName = string; }
+    const std::string &getName() const { return this->processName; }
 
     // OS-specific methods
     void run();
@@ -30,4 +32,5 @@ class Process {
     std::vector<std::pair<std::string, std::string>> arguments;
     std::vector<std::pair<std::string, std::string>> envVariables;
     void *osSpecificData = nullptr;
+    std::string processName = "";
 };

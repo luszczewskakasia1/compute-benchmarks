@@ -99,4 +99,19 @@ struct DeviceSelectionHelper {
         }
         return true;
     }
+
+    static std::string toString(DeviceSelection deviceSelection) {
+        switch (deviceSelection) {
+        case DeviceSelection::Tile0:
+            return "Tile0";
+        case DeviceSelection::Tile1:
+            return "Tile1";
+        case DeviceSelection::Tile2:
+            return "Tile2";
+        case DeviceSelection::Tile3:
+            return "Tile3";
+        default:
+            ERROR("Unknown device selection");
+        }
+    }
 };
