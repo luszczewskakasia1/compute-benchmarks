@@ -12,8 +12,11 @@ class WorkloadStatistics : public Statistics {
 
     void printStatistics();
 
-    void pushValue(Clock::duration time) override;
-    void pushValue(Clock::duration time, uint64_t size) override;
+    void pushValue(Clock::duration time, const std::string &description = "") override;
+    void pushValue(Clock::duration time, uint64_t size, const std::string &description = "") override;
+
+    bool isEmpty() const override;
+    bool isFull() const override;
 
   private:
     std::ostringstream result{};

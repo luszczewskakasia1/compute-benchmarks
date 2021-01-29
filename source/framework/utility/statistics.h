@@ -10,17 +10,12 @@ class Statistics {
 
     Statistics(size_t maxSamplesCount) : maxSamplesCount(maxSamplesCount) {}
 
-    virtual void pushValue(Clock::duration time) = 0;
-    virtual void pushValue(Clock::duration time, uint64_t size) = 0;
+    virtual void pushValue(Clock::duration time, const std::string &description = "") = 0;
+    virtual void pushValue(Clock::duration time, uint64_t size, const std::string &description = "") = 0;
 
-    bool isEmpty() const { return samplesCount == 0; }
-    bool isFull() const { return samplesCount == maxSamplesCount; }
+    virtual bool isEmpty() const = 0;
+    virtual bool isFull() const = 0;
 
   protected:
-    void incrementSamplesCount() {
-        ERROR_IF(samplesCount > maxSamplesCount, "Too much values pushed by the test");
-        samplesCount++;
-    }
     const size_t maxSamplesCount = 0;
-    size_t samplesCount = 0;
 };
