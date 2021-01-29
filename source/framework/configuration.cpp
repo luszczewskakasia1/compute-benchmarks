@@ -68,7 +68,7 @@ bool Configuration::parseArgumentsForConfiguration(CommandLineArguments &argumen
         configuration->printType = Configuration::PrintType::Csv;
     }
     if (configuration->verbose) {
-        configuration->printType = Configuration::PrintType::Verbose;
+        configuration->printType = Configuration::PrintType::DefaultWithVerbose;
     }
 
     return true;

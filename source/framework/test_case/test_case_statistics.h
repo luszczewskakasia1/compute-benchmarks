@@ -22,11 +22,14 @@ class TestCaseStatistics : public Statistics {
     bool isFull() const override;
 
     static void printStatisticsHeader(Configuration::PrintType printType);
-    void printStatistics(const std::string &testCaseName);
-    void printStatisticsString(const std::string &testCaseName, const std::string &message);
+    void printStatistics(const std::string &testCaseName) const;
+    void printStatisticsString(const std::string &testCaseName, const std::string &message) const;
 
   private:
     void pushValue(Value value, const std::string &description);
+    void printStatisticsDefault(const std::string &testCaseName) const;
+    void printStatisticsCsv(const std::string &testCaseName) const;
+    void printStatisticsVerbose() const;
 
     const Configuration::PrintType printType;
     SamplesMap samplesMap = {};

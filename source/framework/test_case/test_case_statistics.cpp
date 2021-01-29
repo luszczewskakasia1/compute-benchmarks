@@ -124,7 +124,7 @@ void TestCaseStatistics::printStatisticsHeader(Configuration::PrintType printTyp
     const auto columns = ColumnInfo::getColumns();
     const auto columnCount = ColumnInfo::getColumnCount();
     switch (printType) {
-    case Configuration::PrintType::Verbose:
+    case Configuration::PrintType::DefaultWithVerbose:
     case Configuration::PrintType::Default: {
         for (const ColumnInfo &column : columns) {
             std::cout << std::setw(column.width) << getColumnName(column.label, unit, column.printUnit);
@@ -147,61 +147,77 @@ void TestCaseStatistics::printStatisticsHeader(Configuration::PrintType printTyp
     }
 }
 
-void TestCaseStatistics::printStatistics(const std::string &testCaseName) {
-    const auto columns = ColumnInfo::getColumns();
-    const auto columnCount = ColumnInfo::getColumnCount();
-
-    const Metrics metrics{samplesMap[""]};
-    const MetricsStrings metricsStrings{metrics, this->reachedInfinity};
+void TestCaseStatistics::printStatistics(const std::string &testCaseName) const {
     switch (printType) {
-    case Configuration::PrintType::Verbose:
-    case Configuration::PrintType::Default: {
+    case Configuration::PrintType::Default:
+        printStatisticsDefault(testCaseName);
+        break;
+    case Configuration::PrintType::DefaultWithVerbose:
+        printStatisticsDefault(testCaseName);
+        printStatisticsVerbose();
+        break;
+    case Configuration::PrintType::Csv:
+        printStatisticsCsv(testCaseName);
+        break;
+    default:
+        ERROR("unknown print type selected");
+    }
+}
+
+void TestCaseStatistics::printStatisticsDefault(const std::string &testCaseName) const {
+    const auto columns = ColumnInfo::getColumns();
+
+    for (const auto &samplesEntry : this->samplesMap) {
+        const auto &samplesName = samplesEntry.first;
+        const auto &samples = samplesEntry.second;
+        const MetricsStrings metricsStrings{Metrics{samples}, this->reachedInfinity};
+
         int column = 0;
-        std::cout << std::setw(columns[column++].width) << testCaseName;
+        std::cout << std::setw(columns[column++].width) << ((samplesName == "") ? testCaseName : "");
         std::cout << std::setw(columns[column++].width) << metricsStrings.mean;
         std::cout << std::setw(columns[column++].width) << metricsStrings.median;
         std::cout << std::setw(columns[column++].width) << metricsStrings.standardDeviation;
         std::cout << std::setw(columns[column++].width) << metricsStrings.min;
         std::cout << std::setw(columns[column++].width) << metricsStrings.max;
+        std::cout << ' ' << samplesName;
         std::cout << std::endl;
-        break;
-    }
-    case Configuration::PrintType::Csv: {
-        std::cout << testCaseName << ",";
-        std::cout << metricsStrings.mean << ",";
-        std::cout << metricsStrings.median << ",";
-        std::cout << metricsStrings.standardDeviation << ",";
-        std::cout << metricsStrings.min << ",";
-        std::cout << metricsStrings.max;
-        std::cout << std::endl;
-        break;
-    }
-    default:
-        ERROR("unknown print type selected");
-    }
-
-    if (printType == Configuration::PrintType::Verbose) {
-        for (const auto &entry : this->samplesMap) {
-            const auto &samples = entry.first;
-            const auto samplesCount = entry.second.size();
-
-            for (int i = 0; i < samplesCount; i++) {
-                std::cout << samples[i];
-                if (i != samplesCount - 1) {
-                    std::cout << " ";
-                } else {
-                    std::cout << "\n\n";
-                }
-            }
-        }
     }
 }
 
-void TestCaseStatistics::printStatisticsString(const std::string &testCaseName, const std::string &message) {
+void TestCaseStatistics::printStatisticsCsv(const std::string &testCaseName) const {
+    const auto samples = this->samplesMap.at("");
+    const MetricsStrings metricsStrings{Metrics{samples}, this->reachedInfinity};
+
+    std::cout << testCaseName << ",";
+    std::cout << metricsStrings.mean << ",";
+    std::cout << metricsStrings.median << ",";
+    std::cout << metricsStrings.standardDeviation << ",";
+    std::cout << metricsStrings.min << ",";
+    std::cout << metricsStrings.max;
+    std::cout << std::endl;
+}
+
+void TestCaseStatistics::printStatisticsVerbose() const {
+    for (const auto &samplesEntry : this->samplesMap) {
+        std::cout << "individual ";
+        if (const auto &samplesName = samplesEntry.first; samplesName != "") {
+            std::cout << samplesName << ' ';
+        }
+        std::cout << "results: [ ";
+
+        for (const auto &sample : samplesEntry.second) {
+            std::cout << sample << ' ';
+        }
+        std::cout << "]\n";
+    }
+    std::cout << '\n';
+}
+
+void TestCaseStatistics::printStatisticsString(const std::string &testCaseName, const std::string &message) const {
     const auto columns = ColumnInfo::getColumns();
     const auto columnCount = ColumnInfo::getColumnCount();
     switch (printType) {
-    case Configuration::PrintType::Verbose:
+    case Configuration::PrintType::DefaultWithVerbose:
     case Configuration::PrintType::Default: {
         std::cout << std::setw(columns[0].width) << testCaseName;
         for (int column = 1; column < columnCount; column++) {

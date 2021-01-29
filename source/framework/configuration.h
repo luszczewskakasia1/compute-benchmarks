@@ -21,8 +21,8 @@ struct Configuration : TestCaseArgumentsBase {
 
     enum class PrintType {
         Default,
+        DefaultWithVerbose,
         Csv,
-        Verbose,
     } printType = PrintType::Default;
 
     static bool parseArgumentsForConfiguration(CommandLineArguments &arguments);
