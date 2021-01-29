@@ -6,12 +6,10 @@
 
 struct MultiProcessComputeArguments : TestCaseArguments {
     MultipleTilesSelectionTestCaseArgument deviceSelection;
-    ByteSizeTestCaseArgument bufferSize;
     PositiveIntegerTestCaseArgument processesPerTile;
 
     MultiProcessComputeArguments()
         : deviceSelection(*this, "tiles", "Tiles for execution"),
-          bufferSize(*this, "size", "Size of the buffer"),
           processesPerTile(*this, "processesPerTile", "Number of processes that will be started on each of the tiles specified") {}
 };
 
