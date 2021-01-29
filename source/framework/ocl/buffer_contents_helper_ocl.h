@@ -13,7 +13,6 @@ class BufferContentsHelperOcl : public BufferContentsHelper {
     static cl_int fillBufferWithZeros(cl_command_queue queue, cl_mem buffer, size_t bufferSize);
     static cl_int fillBufferWithIncreasingBytes(cl_command_queue queue, cl_mem buffer, size_t bufferSize);
 
-
     static cl_int fillUsmBufferWithRandomBytes(cl_command_queue queue, void *usmBuffer, size_t bufferSize);
     static cl_int fillUsmBufferWithZeros(cl_command_queue queue, void *usmBuffer, size_t bufferSize);
 };

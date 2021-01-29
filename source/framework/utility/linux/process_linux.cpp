@@ -90,7 +90,7 @@ void Process::run() {
         }
 
         // Load new binary image
-        extern char** environ;
+        extern char **environ;
         const int execResult = execve(this->exeName.c_str(), argumentsForExec.data(), environ);
         ERROR_IF_SYS_CALL_FAILED(execResult, "Sys call execve failed, ");
         ERROR("Unreachable code after execve");
