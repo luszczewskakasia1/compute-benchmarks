@@ -1,5 +1,3 @@
-#pragma once
-
 #include "file_helper.h"
 
 #include <fstream>

@@ -7,7 +7,7 @@
 
 struct AffinityMaskHelper {
     static std::string createAffinityMask(size_t rootDeviceIndex, DeviceSelection subDevices) {
-        std::ostringstream result = {};
+        std::ostringstream result{};
         const auto subDevicesSplit = DeviceSelectionHelper::split(subDevices);
         for (int i = 0; i < subDevicesSplit.size(); i++) {
             const auto subDeviceIndex = DeviceSelectionHelper::getSubDeviceIndex(subDevicesSplit[i]);
