@@ -85,25 +85,13 @@ void Process::run() {
         argumentsForExec.push_back(nullptr);
 
         // Prepare environment
-        std::vector<std::string> environmentForExecStrings = {};
-        environmentForExecStrings.reserve(this->envVariables.size());
         for (auto &envVariable : this->envVariables) {
-            std::string str = envVariable.first;
-            if (!envVariable.second.empty()) {
-                str += "=";
-                str += envVariable.second;
-            }
-            environmentForExecStrings.push_back(std::move(str));
+            ERROR_IF_SYS_CALL_FAILED(setenv(envVariable.first.c_str(), envVariable.second.c_str(), 1), "setenv failed");
         }
-        std::vector<char *> environmentForExec = {};
-        environmentForExec.reserve(environmentForExecStrings.size() + 1);
-        for (auto &environmentForExecString : environmentForExecStrings) {
-            environmentForExec.push_back(environmentForExecString.data());
-        }
-        environmentForExec.push_back(nullptr);
 
         // Load new binary image
-        const int execResult = execve(this->exeName.c_str(), argumentsForExec.data(), environmentForExec.data());
+        extern char** environ;
+        const int execResult = execve(this->exeName.c_str(), argumentsForExec.data(), environ);
         ERROR_IF_SYS_CALL_FAILED(execResult, "Sys call execve failed, ");
         ERROR("Unreachable code after execve");
     }
