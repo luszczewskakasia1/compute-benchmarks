@@ -32,11 +32,10 @@ static TestResult run(const MultiProcessComputeArguments &arguments, Statistics 
     }
 
     // Prepare processes
-    constexpr bool synchronize = true;
     ProcessGroup processes{"single_queue_workload_l0", tilesForExecution.size()};
     processes.addArgumentAll("iterations", std::to_string(arguments.iterations));
-    processes.addArgumentAll("synchronize", std::to_string(static_cast<int>(synchronize)));
-    processes.addArgumentAll("wgc", "1");
+    processes.addArgumentAll("synchronize", std::to_string(arguments.synchronize));
+    processes.addArgumentAll("wgc", std::to_string(arguments.workgroupsPerProcess));
     processes.addArgumentAll("operationsCount", "10000000");
     for (auto i = 0u; i < processes.size(); i++) {
         const auto affinityMask = AffinityMaskHelper::createAffinityMask(Configuration::get().l0DeviceIndex, tilesForExecution[i]);
@@ -49,7 +48,7 @@ static TestResult run(const MultiProcessComputeArguments &arguments, Statistics 
 
     // Run processes
     processes.runAll();
-    if (synchronize) {
+    if (arguments.synchronize) {
         processes.synchronizeAll(arguments.iterations);
     }
     processes.waitForFinishAll();
