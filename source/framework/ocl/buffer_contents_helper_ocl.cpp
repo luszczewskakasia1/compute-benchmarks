@@ -14,7 +14,7 @@ cl_int BufferContentsHelperOcl::fillBuffer(cl_command_queue queue, cl_mem buffer
     case BufferContents::IncreasingBytes:
         return fillBufferWithIncreasingBytes(queue, buffer, bufferSize);
     default:
-        ERROR("Unknown buffer contents");
+        FATAL_ERROR("Unknown buffer contents");
     }
 }
 
@@ -25,7 +25,7 @@ cl_int BufferContentsHelperOcl::fillUsmBuffer(cl_command_queue queue, void *usmB
     case BufferContents::Random:
         return fillUsmBufferWithRandomBytes(queue, usmBuffer, bufferSize);
     default:
-        ERROR("Unknown buffer contents");
+        FATAL_ERROR("Unknown buffer contents");
     }
 }
 

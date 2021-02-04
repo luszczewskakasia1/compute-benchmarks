@@ -36,9 +36,9 @@ struct ThreeComponentUintTestCaseArgument : TestCaseArgument {
         const auto colonPos1 = value.find(":");
         const auto colonPos2 = value.find(":", colonPos1 + 1);
         const auto colonPos3 = value.find(":", colonPos2 + 1);
-        ERROR_IF(colonPos1 == std::string::npos, "Too few colons specified for a 3-component vector");
-        ERROR_IF(colonPos2 == std::string::npos, "Too few colons specified for a 3-component vector");
-        ERROR_IF(colonPos3 != std::string::npos, "Too many colons specified for a 3-component vector");
+        FATAL_ERROR_IF(colonPos1 == std::string::npos, "Too few colons specified for a 3-component vector");
+        FATAL_ERROR_IF(colonPos2 == std::string::npos, "Too few colons specified for a 3-component vector");
+        FATAL_ERROR_IF(colonPos3 != std::string::npos, "Too many colons specified for a 3-component vector");
 
         const std::string componentsString[3] = {
             value.substr(0, colonPos1),

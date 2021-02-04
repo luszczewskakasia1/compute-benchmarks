@@ -21,7 +21,7 @@ struct ImageHelperL0 : ImageHelper {
         case ImageType::Image_Buffer:
             return ZE_IMAGE_TYPE_BUFFER;
         default:
-            ERROR("Unknown image type");
+            FATAL_ERROR("Unknown image type");
         }
     }
 
@@ -50,7 +50,7 @@ struct ImageHelperL0 : ImageHelper {
             imageFormat.w = ZE_IMAGE_FORMAT_SWIZZLE_A;
             break;
         default:
-            ERROR("Unknown channel order");
+            FATAL_ERROR("Unknown channel order");
         }
 
         switch (format) {
@@ -58,7 +58,7 @@ struct ImageHelperL0 : ImageHelper {
             imageFormat.type = ZE_IMAGE_FORMAT_TYPE_FLOAT;
             break;
         default:
-            ERROR("Unknown channel format");
+            FATAL_ERROR("Unknown channel format");
         }
 
         return imageFormat;
@@ -87,7 +87,7 @@ struct ImageHelperL0 : ImageHelper {
                    dimensions[2] <= deviceImageProperties.maxImageDims3D;
 
         default:
-            ERROR("Unknown image type");
+            FATAL_ERROR("Unknown image type");
         }
     }
 };

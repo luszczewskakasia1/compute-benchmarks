@@ -47,8 +47,8 @@ std::vector<const CommandLineArgument *> CommandLineArgument::getUnprocessedArgu
 }
 
 void CommandLineArgument::markAsProcessed() {
-    ERROR_IF(!this->valid, "Invalid argument was marked as processed");
-    ERROR_IF(this->processed, "Argument processed multiple times")
+    FATAL_ERROR_IF(!this->valid, "Invalid argument was marked as processed");
+    FATAL_ERROR_IF(this->processed, "Argument processed multiple times")
     this->processed = true;
 }
 

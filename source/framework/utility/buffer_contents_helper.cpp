@@ -16,7 +16,7 @@ void BufferContentsHelper::fill(uint8_t *buffer, size_t size, BufferContents con
     case BufferContents::IncreasingBytes:
         return fillWithIncreasingBytes(buffer, size);
     default:
-        ERROR("Unknown buffer contents");
+        FATAL_ERROR("Unknown buffer contents");
     }
 }
 

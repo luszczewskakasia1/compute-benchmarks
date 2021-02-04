@@ -66,7 +66,7 @@ struct BitfieldEnumTestCaseArgument : TestCaseArgument {
             }
         }
 
-        ERROR_UNLESS(hasValue, (std::string("Unknown ") + DerivedType::enumName));
+        FATAL_ERROR_UNLESS(hasValue, (std::string("Unknown ") + DerivedType::enumName));
         return result.str();
     }
 

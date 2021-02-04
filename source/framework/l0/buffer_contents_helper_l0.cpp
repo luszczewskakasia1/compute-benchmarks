@@ -9,7 +9,7 @@ ze_result_t BufferContentsHelperL0::fillBuffer(ze_device_handle_t device, ze_con
     case BufferContents::Random:
         return fillBufferWithRandomBytes(device, context, queue, queueOrdinal, buffer, bufferSize);
     default:
-        ERROR("Unknown buffer contents");
+        FATAL_ERROR("Unknown buffer contents");
     }
 }
 

@@ -28,9 +28,9 @@ void TestCaseStatistics::pushValue(Clock::duration time, const std::string &desc
         break;
     }
     case BenchmarkInfo::MeasurementUnit::GigabytesPerSecond:
-        ERROR("Buffer size needs to be passed in bandwidth mode");
+        FATAL_ERROR("Buffer size needs to be passed in bandwidth mode");
     default:
-        ERROR("Unknown measurement unit");
+        FATAL_ERROR("Unknown measurement unit");
     }
 }
 
@@ -51,7 +51,7 @@ void TestCaseStatistics::pushValue(Clock::duration time, uint64_t size, const st
         break;
     }
     default:
-        ERROR("Unknown measurement unit");
+        FATAL_ERROR("Unknown measurement unit");
     }
 }
 
@@ -75,7 +75,7 @@ bool TestCaseStatistics::isFull() const {
 
 void TestCaseStatistics::pushValue(Value value, const std::string &description) {
     auto &samples = this->samplesMap[description];
-    ERROR_IF(samples.size() == maxSamplesCount, "Too many values pushed by the test");
+    FATAL_ERROR_IF(samples.size() == maxSamplesCount, "Too many values pushed by the test");
 
     samples.push_back(value);
     if (std::isinf(value)) {
@@ -118,7 +118,7 @@ void TestCaseStatistics::printStatisticsHeader(Configuration::PrintType printTyp
         unit = "GB/s";
         break;
     default:
-        ERROR("Unknown measurement unit");
+        FATAL_ERROR("Unknown measurement unit");
     }
 
     const auto columns = ColumnInfo::getColumns();
@@ -143,7 +143,7 @@ void TestCaseStatistics::printStatisticsHeader(Configuration::PrintType printTyp
         std::cout << std::endl;
         break;
     default:
-        ERROR("unknown print type selected");
+        FATAL_ERROR("unknown print type selected");
     }
 }
 
@@ -160,7 +160,7 @@ void TestCaseStatistics::printStatistics(const std::string &testCaseName) const 
         printStatisticsCsv(testCaseName);
         break;
     default:
-        ERROR("unknown print type selected");
+        FATAL_ERROR("unknown print type selected");
     }
 }
 
@@ -238,7 +238,7 @@ void TestCaseStatistics::printStatisticsString(const std::string &testCaseName, 
         break;
     }
     default:
-        ERROR("unknown print type selected");
+        FATAL_ERROR("unknown print type selected");
     }
 }
 

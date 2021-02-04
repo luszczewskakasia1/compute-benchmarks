@@ -13,7 +13,7 @@ inline cl_map_flags convertMapFlags(MapFlags mapFlags) {
     case MapFlags::WriteInvalidate:
         return CL_MAP_WRITE_INVALIDATE_REGION;
     default:
-        ERROR("Unknown map flag");
+        FATAL_ERROR("Unknown map flag");
     }
 }
 } // namespace OCL

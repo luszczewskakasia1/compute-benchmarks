@@ -41,12 +41,12 @@ struct DeviceSelectionHelper {
         case DeviceSelection::Tile3:
             return 3;
         default:
-            ERROR("Unknown device selection");
+            FATAL_ERROR("Unknown device selection");
         }
     }
 
     static bool hasDevice(DeviceSelection deviceSelection, DeviceSelection device) {
-        ERROR_IF(device == DeviceSelection::Unknown, "Cannot check for unknown device");
+        FATAL_ERROR_IF(device == DeviceSelection::Unknown, "Cannot check for unknown device");
         return ((deviceSelection & device) == device);
     }
 
@@ -111,7 +111,7 @@ struct DeviceSelectionHelper {
         case DeviceSelection::Tile3:
             return "Tile3";
         default:
-            ERROR("Unknown device selection");
+            FATAL_ERROR("Unknown device selection");
         }
     }
 };

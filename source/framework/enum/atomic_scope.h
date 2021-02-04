@@ -22,7 +22,7 @@ inline std::string toOpenclC(AtomicScope order) {
     case AtomicScope::Device:
         return "memory_scope_device";
     default:
-        ERROR("Unknown memory scope");
+        FATAL_ERROR("Unknown memory scope");
     }
 }
 } // namespace AtomicScopeHelper

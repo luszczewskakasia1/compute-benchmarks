@@ -35,7 +35,7 @@ inline std::string toOpenclC(AtomicMemoryOrder order) {
     case AtomicMemoryOrder::SequentialConsitent:
         return "memory_order_seq_cst";
     default:
-        ERROR("Unknown memory order");
+        FATAL_ERROR("Unknown memory order");
     }
 }
 } // namespace AtomicMemoryOrderHelper

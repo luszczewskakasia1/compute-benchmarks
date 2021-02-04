@@ -41,6 +41,6 @@
         const auto tempVarForDefine = (retVal);                                                                                             \
         if (tempVarForDefine != CL_SUCCESS) {                                                                                               \
             const auto _message = std::string(message) + " (Fatal OpenCL error occurred, retVal=" + std::to_string(tempVarForDefine) + ")"; \
-            ERROR(_message);                                                                                                                \
+            FATAL_ERROR(_message);                                                                                                          \
         }                                                                                                                                   \
     }

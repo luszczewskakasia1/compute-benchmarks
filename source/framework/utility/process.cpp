@@ -42,7 +42,7 @@ void Process::addEnvVariable(const std::string &key, const std::string &value) {
 std::vector<uint64_t> Process::getMeasurements(size_t expectedCount) {
     const auto stdOut = getStdout();
     const auto stdOutSplit = splitString(stdOut);
-    ERROR_IF(stdOutSplit.size() != expectedCount, "Child process returned an invalid number of measurements");
+    FATAL_ERROR_IF(stdOutSplit.size() != expectedCount, "Child process returned an invalid number of measurements");
 
     std::vector<uint64_t> measurementsFromProcess = {};
     for (const auto measurementString : stdOutSplit) {

@@ -7,7 +7,7 @@ PrintDeviceInfoFunction printDeviceInfoFunctions[static_cast<int>(Api::COUNT)];
 
 RegisterPrintDeviceInfoFunction::RegisterPrintDeviceInfoFunction(Api api, PrintDeviceInfoFunction function) {
     auto &slot = printDeviceInfoFunctions[static_cast<int>(api)];
-    ERROR_IF(slot != nullptr, "printDeviceInfo function registered multiple times");
+    FATAL_ERROR_IF(slot != nullptr, "printDeviceInfo function registered multiple times");
     slot = function;
 }
 
