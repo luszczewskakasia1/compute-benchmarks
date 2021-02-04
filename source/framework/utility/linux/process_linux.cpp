@@ -93,7 +93,7 @@ void Process::run() {
         extern char **environ;
         const int execResult = execve(this->exeName.c_str(), argumentsForExec.data(), environ);
         FATAL_ERROR_IF_SYS_CALL_FAILED(execResult, "Sys call execve failed, ");
-        ERROR("Unreachable code after execve");
+        FATAL_ERROR("Unreachable code after execve");
     }
 }
 
