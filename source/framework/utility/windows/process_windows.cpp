@@ -1,8 +1,36 @@
+#include "framework/utility/error.h"
 #include "framework/utility/process.h"
 #include "framework/utility/process_synchronization_helper.h"
 #include "framework/utility/windows/windows.h"
 
 #include <sstream>
+
+static std::string getErrorFromLastErrorCode() {
+    const DWORD lastErrorCode = GetLastError();
+    const DWORD flags = FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
+                        FORMAT_MESSAGE_IGNORE_INSERTS;
+
+    char *buffer = {};
+    const DWORD bufferSize = FormatMessageA(flags,
+                                            NULL,
+                                            lastErrorCode,
+                                            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                                            reinterpret_cast<LPTSTR>(&buffer),
+                                            0, NULL);
+    if (bufferSize == 0) {
+        return "unknown error";
+    }
+
+    std::string result{buffer};
+
+    if (LocalFree(buffer) != nullptr) {
+        result += " (could not deallocate error message buffer)";
+    }
+
+    return result;
+}
+
+#define FATAL_ERROR_IF_SYS_CALL_FAILED(call, message) FATAL_ERROR_IF((call) == 0, std::string(message) + ", " + getErrorFromLastErrorCode());
 
 struct ProcessDataWindows {
     // Resources to be freed
@@ -38,7 +66,9 @@ class EnvironmentRestorer {
     }
 
     ~EnvironmentRestorer() {
-        SetEnvironmentStringsA(this->storedEnv.get());
+        if (SetEnvironmentStringsA(this->storedEnv.get()) == 0) {
+            FATAL_ERROR_IN_DESTRUCTOR(std::string("restoring environemnt variables, ") + getErrorFromLastErrorCode());
+        }
     }
 
   private:
@@ -55,9 +85,9 @@ void Process::run() {
     pipeSecutrityAttributes.nLength = sizeof(pipeSecutrityAttributes);
     pipeSecutrityAttributes.bInheritHandle = TRUE;
     pipeSecutrityAttributes.lpSecurityDescriptor = NULL;
-    BOOL retVal = CreatePipe(&processDataWindows->processStdOut.read, &processDataWindows->processStdOut.write, &pipeSecutrityAttributes, 0);
-    retVal = CreatePipe(&processDataWindows->processStdIn.read, &processDataWindows->processStdIn.write, &pipeSecutrityAttributes, 0);
-    retVal = SetHandleInformation(processDataWindows->processStdOut.read, HANDLE_FLAG_INHERIT, 0);
+    FATAL_ERROR_IF_SYS_CALL_FAILED(CreatePipe(&processDataWindows->processStdOut.read, &processDataWindows->processStdOut.write, &pipeSecutrityAttributes, 0), "creating pipe for stdout")
+    FATAL_ERROR_IF_SYS_CALL_FAILED(CreatePipe(&processDataWindows->processStdIn.read, &processDataWindows->processStdIn.write, &pipeSecutrityAttributes, 0), "creating pipe for stdin")
+    FATAL_ERROR_IF_SYS_CALL_FAILED(SetHandleInformation(processDataWindows->processStdOut.read, HANDLE_FLAG_INHERIT, 0), "setting handle inheritance")
 
     // Prepare arguments
     std::ostringstream commandLine = {};
@@ -72,7 +102,7 @@ void Process::run() {
     // Prepare env variables - create RAII restorer and update existing ones, so the child process inherits them
     EnvironmentRestorer envRestorer = {};
     for (const auto &envVariable : envVariables) {
-        retVal = SetEnvironmentVariableA(envVariable.first.c_str(), envVariable.second.c_str());
+        FATAL_ERROR_IF_SYS_CALL_FAILED(SetEnvironmentVariableA(envVariable.first.c_str(), envVariable.second.c_str()), "setting env variable");
     }
 
     // Prepare exeName (.exe extension is Windows-specific)
@@ -86,17 +116,18 @@ void Process::run() {
     startupInfo.hStdInput = processDataWindows->processStdIn.read;
     startupInfo.dwFlags |= STARTF_USESTDHANDLES;
     PROCESS_INFORMATION processInfo{};
-    auto result = CreateProcessA(
-        exeNameWithExtension.c_str(),
-        commandLine.str().data(),
-        NULL,
-        NULL,
-        TRUE,
-        0,
-        NULL,
-        NULL,
-        &startupInfo,
-        &processDataWindows->processInfo);
+    FATAL_ERROR_IF_SYS_CALL_FAILED(CreateProcessA(
+                                       exeNameWithExtension.c_str(),
+                                       commandLine.str().data(),
+                                       NULL,
+                                       NULL,
+                                       TRUE,
+                                       0,
+                                       NULL,
+                                       NULL,
+                                       &startupInfo,
+                                       &processDataWindows->processInfo),
+                                   "creating process");
 
     // Set process data
     this->osSpecificData = processDataWindows.release();
@@ -110,11 +141,10 @@ void Process::freeOsSpecificData() {
 
     waitForFinish();
 
-    BOOL retVal{};
-    retVal = CloseHandle(processDataWindows->processInfo.hProcess);
-    retVal = CloseHandle(processDataWindows->processInfo.hThread);
-    retVal = CloseHandle(processDataWindows->processStdOut.read);
-    retVal = CloseHandle(processDataWindows->processStdIn.write);
+    FATAL_ERROR_IF_SYS_CALL_FAILED(CloseHandle(processDataWindows->processInfo.hProcess), "closing process handle");
+    FATAL_ERROR_IF_SYS_CALL_FAILED(CloseHandle(processDataWindows->processInfo.hThread), "closing thread handle");
+    FATAL_ERROR_IF_SYS_CALL_FAILED(CloseHandle(processDataWindows->processStdOut.read), "closing stdout.read handle");
+    FATAL_ERROR_IF_SYS_CALL_FAILED(CloseHandle(processDataWindows->processStdIn.write), "closing stdin.write handle");
 
     delete processDataWindows;
     this->osSpecificData = nullptr;
@@ -126,9 +156,12 @@ void Process::waitForFinish() {
         return;
     }
 
-    BOOL retVal = WaitForSingleObject(processDataWindows->processInfo.hProcess, std::numeric_limits<DWORD>::max());
-    retVal = CloseHandle(processDataWindows->processStdOut.write);
-    retVal = CloseHandle(processDataWindows->processStdIn.read);
+    if (WaitForSingleObject(processDataWindows->processInfo.hProcess, std::numeric_limits<DWORD>::max()) != WAIT_OBJECT_0) {
+        FATAL_ERROR(std::string("waiting for process to end, ") + getErrorFromLastErrorCode());
+    }
+
+    FATAL_ERROR_IF_SYS_CALL_FAILED(CloseHandle(processDataWindows->processStdOut.write), "closing stdout.write handle");
+    FATAL_ERROR_IF_SYS_CALL_FAILED(CloseHandle(processDataWindows->processStdIn.read), "closing stdin.read handle");
     processDataWindows->ended = true;
 }
 
@@ -138,7 +171,7 @@ TestResult Process::getResult() {
         waitForFinish();
 
         DWORD exitCode{};
-        BOOL retVal = GetExitCodeProcess(processDataWindows->processInfo.hProcess, &exitCode);
+        FATAL_ERROR_IF_SYS_CALL_FAILED(GetExitCodeProcess(processDataWindows->processInfo.hProcess, &exitCode), "retrieving process exit code");
 
         processDataWindows->hasResult = true;
         processDataWindows->result = static_cast<TestResult>(exitCode);
@@ -179,7 +212,7 @@ void Process::synchronizationSignal() {
 
     char buffer = ProcessSynchronizationHelper::synchronizationChar;
     DWORD numberOfBytesWritten = {};
-    BOOL retVal = WriteFile(processDataWindows->processStdIn.write, &buffer, 1, &numberOfBytesWritten, nullptr);
+    FATAL_ERROR_IF_SYS_CALL_FAILED(WriteFile(processDataWindows->processStdIn.write, &buffer, 1, &numberOfBytesWritten, nullptr), "writing to child process's stdin");
 }
 
 void Process::synchronizationWait() {
@@ -187,5 +220,6 @@ void Process::synchronizationWait() {
 
     char buffer = {};
     DWORD numberOfBytesRead = {};
-    BOOL retVal = ReadFile(processDataWindows->processStdOut.read, &buffer, 1, &numberOfBytesRead, NULL);
+    FATAL_ERROR_IF_SYS_CALL_FAILED(ReadFile(processDataWindows->processStdOut.read, &buffer, 1, &numberOfBytesRead, NULL), "reading from child process's stdout");
+    FATAL_ERROR_IF(buffer != ProcessSynchronizationHelper::synchronizationChar, "invalid synchronization character detected");
 }

@@ -13,3 +13,7 @@
     }
 
 #define FATAL_ERROR_UNLESS(condition, message) FATAL_ERROR_IF(!(condition), (message))
+
+#define FATAL_ERROR_IN_DESTRUCTOR(message)            \
+    std::cerr << "ERROR: " << (message) << std::endl; \
+    std::abort();
