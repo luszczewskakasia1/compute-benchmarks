@@ -27,8 +27,7 @@ void WorkloadSynchronization::synchronize() {
         character = std::cin.get();
     } while (character == '\n' || character == '\r');
 
-    FATAL_ERROR_IF(character != ProcessSynchronizationHelper::synchronizationChar,
-                   std::string("Invalid synchronization char. Expected '") + ProcessSynchronizationHelper::synchronizationChar + "'");
+    FATAL_ERROR_IF(character != ProcessSynchronizationHelper::synchronizationChar, std::string("Invalid synchronization received from child process: '") + character + "'");
 }
 
 bool WorkloadSynchronization::validate() {

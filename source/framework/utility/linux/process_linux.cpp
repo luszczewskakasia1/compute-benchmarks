@@ -180,5 +180,5 @@ void Process::synchronizationWait() {
     ssize_t numberOfBytesRead = read(processDataLinux->processStdOut.read(), &buffer, 1u);
     FATAL_ERROR_IF_SYS_CALL_FAILED(numberOfBytesRead, "reading a child process stdOut failed");
     FATAL_ERROR_IF(numberOfBytesRead == 0, "No character was read when waiting on a child process");
-    FATAL_ERROR_IF(buffer != ProcessSynchronizationHelper::synchronizationChar, "invalid synchronization character detected");
+    FATAL_ERROR_IF(buffer != ProcessSynchronizationHelper::synchronizationChar, std::string("Invalid synchronization received from parent process: '") + buffer + "'");
 }
