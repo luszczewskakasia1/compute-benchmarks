@@ -221,5 +221,5 @@ void Process::synchronizationWait() {
     char buffer = {};
     DWORD numberOfBytesRead = {};
     FATAL_ERROR_IF_SYS_CALL_FAILED(ReadFile(processDataWindows->processStdOut.read, &buffer, 1, &numberOfBytesRead, NULL), "reading from child process's stdout");
-    FATAL_ERROR_IF(buffer != ProcessSynchronizationHelper::synchronizationChar, std::string("Invalid synchronization received from parent process: '") + buffer + "'");
+    FATAL_ERROR_IF(buffer != ProcessSynchronizationHelper::synchronizationChar, std::string("Invalid synchronization received from child process: '") + buffer + "'");
 }
