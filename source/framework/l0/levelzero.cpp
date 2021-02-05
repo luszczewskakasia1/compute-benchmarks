@@ -9,7 +9,7 @@ LevelZero::LevelZero(const QueueProperties &queueProperties, const ContextProper
     EXPECT_ZE_RESULT_SUCCESS(zeDriverGet(&driverCount, nullptr));
     const auto driverIndex = Configuration::get().l0DriverIndex;
     if (driverIndex >= driverCount) {
-        FATAL_ERROR("Invalid LevelZero driver selected");
+        FATAL_ERROR("Invalid LevelZero driver index. driverIndex=", driverIndex, " driverCount=", driverCount);
     }
     auto drivers = std::make_unique<ze_driver_handle_t[]>(driverCount);
     EXPECT_ZE_RESULT_SUCCESS(zeDriverGet(&driverCount, drivers.get()));
@@ -20,7 +20,7 @@ LevelZero::LevelZero(const QueueProperties &queueProperties, const ContextProper
     EXPECT_ZE_RESULT_SUCCESS(zeDeviceGet(driver, &deviceCount, nullptr));
     const auto deviceIndex = Configuration::get().l0DeviceIndex;
     if (deviceIndex >= deviceCount) {
-        FATAL_ERROR("Invalid LevelZero device selected");
+        FATAL_ERROR("Invalid LevelZero device index. deviceIndex=", deviceIndex, " deviceCount=", deviceCount);
     }
     auto devices = std::make_unique<ze_device_handle_t[]>(deviceCount);
     EXPECT_ZE_RESULT_SUCCESS(zeDeviceGet(driver, &deviceCount, devices.get()));

@@ -22,7 +22,7 @@ struct Opencl {
         EXPECT_CL_SUCCESS(clGetPlatformIDs(0, nullptr, &numPlatforms));
         const auto platformIndex = Configuration::get().oclPlatformIndex;
         if (platformIndex >= numPlatforms) {
-            FATAL_ERROR("Invalid platform selected");
+            FATAL_ERROR("Invalid OCL platform index. platformIndex=", platformIndex, " numPlatforms=", numPlatforms);
         }
         auto platforms = std::make_unique<cl_platform_id[]>(numPlatforms);
         EXPECT_CL_SUCCESS(clGetPlatformIDs(numPlatforms, platforms.get(), nullptr));
@@ -33,7 +33,7 @@ struct Opencl {
         EXPECT_CL_SUCCESS(clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 0, nullptr, &numDevices));
         const auto deviceIndex = Configuration::get().oclDeviceIndex;
         if (deviceIndex >= numDevices) {
-            FATAL_ERROR("Invalid device selected");
+            FATAL_ERROR("Invalid OCL device index. deviceIndex=", deviceIndex, " numDevices=", numDevices);
         }
         auto devices = std::make_unique<cl_device_id[]>(numDevices);
         EXPECT_CL_SUCCESS(clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, numDevices, devices.get(), nullptr));
