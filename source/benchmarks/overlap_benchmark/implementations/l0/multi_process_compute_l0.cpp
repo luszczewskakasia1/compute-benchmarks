@@ -36,7 +36,7 @@ static TestResult run(const MultiProcessComputeArguments &arguments, Statistics 
     processes.addArgumentAll("iterations", std::to_string(arguments.iterations));
     processes.addArgumentAll("synchronize", std::to_string(arguments.synchronize));
     processes.addArgumentAll("wgc", std::to_string(arguments.workgroupsPerProcess));
-    processes.addArgumentAll("operationsCount", "10000000");
+    processes.addArgumentAll("operationsCount", "500000");
     for (auto i = 0u; i < processes.size(); i++) {
         const auto affinityMask = AffinityMaskHelper::createAffinityMask(Configuration::get().l0DeviceIndex, tilesForExecution[i]);
         processes[i].addEnvVariable("ZE_AFFINITY_MASK", affinityMask);
