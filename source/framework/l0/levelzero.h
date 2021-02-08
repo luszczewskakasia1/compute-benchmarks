@@ -26,6 +26,8 @@ struct LevelZero {
     };
 
     // Public fields, accessible in benchmarks
+    const size_t driverIndex;
+    const size_t rootDeviceIndex;
     ze_driver_handle_t driver{};              // Driver instance, always present
     ze_device_handle_t device{};              // Default device, it is not present if multiple devices were selected in ContextSelection
     ze_context_handle_t context{};            // Context, created by default, can be disabled

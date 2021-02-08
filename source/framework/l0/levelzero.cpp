@@ -1,13 +1,14 @@
 #include "levelzero.h"
 
 namespace L0 {
-LevelZero::LevelZero(const QueueProperties &queueProperties, const ContextProperties &contextProperties) {
+LevelZero::LevelZero(const QueueProperties &queueProperties, const ContextProperties &contextProperties)
+    : driverIndex(Configuration::get().l0DriverIndex),
+      rootDeviceIndex(Configuration::get().l0DeviceIndex) {
     EXPECT_ZE_RESULT_SUCCESS(zeInit(ZE_INIT_FLAG_GPU_ONLY));
 
     // Get driver
     uint32_t driverCount = 0;
     EXPECT_ZE_RESULT_SUCCESS(zeDriverGet(&driverCount, nullptr));
-    const auto driverIndex = Configuration::get().l0DriverIndex;
     if (driverIndex >= driverCount) {
         FATAL_ERROR("Invalid LevelZero driver index. driverIndex=", driverIndex, " driverCount=", driverCount);
     }
@@ -18,13 +19,12 @@ LevelZero::LevelZero(const QueueProperties &queueProperties, const ContextProper
     // Create root device
     uint32_t deviceCount = 0;
     EXPECT_ZE_RESULT_SUCCESS(zeDeviceGet(driver, &deviceCount, nullptr));
-    const auto deviceIndex = Configuration::get().l0DeviceIndex;
-    if (deviceIndex >= deviceCount) {
-        FATAL_ERROR("Invalid LevelZero device index. deviceIndex=", deviceIndex, " deviceCount=", deviceCount);
+    if (rootDeviceIndex >= deviceCount) {
+        FATAL_ERROR("Invalid LevelZero device index. deviceIndex=", rootDeviceIndex, " deviceCount=", deviceCount);
     }
     auto devices = std::make_unique<ze_device_handle_t[]>(deviceCount);
     EXPECT_ZE_RESULT_SUCCESS(zeDeviceGet(driver, &deviceCount, devices.get()));
-    this->rootDevice = devices[deviceIndex];
+    this->rootDevice = devices[rootDeviceIndex];
 
     // Create subDevices if needed
     if (DeviceSelectionHelper::hasAnySubDevice(contextProperties.deviceSelection)) {
