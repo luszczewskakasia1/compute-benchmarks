@@ -55,10 +55,10 @@ struct LevelZero {
     ze_device_handle_t getDevice(DeviceSelection deviceSelection) const;
 
     // Utility methods for L0 getter functions
-    ze_device_compute_properties_t getDeviceComputeProperties() const {
-        ze_device_compute_properties_t deviceComputeProperties{ZE_STRUCTURE_TYPE_DEVICE_COMPUTE_PROPERTIES};
-        EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetComputeProperties(device, &deviceComputeProperties));
-        return deviceComputeProperties;
+    ze_driver_ipc_properties_t getIpcProperties() const {
+        ze_driver_ipc_properties_t ipcProperties{ZE_STRUCTURE_TYPE_DRIVER_IPC_PROPERTIES};
+        EXPECT_ZE_RESULT_SUCCESS(zeDriverGetIpcProperties(driver, &ipcProperties));
+        return ipcProperties;
     }
     ze_device_properties_t getDeviceProperties() const { return getDeviceProperties(this->device); }
     ze_device_properties_t getDeviceProperties(DeviceSelection deviceSelection) const { return getDeviceProperties(getDevice(deviceSelection)); }
