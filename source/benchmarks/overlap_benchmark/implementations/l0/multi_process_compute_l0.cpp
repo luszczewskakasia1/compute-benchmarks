@@ -24,7 +24,7 @@ static TestResult run(const MultiProcessComputeArguments &arguments, Statistics 
     processes.addArgumentAll("iterations", std::to_string(arguments.iterations));
     processes.addArgumentAll("synchronize", std::to_string(arguments.synchronize));
     processes.addArgumentAll("wgc", std::to_string(arguments.workgroupsPerProcess));
-    processes.addArgumentAll("operationsCount", "500000");
+    processes.addArgumentAll("operationsCount", std::to_string(MultiProcessHelperL0::workloadOperationsCount));
     for (auto i = 0u; i < processes.size(); i++) {
         processes[i].addEnvVariable("ZE_AFFINITY_MASK", MultiProcessHelperL0::createAffinityMask(levelzero.rootDeviceIndex, subDevicesForExecution[i]));
         processes[i].setName(MultiProcessHelperL0::createProcessName(subDevicesForExecution, i));
