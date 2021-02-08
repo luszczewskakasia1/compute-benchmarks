@@ -6,10 +6,12 @@
 struct SingleQueueWorkloadParameters : WorkloadParameters {
     PositiveIntegerTestCaseArgument operationsCount;
     PositiveIntegerTestCaseArgument workgroupCount;
+    PositiveIntegerTestCaseArgument workgroupSize;
 
     SingleQueueWorkloadParameters()
         : operationsCount(*this, "operationsCount", "Number of redundant operations performed in kernel to make it take longer"),
-          workgroupCount(*this, "wgc", "Number of workgroups enqueued") {}
+          workgroupCount(*this, "wgc", "Number of workgroups enqueued"),
+          workgroupSize(*this, "wgs", "Size of workgroups enqueued") {}
 };
 
 struct SingleQueueWorkload : Workload<SingleQueueWorkloadParameters> {};
@@ -27,19 +29,12 @@ TestResult run(const SingleQueueWorkloadParameters &arguments, Statistics &stati
     }
 
     // Compute work size
-    const ze_device_compute_properties_t deviceComputeProperties = levelzero.getDeviceComputeProperties();
-    const uint32_t groupSize = deviceComputeProperties.maxTotalGroupSize;
-    const uint32_t groupCountX = static_cast<uint32_t>(arguments.workgroupCount);
-    const uint32_t totalThreadsCount = groupSize * groupCountX;
-    if (totalThreadsCount == 0) {
-        return TestResult::DeviceNotCapable;
-    }
-    const ze_group_count_t groupCount{groupCountX, 1, 1};
-    const uint32_t operationsCount = static_cast<uint32_t>(arguments.operationsCount);
+    const auto totalThreadsCount = arguments.workgroupSize * arguments.workgroupCount;
+    const ze_group_count_t groupCount{static_cast<uint32_t>(arguments.workgroupCount), 1, 1};
+    const auto operationsCount = static_cast<uint32_t>(arguments.operationsCount);
+    const auto bufferSizeInBytes = totalThreadsCount * sizeof(uint32_t);
 
     // Create buffer
-    const size_t bufferSizeInElements = groupCount.groupCountX * groupSize;
-    const size_t bufferSizeInBytes = bufferSizeInElements * sizeof(uint32_t);
     void *buffer = nullptr;
     const ze_device_mem_alloc_desc_t deviceAllocationDesc{ZE_STRUCTURE_TYPE_DEVICE_MEM_ALLOC_DESC};
     ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, bufferSizeInBytes, 0, levelzero.device, &buffer));
@@ -60,7 +55,7 @@ TestResult run(const SingleQueueWorkloadParameters &arguments, Statistics &stati
     ze_kernel_desc_t kernelDesc{ZE_STRUCTURE_TYPE_KERNEL_DESC};
     kernelDesc.pKernelName = "increment";
     ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeKernelCreate(module, &kernelDesc, &kernel));
-    ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeKernelSetGroupSize(kernel, groupSize, 1u, 1u));
+    ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeKernelSetGroupSize(kernel, static_cast<uint32_t>(arguments.workgroupSize), 1u, 1u));
     ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeKernelSetArgumentValue(kernel, 0, sizeof(buffer), &buffer));
     ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeKernelSetArgumentValue(kernel, 1, sizeof(operationsCount), &operationsCount));
 

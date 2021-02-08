@@ -14,7 +14,8 @@ static TestResult run(const MultiProcessComputeArguments &arguments, Statistics 
 
     // Get tiles for execution, validate if they are available
     std::vector<DeviceSelection> subDevicesForExecution = {};
-    ASSERT_ZE_RESULT_SUCCESS(MultiProcessHelperL0::getSubDevicesForExecution(arguments.deviceSelection, arguments.processesPerTile, levelzero.device, subDevicesForExecution));
+    ASSERT_ZE_RESULT_SUCCESS(MultiProcessHelperL0::getSubDevicesForExecution(arguments.deviceSelection, arguments.processesPerTile,
+                                                                             levelzero.device, subDevicesForExecution));
     if (subDevicesForExecution.size() == 0) {
         return TestResult::DeviceNotCapable;
     }
@@ -23,8 +24,9 @@ static TestResult run(const MultiProcessComputeArguments &arguments, Statistics 
     ProcessGroup processes{"single_queue_workload_l0", subDevicesForExecution.size()};
     processes.addArgumentAll("iterations", std::to_string(arguments.iterations));
     processes.addArgumentAll("synchronize", std::to_string(arguments.synchronize));
-    processes.addArgumentAll("wgc", std::to_string(arguments.workgroupsPerProcess));
     processes.addArgumentAll("operationsCount", std::to_string(MultiProcessHelperL0::workloadOperationsCount));
+    processes.addArgumentAll("wgc", std::to_string(arguments.workgroupsPerProcess));
+    processes.addArgumentAll("wgs", std::to_string(MultiProcessHelperL0::workloadWorkgroupSize));
     for (auto i = 0u; i < processes.size(); i++) {
         processes[i].addEnvVariable("ZE_AFFINITY_MASK", MultiProcessHelperL0::createAffinityMask(levelzero.rootDeviceIndex, subDevicesForExecution[i]));
         processes[i].setName(MultiProcessHelperL0::createProcessName(subDevicesForExecution, i));
