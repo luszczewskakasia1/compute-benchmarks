@@ -28,7 +28,20 @@ std::vector<DeviceSelection> MultiProcessHelper::getSubDevicesForExecution(Devic
     return subDevicesForExecution;
 }
 
-std::string MultiProcessHelper::getProcessName(const std::vector<DeviceSelection> &subDevicesForExecution, size_t processIndex) {
+std::string MultiProcessHelper::createAffinityMask(size_t rootDeviceIndex, DeviceSelection subDevices) {
+    std::ostringstream result{};
+    const auto subDevicesSplit = DeviceSelectionHelper::split(subDevices);
+    for (int i = 0; i < subDevicesSplit.size(); i++) {
+        const auto subDeviceIndex = DeviceSelectionHelper::getSubDeviceIndex(subDevicesSplit[i]);
+        result << rootDeviceIndex << '.' << subDeviceIndex;
+        if (i != subDevicesSplit.size() - 1) {
+            result << ",";
+        }
+    }
+    return result.str();
+}
+
+std::string MultiProcessHelper::createProcessName(const std::vector<DeviceSelection> &subDevicesForExecution, size_t processIndex) {
     std::ostringstream processName{};
     processName << "process" << processIndex << " (" << DeviceSelectionHelper::toString(subDevicesForExecution[processIndex]) << ")";
     return processName.str();

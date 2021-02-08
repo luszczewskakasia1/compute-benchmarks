@@ -1,6 +1,5 @@
 #include "framework/l0/levelzero.h"
 #include "framework/test_case/register_test_case.h"
-#include "framework/utility/affinity_mask_helper.h"
 #include "framework/utility/process_group.h"
 
 #include "definitions/multi_process_compute.h"
@@ -27,8 +26,8 @@ static TestResult run(const MultiProcessComputeArguments &arguments, Statistics 
     processes.addArgumentAll("wgc", std::to_string(arguments.workgroupsPerProcess));
     processes.addArgumentAll("operationsCount", "500000");
     for (auto i = 0u; i < processes.size(); i++) {
-        processes[i].addEnvVariable("ZE_AFFINITY_MASK", AffinityMaskHelper::createAffinityMask(levelzero.rootDeviceIndex, subDevicesForExecution[i]));
-        processes[i].setName(MultiProcessHelperL0::getProcessName(subDevicesForExecution, i));
+        processes[i].addEnvVariable("ZE_AFFINITY_MASK", MultiProcessHelperL0::createAffinityMask(levelzero.rootDeviceIndex, subDevicesForExecution[i]));
+        processes[i].setName(MultiProcessHelperL0::createProcessName(subDevicesForExecution, i));
     }
 
     // Run processes
