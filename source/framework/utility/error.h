@@ -4,7 +4,7 @@
 #include <iostream>
 
 template <typename... Args>
-inline void printFatalError(const char *label, Args &&...args) {
+inline void printFatalError(const char *label, Args &&... args) {
     static_assert(sizeof...(args) > 0, "A textual message of the FATAL_ERROR is required");
     std::cerr << label << ": ";
     (std::cerr << ... << args);

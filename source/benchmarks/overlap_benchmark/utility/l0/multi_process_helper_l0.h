@@ -12,7 +12,7 @@ struct MultiProcessHelperL0 : MultiProcessHelper {
                                                  DeviceSelection subDevices,
                                                  size_t processesPerDevice,
                                                  std::vector<DeviceSelection> &outSubDevicesForExecution) {
-        const uint32_t actualSubDevicesCount = levelzero.getSubDevicesCount();
+        const uint32_t actualSubDevicesCount = static_cast<uint32_t>(levelzero.getSubDevicesCount());
         outSubDevicesForExecution = MultiProcessHelper::getSubDevicesForExecution(subDevices, processesPerDevice, actualSubDevicesCount);
         return ZE_RESULT_SUCCESS;
     }
