@@ -41,7 +41,7 @@ static TestResult run(const MultiProcessComputeSharedBufferArguments &arguments,
     processes.addArgumentAll("wgc", std::to_string(arguments.workgroupsPerProcess));
     processes.addArgumentAll("wgs", std::to_string(MultiProcessHelperL0::workloadWorkgroupSize));
     for (auto i = 0u; i < processes.size(); i++) {
-        MultiProcessHelperL0::BufferForSubDevice buffer = buffersForSubDevices[subDevicesForExecution[i]];
+        MultiProcessHelperL0::BufferForSubDevice &buffer = buffersForSubDevices[subDevicesForExecution[i]];
         processes[i].addHandleForInheritance(buffer.fileDescriptor);
         processes[i].addArgument("bufferIpcHandle", std::to_string(buffer.fileDescriptor));
         processes[i].addArgument("bufferOffset", std::to_string(buffer.getNextOffset()));

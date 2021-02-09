@@ -18,6 +18,12 @@ struct MultiProcessHelperL0 : MultiProcessHelper {
     }
 
     struct BufferForSubDevice {
+        BufferForSubDevice() = default;
+        BufferForSubDevice(const BufferForSubDevice &) = delete;
+        BufferForSubDevice &operator=(const BufferForSubDevice &) = delete;
+        BufferForSubDevice(BufferForSubDevice &&) = default;
+        BufferForSubDevice &operator=(BufferForSubDevice &&) = default;
+
         void *buffer = {};
         size_t sizeForOneProcess = {};
         size_t totalSize = {};
