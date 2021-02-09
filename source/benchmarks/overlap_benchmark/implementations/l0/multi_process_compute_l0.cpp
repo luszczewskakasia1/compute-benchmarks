@@ -9,13 +9,13 @@
 
 static TestResult run(const MultiProcessComputeArguments &arguments, Statistics &statistics) {
     // Setup
+    ContextProperties contexProperties = ContextProperties::create().setDeviceSelection(arguments.deviceSelection).createSingleFakeSubDeviceIfNeeded();
     QueueProperties queueProperties = QueueProperties::create().disable();
-    LevelZero levelzero{queueProperties};
+    LevelZero levelzero{queueProperties, contexProperties};
 
     // Get tiles for execution, validate if they are available
     std::vector<DeviceSelection> subDevicesForExecution = {};
-    ASSERT_ZE_RESULT_SUCCESS(MultiProcessHelperL0::getSubDevicesForExecution(arguments.deviceSelection, arguments.processesPerTile,
-                                                                             levelzero.device, subDevicesForExecution));
+    ASSERT_ZE_RESULT_SUCCESS(MultiProcessHelperL0::getSubDevicesForExecution(levelzero, arguments.deviceSelection, arguments.processesPerTile, subDevicesForExecution));
     if (subDevicesForExecution.size() == 0) {
         return TestResult::DeviceNotCapable;
     }

@@ -28,14 +28,14 @@ LevelZero::LevelZero(const QueueProperties &queueProperties, const ContextProper
 
     // Create subDevices if needed
     if (DeviceSelectionHelper::hasAnySubDevice(contextProperties.deviceSelection)) {
-        this->createSubDevices(contextProperties.requireCreationSuccess);
+        this->createSubDevices(contextProperties.requireCreationSuccess, contextProperties.fakeSubDeviceAllowed);
         if (this->subDevices.size() == 0) {
             return;
         }
     }
 
     // Set the default device
-    if (DeviceSelectionHelper::hasSingleDevice(contextProperties.deviceSelection)) {
+    if (DeviceSelectionHelper::hasSingleDevice(contextProperties.deviceSelection) && !contextProperties.fakeSubDeviceAllowed) {
         this->device = getDevice(contextProperties.deviceSelection);
     }
 
@@ -72,16 +72,19 @@ ze_device_handle_t LevelZero::getDevice(DeviceSelection deviceSelection) const {
     return this->subDevices[subDeviceIndex];
 }
 
-void LevelZero::createSubDevices(bool requireSuccess) {
+void LevelZero::createSubDevices(bool requireSuccess, bool fakeSubDeviceAllowed) {
+    subDevices.clear();
+
     uint32_t numSubDevices{};
     EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetSubDevices(this->rootDevice, &numSubDevices, nullptr));
-    if (numSubDevices == 0) {
-        FATAL_ERROR_IF(requireSuccess, "SubDevice was selected, but device has 0 subDevices");
-        return;
+    if (numSubDevices > 0){
+        subDevices.resize(numSubDevices);
+        EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetSubDevices(this->rootDevice, &numSubDevices, subDevices.data()));
+    } else if (fakeSubDeviceAllowed) {
+        subDevices.push_back(rootDevice);
+    } else if (requireSuccess) {
+        FATAL_ERROR("SubDevice was selected, but device has 0 subDevices");
     }
-
-    subDevices.resize(numSubDevices);
-    EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetSubDevices(this->rootDevice, &numSubDevices, subDevices.data()));
 }
 
 std::vector<LevelZero::QueueInfo> LevelZero::queryQueueFamilies(ze_device_handle_t device) {

@@ -7,6 +7,7 @@ namespace L0 {
 struct ContextProperties {
     DeviceSelection deviceSelection = DeviceSelection::Unknown;
     bool requireCreationSuccess = true;
+    bool fakeSubDeviceAllowed = false;
 
     static ContextProperties create() {
         return ContextProperties()
@@ -15,6 +16,11 @@ struct ContextProperties {
 
     ContextProperties &setDeviceSelection(DeviceSelection deviceSelection) {
         this->deviceSelection = deviceSelection;
+        return *this;
+    }
+
+    ContextProperties &createSingleFakeSubDeviceIfNeeded() {
+        this->fakeSubDeviceAllowed = true;
         return *this;
     }
 

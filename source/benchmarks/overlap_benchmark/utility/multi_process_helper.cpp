@@ -3,10 +3,6 @@
 #include <sstream>
 
 std::vector<DeviceSelection> MultiProcessHelper::getSubDevicesForExecution(DeviceSelection subDevices, size_t processesPerDevice, size_t actualSubDevicesCount) {
-    if (actualSubDevicesCount == 0) {
-        actualSubDevicesCount = 1;
-    }
-
     // Split bitfield of merged subDevices to a vector of single subDevices
     std::vector<DeviceSelection> subDevicesForExecution = DeviceSelectionHelper::split(subDevices);
 

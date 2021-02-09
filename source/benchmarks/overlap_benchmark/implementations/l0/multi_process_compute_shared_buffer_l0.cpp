@@ -9,7 +9,7 @@
 
 static TestResult run(const MultiProcessComputeSharedBufferArguments &arguments, Statistics &statistics) {
     // Setup
-    ContextProperties contexProperties = ContextProperties::create().setDeviceSelection(arguments.deviceSelection);
+    ContextProperties contexProperties = ContextProperties::create().setDeviceSelection(arguments.deviceSelection).createSingleFakeSubDeviceIfNeeded();
     QueueProperties queueProperties = QueueProperties::create().disable();
     LevelZero levelzero{queueProperties, contexProperties};
 
@@ -20,8 +20,7 @@ static TestResult run(const MultiProcessComputeSharedBufferArguments &arguments,
 
     // Get tiles for execution, validate if they are available
     std::vector<DeviceSelection> subDevicesForExecution = {};
-    ASSERT_ZE_RESULT_SUCCESS(MultiProcessHelperL0::getSubDevicesForExecution(arguments.deviceSelection, arguments.processesPerTile,
-                                                                             levelzero.getDevice(DeviceSelection::Root), subDevicesForExecution));
+    ASSERT_ZE_RESULT_SUCCESS(MultiProcessHelperL0::getSubDevicesForExecution(levelzero, arguments.deviceSelection, arguments.processesPerTile, subDevicesForExecution));
     if (subDevicesForExecution.size() == 0) {
         return TestResult::DeviceNotCapable;
     }

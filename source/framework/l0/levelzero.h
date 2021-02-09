@@ -45,6 +45,10 @@ struct LevelZero {
     // Queries available queue families on the device and returns their descriptions.
     static std::vector<QueueInfo> queryQueueFamilies(ze_device_handle_t device);
 
+    // Returns how many subDevices has been created. Will return 0, if no subDevices were specified in ContextProperties or
+    // QueueProperties.
+    size_t getSubDevicesCount() const { return subDevices.size(); }
+
     // Creates queue with given properties. These methods aren't needed to be called by the user in scenarios with only one queue.
     // Queue will be created by default, unless disabled in QueueProperties. These methods allow the user to create
     // additional queues. Queues are tracked internally and will be released automatically.
@@ -73,7 +77,7 @@ struct LevelZero {
   private:
     // Queriers subDevices of the root device and creates them if any. This method is only called when it's necessary, i.e. user
     // specified some subDevices in ContextProperties
-    void createSubDevices(bool requireSuccess);
+    void createSubDevices(bool requireSuccess, bool fakeSubDeviceAllowed);
 
     // Internal fields managed by the LevelZero class
     ze_device_handle_t rootDevice{};
