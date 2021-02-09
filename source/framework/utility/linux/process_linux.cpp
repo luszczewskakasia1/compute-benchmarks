@@ -2,6 +2,7 @@
 #include "framework/utility/process.h"
 #include "framework/utility/process_synchronization_helper.h"
 
+#include <fcntl.h>
 #include <memory>
 #include <sstream>
 #include <string.h>
@@ -16,7 +17,7 @@ static std::string getErrorFromErrno() {
     return result.str();
 }
 
-#define FATAL_ERROR_IF_SYS_CALL_FAILED(call, message) FATAL_ERROR_IF(call < 0, std::string(message) + ", " + getErrorFromErrno());
+#define FATAL_ERROR_IF_SYS_CALL_FAILED(call, ...) FATAL_ERROR_IF(call < 0, __VA_ARGS__, ", ", getErrorFromErrno());
 
 struct ProcessDataLinux {
     struct ProcessPipes {
@@ -87,6 +88,13 @@ void Process::run() {
         // Prepare environment
         for (auto &envVariable : this->envVariables) {
             FATAL_ERROR_IF_SYS_CALL_FAILED(setenv(envVariable.first.c_str(), envVariable.second.c_str(), 1), "setenv failed");
+        }
+
+        // Enable inheritance for requested handles
+        for (int handle : handlesForInheritance) {
+            int currentFlags = fcntl(handle, F_GETFD);
+            FATAL_ERROR_IF_SYS_CALL_FAILED(currentFlags, "Failed getting descriptor flags for fd=", handle)
+            FATAL_ERROR_IF_SYS_CALL_FAILED(fcntl(handle, F_SETFD, currentFlags & ~FD_CLOEXEC), "Failed getting descriptor flags for fd=", handle);
         }
 
         // Load new binary image

@@ -1,5 +1,4 @@
 #include "framework/l0/levelzero.h"
-#include "framework/test_case_argument/test_case_argument_long_hex.h"
 #include "framework/utility/file_helper.h"
 #include "framework/utility/timer.h"
 #include "framework/workload/register_workload.h"
@@ -10,7 +9,7 @@ struct SingleQueueWorkloadSharedBufferParameters : WorkloadParameters {
     PositiveIntegerTestCaseArgument operationsCount;
     PositiveIntegerTestCaseArgument workgroupCount;
     PositiveIntegerTestCaseArgument workgroupSize;
-    LongHexTestCaseArgument bufferIpcHandle;
+    IntegerTestCaseArgument bufferIpcHandle;
     NonNegativeIntegerTestCaseArgument offsetWithinBuffer;
 
     SingleQueueWorkloadSharedBufferParameters()
@@ -42,12 +41,8 @@ TestResult run(const SingleQueueWorkloadSharedBufferParameters &arguments, Stati
     const auto bufferSizeInBytes = totalThreadsCount * sizeof(uint32_t);
 
     // Prepare IPC Handle
-    const std::vector<uint8_t> &bufferIpcHandle = arguments.bufferIpcHandle;
-    if (bufferIpcHandle.size() != ZE_MAX_IPC_HANDLE_SIZE) {
-        return TestResult::InvalidArgs;
-    }
     ze_ipc_mem_handle_t ipcHandle = {};
-    std::memcpy(ipcHandle.data, bufferIpcHandle.data(), bufferIpcHandle.size());
+    std::memcpy(ipcHandle.data, arguments.bufferIpcHandle.getAddressOf(), arguments.bufferIpcHandle.getSizeOf());
 
     // Create buffer
     void *bufferBase = nullptr;

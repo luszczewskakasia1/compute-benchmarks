@@ -22,7 +22,7 @@ struct MultiProcessHelperL0 : MultiProcessHelper {
         void *buffer = {};
         size_t sizeForOneProcess = {};
         size_t totalSize = {};
-        std::string ipcHandle = {};
+        int fileDescriptor;
 
         size_t getNextOffset() {
             return sizeForOneProcess * (currentProcessesCount++);
@@ -48,7 +48,7 @@ struct MultiProcessHelperL0 : MultiProcessHelper {
 
             ze_ipc_mem_handle_t ipcHandle = {};
             ZE_RESULT_SUCCESS_OR_RETURN(zeMemGetIpcHandle(levelzero.context, bufferForSubDevice.buffer, &ipcHandle));
-            bufferForSubDevice.ipcHandle = HexHelper::toHex(reinterpret_cast<unsigned char *>(ipcHandle.data), ZE_MAX_IPC_HANDLE_SIZE);
+            bufferForSubDevice.fileDescriptor = *reinterpret_cast<int *>(ipcHandle.data);
 
             outBuffersForSubDevices[subDevice] = std::move(bufferForSubDevice);
         }

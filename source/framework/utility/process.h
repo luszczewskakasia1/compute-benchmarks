@@ -11,10 +11,15 @@ class Process {
     Process(Process &&other);
     Process &operator=(Process &&other);
     ~Process();
+
+    // Configuring process to be run
     void addArgument(const std::string &key, const std::string &value);
     void addEnvVariable(const std::string &key, const std::string &value);
-    std::vector<uint64_t> getMeasurements(size_t expectedCount);
+    void addHandleForInheritance(int handle);
     void setName(const std::string &string) { this->processName = string; }
+
+    // Getters
+    std::vector<uint64_t> getMeasurements(size_t expectedCount);
     const std::string &getName() const { return this->processName; }
 
     // OS-specific methods
@@ -31,6 +36,7 @@ class Process {
     std::string exeName;
     std::vector<std::pair<std::string, std::string>> arguments;
     std::vector<std::pair<std::string, std::string>> envVariables;
+    std::vector<int> handlesForInheritance;
     void *osSpecificData = nullptr;
     std::string processName = "";
 };
