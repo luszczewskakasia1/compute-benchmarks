@@ -40,7 +40,7 @@ struct MultiProcessHelperL0 : MultiProcessHelper {
         for (DeviceSelection subDevice : DeviceSelectionHelper::split(subDevices)) {
             BufferForSubDevice bufferForSubDevice = {};
             bufferForSubDevice.sizeForOneProcess = workgroupsPerProcess * threadsPerWorkgroup * sizeof(uint32_t);
-            bufferForSubDevice.totalSize = bufferForSubDevice.sizeForOneProcess * threadsPerWorkgroup;
+            bufferForSubDevice.totalSize = bufferForSubDevice.sizeForOneProcess * processesPerSubDevice;
 
             const ze_device_mem_alloc_desc_t deviceAllocationDesc{ZE_STRUCTURE_TYPE_DEVICE_MEM_ALLOC_DESC};
             ZE_RESULT_SUCCESS_OR_RETURN(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, bufferForSubDevice.totalSize, 0, levelzero.getDevice(subDevice), &bufferForSubDevice.buffer));
