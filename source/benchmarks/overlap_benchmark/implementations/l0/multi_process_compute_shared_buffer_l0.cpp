@@ -60,6 +60,12 @@ static TestResult run(const MultiProcessComputeSharedBufferArguments &arguments,
     }
     processes.pushMeasurementsToStatistics(arguments.iterations, statistics, (processes.size() > 1), true);
 
+    // Free allocated buffers
+    for (const auto &bufferForSubDevice : buffersForSubDevices) {
+        void *buffer = bufferForSubDevice.second.buffer;
+        ASSERT_ZE_RESULT_SUCCESS(zeMemFree(levelzero.context, buffer));
+    }
+
     return TestResult::Success;
 }
 
