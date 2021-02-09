@@ -45,6 +45,19 @@ struct DeviceSelectionHelper {
         }
     }
 
+    static size_t getMaxSubDeviceIndex(DeviceSelection deviceSelection) {
+        bool foundSubDevice = 0;
+        size_t maxIndex = 0;
+        for (auto subDevice : subDevices) {
+            if (hasDevice(deviceSelection, subDevice)) {
+                maxIndex = std::max(maxIndex, getSubDeviceIndex(subDevice));
+                foundSubDevice = true;
+            }
+        }
+        FATAL_ERROR_IF(!foundSubDevice, "Cannot call getMaxSubDeviceIndex, when there aren't any subDevices");
+        return maxIndex;
+    }
+
     static bool hasDevice(DeviceSelection deviceSelection, DeviceSelection device) {
         FATAL_ERROR_IF(device == DeviceSelection::Unknown, "Cannot check for unknown device");
         return ((deviceSelection & device) == device);

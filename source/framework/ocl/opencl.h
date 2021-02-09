@@ -41,14 +41,17 @@ struct Opencl {
 
         // Create sub devices if needed
         if (DeviceSelectionHelper::hasAnySubDevice(contextProperties.deviceSelection)) {
-            createSubDevices(contextProperties.requireCreationSuccess);
-            if (this->subDevices.size() == 0) {
+            this->createSubDevices(contextProperties.requireCreationSuccess);
+            const auto requiredSubDevicesCount = DeviceSelectionHelper::getMaxSubDeviceIndex(contextProperties.deviceSelection) + 1;
+            if (this->subDevices.size() < requiredSubDevicesCount) {
                 return;
             }
         }
 
         // Set the default device
-        this->device = getDefaultDevice(contextProperties.deviceSelection);
+        if (DeviceSelectionHelper::hasSingleDevice(contextProperties.deviceSelection)) {
+            this->device = getDevice(contextProperties.deviceSelection);
+        }
 
         // Create context on the default device
         this->context = createContext(contextProperties);
@@ -193,13 +196,6 @@ struct Opencl {
         this->subDevices.resize(numSubDevices);
         EXPECT_CL_SUCCESS(clCreateSubDevices(this->rootDevice, properties, numSubDevices, this->subDevices.data(), nullptr));
         return true;
-    }
-
-    cl_device_id getDefaultDevice(DeviceSelection deviceSelection) {
-        if (DeviceSelectionHelper::hasSingleDevice(deviceSelection)) {
-            return getDevice(deviceSelection);
-        }
-        return nullptr;
     }
 
     cl_device_id rootDevice;

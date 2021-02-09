@@ -29,13 +29,14 @@ LevelZero::LevelZero(const QueueProperties &queueProperties, const ContextProper
     // Create subDevices if needed
     if (DeviceSelectionHelper::hasAnySubDevice(contextProperties.deviceSelection)) {
         this->createSubDevices(contextProperties.requireCreationSuccess, contextProperties.fakeSubDeviceAllowed);
-        if (this->subDevices.size() == 0) {
+        const auto requiredSubDevicesCount = DeviceSelectionHelper::getMaxSubDeviceIndex(contextProperties.deviceSelection) + 1;
+        if (this->subDevices.size() < requiredSubDevicesCount) {
             return;
         }
     }
 
     // Set the default device
-    if (DeviceSelectionHelper::hasSingleDevice(contextProperties.deviceSelection) && !contextProperties.fakeSubDeviceAllowed) {
+    if (DeviceSelectionHelper::hasSingleDevice(contextProperties.deviceSelection)) {
         this->device = getDevice(contextProperties.deviceSelection);
     }
 
@@ -77,7 +78,7 @@ void LevelZero::createSubDevices(bool requireSuccess, bool fakeSubDeviceAllowed)
 
     uint32_t numSubDevices{};
     EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetSubDevices(this->rootDevice, &numSubDevices, nullptr));
-    if (numSubDevices > 0){
+    if (numSubDevices > 0) {
         subDevices.resize(numSubDevices);
         EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetSubDevices(this->rootDevice, &numSubDevices, subDevices.data()));
     } else if (fakeSubDeviceAllowed) {
