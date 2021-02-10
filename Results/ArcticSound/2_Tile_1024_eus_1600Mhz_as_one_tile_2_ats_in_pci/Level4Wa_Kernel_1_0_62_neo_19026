@@ -1,0 +1,221 @@
+ ./memory_benchmark_ocl --dumpCommandLines
+Non-default value of debug variable: PrintDebugSettings = 1
+Non-default value of debug variable: CreateMultipleSubDevices = 1
+OpenCL Platform: Intel(R) OpenCL HD Graphics
+        Device: Intel(R) Graphics [0x020f]
+                driverVersion: 21.06.19026
+                computeUnits:  512
+                clockFreq:     1600
+                intelProduct:  Ats (intelGen: Gen12hp)
+
+Running 10 iterations of each benchmark
+
+                                                                                                                 TestCase    Mean [GB/s]  Median [GB/s]         StdDev     Min [GB/s]     Max [GB/s]
+       --test=CopyBuffer --api=ocl --size=1 --contents=Zeros --compressedSource=0 --compressedDestination=0 --useEvents=0          0.000          0.000         27.85%          0.000          0.000
+       --test=CopyBuffer --api=ocl --size=1 --contents=Zeros --compressedSource=0 --compressedDestination=1 --useEvents=0          0.000          0.000         24.84%          0.000          0.000
+       --test=CopyBuffer --api=ocl --size=1 --contents=Zeros --compressedSource=1 --compressedDestination=0 --useEvents=0          0.000          0.000         38.50%          0.000          0.000
+       --test=CopyBuffer --api=ocl --size=1 --contents=Zeros --compressedSource=1 --compressedDestination=1 --useEvents=0          0.000          0.000         29.35%          0.000          0.000
+   --test=CopyBuffer --api=ocl --size=128MB --contents=Zeros --compressedSource=0 --compressedDestination=0 --useEvents=0        108.318        109.098          1.77%        103.132        109.828
+   --test=CopyBuffer --api=ocl --size=128MB --contents=Zeros --compressedSource=0 --compressedDestination=1 --useEvents=0        143.872        145.626          4.72%        126.035        149.810
+   --test=CopyBuffer --api=ocl --size=128MB --contents=Zeros --compressedSource=1 --compressedDestination=0 --useEvents=0        134.867        135.866          1.74%        129.000        136.796
+   --test=CopyBuffer --api=ocl --size=128MB --contents=Zeros --compressedSource=1 --compressedDestination=1 --useEvents=0        133.468        133.977          1.84%        126.648        135.238
+   --test=CopyBuffer --api=ocl --size=512MB --contents=Zeros --compressedSource=0 --compressedDestination=0 --useEvents=0        113.178        113.566          0.92%        110.579        114.349
+   --test=CopyBuffer --api=ocl --size=512MB --contents=Zeros --compressedSource=0 --compressedDestination=1 --useEvents=0        152.565        153.326          1.38%        146.646        154.024
+   --test=CopyBuffer --api=ocl --size=512MB --contents=Zeros --compressedSource=1 --compressedDestination=0 --useEvents=0        139.175        139.288          1.27%        134.476        141.508
+   --test=CopyBuffer --api=ocl --size=512MB --contents=Zeros --compressedSource=1 --compressedDestination=1 --useEvents=0        139.033        139.783          1.26%        134.639        140.777
+                                          --test=CopyEntireImage --api=ocl --size=8192:1:1 --forceBlitter=0 --useEvents=0          1.381          1.379          0.98%          1.359          1.407
+                                         --test=CopyEntireImage --api=ocl --size=16384:1:1 --forceBlitter=0 --useEvents=0          2.729          2.727          1.09%          2.684          2.796
+                                         --test=CopyEntireImage --api=ocl --size=256:512:1 --forceBlitter=0 --useEvents=0         18.408         18.454          0.77%         18.134         18.659
+                                         --test=CopyEntireImage --api=ocl --size=512:512:1 --forceBlitter=0 --useEvents=0         30.233         30.246          1.03%         29.485         30.584
+                                         --test=CopyEntireImage --api=ocl --size=512:512:2 --forceBlitter=0 --useEvents=0         14.453         14.523          2.79%         13.751         14.918
+                                        --test=CopyEntireImage --api=ocl --size=512:512:64 --forceBlitter=0 --useEvents=0         16.900         16.985          1.77%         16.502         17.299
+  --test=FillBuffer --api=ocl --size=128MB --contents=Zeros --patternSize=1 --compressed=0 --forceBlitter=0 --useEvents=0        150.036        170.009         33.06%          5.026        172.748
+  --test=FillBuffer --api=ocl --size=128MB --contents=Zeros --patternSize=1 --compressed=0 --forceBlitter=1 --useEvents=0        166.449        168.166          3.14%        153.733        172.482
+  --test=FillBuffer --api=ocl --size=128MB --contents=Zeros --patternSize=1 --compressed=1 --forceBlitter=0 --useEvents=0        184.269        184.975          3.09%        169.059        190.324
+  --test=FillBuffer --api=ocl --size=128MB --contents=Zeros --patternSize=1 --compressed=1 --forceBlitter=1 --useEvents=0        181.833        183.502          3.63%        170.368        191.465
+ --test=FillBuffer --api=ocl --size=128MB --contents=Zeros --patternSize=16 --compressed=0 --forceBlitter=0 --useEvents=0        181.856        181.456          1.44%        177.566        186.403
+ --test=FillBuffer --api=ocl --size=128MB --contents=Zeros --patternSize=16 --compressed=0 --forceBlitter=1 --useEvents=0        180.814        181.326          1.75%        174.597        186.979
+ --test=FillBuffer --api=ocl --size=128MB --contents=Zeros --patternSize=16 --compressed=1 --forceBlitter=0 --useEvents=0        184.185        183.829          1.33%        180.531        187.904
+ --test=FillBuffer --api=ocl --size=128MB --contents=Zeros --patternSize=16 --compressed=1 --forceBlitter=1 --useEvents=0        184.547        183.567          1.60%        180.838        188.686
+--test=FillBuffer --api=ocl --size=128MB --contents=Zeros --patternSize=128 --compressed=0 --forceBlitter=0 --useEvents=0        183.336        182.823          1.17%        180.892        187.113
+--test=FillBuffer --api=ocl --size=128MB --contents=Zeros --patternSize=128 --compressed=0 --forceBlitter=1 --useEvents=0        183.379        182.967          1.02%        181.305        187.013
+--test=FillBuffer --api=ocl --size=128MB --contents=Zeros --patternSize=128 --compressed=1 --forceBlitter=0 --useEvents=0        180.337        181.747          3.92%        166.794        189.513
+--test=FillBuffer --api=ocl --size=128MB --contents=Zeros --patternSize=128 --compressed=1 --forceBlitter=1 --useEvents=0        184.428        183.867          1.04%        182.210        187.399
+  --test=FillBuffer --api=ocl --size=512MB --contents=Zeros --patternSize=1 --compressed=0 --forceBlitter=0 --useEvents=0        291.478        290.469          1.40%        285.453        299.431
+  --test=FillBuffer --api=ocl --size=512MB --contents=Zeros --patternSize=1 --compressed=0 --forceBlitter=1 --useEvents=0        290.289        290.728          1.73%        279.224        296.112
+  --test=FillBuffer --api=ocl --size=512MB --contents=Zeros --patternSize=1 --compressed=1 --forceBlitter=0 --useEvents=0        287.067        288.838          3.31%        261.011        294.976
+  --test=FillBuffer --api=ocl --size=512MB --contents=Zeros --patternSize=1 --compressed=1 --forceBlitter=1 --useEvents=0        289.071        289.752          1.05%        282.545        292.903
+ --test=FillBuffer --api=ocl --size=512MB --contents=Zeros --patternSize=16 --compressed=0 --forceBlitter=0 --useEvents=0        293.090        293.068          1.09%        287.940        298.180
+ --test=FillBuffer --api=ocl --size=512MB --contents=Zeros --patternSize=16 --compressed=0 --forceBlitter=1 --useEvents=0        293.919        293.290          1.04%        289.604        299.003
+ --test=FillBuffer --api=ocl --size=512MB --contents=Zeros --patternSize=16 --compressed=1 --forceBlitter=0 --useEvents=0        286.932        288.314          1.35%        280.641        292.454
+ --test=FillBuffer --api=ocl --size=512MB --contents=Zeros --patternSize=16 --compressed=1 --forceBlitter=1 --useEvents=0        287.757        288.427          1.79%        277.465        295.524
+--test=FillBuffer --api=ocl --size=512MB --contents=Zeros --patternSize=128 --compressed=0 --forceBlitter=0 --useEvents=0        289.932        291.156          1.55%        279.651        295.072
+--test=FillBuffer --api=ocl --size=512MB --contents=Zeros --patternSize=128 --compressed=0 --forceBlitter=1 --useEvents=0        293.253        292.025          1.25%        289.048        300.748
+--test=FillBuffer --api=ocl --size=512MB --contents=Zeros --patternSize=128 --compressed=1 --forceBlitter=0 --useEvents=0        287.649        288.788          1.53%        277.815        292.909
+--test=FillBuffer --api=ocl --size=512MB --contents=Zeros --patternSize=128 --compressed=1 --forceBlitter=1 --useEvents=0        287.994        289.262          1.01%        281.518        291.110
+                    --test=MapBuffer --api=ocl --size=128MB --contents=Zeros --compressed=0 --mapFlags=Read --useEvents=0         21.808         21.786          0.62%         21.651         22.174
+                   --test=MapBuffer --api=ocl --size=128MB --contents=Zeros --compressed=0 --mapFlags=Write --useEvents=0         20.141         22.118         29.03%          2.600         22.177
+         --test=MapBuffer --api=ocl --size=128MB --contents=Zeros --compressed=0 --mapFlags=WriteInvalidate --useEvents=0         22.088         22.144          0.83%         21.558         22.215
+                    --test=MapBuffer --api=ocl --size=128MB --contents=Zeros --compressed=1 --mapFlags=Read --useEvents=0         21.772         21.723          0.66%         21.528         22.075
+                   --test=MapBuffer --api=ocl --size=128MB --contents=Zeros --compressed=1 --mapFlags=Write --useEvents=0         22.060         22.117          1.01%         21.418         22.240
+         --test=MapBuffer --api=ocl --size=128MB --contents=Zeros --compressed=1 --mapFlags=WriteInvalidate --useEvents=0         22.125         22.128          0.32%         22.007         22.245
+                    --test=MapBuffer --api=ocl --size=512MB --contents=Zeros --compressed=0 --mapFlags=Read --useEvents=0         22.394         22.383          0.27%         22.308         22.539
+                   --test=MapBuffer --api=ocl --size=512MB --contents=Zeros --compressed=0 --mapFlags=Write --useEvents=0         22.446         22.449          0.21%         22.360         22.514
+         --test=MapBuffer --api=ocl --size=512MB --contents=Zeros --compressed=0 --mapFlags=WriteInvalidate --useEvents=0         22.464         22.484          0.29%         22.318         22.559
+                    --test=MapBuffer --api=ocl --size=512MB --contents=Zeros --compressed=1 --mapFlags=Read --useEvents=0         22.404         22.395          0.22%         22.340         22.528
+                   --test=MapBuffer --api=ocl --size=512MB --contents=Zeros --compressed=1 --mapFlags=Write --useEvents=0         22.442         22.472          0.37%         22.301         22.552
+         --test=MapBuffer --api=ocl --size=512MB --contents=Zeros --compressed=1 --mapFlags=WriteInvalidate --useEvents=0         20.489         22.455         28.88%          2.738         22.511
+                                   --test=ReadBuffer --api=ocl --size=128MB --contents=Zeros --compressed=0 --useEvents=0          3.800          3.839         37.71%          2.165          5.283
+                                   --test=ReadBuffer --api=ocl --size=128MB --contents=Zeros --compressed=1 --useEvents=0          3.526          2.525         39.44%          1.940          5.232
+                                   --test=ReadBuffer --api=ocl --size=512MB --contents=Zeros --compressed=0 --useEvents=0          3.254          2.351         44.13%          1.416          5.237
+                                   --test=ReadBuffer --api=ocl --size=512MB --contents=Zeros --compressed=1 --useEvents=0          3.153          2.284         45.00%          2.017          5.334
+                                         --test=ReadBufferMisaligned --api=ocl --size=16MB --misalignment=0 --useEvents=0          2.337          2.336          6.84%          1.923          2.518
+                                         --test=ReadBufferMisaligned --api=ocl --size=16MB --misalignment=1 --useEvents=0          2.263          2.202          7.48%          2.049          2.535
+                                         --test=ReadBufferMisaligned --api=ocl --size=16MB --misalignment=2 --useEvents=0          2.284          2.221          7.25%          2.096          2.620
+                                         --test=ReadBufferMisaligned --api=ocl --size=16MB --misalignment=4 --useEvents=0          2.284          2.249          7.54%          2.081          2.590
+                                                          --test=ReadDeviceMemBuffer --api=ocl --size=64KB --compressed=0          0.026          0.026          0.91%          0.026          0.026
+                                                          --test=ReadDeviceMemBuffer --api=ocl --size=64KB --compressed=1          0.026          0.026          0.88%          0.025          0.026
+                                                         --test=ReadDeviceMemBuffer --api=ocl --size=128KB --compressed=0          0.052          0.052          0.63%          0.052          0.053
+                                                         --test=ReadDeviceMemBuffer --api=ocl --size=128KB --compressed=1          0.052          0.052          0.92%          0.051          0.053
+                                                         --test=ReadDeviceMemBuffer --api=ocl --size=512KB --compressed=0          0.206          0.205          0.56%          0.204          0.208
+                                                         --test=ReadDeviceMemBuffer --api=ocl --size=512KB --compressed=1          0.206          0.206          0.90%          0.203          0.208
+                                                           --test=ReadDeviceMemBuffer --api=ocl --size=1MB --compressed=0          0.406          0.406          0.84%          0.399          0.410
+                                                           --test=ReadDeviceMemBuffer --api=ocl --size=1MB --compressed=1          0.408          0.407          0.49%          0.404          0.411
+                                                           --test=ReadDeviceMemBuffer --api=ocl --size=4MB --compressed=0          1.608          1.611          0.77%          1.580          1.628
+                                                           --test=ReadDeviceMemBuffer --api=ocl --size=4MB --compressed=1          1.610          1.609          0.67%          1.591          1.626
+                                                          --test=ReadDeviceMemBuffer --api=ocl --size=32MB --compressed=0          7.061          7.093          5.58%          6.286          7.751
+                                                          --test=ReadDeviceMemBuffer --api=ocl --size=32MB --compressed=1         11.596         11.588          0.44%         11.510         11.670
+                                                          --test=ReadDeviceMemBuffer --api=ocl --size=64MB --compressed=0          9.214          9.259          2.46%          8.832          9.536
+                                                          --test=ReadDeviceMemBuffer --api=ocl --size=64MB --compressed=1         13.889         13.807          6.37%         12.786         15.613
+                                                         --test=ReadDeviceMemBuffer --api=ocl --size=128MB --compressed=0         15.966         16.380          6.76%         13.973         16.947
+                                                         --test=ReadDeviceMemBuffer --api=ocl --size=128MB --compressed=1         17.073         17.076          0.85%         16.811         17.368
+                                                         --test=ReadDeviceMemBuffer --api=ocl --size=256MB --compressed=0         31.984         32.149          3.28%         30.164         33.256
+                                                         --test=ReadDeviceMemBuffer --api=ocl --size=256MB --compressed=1         29.615         29.649          1.01%         28.954         30.019
+                  --test=UnmapBuffer --api=ocl --size=128MB --contents=Zeros --compressed=0 --mapFlags=Read --useEvents=0      48578.797      51505.541         11.81%      38601.590      53837.837
+                 --test=UnmapBuffer --api=ocl --size=128MB --contents=Zeros --compressed=0 --mapFlags=Write --useEvents=0         20.331         20.347          0.27%         20.184         20.390
+       --test=UnmapBuffer --api=ocl --size=128MB --contents=Zeros --compressed=0 --mapFlags=WriteInvalidate --useEvents=0         20.309         20.331          0.24%         20.209         20.363
+                  --test=UnmapBuffer --api=ocl --size=128MB --contents=Zeros --compressed=1 --mapFlags=Read --useEvents=0      45057.285      47297.983         14.75%      30188.423      53155.536
+                 --test=UnmapBuffer --api=ocl --size=128MB --contents=Zeros --compressed=1 --mapFlags=Write --useEvents=0         18.549         20.319         28.63%          2.620         20.407
+       --test=UnmapBuffer --api=ocl --size=128MB --contents=Zeros --compressed=1 --mapFlags=WriteInvalidate --useEvents=0         20.384         20.398          0.24%         20.291         20.433
+                  --test=UnmapBuffer --api=ocl --size=512MB --contents=Zeros --compressed=0 --mapFlags=Read --useEvents=0     169608.647     165394.675         10.76%     136330.856     196224.749
+                 --test=UnmapBuffer --api=ocl --size=512MB --contents=Zeros --compressed=0 --mapFlags=Write --useEvents=0         20.352         20.349          0.18%         20.308         20.420
+       --test=UnmapBuffer --api=ocl --size=512MB --contents=Zeros --compressed=0 --mapFlags=WriteInvalidate --useEvents=0         20.388         20.392          0.16%         20.327         20.435
+                  --test=UnmapBuffer --api=ocl --size=512MB --contents=Zeros --compressed=1 --mapFlags=Read --useEvents=0     191385.642     195979.720         16.66%     109655.007     219130.984
+                 --test=UnmapBuffer --api=ocl --size=512MB --contents=Zeros --compressed=1 --mapFlags=Write --useEvents=0         20.459         20.468          0.21%         20.377         20.515
+       --test=UnmapBuffer --api=ocl --size=512MB --contents=Zeros --compressed=1 --mapFlags=WriteInvalidate --useEvents=0         20.408         20.413          0.10%         20.364         20.436
+          --test=UsmCopy --api=ocl --src=Device --dst=Device --size=128MB --contents=Zeros --forceBlitter=0 --useEvents=0        105.102        105.014          0.91%        103.570        107.021
+          --test=UsmCopy --api=ocl --src=Device --dst=Device --size=128MB --contents=Zeros --forceBlitter=1 --useEvents=0        104.044        104.050          0.60%        103.072        105.359
+          --test=UsmCopy --api=ocl --src=Device --dst=Device --size=512MB --contents=Zeros --forceBlitter=0 --useEvents=0        112.696        112.678          0.29%        111.891        113.241
+          --test=UsmCopy --api=ocl --src=Device --dst=Device --size=512MB --contents=Zeros --forceBlitter=1 --useEvents=0        111.933        111.869          0.28%        111.462        112.377
+            --test=UsmCopy --api=ocl --src=Device --dst=Host --size=128MB --contents=Zeros --forceBlitter=0 --useEvents=0         22.108         22.149          0.40%         21.898         22.198
+            --test=UsmCopy --api=ocl --src=Device --dst=Host --size=128MB --contents=Zeros --forceBlitter=1 --useEvents=0         22.114         22.123          0.21%         22.024         22.174
+            --test=UsmCopy --api=ocl --src=Device --dst=Host --size=512MB --contents=Zeros --forceBlitter=0 --useEvents=0         22.495         22.494          0.15%         22.454         22.552
+            --test=UsmCopy --api=ocl --src=Device --dst=Host --size=512MB --contents=Zeros --forceBlitter=1 --useEvents=0         22.519         22.519          0.16%         22.465         22.607
+          --test=UsmCopy --api=ocl --src=Device --dst=Shared --size=128MB --contents=Zeros --forceBlitter=0 --useEvents=0        105.605        105.712          0.47%        104.696        106.264
+          --test=UsmCopy --api=ocl --src=Device --dst=Shared --size=128MB --contents=Zeros --forceBlitter=1 --useEvents=0        105.986        105.814          1.16%        104.769        109.116
+          --test=UsmCopy --api=ocl --src=Device --dst=Shared --size=512MB --contents=Zeros --forceBlitter=0 --useEvents=0        115.474        115.352          0.31%        114.985        116.019
+          --test=UsmCopy --api=ocl --src=Device --dst=Shared --size=512MB --contents=Zeros --forceBlitter=1 --useEvents=0        113.995        114.163          0.98%        111.123        115.304
+            --test=UsmCopy --api=ocl --src=Host --dst=Device --size=128MB --contents=Zeros --forceBlitter=0 --useEvents=0         19.701         19.893          3.54%         17.620         20.067
+            --test=UsmCopy --api=ocl --src=Host --dst=Device --size=128MB --contents=Zeros --forceBlitter=1 --useEvents=0         20.017         20.057          0.70%         19.729         20.175
+            --test=UsmCopy --api=ocl --src=Host --dst=Device --size=512MB --contents=Zeros --forceBlitter=0 --useEvents=0         20.291         20.302          0.16%         20.236         20.335
+            --test=UsmCopy --api=ocl --src=Host --dst=Device --size=512MB --contents=Zeros --forceBlitter=1 --useEvents=0         20.288         20.289          0.09%         20.245         20.321
+              --test=UsmCopy --api=ocl --src=Host --dst=Host --size=128MB --contents=Zeros --forceBlitter=0 --useEvents=0         14.344         14.346          0.32%         14.248         14.414
+              --test=UsmCopy --api=ocl --src=Host --dst=Host --size=128MB --contents=Zeros --forceBlitter=1 --useEvents=0         14.308         14.305          0.36%         14.239         14.383
+              --test=UsmCopy --api=ocl --src=Host --dst=Host --size=512MB --contents=Zeros --forceBlitter=0 --useEvents=0         14.494         14.492          0.20%         14.455         14.556
+              --test=UsmCopy --api=ocl --src=Host --dst=Host --size=512MB --contents=Zeros --forceBlitter=1 --useEvents=0         14.510         14.506          0.16%         14.474         14.552
+            --test=UsmCopy --api=ocl --src=Host --dst=Shared --size=128MB --contents=Zeros --forceBlitter=0 --useEvents=0         19.860         19.871          0.50%         19.684         20.008
+            --test=UsmCopy --api=ocl --src=Host --dst=Shared --size=128MB --contents=Zeros --forceBlitter=1 --useEvents=0         20.111         20.125          0.61%         19.804         20.271
+            --test=UsmCopy --api=ocl --src=Host --dst=Shared --size=512MB --contents=Zeros --forceBlitter=0 --useEvents=0         20.238         20.236          0.19%         20.163         20.297
+            --test=UsmCopy --api=ocl --src=Host --dst=Shared --size=512MB --contents=Zeros --forceBlitter=1 --useEvents=0         20.235         20.242          0.21%         20.165         20.297
+          --test=UsmCopy --api=ocl --src=Shared --dst=Device --size=128MB --contents=Zeros --forceBlitter=0 --useEvents=0        106.979        106.622          1.06%        105.868        110.150
+          --test=UsmCopy --api=ocl --src=Shared --dst=Device --size=128MB --contents=Zeros --forceBlitter=1 --useEvents=0        106.532        106.288          0.88%        105.637        108.798
+          --test=UsmCopy --api=ocl --src=Shared --dst=Device --size=512MB --contents=Zeros --forceBlitter=0 --useEvents=0        116.656        116.711          0.27%        116.059        117.013
+          --test=UsmCopy --api=ocl --src=Shared --dst=Device --size=512MB --contents=Zeros --forceBlitter=1 --useEvents=0        116.166        116.546          0.65%        114.557        116.806
+            --test=UsmCopy --api=ocl --src=Shared --dst=Host --size=128MB --contents=Zeros --forceBlitter=0 --useEvents=0         22.112         22.124          0.38%         21.918         22.211
+            --test=UsmCopy --api=ocl --src=Shared --dst=Host --size=128MB --contents=Zeros --forceBlitter=1 --useEvents=0         22.126         22.133          0.24%         22.018         22.211
+            --test=UsmCopy --api=ocl --src=Shared --dst=Host --size=512MB --contents=Zeros --forceBlitter=0 --useEvents=0         22.505         22.508          0.19%         22.398         22.553
+            --test=UsmCopy --api=ocl --src=Shared --dst=Host --size=512MB --contents=Zeros --forceBlitter=1 --useEvents=0         22.514         22.504          0.18%         22.461         22.582
+          --test=UsmCopy --api=ocl --src=Shared --dst=Shared --size=128MB --contents=Zeros --forceBlitter=0 --useEvents=0        108.612        108.580          0.62%        107.679        109.936
+          --test=UsmCopy --api=ocl --src=Shared --dst=Shared --size=128MB --contents=Zeros --forceBlitter=1 --useEvents=0        108.504        108.416          0.63%        107.753        110.113
+          --test=UsmCopy --api=ocl --src=Shared --dst=Shared --size=512MB --contents=Zeros --forceBlitter=0 --useEvents=0        118.163        118.002          0.46%        117.430        119.124
+          --test=UsmCopy --api=ocl --src=Shared --dst=Shared --size=512MB --contents=Zeros --forceBlitter=1 --useEvents=0        117.868        117.878          0.41%        116.807        118.423
+--test=UsmFill --api=ocl --memory=Host --size=128MB --contents=Zeros --patternSize=1 --patternContents=Random --forceBlitter=0 --useEvents=0         22.182         22.200          0.34%         21.998         22.258
+--test=UsmFill --api=ocl --memory=Host --size=128MB --contents=Zeros --patternSize=1 --patternContents=Random --forceBlitter=1 --useEvents=0         22.246         22.229          0.27%         22.160         22.379
+--test=UsmFill --api=ocl --memory=Host --size=128MB --contents=Zeros --patternSize=4 --patternContents=Random --forceBlitter=0 --useEvents=0         22.194         22.190          0.38%         22.046         22.294
+--test=UsmFill --api=ocl --memory=Host --size=128MB --contents=Zeros --patternSize=4 --patternContents=Random --forceBlitter=1 --useEvents=0         22.244         22.265          0.37%         22.059         22.343
+--test=UsmFill --api=ocl --memory=Host --size=128MB --contents=Zeros --patternSize=16 --patternContents=Random --forceBlitter=0 --useEvents=0         22.218         22.187          0.26%         22.163         22.337
+--test=UsmFill --api=ocl --memory=Host --size=128MB --contents=Zeros --patternSize=16 --patternContents=Random --forceBlitter=1 --useEvents=0         22.160         22.146          0.29%         22.109         22.334
+--test=UsmFill --api=ocl --memory=Host --size=512MB --contents=Zeros --patternSize=1 --patternContents=Random --forceBlitter=0 --useEvents=0         22.541         22.540          0.18%         22.462         22.594
+--test=UsmFill --api=ocl --memory=Host --size=512MB --contents=Zeros --patternSize=1 --patternContents=Random --forceBlitter=1 --useEvents=0         22.543         22.552          0.23%         22.472         22.636
+--test=UsmFill --api=ocl --memory=Host --size=512MB --contents=Zeros --patternSize=4 --patternContents=Random --forceBlitter=0 --useEvents=0         22.536         22.522          0.15%         22.498         22.615
+--test=UsmFill --api=ocl --memory=Host --size=512MB --contents=Zeros --patternSize=4 --patternContents=Random --forceBlitter=1 --useEvents=0         22.532         22.552          0.16%         22.459         22.575
+--test=UsmFill --api=ocl --memory=Host --size=512MB --contents=Zeros --patternSize=16 --patternContents=Random --forceBlitter=0 --useEvents=0         22.514         22.509          0.10%         22.481         22.563
+--test=UsmFill --api=ocl --memory=Host --size=512MB --contents=Zeros --patternSize=16 --patternContents=Random --forceBlitter=1 --useEvents=0         22.528         22.526          0.22%         22.428         22.604
+--test=UsmFill --api=ocl --memory=Device --size=128MB --contents=Zeros --patternSize=1 --patternContents=Random --forceBlitter=0 --useEvents=0        275.739        276.980          1.04%        268.902        278.401
+--test=UsmFill --api=ocl --memory=Device --size=128MB --contents=Zeros --patternSize=1 --patternContents=Random --forceBlitter=1 --useEvents=0        276.017        276.866          0.95%        269.280        279.404
+--test=UsmFill --api=ocl --memory=Device --size=128MB --contents=Zeros --patternSize=4 --patternContents=Random --forceBlitter=0 --useEvents=0        276.615        277.360          0.84%        271.173        279.090
+--test=UsmFill --api=ocl --memory=Device --size=128MB --contents=Zeros --patternSize=4 --patternContents=Random --forceBlitter=1 --useEvents=0        275.243        276.410          1.28%        267.700        279.351
+--test=UsmFill --api=ocl --memory=Device --size=128MB --contents=Zeros --patternSize=16 --patternContents=Random --forceBlitter=0 --useEvents=0        273.661        275.211          3.12%        251.474        282.383
+--test=UsmFill --api=ocl --memory=Device --size=128MB --contents=Zeros --patternSize=16 --patternContents=Random --forceBlitter=1 --useEvents=0        277.360        275.802          1.88%        270.552        289.975
+--test=UsmFill --api=ocl --memory=Device --size=512MB --contents=Zeros --patternSize=1 --patternContents=Random --forceBlitter=0 --useEvents=0        335.269        336.055          1.67%        325.636        345.520
+--test=UsmFill --api=ocl --memory=Device --size=512MB --contents=Zeros --patternSize=1 --patternContents=Random --forceBlitter=1 --useEvents=0        337.142        337.207          1.61%        329.479        345.475
+--test=UsmFill --api=ocl --memory=Device --size=512MB --contents=Zeros --patternSize=4 --patternContents=Random --forceBlitter=0 --useEvents=0        333.030        335.464          2.45%        317.165        341.980
+--test=UsmFill --api=ocl --memory=Device --size=512MB --contents=Zeros --patternSize=4 --patternContents=Random --forceBlitter=1 --useEvents=0        332.531        335.227          3.86%        312.183        347.875
+--test=UsmFill --api=ocl --memory=Device --size=512MB --contents=Zeros --patternSize=16 --patternContents=Random --forceBlitter=0 --useEvents=0        336.670        337.071          0.84%        331.144        340.031
+--test=UsmFill --api=ocl --memory=Device --size=512MB --contents=Zeros --patternSize=16 --patternContents=Random --forceBlitter=1 --useEvents=0        336.622        336.766          1.04%        331.111        342.153
+--test=UsmFill --api=ocl --memory=Shared --size=128MB --contents=Zeros --patternSize=1 --patternContents=Random --forceBlitter=0 --useEvents=0        288.101        288.609          0.71%        283.844        291.560
+--test=UsmFill --api=ocl --memory=Shared --size=128MB --contents=Zeros --patternSize=1 --patternContents=Random --forceBlitter=1 --useEvents=0        287.784        287.632          0.99%        283.061        291.319
+--test=UsmFill --api=ocl --memory=Shared --size=128MB --contents=Zeros --patternSize=4 --patternContents=Random --forceBlitter=0 --useEvents=0        286.568        287.976          1.79%        272.928        292.165
+--test=UsmFill --api=ocl --memory=Shared --size=128MB --contents=Zeros --patternSize=4 --patternContents=Random --forceBlitter=1 --useEvents=0        283.256        284.464          1.97%        270.283        289.364
+--test=UsmFill --api=ocl --memory=Shared --size=128MB --contents=Zeros --patternSize=16 --patternContents=Random --forceBlitter=0 --useEvents=0        290.736        287.570          3.22%        282.092        310.287
+--test=UsmFill --api=ocl --memory=Shared --size=128MB --contents=Zeros --patternSize=16 --patternContents=Random --forceBlitter=1 --useEvents=0        289.092        289.311          0.45%        287.113        290.661
+--test=UsmFill --api=ocl --memory=Shared --size=512MB --contents=Zeros --patternSize=1 --patternContents=Random --forceBlitter=0 --useEvents=0        345.997        346.710          0.79%        341.521        350.272
+--test=UsmFill --api=ocl --memory=Shared --size=512MB --contents=Zeros --patternSize=1 --patternContents=Random --forceBlitter=1 --useEvents=0        349.327        348.722          1.13%        343.024        358.237
+--test=UsmFill --api=ocl --memory=Shared --size=512MB --contents=Zeros --patternSize=4 --patternContents=Random --forceBlitter=0 --useEvents=0        347.918        346.820          0.79%        344.868        352.531
+--test=UsmFill --api=ocl --memory=Shared --size=512MB --contents=Zeros --patternSize=4 --patternContents=Random --forceBlitter=1 --useEvents=0        346.855        346.582          1.19%        338.483        356.311
+--test=UsmFill --api=ocl --memory=Shared --size=512MB --contents=Zeros --patternSize=16 --patternContents=Random --forceBlitter=0 --useEvents=0        346.234        346.752          1.13%        337.837        352.225
+--test=UsmFill --api=ocl --memory=Shared --size=512MB --contents=Zeros --patternSize=16 --patternContents=Random --forceBlitter=1 --useEvents=0        345.755        344.165          1.25%        339.935        354.535
+--test=UsmFillSpecificPattern --api=ocl --memory=Host --size=128MB --contents=Zeros --pattern=0x01AA0B --forceBlitter=0 --useEvents=0         22.185         22.178          0.41%         22.059         22.342
+--test=UsmFillSpecificPattern --api=ocl --memory=Host --size=128MB --contents=Zeros --pattern=0x01AA0B --forceBlitter=1 --useEvents=0         22.167         22.150          0.37%         22.065         22.344
+--test=UsmFillSpecificPattern --api=ocl --memory=Host --size=512MB --contents=Zeros --pattern=0x01AA0B --forceBlitter=0 --useEvents=0         22.505         22.511          0.15%         22.435         22.565
+--test=UsmFillSpecificPattern --api=ocl --memory=Host --size=512MB --contents=Zeros --pattern=0x01AA0B --forceBlitter=1 --useEvents=0         22.499         22.507          0.17%         22.434         22.549
+--test=UsmFillSpecificPattern --api=ocl --memory=Device --size=128MB --contents=Zeros --pattern=0x01AA0B --forceBlitter=0 --useEvents=0        274.684        273.787          1.61%        265.162        280.060
+--test=UsmFillSpecificPattern --api=ocl --memory=Device --size=128MB --contents=Zeros --pattern=0x01AA0B --forceBlitter=1 --useEvents=0        263.356        276.851         15.36%        142.176        279.746
+--test=UsmFillSpecificPattern --api=ocl --memory=Device --size=512MB --contents=Zeros --pattern=0x01AA0B --forceBlitter=0 --useEvents=0        337.731        337.912          0.72%        335.024        342.602
+--test=UsmFillSpecificPattern --api=ocl --memory=Device --size=512MB --contents=Zeros --pattern=0x01AA0B --forceBlitter=1 --useEvents=0        338.795        338.510          0.69%        335.336        343.439
+--test=UsmFillSpecificPattern --api=ocl --memory=Shared --size=128MB --contents=Zeros --pattern=0x01AA0B --forceBlitter=0 --useEvents=0        286.903        287.472          1.31%        280.109        292.360
+--test=UsmFillSpecificPattern --api=ocl --memory=Shared --size=128MB --contents=Zeros --pattern=0x01AA0B --forceBlitter=1 --useEvents=0        286.190        287.437          1.37%        276.770        290.602
+--test=UsmFillSpecificPattern --api=ocl --memory=Shared --size=512MB --contents=Zeros --pattern=0x01AA0B --forceBlitter=0 --useEvents=0        347.202        347.737          1.22%        337.696        351.720
+--test=UsmFillSpecificPattern --api=ocl --memory=Shared --size=512MB --contents=Zeros --pattern=0x01AA0B --forceBlitter=1 --useEvents=0        345.044        345.372          0.45%        342.097        346.757
+                    --test=UsmMemset --api=ocl --memory=Host --size=128MB --contents=Zeros --forceBlitter=0 --useEvents=0         22.063         22.197          1.89%         20.820         22.299
+                    --test=UsmMemset --api=ocl --memory=Host --size=128MB --contents=Zeros --forceBlitter=1 --useEvents=1         24.504         24.505          0.12%         24.454         24.544
+                    --test=UsmMemset --api=ocl --memory=Host --size=512MB --contents=Zeros --forceBlitter=0 --useEvents=0         22.514         22.520          0.10%         22.477         22.543
+                    --test=UsmMemset --api=ocl --memory=Host --size=512MB --contents=Zeros --forceBlitter=1 --useEvents=1         23.081         23.088          0.18%         23.005         23.147
+                  --test=UsmMemset --api=ocl --memory=Device --size=128MB --contents=Zeros --forceBlitter=0 --useEvents=0        276.893        278.377          1.41%        268.427        281.244
+                  --test=UsmMemset --api=ocl --memory=Device --size=128MB --contents=Zeros --forceBlitter=1 --useEvents=1        370.934        370.849          0.72%        367.438        375.497
+                  --test=UsmMemset --api=ocl --memory=Device --size=512MB --contents=Zeros --forceBlitter=0 --useEvents=0        336.973        337.051          1.30%        330.603        344.644
+                  --test=UsmMemset --api=ocl --memory=Device --size=512MB --contents=Zeros --forceBlitter=1 --useEvents=1        371.734        372.023          0.84%        363.734        374.910
+                  --test=UsmMemset --api=ocl --memory=Shared --size=128MB --contents=Zeros --forceBlitter=0 --useEvents=0        286.065        286.812          1.44%        276.101        291.306
+                  --test=UsmMemset --api=ocl --memory=Shared --size=128MB --contents=Zeros --forceBlitter=1 --useEvents=1        386.216        385.153          1.18%        379.575        392.725
+                  --test=UsmMemset --api=ocl --memory=Shared --size=512MB --contents=Zeros --forceBlitter=0 --useEvents=0        343.674        345.073          1.94%        326.333        354.045
+                  --test=UsmMemset --api=ocl --memory=Shared --size=512MB --contents=Zeros --forceBlitter=1 --useEvents=1        383.247        383.260          0.47%        379.360        386.305
+                                                     --test=UsmSharedMigrateCpu --api=ocl --accessAllBytes=0 --size=128MB         21.075         21.109          0.26%         20.938         21.114
+                                                     --test=UsmSharedMigrateCpu --api=ocl --accessAllBytes=0 --size=256MB         21.125         21.140          0.32%         21.017         21.220
+                                                     --test=UsmSharedMigrateCpu --api=ocl --accessAllBytes=1 --size=128MB          1.518          1.528          1.68%          1.468          1.539
+                                                     --test=UsmSharedMigrateCpu --api=ocl --accessAllBytes=1 --size=256MB          1.531          1.533          0.31%          1.521          1.535
+                                                                        --test=UsmSharedMigrateGpu --api=ocl --size=128MB         17.893         17.884          0.31%         17.829         17.990
+                                                                        --test=UsmSharedMigrateGpu --api=ocl --size=256MB         18.097         18.095          0.34%         17.960         18.195
+                                  --test=WriteBuffer --api=ocl --size=128MB --contents=Zeros --compressed=0 --useEvents=0          3.060          2.252         46.33%          1.904          5.223
+                                  --test=WriteBuffer --api=ocl --size=128MB --contents=Zeros --compressed=1 --useEvents=0          3.120          2.309         42.62%          2.031          5.153
+                                  --test=WriteBuffer --api=ocl --size=512MB --contents=Zeros --compressed=0 --useEvents=0          2.575          2.290         34.75%          2.218          5.257
+                                  --test=WriteBuffer --api=ocl --size=512MB --contents=Zeros --compressed=1 --useEvents=0          3.354          2.340         44.23%          1.374          5.275
+ --test=WriteBufferRect --api=ocl --size=16KB --compressed=0 --origin=0:0:0 --region=128:128:1 --rPitch=128 --sPitch=16KB          0.037          0.033         25.79%          0.027          0.053
+--test=WriteBufferRect --api=ocl --size=2MB --compressed=0 --origin=0:0:0 --region=128:128:128 --rPitch=128 --sPitch=16KB          0.979          0.970         10.77%          0.852          1.123
+--test=WriteBufferRect --api=ocl --size=128MB --compressed=0 --origin=0:0:0 --region=128:1024:1024 --rPitch=128 --sPitch=128KB          1.316          1.327          2.44%          1.229          1.344
+--test=WriteBufferRect --api=ocl --size=16MB --compressed=0 --origin=0:0:0 --region=1024:16:1024 --rPitch=1KB --sPitch=16KB          1.739          1.730         15.44%          1.149          2.307
+--test=WriteBufferRect --api=ocl --size=16MB --compressed=0 --origin=0:0:0 --region=1024:1024:16 --rPitch=1KB --sPitch=1MB          2.332          2.254          8.30%          2.121          2.715
+ --test=WriteBufferRect --api=ocl --size=16KB --compressed=1 --origin=0:0:0 --region=128:128:1 --rPitch=128 --sPitch=16KB          0.038          0.034         28.43%          0.027          0.053
+--test=WriteBufferRect --api=ocl --size=2MB --compressed=1 --origin=0:0:0 --region=128:128:128 --rPitch=128 --sPitch=16KB          0.972          0.948          9.59%          0.849          1.140
+--test=WriteBufferRect --api=ocl --size=128MB --compressed=1 --origin=0:0:0 --region=128:1024:1024 --rPitch=128 --sPitch=128KB          1.221          1.240         10.28%          0.860          1.332
+--test=WriteBufferRect --api=ocl --size=16MB --compressed=1 --origin=0:0:0 --region=1024:16:1024 --rPitch=1KB --sPitch=16KB          1.694          1.734         22.35%          0.684          2.254
+--test=WriteBufferRect --api=ocl --size=16MB --compressed=1 --origin=0:0:0 --region=1024:1024:16 --rPitch=1KB --sPitch=1MB          2.162          2.140          7.61%          1.796          2.433
