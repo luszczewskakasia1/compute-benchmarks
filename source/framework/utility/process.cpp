@@ -39,10 +39,14 @@ void Process::addEnvVariable(const std::string &key, const std::string &value) {
     envVariables.emplace_back(key, value);
 }
 
+void Process::addHandleForInheritance(int handle) {
+    handlesForInheritance.push_back(handle);
+}
+
 std::vector<uint64_t> Process::getMeasurements(size_t expectedCount) {
     const auto stdOut = getStdout();
     const auto stdOutSplit = splitString(stdOut);
-    ERROR_IF(stdOutSplit.size() != expectedCount, "Child process returned an invalid number of measurements");
+    FATAL_ERROR_IF(stdOutSplit.size() != expectedCount, "Child process returned an invalid number of measurements");
 
     std::vector<uint64_t> measurementsFromProcess = {};
     for (const auto measurementString : stdOutSplit) {

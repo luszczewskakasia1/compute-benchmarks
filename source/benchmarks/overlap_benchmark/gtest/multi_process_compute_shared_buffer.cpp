@@ -1,4 +1,4 @@
-#include "definitions/multi_process_compute.h"
+#include "definitions/multi_process_compute_shared_buffer.h"
 
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/common_gtest_args.h"
@@ -6,27 +6,27 @@
 
 #include <gtest/gtest.h>
 
-static const inline RegisterTestCase<MultiProcessCompute> registerTestCase{};
+static const inline RegisterTestCase<MultiProcessComputeSharedBuffer> registerTestCase{};
 
-class MultiProcessComputeTest : public ::testing::TestWithParam<std::tuple<Api, DeviceSelection, size_t, size_t, bool>> {
+class MultiProcessComputeSharedBufferTest : public ::testing::TestWithParam<std::tuple<Api, DeviceSelection, size_t, size_t, bool>> {
 };
 
-TEST_P(MultiProcessComputeTest, Test) {
-    MultiProcessComputeArguments args{};
+TEST_P(MultiProcessComputeSharedBufferTest, Test) {
+    MultiProcessComputeSharedBufferArguments args{};
     args.api = std::get<0>(GetParam());
     args.deviceSelection = std::get<1>(GetParam());
     args.processesPerTile = std::get<2>(GetParam());
     args.workgroupsPerProcess = std::get<3>(GetParam());
     args.synchronize = std::get<4>(GetParam());
 
-    MultiProcessCompute test;
+    MultiProcessComputeSharedBuffer test;
     test.run(args);
 }
 
 using namespace MemoryConstants;
 INSTANTIATE_TEST_SUITE_P(
-    MultiProcessComputeTest,
-    MultiProcessComputeTest,
+    MultiProcessComputeSharedBufferTest,
+    MultiProcessComputeSharedBufferTest,
     ::testing::Combine(
         ::CommonGtestArgs::allApis(),
         ::testing::Values(

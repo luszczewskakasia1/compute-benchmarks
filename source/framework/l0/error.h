@@ -44,6 +44,6 @@
         const auto tempVarForDefine = (retVal);                                                                                    \
         if (tempVarForDefine != ZE_RESULT_SUCCESS) {                                                                               \
             const auto _message = std::string("Fatal LevelZero error occurred, retVal=") + std::to_string(tempVarForDefine) + ")"; \
-            ERROR(_message);                                                                                                       \
+            FATAL_ERROR(_message);                                                                                                 \
         }                                                                                                                          \
     }

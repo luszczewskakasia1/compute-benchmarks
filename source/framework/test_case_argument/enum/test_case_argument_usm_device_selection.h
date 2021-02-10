@@ -42,7 +42,7 @@ struct UsmDeviceSelectionTestCaseArgumentBase : BitfieldEnumTestCaseArgument<Dev
             return allowDevice;
         }
 
-        ERROR("Unreachable code in UsmDeviceSelectionTestCaseArgumentBase");
+        FATAL_ERROR("Unreachable code in UsmDeviceSelectionTestCaseArgumentBase");
     }
 };
 

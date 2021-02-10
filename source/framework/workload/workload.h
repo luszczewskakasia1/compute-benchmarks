@@ -62,8 +62,8 @@ class Workload {
         WorkloadSynchronization synchronization{parameters.iterations, parameters.synchronize};
         TestResult result = runImpl(parameters, statistics, synchronization);
         if (result == TestResult::Success) {
-            ERROR_UNLESS(statistics.isFull(), "test did not generate as many values as expected");
-            ERROR_UNLESS(synchronization.validate(), "test did not synchronize the correct amount of times");
+            FATAL_ERROR_UNLESS(statistics.isFull(), "test did not generate as many values as expected");
+            FATAL_ERROR_UNLESS(synchronization.validate(), "test did not synchronize the correct amount of times");
             statistics.printStatistics();
         } else {
             synchronization.executeRemainingSynchronizations();

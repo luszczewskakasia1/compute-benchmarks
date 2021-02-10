@@ -20,7 +20,7 @@ struct ImageHelperOcl : ImageHelper {
         case ImageType::Image_Buffer:
             return CL_MEM_OBJECT_IMAGE1D_BUFFER;
         default:
-            ERROR("Unknown image type");
+            FATAL_ERROR("Unknown image type");
         }
     }
 
@@ -38,7 +38,7 @@ struct ImageHelperOcl : ImageHelper {
             imageFormat.image_channel_order = CL_RGBA;
             break;
         default:
-            ERROR("Unknown channel order");
+            FATAL_ERROR("Unknown channel order");
         }
 
         switch (format) {
@@ -46,7 +46,7 @@ struct ImageHelperOcl : ImageHelper {
             imageFormat.image_channel_data_type = CL_FLOAT;
             break;
         default:
-            ERROR("Unknown channel format");
+            FATAL_ERROR("Unknown channel format");
         }
 
         return imageFormat;
@@ -82,7 +82,7 @@ struct ImageHelperOcl : ImageHelper {
                    dimensions[2] <= maxDimensions[2];
 
         default:
-            ERROR("Unknown image type");
+            FATAL_ERROR("Unknown image type");
         }
     }
 };

@@ -26,6 +26,8 @@ struct LevelZero {
     };
 
     // Public fields, accessible in benchmarks
+    const size_t driverIndex;
+    const size_t rootDeviceIndex;
     ze_driver_handle_t driver{};              // Driver instance, always present
     ze_device_handle_t device{};              // Default device, it is not present if multiple devices were selected in ContextSelection
     ze_context_handle_t context{};            // Context, created by default, can be disabled
@@ -43,6 +45,10 @@ struct LevelZero {
     // Queries available queue families on the device and returns their descriptions.
     static std::vector<QueueInfo> queryQueueFamilies(ze_device_handle_t device);
 
+    // Returns how many subDevices has been created. Will return 0, if no subDevices were specified in ContextProperties or
+    // QueueProperties.
+    size_t getSubDevicesCount() const { return subDevices.size(); }
+
     // Creates queue with given properties. These methods aren't needed to be called by the user in scenarios with only one queue.
     // Queue will be created by default, unless disabled in QueueProperties. These methods allow the user to create
     // additional queues. Queues are tracked internally and will be released automatically.
@@ -53,10 +59,10 @@ struct LevelZero {
     ze_device_handle_t getDevice(DeviceSelection deviceSelection) const;
 
     // Utility methods for L0 getter functions
-    ze_device_compute_properties_t getDeviceComputeProperties() const {
-        ze_device_compute_properties_t deviceComputeProperties{ZE_STRUCTURE_TYPE_DEVICE_COMPUTE_PROPERTIES};
-        EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetComputeProperties(device, &deviceComputeProperties));
-        return deviceComputeProperties;
+    ze_driver_ipc_properties_t getIpcProperties() const {
+        ze_driver_ipc_properties_t ipcProperties{ZE_STRUCTURE_TYPE_DRIVER_IPC_PROPERTIES};
+        EXPECT_ZE_RESULT_SUCCESS(zeDriverGetIpcProperties(driver, &ipcProperties));
+        return ipcProperties;
     }
     ze_device_properties_t getDeviceProperties() const { return getDeviceProperties(this->device); }
     ze_device_properties_t getDeviceProperties(DeviceSelection deviceSelection) const { return getDeviceProperties(getDevice(deviceSelection)); }
@@ -71,7 +77,7 @@ struct LevelZero {
   private:
     // Queriers subDevices of the root device and creates them if any. This method is only called when it's necessary, i.e. user
     // specified some subDevices in ContextProperties
-    void createSubDevices(bool requireSuccess);
+    void createSubDevices(bool requireSuccess, bool fakeSubDeviceAllowed);
 
     // Internal fields managed by the LevelZero class
     ze_device_handle_t rootDevice{};

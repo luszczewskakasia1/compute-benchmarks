@@ -51,7 +51,7 @@ struct QueueProperties {
     }
 
     QueueProperties &setDeviceSelection(DeviceSelection deviceSelection) {
-        ERROR_UNLESS(DeviceSelectionHelper::hasSingleDevice(deviceSelection), "Queue can be created only on a single device");
+        FATAL_ERROR_UNLESS(DeviceSelectionHelper::hasSingleDevice(deviceSelection), "Queue can be created only on a single device");
         this->deviceSelection = deviceSelection;
         return *this;
     }

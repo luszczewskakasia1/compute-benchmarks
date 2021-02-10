@@ -21,14 +21,14 @@ inline void *allocate(MemoryPlacement placement, cl_platform_id platform, cl_con
         return clSharedMemAllocINTEL(context, device, nullptr, bufferSize, 0, retVal);
     }
     default:
-        ERROR("Unknown placement");
+        FATAL_ERROR("Unknown placement");
     }
 }
 
 inline void *allocate(DeviceSelection placement, Opencl &opencl, size_t bufferSize, cl_int *retVal) {
     const DeviceSelection gpuDevice = DeviceSelectionHelper::withoutHost(placement);
     const auto gpuDevicesCount = DeviceSelectionHelper::getDevicesCount(gpuDevice);
-    ERROR_IF(gpuDevicesCount > 1, "USM allocations can have 0 or 1 gpu device");
+    FATAL_ERROR_IF(gpuDevicesCount > 1, "USM allocations can have 0 or 1 gpu device");
 
     const bool hasDevice = gpuDevicesCount == 1;
     const bool hasHost = DeviceSelectionHelper::hasDevice(placement, DeviceSelection::Host);
@@ -48,7 +48,7 @@ inline void *allocate(DeviceSelection placement, Opencl &opencl, size_t bufferSi
         return clHostMemAllocINTEL(opencl.context, nullptr, bufferSize, 0, retVal);
     }
 
-    ERROR("USM allocations need at least one storage location");
+    FATAL_ERROR("USM allocations need at least one storage location");
 }
 
 inline cl_mem_properties_intel getInitialPlacementFlag(UsmInitialPlacement placement) {
@@ -60,7 +60,7 @@ inline cl_mem_properties_intel getInitialPlacementFlag(UsmInitialPlacement place
     case UsmInitialPlacement::Device:
         return CL_MEM_ALLOC_INITIAL_PLACEMENT_DEVICE_INTEL;
     default:
-        ERROR("Unknown USM initial placement");
+        FATAL_ERROR("Unknown USM initial placement");
     }
 }
 

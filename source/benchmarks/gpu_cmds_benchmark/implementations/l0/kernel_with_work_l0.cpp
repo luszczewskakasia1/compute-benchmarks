@@ -16,7 +16,7 @@ static auto selectKernel(WorkItemIdUsage usedIds) {
     case WorkItemIdUsage::Local:
         return "gpu_cmds_benchmark_write_one_local_ids.spv";
     default:
-        ERROR("Unknown work item id usage");
+        FATAL_ERROR("Unknown work item id usage");
     }
 }
 

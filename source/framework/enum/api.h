@@ -27,7 +27,7 @@ inline std::string to_string(Api api) {
     case Api::L0:
         return "l0";
     default:
-        ERROR("Unknown API");
+        FATAL_ERROR("Unknown API");
     }
 }
 } // namespace std

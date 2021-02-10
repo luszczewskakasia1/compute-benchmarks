@@ -30,14 +30,14 @@ static TestResult run(const KernelAndCopyArguments &arguments, Statistics &stati
         if (arguments.runKernel) {
             queueForKernel = opencl.createQueue(queueForKernelPropertes);
             if (arguments.runCopy) {
-                ERROR_IF(arguments.useCopyQueue, "Configuration (runKernel && useCopyQueue && !twoQueues) is invalid");
+                FATAL_ERROR_IF(arguments.useCopyQueue, "Configuration (runKernel && useCopyQueue && !twoQueues) is invalid");
                 queueForCopy = queueForKernel;
             }
         } else if (arguments.runCopy) {
             queueForCopy = opencl.createQueue(queueForCopyProperties);
             ASSERT_CL_SUCCESS(retVal);
         } else {
-            ERROR("Either runCopy or runKernel must be active");
+            FATAL_ERROR("Either runCopy or runKernel must be active");
         }
     }
 

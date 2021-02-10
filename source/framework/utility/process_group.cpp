@@ -86,7 +86,7 @@ void ProcessGroup::pushMeasurementsToStatistics(size_t expectedCount, Statistics
 }
 
 Process &ProcessGroup::operator[](size_t index) {
-    ERROR_IF(index >= processes.size(), "Invalid process index");
+    FATAL_ERROR_IF(index >= processes.size(), "Invalid process index");
     return processes[index];
 }
 

@@ -21,7 +21,7 @@ size_t ImageHelper::getChannelCount(ChannelOrder order) {
     case ChannelOrder::RGBA:
         return 4;
     default:
-        ERROR("Unknown channel order");
+        FATAL_ERROR("Unknown channel order");
     }
 }
 
@@ -30,7 +30,7 @@ size_t ImageHelper::getChannelFormatSize(ChannelFormat format) {
     case ChannelFormat::Float:
         return 4;
     default:
-        ERROR("Unknown channel format");
+        FATAL_ERROR("Unknown channel format");
     }
 }
 

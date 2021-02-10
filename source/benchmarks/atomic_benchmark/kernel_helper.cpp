@@ -77,10 +77,10 @@ constexpr inline KernelHelper::DataForKernel getDataForKernel(AtomicOperation op
                 expectedValue = (totalAtomicOperationsCount % 2 == 0) ? initialValue : initialValue ^ otherArgument;
                 break;
             default:
-                ERROR("Invalid atomic operation");
+                FATAL_ERROR("Invalid atomic operation");
             }
         } else {
-            ERROR("Invalid atomic operation");
+            FATAL_ERROR("Invalid atomic operation");
         }
     }
     return result;
@@ -96,7 +96,7 @@ KernelHelper::DataForKernel KernelHelper::getDataForKernel(DataType dataType,
     case DataType::Int32:
         return ::getDataForKernel<int32_t>(operation, totalThreadsCount);
     default:
-        ERROR("Invalid data type");
+        FATAL_ERROR("Invalid data type");
     }
 }
 
@@ -158,7 +158,7 @@ std::string KernelHelper::getCompilerOptionForAtomicOp(AtomicOperation operation
         result << ",other,other";
         break;
     default:
-        ERROR("Unknown atomic operation");
+        FATAL_ERROR("Unknown atomic operation");
     }
     result << ")";
     return result.str();
@@ -197,7 +197,7 @@ std::string KernelHelper::getCompilerOptionForAtomicOpExplicit(AtomicOperation o
         result << ",&other,other," << AtomicMemoryOrderHelper::toOpenclC(order);
         break;
     default:
-        ERROR("Unknown atomic operation");
+        FATAL_ERROR("Unknown atomic operation");
     }
 
     result << "," << AtomicMemoryOrderHelper::toOpenclC(order)

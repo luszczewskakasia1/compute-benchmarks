@@ -7,7 +7,7 @@ namespace AtomicOperationHelper {
 size_t getArgumentsCount(AtomicOperation operation) {
     switch (operation) {
     case AtomicOperation::Unknown:
-        ERROR("Unknown atomic operation");
+        FATAL_ERROR("Unknown atomic operation");
     case AtomicOperation::Inc:
     case AtomicOperation::Dec:
         return 1;
@@ -35,7 +35,7 @@ bool isSupported(AtomicOperation operation, DataType type, bool globalAtomicFloa
     case DataType::Int32:
         return true;
     default:
-        ERROR("Unknown data type");
+        FATAL_ERROR("Unknown data type");
     }
 }
 } // namespace AtomicOperationHelper

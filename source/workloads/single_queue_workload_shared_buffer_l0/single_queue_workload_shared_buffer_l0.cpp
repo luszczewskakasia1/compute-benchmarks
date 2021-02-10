@@ -3,20 +3,26 @@
 #include "framework/utility/timer.h"
 #include "framework/workload/register_workload.h"
 
-struct SingleQueueWorkloadParameters : WorkloadParameters {
+#include <cstring>
+
+struct SingleQueueWorkloadSharedBufferParameters : WorkloadParameters {
     PositiveIntegerTestCaseArgument operationsCount;
     PositiveIntegerTestCaseArgument workgroupCount;
     PositiveIntegerTestCaseArgument workgroupSize;
+    IntegerTestCaseArgument bufferIpcHandle;
+    NonNegativeIntegerTestCaseArgument offsetWithinBuffer;
 
-    SingleQueueWorkloadParameters()
+    SingleQueueWorkloadSharedBufferParameters()
         : operationsCount(*this, "operationsCount", "Number of redundant operations performed in kernel to make it take longer"),
           workgroupCount(*this, "wgc", "Number of workgroups enqueued"),
-          workgroupSize(*this, "wgs", "Size of workgroups enqueued") {}
+          workgroupSize(*this, "wgs", "Size of workgroups enqueued"),
+          bufferIpcHandle(*this, "bufferIpcHandle", "Handle of the LevelZero buffer acquired from zeMemGetIpcHandle"),
+          offsetWithinBuffer(*this, "bufferOffset", "Offset within the buffer described by IPC handle") {}
 };
 
-struct SingleQueueWorkload : Workload<SingleQueueWorkloadParameters> {};
+struct SingleQueueWorkloadSharedBuffer : Workload<SingleQueueWorkloadSharedBufferParameters> {};
 
-TestResult run(const SingleQueueWorkloadParameters &arguments, Statistics &statistics, WorkloadSynchronization &synchronization) {
+TestResult run(const SingleQueueWorkloadSharedBufferParameters &arguments, Statistics &statistics, WorkloadSynchronization &synchronization) {
     LevelZero levelzero{};
     Timer timer{};
 
@@ -34,11 +40,15 @@ TestResult run(const SingleQueueWorkloadParameters &arguments, Statistics &stati
     const auto operationsCount = static_cast<uint32_t>(arguments.operationsCount);
     const auto bufferSizeInBytes = totalThreadsCount * sizeof(uint32_t);
 
+    // Prepare IPC Handle
+    ze_ipc_mem_handle_t ipcHandle = {};
+    std::memcpy(ipcHandle.data, arguments.bufferIpcHandle.getAddressOf(), arguments.bufferIpcHandle.getSizeOf());
+
     // Create buffer
-    void *buffer = nullptr;
-    const ze_device_mem_alloc_desc_t deviceAllocationDesc{ZE_STRUCTURE_TYPE_DEVICE_MEM_ALLOC_DESC};
-    ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, bufferSizeInBytes, 0, levelzero.device, &buffer));
-    ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeContextMakeMemoryResident(levelzero.context, levelzero.device, buffer, bufferSizeInBytes));
+    void *bufferBase = nullptr;
+    ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeMemOpenIpcHandle(levelzero.context, levelzero.device, ipcHandle, ZE_IPC_MEMORY_FLAG_TBD, &bufferBase));
+    void *buffer = static_cast<uint8_t *>(bufferBase) + arguments.offsetWithinBuffer;
+    ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeContextMakeMemoryResident(levelzero.context, levelzero.device, bufferBase, bufferSizeInBytes));
 
     // Create kernel
     auto spirvModule = FileHelper::loadBinaryFile("single_queue_workload_increment.spv");
@@ -89,12 +99,12 @@ TestResult run(const SingleQueueWorkloadParameters &arguments, Statistics &stati
     ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeCommandListDestroy(cmdList));
     ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeKernelDestroy(kernel));
     ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeModuleDestroy(module));
-    ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeMemFree(levelzero.context, buffer));
+    ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeMemCloseIpcHandle(levelzero.context, bufferBase));
     return TestResult::Success;
 }
 
 int main(int argc, char **argv) {
-    SingleQueueWorkload workload;
-    SingleQueueWorkload::implementation = run;
+    SingleQueueWorkloadSharedBuffer workload;
+    SingleQueueWorkloadSharedBuffer::implementation = run;
     return workload.runFromCommandLine(argc, argv);
 }

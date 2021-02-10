@@ -1,15 +1,16 @@
 #include "levelzero.h"
 
 namespace L0 {
-LevelZero::LevelZero(const QueueProperties &queueProperties, const ContextProperties &contextProperties) {
+LevelZero::LevelZero(const QueueProperties &queueProperties, const ContextProperties &contextProperties)
+    : driverIndex(Configuration::get().l0DriverIndex),
+      rootDeviceIndex(Configuration::get().l0DeviceIndex) {
     EXPECT_ZE_RESULT_SUCCESS(zeInit(ZE_INIT_FLAG_GPU_ONLY));
 
     // Get driver
     uint32_t driverCount = 0;
     EXPECT_ZE_RESULT_SUCCESS(zeDriverGet(&driverCount, nullptr));
-    const auto driverIndex = Configuration::get().l0DriverIndex;
     if (driverIndex >= driverCount) {
-        ERROR("Invalid LevelZero driver selected");
+        FATAL_ERROR("Invalid LevelZero driver index. driverIndex=", driverIndex, " driverCount=", driverCount);
     }
     auto drivers = std::make_unique<ze_driver_handle_t[]>(driverCount);
     EXPECT_ZE_RESULT_SUCCESS(zeDriverGet(&driverCount, drivers.get()));
@@ -18,18 +19,18 @@ LevelZero::LevelZero(const QueueProperties &queueProperties, const ContextProper
     // Create root device
     uint32_t deviceCount = 0;
     EXPECT_ZE_RESULT_SUCCESS(zeDeviceGet(driver, &deviceCount, nullptr));
-    const auto deviceIndex = Configuration::get().l0DeviceIndex;
-    if (deviceIndex >= deviceCount) {
-        ERROR("Invalid LevelZero device selected");
+    if (rootDeviceIndex >= deviceCount) {
+        FATAL_ERROR("Invalid LevelZero device index. deviceIndex=", rootDeviceIndex, " deviceCount=", deviceCount);
     }
     auto devices = std::make_unique<ze_device_handle_t[]>(deviceCount);
     EXPECT_ZE_RESULT_SUCCESS(zeDeviceGet(driver, &deviceCount, devices.get()));
-    this->rootDevice = devices[deviceIndex];
+    this->rootDevice = devices[rootDeviceIndex];
 
     // Create subDevices if needed
     if (DeviceSelectionHelper::hasAnySubDevice(contextProperties.deviceSelection)) {
-        this->createSubDevices(contextProperties.requireCreationSuccess);
-        if (this->subDevices.size() == 0) {
+        this->createSubDevices(contextProperties.requireCreationSuccess, contextProperties.fakeSubDeviceAllowed);
+        const auto requiredSubDevicesCount = DeviceSelectionHelper::getMaxSubDeviceIndex(contextProperties.deviceSelection) + 1;
+        if (this->subDevices.size() < requiredSubDevicesCount) {
             return;
         }
     }
@@ -61,34 +62,37 @@ LevelZero::~LevelZero() {
 }
 
 ze_device_handle_t LevelZero::getDevice(DeviceSelection deviceSelection) const {
-    ERROR_IF(DeviceSelectionHelper::hasHost(deviceSelection), "Cannot get ze_device_handle_t for host");
-    ERROR_UNLESS(DeviceSelectionHelper::hasSingleDevice(deviceSelection), "Cannot get multiple devices");
+    FATAL_ERROR_IF(DeviceSelectionHelper::hasHost(deviceSelection), "Cannot get ze_device_handle_t for host");
+    FATAL_ERROR_UNLESS(DeviceSelectionHelper::hasSingleDevice(deviceSelection), "Cannot get multiple devices");
     if (deviceSelection == DeviceSelection::Root) {
         return this->rootDevice;
     }
 
     const auto subDeviceIndex = DeviceSelectionHelper::getSubDeviceIndex(deviceSelection);
-    ERROR_UNLESS((subDeviceIndex < this->subDevices.size()), "Invalid subDevice index");
+    FATAL_ERROR_UNLESS((subDeviceIndex < this->subDevices.size()), "Invalid subDevice index");
     return this->subDevices[subDeviceIndex];
 }
 
-void LevelZero::createSubDevices(bool requireSuccess) {
+void LevelZero::createSubDevices(bool requireSuccess, bool fakeSubDeviceAllowed) {
+    subDevices.clear();
+
     uint32_t numSubDevices{};
     EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetSubDevices(this->rootDevice, &numSubDevices, nullptr));
-    if (numSubDevices == 0) {
-        ERROR_IF(requireSuccess, "SubDevice was selected, but device has 0 subDevices");
-        return;
+    if (numSubDevices > 0) {
+        subDevices.resize(numSubDevices);
+        EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetSubDevices(this->rootDevice, &numSubDevices, subDevices.data()));
+    } else if (fakeSubDeviceAllowed) {
+        subDevices.push_back(rootDevice);
+    } else if (requireSuccess) {
+        FATAL_ERROR("SubDevice was selected, but device has 0 subDevices");
     }
-
-    subDevices.resize(numSubDevices);
-    EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetSubDevices(this->rootDevice, &numSubDevices, subDevices.data()));
 }
 
 std::vector<LevelZero::QueueInfo> LevelZero::queryQueueFamilies(ze_device_handle_t device) {
     // Get queue ordinals
     uint32_t numQueueGroups = 0;
     EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetCommandQueueGroupProperties(device, &numQueueGroups, nullptr));
-    ERROR_IF(numQueueGroups == 0, "No queue groups found!");
+    FATAL_ERROR_IF(numQueueGroups == 0, "No queue groups found!");
     std::vector<ze_command_queue_group_properties_t> queueProperties(numQueueGroups);
     EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetCommandQueueGroupProperties(device, &numQueueGroups, queueProperties.data()));
 
@@ -125,7 +129,7 @@ std::pair<ze_command_queue_handle_t, LevelZero::QueueInfo> LevelZero::createQueu
     const auto queueFamilies = queryQueueFamilies(deviceForQueue);
     const auto queueInfo = std::find_if(queueFamilies.begin(), queueFamilies.end(), [queueProperties](const QueueInfo &d) { return d.isCopyOnly == queueProperties.forceBlitter; });
     if (queueInfo == queueFamilies.end()) {
-        ERROR_IF(queueProperties.requireCreationSuccess, "Device does not support such queue");
+        FATAL_ERROR_IF(queueProperties.requireCreationSuccess, "Device does not support such queue");
         return {};
     }
 

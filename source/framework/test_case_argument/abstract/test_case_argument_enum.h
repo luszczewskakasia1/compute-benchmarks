@@ -37,7 +37,7 @@ struct EnumTestCaseArgument : TestCaseArgument {
                 return DerivedType::enumValuesNames[valueIndex];
             }
         }
-        ERROR((std::string("Unknown ") + DerivedType::enumName));
+        FATAL_ERROR((std::string("Unknown ") + DerivedType::enumName));
     }
 
     void parseImpl(const std::string &value) override {

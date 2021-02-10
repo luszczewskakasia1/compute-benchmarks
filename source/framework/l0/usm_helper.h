@@ -17,14 +17,14 @@ inline ze_result_t allocate(MemoryPlacement placement, ze_context_handle_t conte
     case MemoryPlacement::Shared:
         return zeMemAllocShared(context, &deviceAllocDesc, &hostAllocDesc, size, 0, device, buffer);
     default:
-        ERROR("Unknown placement");
+        FATAL_ERROR("Unknown placement");
     }
 }
 
 inline ze_result_t allocate(DeviceSelection placement, LevelZero &levelzero, size_t size, void **outBuffer) {
     const DeviceSelection gpuDevice = DeviceSelectionHelper::withoutHost(placement);
     const auto gpuDevicesCount = DeviceSelectionHelper::getDevicesCount(gpuDevice);
-    ERROR_IF(gpuDevicesCount > 1, "USM allocations can have 0 or 1 gpu device");
+    FATAL_ERROR_IF(gpuDevicesCount > 1, "USM allocations can have 0 or 1 gpu device");
 
     const bool hasDevice = gpuDevicesCount == 1;
     const bool hasHost = DeviceSelectionHelper::hasDevice(placement, DeviceSelection::Host);
@@ -44,7 +44,7 @@ inline ze_result_t allocate(DeviceSelection placement, LevelZero &levelzero, siz
         return zeMemAllocHost(levelzero.context, &hostAllocDesc, size, 0, outBuffer);
     }
 
-    ERROR("USM allocations need at least one storage location");
+    FATAL_ERROR("USM allocations need at least one storage location");
 }
 
 } // namespace L0::UsmHelper

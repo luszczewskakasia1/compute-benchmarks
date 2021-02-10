@@ -11,7 +11,7 @@ WorkloadSynchronization::WorkloadSynchronization(size_t iterationsCount, bool sy
 }
 
 void WorkloadSynchronization::synchronize() {
-    ERROR_IF(synchronizationCount == expectedSynchronizationCount, "Too many iterations signalled during workload synchronization");
+    FATAL_ERROR_IF(synchronizationCount == expectedSynchronizationCount, "Too many iterations signalled during workload synchronization");
     synchronizationCount++;
 
     if (!synchronizationEnabled) {
@@ -27,8 +27,7 @@ void WorkloadSynchronization::synchronize() {
         character = std::cin.get();
     } while (character == '\n' || character == '\r');
 
-    ERROR_IF(character != ProcessSynchronizationHelper::synchronizationChar,
-             std::string("Invalid synchronization char. Expected '") + ProcessSynchronizationHelper::synchronizationChar + "'");
+    FATAL_ERROR_IF(character != ProcessSynchronizationHelper::synchronizationChar, std::string("Invalid synchronization received from parent process: '") + character + "'");
 }
 
 bool WorkloadSynchronization::validate() {

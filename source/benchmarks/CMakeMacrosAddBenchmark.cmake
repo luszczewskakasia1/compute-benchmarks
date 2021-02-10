@@ -46,6 +46,7 @@ function (add_benchmark_for_api BASE_TARGET_NAME APPEND_API_TO_TARGET_NAME APIS)
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/gtest
         ${CMAKE_CURRENT_SOURCE_DIR}/definitions
+        ${CMAKE_CURRENT_SOURCE_DIR}/utility
     )
     foreach(DIR ${API_AGNOSTIC_SOURCE_DIRECTORIES})
         add_sources_to_benchmark(${TARGET_NAME} ${DIR})
@@ -56,6 +57,7 @@ function (add_benchmark_for_api BASE_TARGET_NAME APPEND_API_TO_TARGET_NAME APIS)
     set(API_SPECIFIC_SOURCE_DIRECTORIES
         ${BENCHMARKS_SOURCE_ROOT}/common
         ${CMAKE_CURRENT_SOURCE_DIR}/implementations
+        ${CMAKE_CURRENT_SOURCE_DIR}/utility
     )
     foreach(API ${APIS})
         foreach(PARENT_DIR ${API_SPECIFIC_SOURCE_DIRECTORIES})

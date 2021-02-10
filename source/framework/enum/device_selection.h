@@ -41,12 +41,25 @@ struct DeviceSelectionHelper {
         case DeviceSelection::Tile3:
             return 3;
         default:
-            ERROR("Unknown device selection");
+            FATAL_ERROR("Unknown device selection");
         }
     }
 
+    static size_t getMaxSubDeviceIndex(DeviceSelection deviceSelection) {
+        bool foundSubDevice = 0;
+        size_t maxIndex = 0;
+        for (auto subDevice : subDevices) {
+            if (hasDevice(deviceSelection, subDevice)) {
+                maxIndex = std::max(maxIndex, getSubDeviceIndex(subDevice));
+                foundSubDevice = true;
+            }
+        }
+        FATAL_ERROR_IF(!foundSubDevice, "Cannot call getMaxSubDeviceIndex, when there aren't any subDevices");
+        return maxIndex;
+    }
+
     static bool hasDevice(DeviceSelection deviceSelection, DeviceSelection device) {
-        ERROR_IF(device == DeviceSelection::Unknown, "Cannot check for unknown device");
+        FATAL_ERROR_IF(device == DeviceSelection::Unknown, "Cannot check for unknown device");
         return ((deviceSelection & device) == device);
     }
 
@@ -111,7 +124,7 @@ struct DeviceSelectionHelper {
         case DeviceSelection::Tile3:
             return "Tile3";
         default:
-            ERROR("Unknown device selection");
+            FATAL_ERROR("Unknown device selection");
         }
     }
 };

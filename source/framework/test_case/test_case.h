@@ -82,13 +82,13 @@ class TestCase : public TestCaseInterface {
         // Run test
         const auto testResult = runImpl(statistics, arguments, testCaseNameWithConfig);
         if (testResult == TestResult::Success) {
-            ERROR_UNLESS(statistics.isFull(), "test did not generate as many values as expected");
+            FATAL_ERROR_UNLESS(statistics.isFull(), "test did not generate as many values as expected");
             statistics.printStatistics(testCaseNameWithConfig);
         } else {
             const auto &testResultInfo = TestResultHelper::getTestResultInfo(testResult);
 
             // If test was skipped at the very beginning, it shouldn't have pushed any statistics
-            ERROR_IF(testResultInfo.wasTestSkipped && !statistics.isEmpty(), "test was skipped but generated some values");
+            FATAL_ERROR_IF(testResultInfo.wasTestSkipped && !statistics.isEmpty(), "test was skipped but generated some values");
 
             // Print output line with error info if needed
             const auto printMessage = arguments.isSingleTestMode ? testResultInfo.printInSingleTestMode : testResultInfo.printInAllTestsMode;

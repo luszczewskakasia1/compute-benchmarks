@@ -28,7 +28,7 @@ struct StringListTestCaseArgument : TestCaseArgument {
 
   protected:
     std::string toStringValue() const override {
-        ERROR("ArgFilterTestCaseArgument should not be printed");
+        FATAL_ERROR("ArgFilterTestCaseArgument should not be printed");
     }
 
     void parseImpl(const std::string &value) override {
