@@ -204,7 +204,7 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
         const size_t groupsExed = gws / subgroupSize;
         const size_t totalAccessedMemory = (groupsExed * threadTileSizeInSubgroup * numOfLoops);
 
-        statistics.pushValue(time, arguments.size);
+        statistics.pushValue(time, totalAccessedMemory);
         ASSERT_CL_SUCCESS(clReleaseEvent(evt));
     }
 
