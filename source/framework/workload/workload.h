@@ -3,6 +3,7 @@
 #include "framework/test_case/test_result.h"
 #include "framework/utility/common_help_message.h"
 #include "framework/workload/workload.h"
+#include "framework/workload/workload_io.h"
 #include "framework/workload/workload_parameters.h"
 #include "framework/workload/workload_statistics.h"
 #include "framework/workload/workload_synchronization.h"
@@ -14,7 +15,7 @@ class Workload {
   public:
     using ParametersT = _ParametersT;
     static_assert(std::is_base_of_v<WorkloadParameters, ParametersT>, "Parameters class should derive from WorkloadArguments");
-    using WorkloadImplementation = std::function<TestResult(const ParametersT &, Statistics &, WorkloadSynchronization &)>;
+    using WorkloadImplementation = std::function<TestResult(const ParametersT &, Statistics &, WorkloadSynchronization &, WorkloadIo &)>;
     using ProcessResult = int;
 
     static inline WorkloadImplementation implementation = {};
@@ -60,19 +61,20 @@ class Workload {
     ProcessResult run(const ParametersT &parameters) {
         WorkloadStatistics statistics{parameters.iterations};
         WorkloadSynchronization synchronization{parameters.iterations, parameters.synchronize};
-        TestResult result = runImpl(parameters, statistics, synchronization);
+        WorkloadIo io;
+        TestResult result = runImpl(parameters, statistics, synchronization, io);
         if (result == TestResult::Success) {
             FATAL_ERROR_UNLESS(statistics.isFull(), "test did not generate as many values as expected");
             FATAL_ERROR_UNLESS(synchronization.validate(), "test did not synchronize the correct amount of times");
             statistics.printStatistics();
         } else {
-            synchronization.executeRemainingSynchronizations();
+            synchronization.executeRemainingSynchronizations(io);
         }
         return toProcessResult(result);
     }
 
   private:
-    TestResult runImpl(const ParametersT &parameters, WorkloadStatistics &statistics, WorkloadSynchronization &synchronization) {
+    TestResult runImpl(const ParametersT &parameters, WorkloadStatistics &statistics, WorkloadSynchronization &synchronization, WorkloadIo &io) {
         if (implementation == nullptr) {
             return TestResult::NoImplementation;
         }
@@ -81,7 +83,7 @@ class Workload {
             return TestResult::InvalidArgs;
         }
 
-        return implementation(parameters, statistics, synchronization);
+        return implementation(parameters, statistics, synchronization, io);
     }
 
     static ProcessResult toProcessResult(TestResult testResult) {

@@ -2,14 +2,16 @@
 
 #include <cstddef>
 
+class WorkloadIo;
+
 class WorkloadSynchronization {
   public:
     WorkloadSynchronization(size_t iterationsCount, bool synchronizationEnabled);
 
-    void synchronize();
+    void synchronize(WorkloadIo &workloadIo);
     bool validate();
 
-    void executeRemainingSynchronizations();
+    void executeRemainingSynchronizations(WorkloadIo &workloadIo);
 
   private:
     size_t synchronizationCount = 0;

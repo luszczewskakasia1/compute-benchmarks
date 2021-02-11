@@ -22,7 +22,7 @@ struct SingleQueueWorkloadSharedBufferParameters : WorkloadParameters {
 
 struct SingleQueueWorkloadSharedBuffer : Workload<SingleQueueWorkloadSharedBufferParameters> {};
 
-TestResult run(const SingleQueueWorkloadSharedBufferParameters &arguments, Statistics &statistics, WorkloadSynchronization &synchronization) {
+TestResult run(const SingleQueueWorkloadSharedBufferParameters &arguments, Statistics &statistics, WorkloadSynchronization &synchronization, WorkloadIo &io) {
     LevelZero levelzero{};
     Timer timer{};
 
@@ -30,7 +30,7 @@ TestResult run(const SingleQueueWorkloadSharedBufferParameters &arguments, Stati
     uint32_t tilesCount = {};
     ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeDeviceGetSubDevices(levelzero.device, &tilesCount, nullptr));
     if (tilesCount > 1) {
-        std::cerr << "This workload should run on a single tile\n";
+        io.writeToConsole("This workload should run on a single tile\n");
         return TestResult::DeviceNotCapable;
     }
 
@@ -83,7 +83,7 @@ TestResult run(const SingleQueueWorkloadSharedBufferParameters &arguments, Stati
 
     // Benchmark
     for (auto i = 0; i < arguments.iterations; i++) {
-        synchronization.synchronize();
+        synchronization.synchronize(io);
 
         timer.measureStart();
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
