@@ -1,7 +1,7 @@
 #pragma once
 
+#include "framework/argument/abstract/enum_argument.h"
 #include "framework/enum/map_flags.h"
-#include "framework/test_case_argument/abstract/test_case_argument_enum.h"
 
 struct MapFlagsArgument : EnumArgument<MapFlagsArgument, MapFlags> {
     using EnumArgument::EnumArgument;

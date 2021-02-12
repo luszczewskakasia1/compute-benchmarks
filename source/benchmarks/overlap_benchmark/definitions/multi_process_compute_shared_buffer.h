@@ -1,8 +1,8 @@
 #pragma once
 
+#include "framework/argument/basic_argument.h"
+#include "framework/argument/enum/multi_device_selection_argument.h"
 #include "framework/test_case/test_case.h"
-#include "framework/test_case_argument/enum/test_case_argument_multi_device_selection.h"
-#include "framework/test_case_argument/test_case_argument_basic.h"
 
 struct MultiProcessComputeSharedBufferArguments : Arguments {
     MultipleTilesSelectionArgument deviceSelection;

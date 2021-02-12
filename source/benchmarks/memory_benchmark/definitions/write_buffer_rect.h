@@ -1,8 +1,8 @@
 #pragma once
 
+#include "framework/argument/compression_argument.h"
+#include "framework/argument/three_component_uint_argument.h"
 #include "framework/test_case/test_case.h"
-#include "framework/test_case_argument/test_case_argument_compression.h"
-#include "framework/test_case_argument/test_case_argument_three_component_uint.h"
 #include "framework/utility/common_help_message.h"
 
 struct WriteBufferRectArguments : Arguments {

@@ -1,5 +1,5 @@
-#include "framework/test_case_argument/test_case_argument_basic.h"
-#include "framework/test_case_argument/test_case_arguments.h"
+#include "framework/argument/arguments.h"
+#include "framework/argument/basic_argument.h"
 
 struct WorkloadParameters : ArgumentsBase {
     PositiveIntegerArgument iterations;

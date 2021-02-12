@@ -1,6 +1,6 @@
 #pragma once
 
-#include "framework/test_case_argument/abstract/test_case_argument.h"
+#include "framework/argument/abstract/argument.h"
 #include "framework/utility/string_utils.h"
 
 struct IntegerArgument : Argument {

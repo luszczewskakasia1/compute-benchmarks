@@ -1,9 +1,9 @@
 #pragma once
 
+#include "framework/argument/compression_argument.h"
+#include "framework/argument/enum/multi_device_selection_argument.h"
+#include "framework/argument/enum/usm_device_selection_argument.h"
 #include "framework/test_case/test_case.h"
-#include "framework/test_case_argument/enum/test_case_argument_multi_device_selection.h"
-#include "framework/test_case_argument/enum/test_case_argument_usm_device_selection.h"
-#include "framework/test_case_argument/test_case_argument_compression.h"
 
 struct UsmSharedMigrateCpuArguments : Arguments {
     MultiDeviceSelectionArgument contextPlacement;

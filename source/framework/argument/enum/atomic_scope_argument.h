@@ -1,7 +1,7 @@
 #pragma once
 
+#include "framework/argument/abstract/enum_argument.h"
 #include "framework/enum/atomic_scope.h"
-#include "framework/test_case_argument/abstract/test_case_argument_enum.h"
 
 struct AtomicScopeArgument : EnumArgument<AtomicScopeArgument, AtomicScope> {
     using EnumArgument::EnumArgument;

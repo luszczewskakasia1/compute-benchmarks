@@ -1,7 +1,7 @@
 #pragma once
 
+#include "framework/argument/basic_argument.h"
 #include "framework/test_case/test_case.h"
-#include "framework/test_case_argument/test_case_argument_basic.h"
 #include "framework/utility/common_help_message.h"
 
 struct UsmSharedMigrateCpuArguments : Arguments {

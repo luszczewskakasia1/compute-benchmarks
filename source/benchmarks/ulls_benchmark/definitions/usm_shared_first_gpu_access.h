@@ -1,8 +1,8 @@
 #pragma once
 
+#include "framework/argument/basic_argument.h"
+#include "framework/argument/enum/usm_initial_placement_argument.h"
 #include "framework/test_case/test_case.h"
-#include "framework/test_case_argument/enum/test_case_argument_usm_initial_placement.h"
-#include "framework/test_case_argument/test_case_argument_basic.h"
 
 struct UsmSharedFirstGpuAccessArguments : Arguments {
     UsmInitialPlacementArgument initialPlacement;

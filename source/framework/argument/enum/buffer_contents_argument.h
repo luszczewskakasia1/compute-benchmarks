@@ -1,7 +1,7 @@
 #pragma once
 
+#include "framework/argument/abstract/enum_argument.h"
 #include "framework/enum/buffer_contents.h"
-#include "framework/test_case_argument/abstract/test_case_argument_enum.h"
 
 struct BufferContentsArgument : EnumArgument<BufferContentsArgument, BufferContents> {
     using EnumArgument::EnumArgument;

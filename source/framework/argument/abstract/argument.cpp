@@ -1,6 +1,6 @@
-#include "test_case_argument.h"
+#include "argument.h"
 
-#include "framework/test_case_argument/test_case_arguments.h"
+#include "framework/argument/arguments.h"
 #include "framework/utility/command_line_argument.h"
 
 #include <iomanip>

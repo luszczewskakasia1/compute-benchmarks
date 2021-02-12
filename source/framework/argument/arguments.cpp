@@ -1,6 +1,6 @@
-#include "test_case_arguments.h"
+#include "arguments.h"
 
-#include "framework/test_case_argument/abstract/test_case_argument.h"
+#include "framework/argument/abstract/argument.h"
 
 #include <sstream>
 

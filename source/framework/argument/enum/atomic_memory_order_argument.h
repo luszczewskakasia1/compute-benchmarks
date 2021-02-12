@@ -1,7 +1,7 @@
 #pragma once
 
+#include "framework/argument/abstract/enum_argument.h"
 #include "framework/enum/atomic_memory_order.h"
-#include "framework/test_case_argument/abstract/test_case_argument_enum.h"
 
 struct AtomicMemoryOrderArgument : EnumArgument<AtomicMemoryOrderArgument, AtomicMemoryOrder> {
     using EnumArgument::EnumArgument;

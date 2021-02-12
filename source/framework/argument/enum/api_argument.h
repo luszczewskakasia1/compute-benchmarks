@@ -1,7 +1,7 @@
 #pragma once
 
+#include "framework/argument/abstract/enum_argument.h"
 #include "framework/enum/api.h"
-#include "framework/test_case_argument/abstract/test_case_argument_enum.h"
 
 struct ApiArgument : EnumArgument<ApiArgument, Api> {
     using EnumArgument::EnumArgument;

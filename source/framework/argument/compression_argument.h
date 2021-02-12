@@ -1,7 +1,7 @@
 #pragma once
 
+#include "framework/argument/basic_argument.h"
 #include "framework/configuration.h"
-#include "framework/test_case_argument/test_case_argument_basic.h"
 
 struct CompressionBooleanArgument : BooleanArgument {
     using BooleanArgument::BooleanArgument;

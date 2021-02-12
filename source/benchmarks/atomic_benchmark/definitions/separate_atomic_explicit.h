@@ -1,11 +1,11 @@
 #pragma once
 
+#include "framework/argument/basic_argument.h"
+#include "framework/argument/enum/atomic_memory_order_argument.h"
+#include "framework/argument/enum/atomic_operation_argument.h"
+#include "framework/argument/enum/atomic_scope_argument.h"
+#include "framework/argument/enum/data_type_argument.h"
 #include "framework/test_case/test_case.h"
-#include "framework/test_case_argument/enum/test_case_argument_atomic_memory_order.h"
-#include "framework/test_case_argument/enum/test_case_argument_atomic_operation.h"
-#include "framework/test_case_argument/enum/test_case_argument_atomic_scope.h"
-#include "framework/test_case_argument/enum/test_case_argument_data_type.h"
-#include "framework/test_case_argument/test_case_argument_basic.h"
 #include "framework/utility/common_help_message.h"
 #include "framework/utility/memory_constants.h"
 

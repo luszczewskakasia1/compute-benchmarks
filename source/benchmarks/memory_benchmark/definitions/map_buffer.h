@@ -1,9 +1,9 @@
 #pragma once
 
+#include "framework/argument/compression_argument.h"
+#include "framework/argument/enum/buffer_contents_argument.h"
+#include "framework/argument/enum/map_flags_argument.h"
 #include "framework/test_case/test_case.h"
-#include "framework/test_case_argument/enum/test_case_argument_buffer_contents.h"
-#include "framework/test_case_argument/enum/test_case_argument_map_flags.h"
-#include "framework/test_case_argument/test_case_argument_compression.h"
 #include "framework/utility/common_help_message.h"
 
 struct MapBufferArguments : Arguments {

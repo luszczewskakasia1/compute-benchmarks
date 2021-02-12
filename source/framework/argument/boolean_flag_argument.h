@@ -1,6 +1,6 @@
 #pragma once
 
-#include "framework/test_case_argument/abstract/test_case_argument.h"
+#include "framework/argument/abstract/argument.h"
 
 struct BooleanFlagArgument : Argument {
     using Argument::Argument;

@@ -1,12 +1,12 @@
 #pragma once
 
+#include "framework/argument/arguments.h"
+#include "framework/argument/basic_argument.h"
+#include "framework/argument/boolean_flag_argument.h"
+#include "framework/argument/enum/api_argument.h"
+#include "framework/argument/enum/device_selection_argument.h"
+#include "framework/argument/string_list_argument.h"
 #include "framework/benchmark_info.h"
-#include "framework/test_case_argument/enum/test_case_argument_api.h"
-#include "framework/test_case_argument/enum/test_case_argument_device_selection.h"
-#include "framework/test_case_argument/test_case_argument_basic.h"
-#include "framework/test_case_argument/test_case_argument_boolean_flag.h"
-#include "framework/test_case_argument/test_case_argument_string_list.h"
-#include "framework/test_case_argument/test_case_arguments.h"
 #include "framework/utility/command_line_argument.h"
 
 #include <memory>

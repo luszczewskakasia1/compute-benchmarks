@@ -1,6 +1,6 @@
 #pragma once
 
-#include "framework/test_case_argument/test_case_argument_basic.h"
+#include "framework/argument/basic_argument.h"
 #include "framework/utility/hex_helper.h"
 
 struct LongHexArgument : Argument {

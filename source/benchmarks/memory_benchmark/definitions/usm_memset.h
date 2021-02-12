@@ -1,9 +1,9 @@
 #pragma once
 
+#include "framework/argument/basic_argument.h"
+#include "framework/argument/enum/buffer_contents_argument.h"
+#include "framework/argument/enum/memory_placement_argument.h"
 #include "framework/test_case/test_case.h"
-#include "framework/test_case_argument/enum/test_case_argument_buffer_contents.h"
-#include "framework/test_case_argument/enum/test_case_argument_memory_placement.h"
-#include "framework/test_case_argument/test_case_argument_basic.h"
 #include "framework/utility/common_help_message.h"
 
 struct UsmMemsetArguments : Arguments {

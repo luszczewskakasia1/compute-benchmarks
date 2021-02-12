@@ -1,7 +1,7 @@
 #pragma once
 
+#include "framework/argument/abstract/bitfield_enum_argument.h"
 #include "framework/enum/device_selection.h"
-#include "framework/test_case_argument/abstract/test_case_argument_bitfield_enum.h"
 
 struct MultiDeviceSelectionArgument : BitfieldEnumArgument<MultiDeviceSelectionArgument, DeviceSelection> {
     using BitfieldEnumArgument::BitfieldEnumArgument;
