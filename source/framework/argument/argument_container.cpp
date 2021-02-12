@@ -4,6 +4,14 @@
 
 #include <sstream>
 
+void ArgumentContainer::pushArgument(Argument &argument) {
+    this->arguments.push_back(&argument);
+}
+
+const std::vector<Argument *> &ArgumentContainer::getArguments() const {
+    return arguments;
+}
+
 bool ArgumentContainer::parseArgument(CommandLineArgument &commandLineArgument) {
     for (auto &argument : arguments) {
         argument->parse(commandLineArgument);

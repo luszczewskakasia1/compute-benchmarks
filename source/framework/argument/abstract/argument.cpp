@@ -8,7 +8,7 @@
 Argument::Argument(ArgumentContainer &parent, const std::string &key, const std::string &extraHelp)
     : key(key),
       extraHelp(extraHelp) {
-    parent.arguments.push_back(this);
+    parent.pushArgument(*this);
 }
 
 const std::string Argument::getKey() const {

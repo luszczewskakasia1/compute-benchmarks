@@ -9,15 +9,16 @@
 struct Argument;
 
 struct ArgumentContainer {
+    void pushArgument(Argument &argument);
+    const std::vector<Argument *> &getArguments() const;
+
     bool parseArgument(CommandLineArgument &commandLineArgument);
     bool parseArguments(CommandLineArguments &commandLineArguments);
     virtual bool validateArguments() const;
     std::string getHelp(size_t indent) const;
-
     std::vector<const Argument *> getUnparsedArguments() const;
 
-    std::vector<Argument *> arguments;
-
   protected:
+    std::vector<Argument *> arguments;
     virtual bool validateArgumentsExtra() const { return true; } // This is optional. Use this for validating dependencies between arguments if any.
 };
