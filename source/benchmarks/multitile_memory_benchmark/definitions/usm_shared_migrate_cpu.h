@@ -5,7 +5,7 @@
 #include "framework/argument/enum/usm_device_selection_argument.h"
 #include "framework/test_case/test_case.h"
 
-struct UsmSharedMigrateCpuArguments : Arguments {
+struct UsmSharedMigrateCpuArguments : TestCaseArgumentContainer {
     MultiDeviceSelectionArgument contextPlacement;
     UsmSharedDeviceSelectionArgument bufferPlacement;
     ByteSizeArgument bufferSize;

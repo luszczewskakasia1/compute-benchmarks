@@ -4,7 +4,7 @@
 #include "framework/argument/enum/multi_device_selection_argument.h"
 #include "framework/test_case/test_case.h"
 
-struct MultiProcessComputeArguments : Arguments {
+struct MultiProcessComputeArguments : TestCaseArgumentContainer {
     MultipleTilesSelectionArgument deviceSelection;
     PositiveIntegerArgument processesPerTile;
     PositiveIntegerArgument workgroupsPerProcess;

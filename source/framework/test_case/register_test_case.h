@@ -15,7 +15,7 @@ struct RegisterTestCaseImplementation {
 template <typename ConcreteTestCase>
 struct RegisterTestCase {
     explicit RegisterTestCase() {
-        using ExpectedBaseClass = TestCase<typename ConcreteTestCase::Arguments>;
+        using ExpectedBaseClass = TestCase<typename ConcreteTestCase::ArgumentContainerT>;
         static_assert(std::is_base_of_v<ExpectedBaseClass, ConcreteTestCase>, "ConcreteTestCase should derive from TestCase");
 
         auto testCase = std::unique_ptr<TestCaseInterface>(new ConcreteTestCase());

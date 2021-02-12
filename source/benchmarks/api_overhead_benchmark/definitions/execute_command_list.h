@@ -3,7 +3,7 @@
 #include "framework/argument/basic_argument.h"
 #include "framework/test_case/test_case.h"
 
-struct ExecuteCommandListArguments : Arguments {
+struct ExecuteCommandListArguments : TestCaseArgumentContainer {
     BooleanArgument useFence;
 
     ExecuteCommandListArguments()

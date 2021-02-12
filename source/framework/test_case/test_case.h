@@ -3,6 +3,7 @@
 #include "framework/benchmark_info.h"
 #include "framework/configuration.h"
 #include "framework/enum/api.h"
+#include "framework/test_case/test_case_argument_container.h"
 #include "framework/test_case/test_case_interface.h"
 #include "framework/test_case/test_case_statistics.h"
 #include "framework/test_case/test_result.h"
@@ -16,24 +17,24 @@
 #include <sstream>
 #include <type_traits>
 
-template <typename _Arguments>
+template <typename _ArgumentContainer>
 class TestCase : public TestCaseInterface {
   public:
-    using Arguments = _Arguments;
-    static_assert(std::is_base_of_v<Arguments, Arguments>, "Arguments class should derive from Arguments");
+    using ArgumentContainerT = _ArgumentContainer;
+    static_assert(std::is_base_of_v<TestCaseArgumentContainer, ArgumentContainerT>, "Arguments class should derive from TestCaseArgumentContainer");
 
     struct BenchmarkImplementation {
-        using Function = std::function<TestResult(Arguments, Statistics &)>;
+        using Function = std::function<TestResult(ArgumentContainerT, Statistics &)>;
         Function function = {};
         bool requiresIntelExtensions = false;
     };
     static inline BenchmarkImplementation implementations[(int)Api::COUNT];
 
-    std::string getHelpParameters() const override { return Arguments{}.getHelp(2u); }
+    std::string getHelpParameters() const override { return ArgumentContainerT{}.getHelp(2u); }
 
     bool runFromCommandLine(CommandLineArguments &commandLineArguments) override {
         // Parse test-specific parameters
-        Arguments arguments;
+        ArgumentContainerT arguments;
         bool error = false;
         if (!parseArguments(arguments, commandLineArguments)) {
             return false;
@@ -66,7 +67,7 @@ class TestCase : public TestCaseInterface {
         return true;
     }
 
-    void run(Arguments arguments) const {
+    void run(ArgumentContainerT arguments) const {
         // Set iterations count from global configuration
         if (arguments.iterations != 0) {
             std::cerr << "WARNING: arguments.iterations was not zero. Overriding with value from global configuration - "
@@ -99,7 +100,7 @@ class TestCase : public TestCaseInterface {
     }
 
   private:
-    TestResult runImpl(Statistics &statistics, const Arguments &arguments, const std::string &testCaseNameWithConfig) const {
+    TestResult runImpl(Statistics &statistics, const ArgumentContainerT &arguments, const std::string &testCaseNameWithConfig) const {
         // Get API
         const auto selectedApi = Configuration::get().selectedApi;
         if (arguments.api != selectedApi && selectedApi != Api::All) {
@@ -163,7 +164,7 @@ class TestCase : public TestCaseInterface {
         return benchmarkImplementation.function(arguments, statistics);
     }
 
-    static bool parseArguments(Arguments &arguments, CommandLineArguments &commandLineArguments) {
+    static bool parseArguments(ArgumentContainerT &arguments, CommandLineArguments &commandLineArguments) {
         arguments.isSingleTestMode = true;
         for (auto &commandLineArgument : commandLineArguments) {
             if (!arguments.parseArgument(commandLineArgument)) {
@@ -173,7 +174,7 @@ class TestCase : public TestCaseInterface {
         return true;
     }
 
-    std::string getTestCaseNameWithConfig(const Arguments &arguments, bool commandLine) const {
+    std::string getTestCaseNameWithConfig(const ArgumentContainerT &arguments, bool commandLine) const {
         std::ostringstream result{};
 
         if (commandLine) {

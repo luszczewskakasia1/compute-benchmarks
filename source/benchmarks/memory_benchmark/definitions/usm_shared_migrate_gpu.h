@@ -3,7 +3,7 @@
 #include "framework/argument/basic_argument.h"
 #include "framework/test_case/test_case.h"
 
-struct UsmSharedMigrateGpuArguments : Arguments {
+struct UsmSharedMigrateGpuArguments : TestCaseArgumentContainer {
     ByteSizeArgument bufferSize;
 
     UsmSharedMigrateGpuArguments()

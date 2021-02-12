@@ -3,7 +3,7 @@
 #include "framework/argument/basic_argument.h"
 #include "framework/test_case/test_case.h"
 
-struct NewResourcesSubmissionHostArguments : Arguments {
+struct NewResourcesSubmissionHostArguments : TestCaseArgumentContainer {
     ByteSizeArgument size;
 
     NewResourcesSubmissionHostArguments()

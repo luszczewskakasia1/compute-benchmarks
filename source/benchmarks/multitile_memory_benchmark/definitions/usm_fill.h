@@ -7,7 +7,7 @@
 #include "framework/test_case/test_case.h"
 #include "framework/utility/common_help_message.h"
 
-struct UsmFillArguments : Arguments {
+struct UsmFillArguments : TestCaseArgumentContainer {
     MultiDeviceSelectionArgument contextPlacement;
     DeviceSelectionArgument queuePlacement;
     UsmDeviceSelectionArgument bufferPlacement;

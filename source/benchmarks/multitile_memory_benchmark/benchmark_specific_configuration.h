@@ -6,7 +6,7 @@
 struct BenchmarkSpecificConfiguration : BenchmarkInfo::BenchmarkSpecificConfigurationBase {
     BooleanArgument printBandwidth;
 
-    BenchmarkSpecificConfiguration(ArgumentsBase &testCaseArguments)
+    BenchmarkSpecificConfiguration(ArgumentContainer &testCaseArguments)
         : printBandwidth(testCaseArguments, "printBandwidth") {
         printBandwidth = true;
     }

@@ -3,7 +3,7 @@
 #include "framework/argument/basic_argument.h"
 #include "framework/test_case/test_case.h"
 
-struct KernelAndCopyArguments : Arguments {
+struct KernelAndCopyArguments : TestCaseArgumentContainer {
     BooleanArgument twoQueues;
     BooleanArgument runKernel;
     BooleanArgument runCopy;

@@ -1,17 +1,17 @@
-#include "arguments.h"
+#include "argument_container.h"
 
 #include "framework/argument/abstract/argument.h"
 
 #include <sstream>
 
-bool ArgumentsBase::parseArgument(CommandLineArgument &commandLineArgument) {
+bool ArgumentContainer::parseArgument(CommandLineArgument &commandLineArgument) {
     for (auto &argument : arguments) {
         argument->parse(commandLineArgument);
     }
     return true;
 }
 
-bool ArgumentsBase::parseArguments(CommandLineArguments &commandLineArguments) {
+bool ArgumentContainer::parseArguments(CommandLineArguments &commandLineArguments) {
     for (CommandLineArgument &commandLineArgument : commandLineArguments) {
         if (!this->parseArgument(commandLineArgument)) {
             return false;
@@ -20,7 +20,7 @@ bool ArgumentsBase::parseArguments(CommandLineArguments &commandLineArguments) {
     return true;
 }
 
-bool ArgumentsBase::validateArguments() const {
+bool ArgumentContainer::validateArguments() const {
     for (const auto &argument : arguments) {
         if (!argument->validate()) {
             return false;
@@ -34,7 +34,7 @@ bool ArgumentsBase::validateArguments() const {
     return true;
 }
 
-std::string ArgumentsBase::getHelp(size_t indent) const {
+std::string ArgumentContainer::getHelp(size_t indent) const {
     std::ostringstream result;
     for (const auto &argument : arguments) {
         for (auto i = 0u; i < indent; i++) {
@@ -45,21 +45,7 @@ std::string ArgumentsBase::getHelp(size_t indent) const {
     return result.str();
 }
 
-std::string Arguments::getCurrentConfig(bool commandLine) const {
-    std::ostringstream result;
-    for (auto i = 0; i < arguments.size(); i++) {
-        if (commandLine) {
-            result << "--";
-        }
-        result << arguments[i]->toString();
-        if (i != arguments.size() - 1) {
-            result << " ";
-        }
-    }
-    return result.str();
-}
-
-std::vector<const Argument *> ArgumentsBase::getUnparsedArguments() const {
+std::vector<const Argument *> ArgumentContainer::getUnparsedArguments() const {
     std::vector<const Argument *> result = {};
     for (const auto &argument : arguments) {
         if (!argument->wasParsed()) {
@@ -67,20 +53,4 @@ std::vector<const Argument *> ArgumentsBase::getUnparsedArguments() const {
         }
     }
     return result;
-}
-
-bool Arguments::validateArguments() const {
-    if (!ArgumentsBase::validateArguments()) {
-        return false;
-    }
-
-    if (!validateApi(api)) {
-        return false;
-    }
-
-    if (iterations <= 0) {
-        return false;
-    }
-
-    return true;
 }

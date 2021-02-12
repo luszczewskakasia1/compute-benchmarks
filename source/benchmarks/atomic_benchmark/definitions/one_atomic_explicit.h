@@ -8,7 +8,7 @@
 #include "framework/test_case/test_case.h"
 #include "framework/utility/common_help_message.h"
 
-struct OneAtomicExplicitArguments : Arguments {
+struct OneAtomicExplicitArguments : TestCaseArgumentContainer {
     DataTypeArgument dataType;
     AtomicOperationArgument atomicOperation;
     AtomicScopeArgument scope;

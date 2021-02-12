@@ -4,7 +4,7 @@
 #include "framework/test_case/test_case.h"
 #include "framework/utility/common_help_message.h"
 
-struct EmptyKernelArguments : Arguments {
+struct EmptyKernelArguments : TestCaseArgumentContainer {
     PositiveIntegerArgument measuredCommands;
     PositiveIntegerArgument workgroupCount;
     PositiveIntegerArgument workgroupSize;

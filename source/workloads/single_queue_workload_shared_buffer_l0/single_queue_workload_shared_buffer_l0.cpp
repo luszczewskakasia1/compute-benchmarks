@@ -5,14 +5,14 @@
 
 #include <cstring>
 
-struct SingleQueueWorkloadSharedBufferParameters : WorkloadParameters {
+struct SingleQueueWorkloadSharedBufferArguments : WorkloadArgumentContainer {
     PositiveIntegerArgument operationsCount;
     PositiveIntegerArgument workgroupCount;
     PositiveIntegerArgument workgroupSize;
     IntegerArgument bufferIpcHandle;
     NonNegativeIntegerArgument offsetWithinBuffer;
 
-    SingleQueueWorkloadSharedBufferParameters()
+    SingleQueueWorkloadSharedBufferArguments()
         : operationsCount(*this, "operationsCount", "Number of redundant operations performed in kernel to make it take longer"),
           workgroupCount(*this, "wgc", "Number of workgroups enqueued"),
           workgroupSize(*this, "wgs", "Size of workgroups enqueued"),
@@ -20,9 +20,9 @@ struct SingleQueueWorkloadSharedBufferParameters : WorkloadParameters {
           offsetWithinBuffer(*this, "bufferOffset", "Offset within the buffer described by IPC handle") {}
 };
 
-struct SingleQueueWorkloadSharedBuffer : Workload<SingleQueueWorkloadSharedBufferParameters> {};
+struct SingleQueueWorkloadSharedBuffer : Workload<SingleQueueWorkloadSharedBufferArguments> {};
 
-TestResult run(const SingleQueueWorkloadSharedBufferParameters &arguments, Statistics &statistics, WorkloadSynchronization &synchronization, WorkloadIo &io) {
+TestResult run(const SingleQueueWorkloadSharedBufferArguments &arguments, Statistics &statistics, WorkloadSynchronization &synchronization, WorkloadIo &io) {
     LevelZero levelzero{};
     Timer timer{};
 

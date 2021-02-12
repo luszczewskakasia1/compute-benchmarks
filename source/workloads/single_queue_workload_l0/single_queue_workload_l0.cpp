@@ -3,20 +3,20 @@
 #include "framework/utility/timer.h"
 #include "framework/workload/register_workload.h"
 
-struct SingleQueueWorkloadParameters : WorkloadParameters {
+struct SingleQueueWorkloadArguments : WorkloadArgumentContainer {
     PositiveIntegerArgument operationsCount;
     PositiveIntegerArgument workgroupCount;
     PositiveIntegerArgument workgroupSize;
 
-    SingleQueueWorkloadParameters()
+    SingleQueueWorkloadArguments()
         : operationsCount(*this, "operationsCount", "Number of redundant operations performed in kernel to make it take longer"),
           workgroupCount(*this, "wgc", "Number of workgroups enqueued"),
           workgroupSize(*this, "wgs", "Size of workgroups enqueued") {}
 };
 
-struct SingleQueueWorkload : Workload<SingleQueueWorkloadParameters> {};
+struct SingleQueueWorkload : Workload<SingleQueueWorkloadArguments> {};
 
-TestResult run(const SingleQueueWorkloadParameters &arguments, Statistics &statistics, WorkloadSynchronization &synchronization, WorkloadIo &io) {
+TestResult run(const SingleQueueWorkloadArguments &arguments, Statistics &statistics, WorkloadSynchronization &synchronization, WorkloadIo &io) {
     LevelZero levelzero{};
     Timer timer{};
 

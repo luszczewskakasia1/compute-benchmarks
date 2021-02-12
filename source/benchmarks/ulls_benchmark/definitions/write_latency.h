@@ -2,7 +2,7 @@
 
 #include "framework/test_case/test_case.h"
 
-struct WriteLatencyArguments : Arguments {};
+struct WriteLatencyArguments : TestCaseArgumentContainer {};
 
 struct WriteLatency : TestCase<WriteLatencyArguments> {
     using TestCase<WriteLatencyArguments>::TestCase;

@@ -6,7 +6,7 @@
 #include "framework/test_case/test_case.h"
 #include "framework/utility/common_help_message.h"
 
-struct UnmapBufferArguments : Arguments {
+struct UnmapBufferArguments : TestCaseArgumentContainer {
     ByteSizeArgument size;
     BufferContentsArgument contents;
     CompressionBooleanArgument compressed;

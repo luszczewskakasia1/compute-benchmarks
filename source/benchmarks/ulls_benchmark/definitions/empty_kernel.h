@@ -3,7 +3,7 @@
 #include "framework/argument/basic_argument.h"
 #include "framework/test_case/test_case.h"
 
-struct EmptyKernelArguments : Arguments {
+struct EmptyKernelArguments : TestCaseArgumentContainer {
     PositiveIntegerArgument workgroupCount;
     PositiveIntegerArgument workgroupSize;
 

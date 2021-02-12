@@ -5,7 +5,7 @@
 #include "framework/test_case/test_case.h"
 #include "framework/utility/common_help_message.h"
 
-struct ReadBufferMisalignedArguments : Arguments {
+struct ReadBufferMisalignedArguments : TestCaseArgumentContainer {
     ByteSizeArgument size;
     NonNegativeIntegerArgument misalignmentFromCacheline;
     BooleanArgument useEvents;

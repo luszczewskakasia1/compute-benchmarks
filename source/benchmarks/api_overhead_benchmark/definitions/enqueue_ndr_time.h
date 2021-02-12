@@ -3,7 +3,7 @@
 #include "framework/argument/basic_argument.h"
 #include "framework/test_case/test_case.h"
 
-struct EnqueueNdrTimeArguments : Arguments {
+struct EnqueueNdrTimeArguments : TestCaseArgumentContainer {
     PositiveIntegerArgument workgroupCount;
     PositiveIntegerArgument workgroupSize;
     BooleanArgument useOoq;

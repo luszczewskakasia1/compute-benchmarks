@@ -2,7 +2,7 @@
 
 #include "framework/test_case/test_case.h"
 
-struct RoundTripSubmissionArguments : Arguments {};
+struct RoundTripSubmissionArguments : TestCaseArgumentContainer {};
 
 struct RoundTripSubmission : TestCase<RoundTripSubmissionArguments> {
     using TestCase<RoundTripSubmissionArguments>::TestCase;

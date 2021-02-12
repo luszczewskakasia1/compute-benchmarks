@@ -3,7 +3,7 @@
 #include "framework/argument/basic_argument.h"
 #include "framework/test_case/test_case.h"
 
-struct EnqueueNdrNullLwsArguments : Arguments {
+struct EnqueueNdrNullLwsArguments : TestCaseArgumentContainer {
     PositiveIntegerArgument gws;
     BooleanArgument useOoq;
     BooleanArgument useProfiling;

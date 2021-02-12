@@ -4,7 +4,7 @@
 #include "framework/test_case/test_case.h"
 #include "framework/utility/common_help_message.h"
 
-struct ReadDeviceMemBufferArguments : Arguments {
+struct ReadDeviceMemBufferArguments : TestCaseArgumentContainer {
     ByteSizeArgument size;
     CompressionBooleanArgument compressed;
     //ByteSizeArgument numWaves;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "framework/argument/arguments.h"
+#include "framework/argument/argument_container.h"
 #include "framework/argument/basic_argument.h"
 #include "framework/argument/boolean_flag_argument.h"
 #include "framework/argument/enum/api_argument.h"
@@ -11,7 +11,7 @@
 
 #include <memory>
 
-struct Configuration : ArgumentsBase {
+struct Configuration : ArgumentContainer {
   private:
     static std::unique_ptr<Configuration> instance;
 

@@ -6,7 +6,7 @@
 #include "framework/test_case/test_case.h"
 #include "framework/utility/common_help_message.h"
 
-struct CopyEntireImageArguments : Arguments {
+struct CopyEntireImageArguments : TestCaseArgumentContainer {
     ThreeComponentSizeArgument size;
     BooleanArgument forceBlitter;
     BooleanArgument useEvents;

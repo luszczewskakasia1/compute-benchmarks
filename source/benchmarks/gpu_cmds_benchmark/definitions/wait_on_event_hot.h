@@ -4,7 +4,7 @@
 #include "framework/test_case/test_case.h"
 #include "framework/utility/common_help_message.h"
 
-struct WaitOnEventHotArguments : Arguments {
+struct WaitOnEventHotArguments : TestCaseArgumentContainer {
     PositiveIntegerArgument measuredCommands;
 
     WaitOnEventHotArguments()

@@ -4,7 +4,7 @@
 #include "framework/argument/enum/work_item_id_usage_argument.h"
 #include "framework/test_case/test_case.h"
 
-struct KernelWithWorkArguments : Arguments {
+struct KernelWithWorkArguments : TestCaseArgumentContainer {
     WorkItemIdUsageArgument usedIds;
     PositiveIntegerArgument workgroupCount;
     PositiveIntegerArgument workgroupSize;

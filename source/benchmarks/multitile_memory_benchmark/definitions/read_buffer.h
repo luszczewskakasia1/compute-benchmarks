@@ -6,7 +6,7 @@
 #include "framework/test_case/test_case.h"
 #include "framework/utility/common_help_message.h"
 
-struct ReadBufferArguments : Arguments {
+struct ReadBufferArguments : TestCaseArgumentContainer {
     MultiDeviceSelectionArgument contextPlacement;
     DeviceSelectionArgument queuePlacement;
     DeviceSelectionArgument bufferPlacement;

@@ -8,8 +8,8 @@ struct EnumArgument : Argument {
     using EnumType = _EnumType;
     using ThisType = DerivedType;
 
-    EnumArgument(ArgumentsBase &parent, const std::string &key) : EnumArgument(parent, key, "") {}
-    EnumArgument(ArgumentsBase &parent, const std::string &key, const std::string &extraHelpPrefix)
+    EnumArgument(ArgumentContainer &parent, const std::string &key) : EnumArgument(parent, key, "") {}
+    EnumArgument(ArgumentContainer &parent, const std::string &key, const std::string &extraHelpPrefix)
         : Argument(parent, key, composeHelpMessage(extraHelpPrefix)) {
         static_assert(sizeof(DerivedType::enumValues) / sizeof(DerivedType::enumValues[0]) ==
                       sizeof(DerivedType::enumValuesNames) / sizeof(DerivedType::enumValuesNames[0]));

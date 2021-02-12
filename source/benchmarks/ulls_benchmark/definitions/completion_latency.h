@@ -2,7 +2,7 @@
 
 #include "framework/test_case/test_case.h"
 
-struct CompletionLatencyArguments : Arguments {};
+struct CompletionLatencyArguments : TestCaseArgumentContainer {};
 
 struct CompletionLatency : TestCase<CompletionLatencyArguments> {
     using TestCase<CompletionLatencyArguments>::TestCase;

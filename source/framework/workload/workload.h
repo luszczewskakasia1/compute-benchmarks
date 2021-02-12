@@ -3,19 +3,19 @@
 #include "framework/test_case/test_result.h"
 #include "framework/utility/common_help_message.h"
 #include "framework/workload/workload.h"
+#include "framework/workload/workload_argument_container.h"
 #include "framework/workload/workload_io.h"
-#include "framework/workload/workload_parameters.h"
 #include "framework/workload/workload_statistics.h"
 #include "framework/workload/workload_synchronization.h"
 
 #include <functional>
 
-template <typename _ParametersT>
+template <typename _ArgumentContainerT>
 class Workload {
   public:
-    using ParametersT = _ParametersT;
-    static_assert(std::is_base_of_v<WorkloadParameters, ParametersT>, "Parameters class should derive from WorkloadArguments");
-    using WorkloadImplementation = std::function<TestResult(const ParametersT &, Statistics &, WorkloadSynchronization &, WorkloadIo &)>;
+    using ArgumentContainerT = _ArgumentContainerT;
+    static_assert(std::is_base_of_v<WorkloadArgumentContainer, ArgumentContainerT>, "Parameters class should derive from WorkloadArgumentContainer");
+    using WorkloadImplementation = std::function<TestResult(const ArgumentContainerT &, Statistics &, WorkloadSynchronization &, WorkloadIo &)>;
     using ProcessResult = int;
 
     static inline WorkloadImplementation implementation = {};
@@ -30,16 +30,16 @@ class Workload {
             return 1;
         }
 
-        ParametersT parameters{};
+        ArgumentContainerT arguments{};
 
-        if (!parameters.parseArguments(commandLineArguments)) {
+        if (!arguments.parseArguments(commandLineArguments)) {
             std::cerr << "Error parsing command line" << std::endl;
             return 1;
         }
 
         bool error = false;
 
-        if (const auto unparsedArgs = parameters.getUnparsedArguments(); !unparsedArgs.empty()) {
+        if (const auto unparsedArgs = arguments.getUnparsedArguments(); !unparsedArgs.empty()) {
             const auto getKey = +[](const Argument *a) { return a->getKey(); };
             std::cerr << CommonHelpMessage::errorUnsetArguments() << joinStrings(", ", unparsedArgs, getKey) << std::endl;
             error = true;
@@ -55,14 +55,14 @@ class Workload {
             return toProcessResult(TestResult::InvalidArgs);
         }
 
-        return run(parameters);
+        return run(arguments);
     }
 
-    ProcessResult run(const ParametersT &parameters) {
-        WorkloadStatistics statistics{parameters.iterations};
-        WorkloadSynchronization synchronization{parameters.iterations, parameters.synchronize};
+    ProcessResult run(const ArgumentContainerT &arguments) {
+        WorkloadStatistics statistics{arguments.iterations};
+        WorkloadSynchronization synchronization{arguments.iterations, arguments.synchronize};
         WorkloadIo io;
-        TestResult result = runImpl(parameters, statistics, synchronization, io);
+        TestResult result = runImpl(arguments, statistics, synchronization, io);
         if (result == TestResult::Success) {
             FATAL_ERROR_UNLESS(statistics.isFull(), "test did not generate as many values as expected");
             FATAL_ERROR_UNLESS(synchronization.validate(), "test did not synchronize the correct amount of times");
@@ -74,16 +74,16 @@ class Workload {
     }
 
   private:
-    TestResult runImpl(const ParametersT &parameters, WorkloadStatistics &statistics, WorkloadSynchronization &synchronization, WorkloadIo &io) {
+    TestResult runImpl(const ArgumentContainerT &arguments, WorkloadStatistics &statistics, WorkloadSynchronization &synchronization, WorkloadIo &io) {
         if (implementation == nullptr) {
             return TestResult::NoImplementation;
         }
 
-        if (!parameters.validateArguments()) {
+        if (!arguments.validateArguments()) {
             return TestResult::InvalidArgs;
         }
 
-        return implementation(parameters, statistics, synchronization, io);
+        return implementation(arguments, statistics, synchronization, io);
     }
 
     static ProcessResult toProcessResult(TestResult testResult) {

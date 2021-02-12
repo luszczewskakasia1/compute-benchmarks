@@ -125,9 +125,9 @@ struct ByteSizeArgument : PositiveIntegerArgument {
 };
 
 struct BooleanArgument : Argument {
-    BooleanArgument(ArgumentsBase &parent, const std::string &key, const std::string &extraHelp)
+    BooleanArgument(ArgumentContainer &parent, const std::string &key, const std::string &extraHelp)
         : Argument(parent, key, extraHelp + " (0 or 1)") {}
-    BooleanArgument(ArgumentsBase &parent, const std::string &key)
+    BooleanArgument(ArgumentContainer &parent, const std::string &key)
         : Argument(parent, key, "(0 or 1)") {}
 
     operator bool() const {

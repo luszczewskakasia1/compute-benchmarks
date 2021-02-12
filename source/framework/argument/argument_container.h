@@ -8,7 +8,7 @@
 
 struct Argument;
 
-struct ArgumentsBase {
+struct ArgumentContainer {
     bool parseArgument(CommandLineArgument &commandLineArgument);
     bool parseArguments(CommandLineArguments &commandLineArguments);
     virtual bool validateArguments() const;
@@ -20,15 +20,4 @@ struct ArgumentsBase {
 
   protected:
     virtual bool validateArgumentsExtra() const { return true; } // This is optional. Use this for validating dependencies between arguments if any.
-};
-
-struct Arguments : ArgumentsBase {
-
-    std::string getCurrentConfig(bool commandLine) const;
-    bool validateArguments() const override;
-
-    Api api = Api::Unknown;
-    size_t iterations = 0;
-    bool noIntelExtensions = false;
-    bool isSingleTestMode = false;
 };

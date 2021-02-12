@@ -9,7 +9,7 @@
 #include "framework/utility/common_help_message.h"
 #include "framework/utility/memory_constants.h"
 
-struct SeparateAtomicsExplicitArguments : Arguments {
+struct SeparateAtomicsExplicitArguments : TestCaseArgumentContainer {
     DataTypeArgument dataType;
     AtomicOperationArgument atomicOperation;
     PositiveIntegerArgument atomicsPerCacheline;

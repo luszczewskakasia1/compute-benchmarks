@@ -1,11 +1,11 @@
 #include "argument.h"
 
-#include "framework/argument/arguments.h"
+#include "framework/argument/argument_container.h"
 #include "framework/utility/command_line_argument.h"
 
 #include <iomanip>
 
-Argument::Argument(ArgumentsBase &parent, const std::string &key, const std::string &extraHelp)
+Argument::Argument(ArgumentContainer &parent, const std::string &key, const std::string &extraHelp)
     : key(key),
       extraHelp(extraHelp) {
     parent.arguments.push_back(this);

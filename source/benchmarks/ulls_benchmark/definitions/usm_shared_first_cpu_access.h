@@ -4,7 +4,7 @@
 #include "framework/argument/enum/usm_initial_placement_argument.h"
 #include "framework/test_case/test_case.h"
 
-struct UsmSharedFirstCpuAccessArguments : Arguments {
+struct UsmSharedFirstCpuAccessArguments : TestCaseArgumentContainer {
     UsmInitialPlacementArgument initialPlacement;
     ByteSizeArgument bufferSize;
 

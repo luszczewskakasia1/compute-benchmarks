@@ -2,7 +2,7 @@
 
 #include "framework/test_case/test_case.h"
 
-struct WalkerSubmissionEventsArguments : Arguments {};
+struct WalkerSubmissionEventsArguments : TestCaseArgumentContainer {};
 
 struct WalkerSubmissionEvents : TestCase<WalkerSubmissionEventsArguments> {
     using TestCase<WalkerSubmissionEventsArguments>::TestCase;

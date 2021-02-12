@@ -6,7 +6,7 @@
 #include "framework/test_case/test_case.h"
 #include "framework/utility/common_help_message.h"
 
-struct OneAtomicArguments : Arguments {
+struct OneAtomicArguments : TestCaseArgumentContainer {
     DataTypeArgument dataType;
     AtomicOperationArgument atomicOperation;
     PositiveIntegerArgument workgroupCount;

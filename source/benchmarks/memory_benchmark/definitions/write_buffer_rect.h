@@ -5,7 +5,7 @@
 #include "framework/test_case/test_case.h"
 #include "framework/utility/common_help_message.h"
 
-struct WriteBufferRectArguments : Arguments {
+struct WriteBufferRectArguments : TestCaseArgumentContainer {
     ByteSizeArgument size;
     CompressionBooleanArgument compressed;
     ThreeComponentOffsetArgument origin;

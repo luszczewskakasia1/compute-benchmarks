@@ -5,12 +5,12 @@
 #include <sstream>
 #include <string>
 
-struct ArgumentsBase;
+struct ArgumentContainer;
 class CommandLineArgument;
 
 struct Argument {
-    Argument(ArgumentsBase &parent, const std::string &key) : Argument(parent, key, "") {}
-    Argument(ArgumentsBase &parent, const std::string &key, const std::string &extraHelp);
+    Argument(ArgumentContainer &parent, const std::string &key) : Argument(parent, key, "") {}
+    Argument(ArgumentContainer &parent, const std::string &key, const std::string &extraHelp);
 
     const std::string getKey() const;
     std::string getHelp() const;

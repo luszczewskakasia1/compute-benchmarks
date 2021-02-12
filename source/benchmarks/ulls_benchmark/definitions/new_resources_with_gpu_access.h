@@ -3,7 +3,7 @@
 #include "framework/argument/basic_argument.h"
 #include "framework/test_case/test_case.h"
 
-struct NewResourcesWithGpuAccessArguments : Arguments {
+struct NewResourcesWithGpuAccessArguments : TestCaseArgumentContainer {
     ByteSizeArgument size;
 
     NewResourcesWithGpuAccessArguments()

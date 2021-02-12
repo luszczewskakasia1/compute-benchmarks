@@ -5,7 +5,7 @@
 #include "framework/test_case/test_case.h"
 #include "framework/utility/common_help_message.h"
 
-struct FillBufferArguments : Arguments {
+struct FillBufferArguments : TestCaseArgumentContainer {
     ByteSizeArgument size;
     BufferContentsArgument contents;
     ByteSizeArgument patternSize;

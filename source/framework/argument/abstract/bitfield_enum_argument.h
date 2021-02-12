@@ -9,8 +9,8 @@ struct BitfieldEnumArgument : Argument {
     using EnumType = _EnumType;
     using ThisType = DerivedType;
 
-    BitfieldEnumArgument(ArgumentsBase &parent, const std::string &key) : BitfieldEnumArgument(parent, key, "") {}
-    BitfieldEnumArgument(ArgumentsBase &parent, const std::string &key, const std::string &extraHelpPrefix)
+    BitfieldEnumArgument(ArgumentContainer &parent, const std::string &key) : BitfieldEnumArgument(parent, key, "") {}
+    BitfieldEnumArgument(ArgumentContainer &parent, const std::string &key, const std::string &extraHelpPrefix)
         : Argument(parent, key, composeHelpMessage(extraHelpPrefix)) {
         static_assert(sizeof(DerivedType::enumValues) / sizeof(DerivedType::enumValues[0]) ==
                       sizeof(DerivedType::enumValuesNames) / sizeof(DerivedType::enumValuesNames[0]));

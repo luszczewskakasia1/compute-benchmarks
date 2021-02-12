@@ -2,7 +2,7 @@
 
 #include "framework/test_case/test_case.h"
 
-struct BestSubmissionArguments : Arguments {};
+struct BestSubmissionArguments : TestCaseArgumentContainer {};
 
 struct BestSubmission : TestCase<BestSubmissionArguments> {
     using TestCase<BestSubmissionArguments>::TestCase;
