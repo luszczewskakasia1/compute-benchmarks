@@ -76,3 +76,18 @@ Yes, run the benchmark with --csv parameter.
 
 ### What does test XXX do?
 Every benchmark binary can be run with --help parameter, which provides a short description for each test case.
+
+
+
+### Why does CMake tell me, that LevelZero/OpenCL installation was not found?
+No need to worry about it. CMake requires special config files, so it can discovoer installed libraries. Sometimes the files are not there, even if SDKs are installed correctly. For this reason the repository contains its own LevelZero SDK and OpenCL SDK (loader+headers), which makes it self-sufficient. If system-wide installation cannot be found, benchmarks are built using these SDKs and they are still functional.
+
+
+
+### Why am I getting linker errors related to libze_loader.so?
+You probably cloned the repository on Windows and copied the files over to Linux. Because of that symbolic links pointing to the LevelZero loader break and they are interpreted as raw files. Recommended way is to clone and build the repository on the same system. Or, if you don't care about LevelZero tests, you can disable them with `-DBUILD_L0=OFF` CMake argument.
+
+
+
+### Why am I getting linker errors related to pciaccess.so?
+Same as above. Pciaccess is a library used on Linux in OpenCL tests to discover, what device we are running on. It can be disabled with `-DUSE_PCIACCESS=OFF` CMake argument.
