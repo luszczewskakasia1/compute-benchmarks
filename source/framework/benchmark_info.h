@@ -3,7 +3,7 @@
 #include <memory>
 #include <string>
 
-struct TestCaseArgumentsBase;
+struct ArgumentsBase;
 
 // This class represent information specific to a specific benchmark, e.g. ulls_benchmark or memory_benchmark.
 // It is used to configure the behaviour of some framework classes.
@@ -32,7 +32,7 @@ class BenchmarkInfo {
     virtual int getTestCaseNameColumnWidth() = 0;
 
     struct BenchmarkSpecificConfigurationBase {};
-    virtual std::unique_ptr<BenchmarkSpecificConfigurationBase> createBenchmarkSpecificConfiguration(TestCaseArgumentsBase &testCaseArguments) = 0;
+    virtual std::unique_ptr<BenchmarkSpecificConfigurationBase> createBenchmarkSpecificConfiguration(ArgumentsBase &testCaseArguments) = 0;
 };
 
 struct BenchmarkInfoImpl : BenchmarkInfo {
@@ -40,5 +40,5 @@ struct BenchmarkInfoImpl : BenchmarkInfo {
     std::string getBenchmarkName() override;
     virtual MeasurementUnit getMeasurementUnit() override;
     int getTestCaseNameColumnWidth() override;
-    std::unique_ptr<BenchmarkSpecificConfigurationBase> createBenchmarkSpecificConfiguration(TestCaseArgumentsBase &testCaseArguments) override;
+    std::unique_ptr<BenchmarkSpecificConfigurationBase> createBenchmarkSpecificConfiguration(ArgumentsBase &testCaseArguments) override;
 };

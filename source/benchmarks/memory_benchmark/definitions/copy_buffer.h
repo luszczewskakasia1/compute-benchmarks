@@ -6,12 +6,12 @@
 #include "framework/test_case_argument/test_case_argument_compression.h"
 #include "framework/utility/common_help_message.h"
 
-struct CopyBufferArguments : TestCaseArguments {
-    ByteSizeTestCaseArgument size;
-    BufferContentsTestCaseArgument contents;
-    CompressionBooleanTestCaseArgument compressedSource;
-    CompressionBooleanTestCaseArgument compressedDestination;
-    BooleanTestCaseArgument useEvents;
+struct CopyBufferArguments : Arguments {
+    ByteSizeArgument size;
+    BufferContentsArgument contents;
+    CompressionBooleanArgument compressedSource;
+    CompressionBooleanArgument compressedDestination;
+    BooleanArgument useEvents;
 
     CopyBufferArguments()
         : size(*this, "size", "Size of the buffers"),

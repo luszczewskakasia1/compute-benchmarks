@@ -4,15 +4,15 @@
 
 #include <tuple>
 
-struct ThreeComponentUintTestCaseArgument : TestCaseArgument {
-    using TestCaseArgument::TestCaseArgument;
+struct ThreeComponentUintArgument : Argument {
+    using Argument::Argument;
     using TupleType = std::tuple<size_t, size_t, size_t>;
 
     operator const size_t *() const {
         return value;
     }
 
-    ThreeComponentUintTestCaseArgument &operator=(TupleType value) {
+    ThreeComponentUintArgument &operator=(TupleType value) {
         assign(value);
         return *this;
     }
@@ -54,19 +54,19 @@ struct ThreeComponentUintTestCaseArgument : TestCaseArgument {
     size_t value[3] = {0, 0, 0};
 };
 
-struct ThreeComponentOffsetTestCaseArgument : ThreeComponentUintTestCaseArgument {
-    using ThreeComponentUintTestCaseArgument::ThreeComponentUintTestCaseArgument;
+struct ThreeComponentOffsetArgument : ThreeComponentUintArgument {
+    using ThreeComponentUintArgument::ThreeComponentUintArgument;
 
-    ThreeComponentOffsetTestCaseArgument &operator=(TupleType value) {
+    ThreeComponentOffsetArgument &operator=(TupleType value) {
         assign(value);
         return *this;
     }
 };
 
-struct ThreeComponentSizeTestCaseArgument : ThreeComponentUintTestCaseArgument {
-    using ThreeComponentUintTestCaseArgument::ThreeComponentUintTestCaseArgument;
+struct ThreeComponentSizeArgument : ThreeComponentUintArgument {
+    using ThreeComponentUintArgument::ThreeComponentUintArgument;
 
-    ThreeComponentSizeTestCaseArgument &operator=(TupleType value) {
+    ThreeComponentSizeArgument &operator=(TupleType value) {
         assign(value);
         return *this;
     }

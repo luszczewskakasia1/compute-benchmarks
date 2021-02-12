@@ -6,14 +6,14 @@
 #include "framework/test_case_argument/test_case_argument_basic.h"
 #include "framework/utility/common_help_message.h"
 
-struct UsmFillArguments : TestCaseArguments {
-    MemoryPlacementTestCaseArgument memoryPlacement;
-    ByteSizeTestCaseArgument bufferSize;
-    BufferContentsTestCaseArgument contents;
-    ByteSizeTestCaseArgument patternSize;
-    BufferContentsTestCaseArgument patternContents;
-    BooleanTestCaseArgument forceBlitter;
-    BooleanTestCaseArgument useEvents;
+struct UsmFillArguments : Arguments {
+    MemoryPlacementArgument memoryPlacement;
+    ByteSizeArgument bufferSize;
+    BufferContentsArgument contents;
+    ByteSizeArgument patternSize;
+    BufferContentsArgument patternContents;
+    BooleanArgument forceBlitter;
+    BooleanArgument useEvents;
 
     UsmFillArguments()
         : memoryPlacement(*this, "memory", "Placement of the buffer"),

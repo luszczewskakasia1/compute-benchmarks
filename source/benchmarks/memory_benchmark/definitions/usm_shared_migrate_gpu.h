@@ -3,8 +3,8 @@
 #include "framework/test_case/test_case.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
 
-struct UsmSharedMigrateGpuArguments : TestCaseArguments {
-    ByteSizeTestCaseArgument bufferSize;
+struct UsmSharedMigrateGpuArguments : Arguments {
+    ByteSizeArgument bufferSize;
 
     UsmSharedMigrateGpuArguments()
         : bufferSize(*this, "size", "Size of the buffer") {}

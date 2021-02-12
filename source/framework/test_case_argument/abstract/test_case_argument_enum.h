@@ -4,13 +4,13 @@
 #include "framework/utility/string_utils.h"
 
 template <typename DerivedType, typename _EnumType>
-struct EnumTestCaseArgument : TestCaseArgument {
+struct EnumArgument : Argument {
     using EnumType = _EnumType;
     using ThisType = DerivedType;
 
-    EnumTestCaseArgument(TestCaseArgumentsBase &parent, const std::string &key) : EnumTestCaseArgument(parent, key, "") {}
-    EnumTestCaseArgument(TestCaseArgumentsBase &parent, const std::string &key, const std::string &extraHelpPrefix)
-        : TestCaseArgument(parent, key, composeHelpMessage(extraHelpPrefix)) {
+    EnumArgument(ArgumentsBase &parent, const std::string &key) : EnumArgument(parent, key, "") {}
+    EnumArgument(ArgumentsBase &parent, const std::string &key, const std::string &extraHelpPrefix)
+        : Argument(parent, key, composeHelpMessage(extraHelpPrefix)) {
         static_assert(sizeof(DerivedType::enumValues) / sizeof(DerivedType::enumValues[0]) ==
                       sizeof(DerivedType::enumValuesNames) / sizeof(DerivedType::enumValuesNames[0]));
     }

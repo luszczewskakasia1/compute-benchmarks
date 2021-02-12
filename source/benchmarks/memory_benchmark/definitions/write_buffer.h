@@ -5,11 +5,11 @@
 #include "framework/test_case_argument/test_case_argument_compression.h"
 #include "framework/utility/common_help_message.h"
 
-struct WriteBufferArguments : TestCaseArguments {
-    ByteSizeTestCaseArgument size;
-    BufferContentsTestCaseArgument contents;
-    CompressionBooleanTestCaseArgument compressed;
-    BooleanTestCaseArgument useEvents;
+struct WriteBufferArguments : Arguments {
+    ByteSizeArgument size;
+    BufferContentsArgument contents;
+    CompressionBooleanArgument compressed;
+    BooleanArgument useEvents;
 
     WriteBufferArguments()
         : size(*this, "size", "Size of the buffer"),

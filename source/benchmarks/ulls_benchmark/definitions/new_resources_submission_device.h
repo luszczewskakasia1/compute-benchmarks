@@ -3,8 +3,8 @@
 #include "framework/test_case/test_case.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
 
-struct NewResourcesSubmissionDeviceArguments : TestCaseArguments {
-    ByteSizeTestCaseArgument size;
+struct NewResourcesSubmissionDeviceArguments : Arguments {
+    ByteSizeArgument size;
 
     NewResourcesSubmissionDeviceArguments()
         : size(*this, "size", "Size of the buffer") {}

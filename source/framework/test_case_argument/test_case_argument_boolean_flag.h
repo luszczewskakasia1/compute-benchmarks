@@ -2,14 +2,14 @@
 
 #include "framework/test_case_argument/abstract/test_case_argument.h"
 
-struct BooleanFlagTestCaseArgument : TestCaseArgument {
-    using TestCaseArgument::TestCaseArgument;
+struct BooleanFlagArgument : Argument {
+    using Argument::Argument;
 
     operator bool() const {
         return value;
     }
 
-    BooleanFlagTestCaseArgument &operator=(bool value) {
+    BooleanFlagArgument &operator=(bool value) {
         this->value = value;
         return *this;
     }

@@ -3,10 +3,10 @@
 #include "framework/test_case/test_case.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
 
-struct AppendLaunchKernelArguments : TestCaseArguments {
-    PositiveIntegerTestCaseArgument workgroupCount;
-    IntegerTestCaseArgument workgroupSize;
-    BooleanTestCaseArgument useEvent;
+struct AppendLaunchKernelArguments : Arguments {
+    PositiveIntegerArgument workgroupCount;
+    IntegerArgument workgroupSize;
+    BooleanArgument useEvent;
 
     AppendLaunchKernelArguments()
         : workgroupCount(*this, "wgc", "Workgroup count"),

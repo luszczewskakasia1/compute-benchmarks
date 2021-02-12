@@ -7,12 +7,12 @@
 #include "framework/utility/common_help_message.h"
 #include "framework/utility/memory_constants.h"
 
-struct SeparateAtomicsArguments : TestCaseArguments {
-    DataTypeTestCaseArgument dataType;
-    AtomicOperationTestCaseArgument atomicOperation;
-    PositiveIntegerTestCaseArgument atomicsPerCacheline;
-    PositiveIntegerTestCaseArgument workgroupCount;
-    PositiveIntegerTestCaseArgument workgroupSize;
+struct SeparateAtomicsArguments : Arguments {
+    DataTypeArgument dataType;
+    AtomicOperationArgument atomicOperation;
+    PositiveIntegerArgument atomicsPerCacheline;
+    PositiveIntegerArgument workgroupCount;
+    PositiveIntegerArgument workgroupSize;
 
     SeparateAtomicsArguments()
         : dataType(*this, "type", CommonHelpMessage::atomicDataType()),

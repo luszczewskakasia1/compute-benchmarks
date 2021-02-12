@@ -3,8 +3,8 @@
 #include "framework/enum/device_selection.h"
 #include "framework/test_case_argument/abstract/test_case_argument_enum.h"
 
-struct DeviceSelectionTestCaseArgument : EnumTestCaseArgument<DeviceSelectionTestCaseArgument, DeviceSelection> {
-    using EnumTestCaseArgument::EnumTestCaseArgument;
+struct DeviceSelectionArgument : EnumArgument<DeviceSelectionArgument, DeviceSelection> {
+    using EnumArgument::EnumArgument;
     ThisType &operator=(EnumType value) {
         this->value = value;
         return *this;

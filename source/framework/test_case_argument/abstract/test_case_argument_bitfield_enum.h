@@ -4,14 +4,14 @@
 #include "framework/utility/string_utils.h"
 
 template <typename DerivedType, typename _EnumType>
-struct BitfieldEnumTestCaseArgument : TestCaseArgument {
+struct BitfieldEnumArgument : Argument {
     constexpr static inline char separator = ':';
     using EnumType = _EnumType;
     using ThisType = DerivedType;
 
-    BitfieldEnumTestCaseArgument(TestCaseArgumentsBase &parent, const std::string &key) : BitfieldEnumTestCaseArgument(parent, key, "") {}
-    BitfieldEnumTestCaseArgument(TestCaseArgumentsBase &parent, const std::string &key, const std::string &extraHelpPrefix)
-        : TestCaseArgument(parent, key, composeHelpMessage(extraHelpPrefix)) {
+    BitfieldEnumArgument(ArgumentsBase &parent, const std::string &key) : BitfieldEnumArgument(parent, key, "") {}
+    BitfieldEnumArgument(ArgumentsBase &parent, const std::string &key, const std::string &extraHelpPrefix)
+        : Argument(parent, key, composeHelpMessage(extraHelpPrefix)) {
         static_assert(sizeof(DerivedType::enumValues) / sizeof(DerivedType::enumValues[0]) ==
                       sizeof(DerivedType::enumValuesNames) / sizeof(DerivedType::enumValuesNames[0]));
     }

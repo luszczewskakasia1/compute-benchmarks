@@ -4,14 +4,14 @@
 
 #include <sstream>
 
-bool TestCaseArgumentsBase::parseArgument(CommandLineArgument &commandLineArgument) {
+bool ArgumentsBase::parseArgument(CommandLineArgument &commandLineArgument) {
     for (auto &argument : arguments) {
         argument->parse(commandLineArgument);
     }
     return true;
 }
 
-bool TestCaseArgumentsBase::parseArguments(CommandLineArguments &commandLineArguments) {
+bool ArgumentsBase::parseArguments(CommandLineArguments &commandLineArguments) {
     for (CommandLineArgument &commandLineArgument : commandLineArguments) {
         if (!this->parseArgument(commandLineArgument)) {
             return false;
@@ -20,7 +20,7 @@ bool TestCaseArgumentsBase::parseArguments(CommandLineArguments &commandLineArgu
     return true;
 }
 
-bool TestCaseArgumentsBase::validateArguments() const {
+bool ArgumentsBase::validateArguments() const {
     for (const auto &argument : arguments) {
         if (!argument->validate()) {
             return false;
@@ -34,7 +34,7 @@ bool TestCaseArgumentsBase::validateArguments() const {
     return true;
 }
 
-std::string TestCaseArgumentsBase::getHelp(size_t indent) const {
+std::string ArgumentsBase::getHelp(size_t indent) const {
     std::ostringstream result;
     for (const auto &argument : arguments) {
         for (auto i = 0u; i < indent; i++) {
@@ -45,7 +45,7 @@ std::string TestCaseArgumentsBase::getHelp(size_t indent) const {
     return result.str();
 }
 
-std::string TestCaseArguments::getCurrentConfig(bool commandLine) const {
+std::string Arguments::getCurrentConfig(bool commandLine) const {
     std::ostringstream result;
     for (auto i = 0; i < arguments.size(); i++) {
         if (commandLine) {
@@ -59,8 +59,8 @@ std::string TestCaseArguments::getCurrentConfig(bool commandLine) const {
     return result.str();
 }
 
-std::vector<const TestCaseArgument *> TestCaseArgumentsBase::getUnparsedArguments() const {
-    std::vector<const TestCaseArgument *> result = {};
+std::vector<const Argument *> ArgumentsBase::getUnparsedArguments() const {
+    std::vector<const Argument *> result = {};
     for (const auto &argument : arguments) {
         if (!argument->wasParsed()) {
             result.push_back(argument);
@@ -69,8 +69,8 @@ std::vector<const TestCaseArgument *> TestCaseArgumentsBase::getUnparsedArgument
     return result;
 }
 
-bool TestCaseArguments::validateArguments() const {
-    if (!TestCaseArgumentsBase::validateArguments()) {
+bool Arguments::validateArguments() const {
+    if (!ArgumentsBase::validateArguments()) {
         return false;
     }
 

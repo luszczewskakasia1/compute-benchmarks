@@ -3,11 +3,11 @@
 #include "framework/test_case/test_case.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
 
-struct KernelAndCopyArguments : TestCaseArguments {
-    BooleanTestCaseArgument twoQueues;
-    BooleanTestCaseArgument runKernel;
-    BooleanTestCaseArgument runCopy;
-    BooleanTestCaseArgument useCopyQueue;
+struct KernelAndCopyArguments : Arguments {
+    BooleanArgument twoQueues;
+    BooleanArgument runKernel;
+    BooleanArgument runCopy;
+    BooleanArgument useCopyQueue;
 
     KernelAndCopyArguments()
         : twoQueues(*this, "twoQueues", "Enables using separate queues for both operations. Must be used with runCopy and runKernel"),

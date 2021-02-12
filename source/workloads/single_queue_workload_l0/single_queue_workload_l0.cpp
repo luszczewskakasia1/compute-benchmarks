@@ -4,9 +4,9 @@
 #include "framework/workload/register_workload.h"
 
 struct SingleQueueWorkloadParameters : WorkloadParameters {
-    PositiveIntegerTestCaseArgument operationsCount;
-    PositiveIntegerTestCaseArgument workgroupCount;
-    PositiveIntegerTestCaseArgument workgroupSize;
+    PositiveIntegerArgument operationsCount;
+    PositiveIntegerArgument workgroupCount;
+    PositiveIntegerArgument workgroupSize;
 
     SingleQueueWorkloadParameters()
         : operationsCount(*this, "operationsCount", "Number of redundant operations performed in kernel to make it take longer"),

@@ -5,8 +5,8 @@
 
 #include <vector>
 
-struct StringListTestCaseArgument : TestCaseArgument {
-    using TestCaseArgument::TestCaseArgument;
+struct StringListArgument : Argument {
+    using Argument::Argument;
 
     operator const std::vector<std::string> &() const {
         return get();
@@ -16,7 +16,7 @@ struct StringListTestCaseArgument : TestCaseArgument {
         return value;
     }
 
-    StringListTestCaseArgument &operator=(const std::vector<std::string> &value) {
+    StringListArgument &operator=(const std::vector<std::string> &value) {
         this->value = value;
         this->isValid = true;
         return *this;
@@ -28,7 +28,7 @@ struct StringListTestCaseArgument : TestCaseArgument {
 
   protected:
     std::string toStringValue() const override {
-        FATAL_ERROR("ArgFilterTestCaseArgument should not be printed");
+        FATAL_ERROR("ArgFilterArgument should not be printed");
     }
 
     void parseImpl(const std::string &value) override {

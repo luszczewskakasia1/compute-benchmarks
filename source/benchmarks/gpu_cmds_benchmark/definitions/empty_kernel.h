@@ -4,10 +4,10 @@
 #include "framework/test_case_argument/test_case_argument_basic.h"
 #include "framework/utility/common_help_message.h"
 
-struct EmptyKernelArguments : TestCaseArguments {
-    PositiveIntegerTestCaseArgument measuredCommands;
-    PositiveIntegerTestCaseArgument workgroupCount;
-    PositiveIntegerTestCaseArgument workgroupSize;
+struct EmptyKernelArguments : Arguments {
+    PositiveIntegerArgument measuredCommands;
+    PositiveIntegerArgument workgroupCount;
+    PositiveIntegerArgument workgroupSize;
 
     EmptyKernelArguments()
         : measuredCommands(*this, "measuredCommands", CommonHelpMessage::measuredCommandsCount()),

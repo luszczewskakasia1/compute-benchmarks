@@ -3,12 +3,12 @@
 #include "framework/test_case/test_case.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
 
-struct EnqueueNdrTimeArguments : TestCaseArguments {
-    PositiveIntegerTestCaseArgument workgroupCount;
-    PositiveIntegerTestCaseArgument workgroupSize;
-    BooleanTestCaseArgument useOoq;
-    BooleanTestCaseArgument useProfiling;
-    BooleanTestCaseArgument useEvent;
+struct EnqueueNdrTimeArguments : Arguments {
+    PositiveIntegerArgument workgroupCount;
+    PositiveIntegerArgument workgroupSize;
+    BooleanArgument useOoq;
+    BooleanArgument useProfiling;
+    BooleanArgument useEvent;
 
     EnqueueNdrTimeArguments()
         : workgroupCount(*this, "wgc", "Workgroup count"),

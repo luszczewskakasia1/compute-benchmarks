@@ -6,10 +6,10 @@
 #include "framework/test_case_argument/test_case_argument_three_component_uint.h"
 #include "framework/utility/common_help_message.h"
 
-struct CopyEntireImageArguments : TestCaseArguments {
-    ThreeComponentSizeTestCaseArgument size;
-    BooleanTestCaseArgument forceBlitter;
-    BooleanTestCaseArgument useEvents;
+struct CopyEntireImageArguments : Arguments {
+    ThreeComponentSizeArgument size;
+    BooleanArgument forceBlitter;
+    BooleanArgument useEvents;
 
     CopyEntireImageArguments()
         : size(*this, "size", "Size of the image"),

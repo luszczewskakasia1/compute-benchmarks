@@ -6,13 +6,13 @@
 #include "framework/test_case_argument/test_case_argument_basic.h"
 #include "framework/utility/common_help_message.h"
 
-struct UsmCopyArguments : TestCaseArguments {
-    MemoryPlacementTestCaseArgument sourcePlacement;
-    MemoryPlacementTestCaseArgument destinationPlacement;
-    ByteSizeTestCaseArgument size;
-    BufferContentsTestCaseArgument contents;
-    BooleanTestCaseArgument forceBlitter;
-    BooleanTestCaseArgument useEvents;
+struct UsmCopyArguments : Arguments {
+    MemoryPlacementArgument sourcePlacement;
+    MemoryPlacementArgument destinationPlacement;
+    ByteSizeArgument size;
+    BufferContentsArgument contents;
+    BooleanArgument forceBlitter;
+    BooleanArgument useEvents;
 
     UsmCopyArguments()
         : sourcePlacement(*this, "src", "Placement of the source buffer"),

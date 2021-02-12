@@ -6,12 +6,12 @@
 #include "framework/test_case_argument/test_case_argument_compression.h"
 #include "framework/utility/common_help_message.h"
 
-struct UnmapBufferArguments : TestCaseArguments {
-    ByteSizeTestCaseArgument size;
-    BufferContentsTestCaseArgument contents;
-    CompressionBooleanTestCaseArgument compressed;
-    MapFlagsTestCaseArgument mapFlags;
-    BooleanTestCaseArgument useEvents;
+struct UnmapBufferArguments : Arguments {
+    ByteSizeArgument size;
+    BufferContentsArgument contents;
+    CompressionBooleanArgument compressed;
+    MapFlagsArgument mapFlags;
+    BooleanArgument useEvents;
 
     UnmapBufferArguments()
         : size(*this, "size", "Size of the buffer"),

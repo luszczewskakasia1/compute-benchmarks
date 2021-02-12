@@ -5,13 +5,13 @@
 #include "framework/test_case_argument/test_case_argument_compression.h"
 #include "framework/utility/common_help_message.h"
 
-struct FillBufferArguments : TestCaseArguments {
-    ByteSizeTestCaseArgument size;
-    BufferContentsTestCaseArgument contents;
-    ByteSizeTestCaseArgument patternSize;
-    CompressionBooleanTestCaseArgument compressed;
-    BooleanTestCaseArgument forceBlitter;
-    BooleanTestCaseArgument useEvents;
+struct FillBufferArguments : Arguments {
+    ByteSizeArgument size;
+    BufferContentsArgument contents;
+    ByteSizeArgument patternSize;
+    CompressionBooleanArgument compressed;
+    BooleanArgument forceBlitter;
+    BooleanArgument useEvents;
 
     FillBufferArguments()
         : size(*this, "size", "Size of the buffer"),

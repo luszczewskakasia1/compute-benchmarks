@@ -5,13 +5,13 @@
 #include "framework/test_case_argument/test_case_argument_three_component_uint.h"
 #include "framework/utility/common_help_message.h"
 
-struct WriteBufferRectArguments : TestCaseArguments {
-    ByteSizeTestCaseArgument size;
-    CompressionBooleanTestCaseArgument compressed;
-    ThreeComponentOffsetTestCaseArgument origin;
-    ThreeComponentSizeTestCaseArgument region;
-    ByteSizeTestCaseArgument rPitch;
-    ByteSizeTestCaseArgument sPitch;
+struct WriteBufferRectArguments : Arguments {
+    ByteSizeArgument size;
+    CompressionBooleanArgument compressed;
+    ThreeComponentOffsetArgument origin;
+    ThreeComponentSizeArgument region;
+    ByteSizeArgument rPitch;
+    ByteSizeArgument sPitch;
 
     WriteBufferRectArguments()
         : size(*this, "size", "Size of the buffer"),

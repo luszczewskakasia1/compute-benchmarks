@@ -4,9 +4,9 @@
 #include "framework/test_case_argument/enum/test_case_argument_usm_initial_placement.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
 
-struct UsmSharedFirstGpuAccessArguments : TestCaseArguments {
-    UsmInitialPlacementTestCaseArgument initialPlacement;
-    ByteSizeTestCaseArgument bufferSize;
+struct UsmSharedFirstGpuAccessArguments : Arguments {
+    UsmInitialPlacementArgument initialPlacement;
+    ByteSizeArgument bufferSize;
 
     UsmSharedFirstGpuAccessArguments()
         : initialPlacement(*this, "initialPlacement", "Hint for initial placement of the resource passed to the driver"),

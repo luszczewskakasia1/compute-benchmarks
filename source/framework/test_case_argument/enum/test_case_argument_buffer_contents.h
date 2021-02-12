@@ -3,8 +3,8 @@
 #include "framework/enum/buffer_contents.h"
 #include "framework/test_case_argument/abstract/test_case_argument_enum.h"
 
-struct BufferContentsTestCaseArgument : EnumTestCaseArgument<BufferContentsTestCaseArgument, BufferContents> {
-    using EnumTestCaseArgument::EnumTestCaseArgument;
+struct BufferContentsArgument : EnumArgument<BufferContentsArgument, BufferContents> {
+    using EnumArgument::EnumArgument;
     ThisType &operator=(EnumType value) {
         this->value = value;
         return *this;

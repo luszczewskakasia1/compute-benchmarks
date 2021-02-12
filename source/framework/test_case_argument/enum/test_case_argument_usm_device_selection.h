@@ -3,7 +3,7 @@
 #include "framework/enum/device_selection.h"
 #include "framework/test_case_argument/abstract/test_case_argument_bitfield_enum.h"
 
-struct DeviceSelectionTestCaseArgumentBaseTraits {
+struct DeviceSelectionArgumentBaseTraits {
     using EnumType = DeviceSelection;
     const static inline std::string enumName = "usm device selection";
     const static inline EnumType zeroEnumValue = EnumType::Unknown;
@@ -12,10 +12,10 @@ struct DeviceSelectionTestCaseArgumentBaseTraits {
 };
 
 template <bool allowHost, bool allowDevice, bool allowShared>
-struct UsmDeviceSelectionTestCaseArgumentBase : BitfieldEnumTestCaseArgument<DeviceSelectionTestCaseArgumentBaseTraits, DeviceSelection> {
-    using BitfieldEnumTestCaseArgument::BitfieldEnumTestCaseArgument;
+struct UsmDeviceSelectionArgumentBase : BitfieldEnumArgument<DeviceSelectionArgumentBaseTraits, DeviceSelection> {
+    using BitfieldEnumArgument::BitfieldEnumArgument;
 
-    UsmDeviceSelectionTestCaseArgumentBase &operator=(EnumType value) {
+    UsmDeviceSelectionArgumentBase &operator=(EnumType value) {
         this->value = value;
         return *this;
     }
@@ -42,9 +42,9 @@ struct UsmDeviceSelectionTestCaseArgumentBase : BitfieldEnumTestCaseArgument<Dev
             return allowDevice;
         }
 
-        FATAL_ERROR("Unreachable code in UsmDeviceSelectionTestCaseArgumentBase");
+        FATAL_ERROR("Unreachable code in UsmDeviceSelectionArgumentBase");
     }
 };
 
-using UsmDeviceSelectionTestCaseArgument = UsmDeviceSelectionTestCaseArgumentBase<true, true, true>;
-using UsmSharedDeviceSelectionTestCaseArgument = UsmDeviceSelectionTestCaseArgumentBase<false, false, true>;
+using UsmDeviceSelectionArgument = UsmDeviceSelectionArgumentBase<true, true, true>;
+using UsmSharedDeviceSelectionArgument = UsmDeviceSelectionArgumentBase<false, false, true>;

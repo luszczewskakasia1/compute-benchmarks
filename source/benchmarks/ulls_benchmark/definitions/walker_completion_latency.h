@@ -2,7 +2,7 @@
 
 #include "framework/test_case/test_case.h"
 
-struct WalkerCompletionLatencyArguments : TestCaseArguments {};
+struct WalkerCompletionLatencyArguments : Arguments {};
 
 struct WalkerCompletionLatency : TestCase<WalkerCompletionLatencyArguments> {
     using TestCase<WalkerCompletionLatencyArguments>::TestCase;

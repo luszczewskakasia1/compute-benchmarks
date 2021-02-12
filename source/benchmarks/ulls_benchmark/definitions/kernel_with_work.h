@@ -4,10 +4,10 @@
 #include "framework/test_case_argument/enum/test_case_argument_work_item_id_usage.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
 
-struct KernelWithWorkArguments : TestCaseArguments {
-    WorkItemIdUsageTestCaseArgument usedIds;
-    PositiveIntegerTestCaseArgument workgroupCount;
-    PositiveIntegerTestCaseArgument workgroupSize;
+struct KernelWithWorkArguments : Arguments {
+    WorkItemIdUsageArgument usedIds;
+    PositiveIntegerArgument workgroupCount;
+    PositiveIntegerArgument workgroupSize;
 
     KernelWithWorkArguments()
         : usedIds(*this, "usedIds", "Which of the get_global_id() and get_local_id() calls will be used in the kernel"),

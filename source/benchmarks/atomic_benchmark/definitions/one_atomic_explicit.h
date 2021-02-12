@@ -8,13 +8,13 @@
 #include "framework/test_case_argument/test_case_argument_basic.h"
 #include "framework/utility/common_help_message.h"
 
-struct OneAtomicExplicitArguments : TestCaseArguments {
-    DataTypeTestCaseArgument dataType;
-    AtomicOperationTestCaseArgument atomicOperation;
-    AtomicScopeTestCaseArgument scope;
-    AtomicMemoryOrderTestCaseArgument memoryOrder;
-    PositiveIntegerTestCaseArgument workgroupCount;
-    PositiveIntegerTestCaseArgument workgroupSize;
+struct OneAtomicExplicitArguments : Arguments {
+    DataTypeArgument dataType;
+    AtomicOperationArgument atomicOperation;
+    AtomicScopeArgument scope;
+    AtomicMemoryOrderArgument memoryOrder;
+    PositiveIntegerArgument workgroupCount;
+    PositiveIntegerArgument workgroupSize;
 
     OneAtomicExplicitArguments()
         : dataType(*this, "type", CommonHelpMessage::atomicDataType()),

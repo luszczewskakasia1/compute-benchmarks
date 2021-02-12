@@ -10,7 +10,7 @@
 
 static const inline RegisterTestCase<CopyEntireImage> registerTestCase{};
 
-using ImageSize = ThreeComponentUintTestCaseArgument::TupleType;
+using ImageSize = ThreeComponentUintArgument::TupleType;
 class CopyEntireImageTest : public ::testing::TestWithParam<std::tuple<Api, ImageSize, bool, bool>> {
 };
 

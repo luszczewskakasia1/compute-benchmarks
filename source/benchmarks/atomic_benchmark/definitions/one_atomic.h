@@ -6,11 +6,11 @@
 #include "framework/test_case_argument/test_case_argument_basic.h"
 #include "framework/utility/common_help_message.h"
 
-struct OneAtomicArguments : TestCaseArguments {
-    DataTypeTestCaseArgument dataType;
-    AtomicOperationTestCaseArgument atomicOperation;
-    PositiveIntegerTestCaseArgument workgroupCount;
-    PositiveIntegerTestCaseArgument workgroupSize;
+struct OneAtomicArguments : Arguments {
+    DataTypeArgument dataType;
+    AtomicOperationArgument atomicOperation;
+    PositiveIntegerArgument workgroupCount;
+    PositiveIntegerArgument workgroupSize;
 
     OneAtomicArguments()
         : dataType(*this, "type", CommonHelpMessage::atomicDataType()),

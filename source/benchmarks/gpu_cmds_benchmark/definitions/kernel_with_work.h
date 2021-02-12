@@ -5,11 +5,11 @@
 #include "framework/test_case_argument/test_case_argument_basic.h"
 #include "framework/utility/common_help_message.h"
 
-struct KernelWithWorkArguments : TestCaseArguments {
-    WorkItemIdUsageTestCaseArgument usedIds;
-    PositiveIntegerTestCaseArgument measuredCommands;
-    PositiveIntegerTestCaseArgument workgroupCount;
-    PositiveIntegerTestCaseArgument workgroupSize;
+struct KernelWithWorkArguments : Arguments {
+    WorkItemIdUsageArgument usedIds;
+    PositiveIntegerArgument measuredCommands;
+    PositiveIntegerArgument workgroupCount;
+    PositiveIntegerArgument workgroupSize;
 
     KernelWithWorkArguments()
         : usedIds(*this, "usedIds", "Which of the get_global_id() and get_local_id() calls will be used in the kernel"),

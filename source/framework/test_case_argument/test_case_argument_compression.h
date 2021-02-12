@@ -3,10 +3,10 @@
 #include "framework/configuration.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
 
-struct CompressionBooleanTestCaseArgument : BooleanTestCaseArgument {
-    using BooleanTestCaseArgument::BooleanTestCaseArgument;
+struct CompressionBooleanArgument : BooleanArgument {
+    using BooleanArgument::BooleanArgument;
 
-    CompressionBooleanTestCaseArgument &operator=(bool value) {
+    CompressionBooleanArgument &operator=(bool value) {
         this->value = value;
         return *this;
     }
@@ -16,6 +16,6 @@ struct CompressionBooleanTestCaseArgument : BooleanTestCaseArgument {
         if (Configuration::get().noIntelExtensions) {
             return "?";
         }
-        return BooleanTestCaseArgument::toStringValue();
+        return BooleanArgument::toStringValue();
     }
 };

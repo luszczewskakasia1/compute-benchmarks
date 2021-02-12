@@ -3,11 +3,11 @@
 #include "framework/test_case/test_case.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
 
-struct EnqueueNdrNullLwsArguments : TestCaseArguments {
-    PositiveIntegerTestCaseArgument gws;
-    BooleanTestCaseArgument useOoq;
-    BooleanTestCaseArgument useProfiling;
-    BooleanTestCaseArgument useEvent;
+struct EnqueueNdrNullLwsArguments : Arguments {
+    PositiveIntegerArgument gws;
+    BooleanArgument useOoq;
+    BooleanArgument useProfiling;
+    BooleanArgument useEvent;
 
     EnqueueNdrNullLwsArguments()
         : gws(*this, "gws", "Blobal work size"),

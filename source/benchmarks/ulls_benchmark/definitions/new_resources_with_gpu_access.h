@@ -3,8 +3,8 @@
 #include "framework/test_case/test_case.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
 
-struct NewResourcesWithGpuAccessArguments : TestCaseArguments {
-    ByteSizeTestCaseArgument size;
+struct NewResourcesWithGpuAccessArguments : Arguments {
+    ByteSizeArgument size;
 
     NewResourcesWithGpuAccessArguments()
         : size(*this, "size", "Size of the buffer") {}

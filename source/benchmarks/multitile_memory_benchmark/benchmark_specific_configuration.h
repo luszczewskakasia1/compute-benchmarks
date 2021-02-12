@@ -4,9 +4,9 @@
 #include "framework/test_case_argument/test_case_argument_basic.h"
 
 struct BenchmarkSpecificConfiguration : BenchmarkInfo::BenchmarkSpecificConfigurationBase {
-    BooleanTestCaseArgument printBandwidth;
+    BooleanArgument printBandwidth;
 
-    BenchmarkSpecificConfiguration(TestCaseArgumentsBase &testCaseArguments)
+    BenchmarkSpecificConfiguration(ArgumentsBase &testCaseArguments)
         : printBandwidth(testCaseArguments, "printBandwidth") {
         printBandwidth = true;
     }

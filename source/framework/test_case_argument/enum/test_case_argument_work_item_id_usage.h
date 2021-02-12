@@ -3,8 +3,8 @@
 #include "framework/enum/work_item_id_usage.h"
 #include "framework/test_case_argument/abstract/test_case_argument_enum.h"
 
-struct WorkItemIdUsageTestCaseArgument : EnumTestCaseArgument<WorkItemIdUsageTestCaseArgument, WorkItemIdUsage> {
-    using EnumTestCaseArgument::EnumTestCaseArgument;
+struct WorkItemIdUsageArgument : EnumArgument<WorkItemIdUsageArgument, WorkItemIdUsage> {
+    using EnumArgument::EnumArgument;
     ThisType &operator=(EnumType value) {
         this->value = value;
         return *this;

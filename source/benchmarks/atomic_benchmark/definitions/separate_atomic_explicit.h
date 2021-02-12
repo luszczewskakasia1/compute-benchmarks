@@ -9,14 +9,14 @@
 #include "framework/utility/common_help_message.h"
 #include "framework/utility/memory_constants.h"
 
-struct SeparateAtomicsExplicitArguments : TestCaseArguments {
-    DataTypeTestCaseArgument dataType;
-    AtomicOperationTestCaseArgument atomicOperation;
-    PositiveIntegerTestCaseArgument atomicsPerCacheline;
-    AtomicScopeTestCaseArgument scope;
-    AtomicMemoryOrderTestCaseArgument memoryOrder;
-    PositiveIntegerTestCaseArgument workgroupCount;
-    PositiveIntegerTestCaseArgument workgroupSize;
+struct SeparateAtomicsExplicitArguments : Arguments {
+    DataTypeArgument dataType;
+    AtomicOperationArgument atomicOperation;
+    PositiveIntegerArgument atomicsPerCacheline;
+    AtomicScopeArgument scope;
+    AtomicMemoryOrderArgument memoryOrder;
+    PositiveIntegerArgument workgroupCount;
+    PositiveIntegerArgument workgroupSize;
 
     SeparateAtomicsExplicitArguments()
         : dataType(*this, "type", CommonHelpMessage::atomicDataType()),

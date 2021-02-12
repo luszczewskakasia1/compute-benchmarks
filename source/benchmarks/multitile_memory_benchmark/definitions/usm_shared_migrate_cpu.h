@@ -5,11 +5,11 @@
 #include "framework/test_case_argument/enum/test_case_argument_usm_device_selection.h"
 #include "framework/test_case_argument/test_case_argument_compression.h"
 
-struct UsmSharedMigrateCpuArguments : TestCaseArguments {
-    MultiDeviceSelectionTestCaseArgument contextPlacement;
-    UsmSharedDeviceSelectionTestCaseArgument bufferPlacement;
-    ByteSizeTestCaseArgument bufferSize;
-    BooleanTestCaseArgument accessAllBytes;
+struct UsmSharedMigrateCpuArguments : Arguments {
+    MultiDeviceSelectionArgument contextPlacement;
+    UsmSharedDeviceSelectionArgument bufferPlacement;
+    ByteSizeArgument bufferSize;
+    BooleanArgument accessAllBytes;
 
     UsmSharedMigrateCpuArguments()
         : contextPlacement(*this, "context", "How context will be created"),

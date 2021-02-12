@@ -5,12 +5,12 @@
 #include <sstream>
 #include <string>
 
-struct TestCaseArgumentsBase;
+struct ArgumentsBase;
 class CommandLineArgument;
 
-struct TestCaseArgument {
-    TestCaseArgument(TestCaseArgumentsBase &parent, const std::string &key) : TestCaseArgument(parent, key, "") {}
-    TestCaseArgument(TestCaseArgumentsBase &parent, const std::string &key, const std::string &extraHelp);
+struct Argument {
+    Argument(ArgumentsBase &parent, const std::string &key) : Argument(parent, key, "") {}
+    Argument(ArgumentsBase &parent, const std::string &key, const std::string &extraHelp);
 
     const std::string getKey() const;
     std::string getHelp() const;

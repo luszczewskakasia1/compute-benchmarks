@@ -6,13 +6,13 @@
 #include "framework/test_case_argument/test_case_argument_compression.h"
 #include "framework/utility/common_help_message.h"
 
-struct ReadBufferArguments : TestCaseArguments {
-    MultiDeviceSelectionTestCaseArgument contextPlacement;
-    DeviceSelectionTestCaseArgument queuePlacement;
-    DeviceSelectionTestCaseArgument bufferPlacement;
-    ByteSizeTestCaseArgument size;
-    CompressionBooleanTestCaseArgument compressed;
-    BooleanTestCaseArgument useEvents;
+struct ReadBufferArguments : Arguments {
+    MultiDeviceSelectionArgument contextPlacement;
+    DeviceSelectionArgument queuePlacement;
+    DeviceSelectionArgument bufferPlacement;
+    ByteSizeArgument size;
+    CompressionBooleanArgument compressed;
+    BooleanArgument useEvents;
 
     ReadBufferArguments()
         : contextPlacement(*this, "context", "How context will be created"),

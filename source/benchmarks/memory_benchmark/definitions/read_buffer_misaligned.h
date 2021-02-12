@@ -5,10 +5,10 @@
 #include "framework/test_case_argument/test_case_argument_compression.h"
 #include "framework/utility/common_help_message.h"
 
-struct ReadBufferMisalignedArguments : TestCaseArguments {
-    ByteSizeTestCaseArgument size;
-    NonNegativeIntegerTestCaseArgument misalignmentFromCacheline;
-    BooleanTestCaseArgument useEvents;
+struct ReadBufferMisalignedArguments : Arguments {
+    ByteSizeArgument size;
+    NonNegativeIntegerArgument misalignmentFromCacheline;
+    BooleanArgument useEvents;
 
     ReadBufferMisalignedArguments()
         : size(*this, "size", "Size of the buffer"),

@@ -4,11 +4,11 @@
 #include "framework/test_case_argument/enum/test_case_argument_multi_device_selection.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
 
-struct MultiProcessComputeSharedBufferArguments : TestCaseArguments {
-    MultipleTilesSelectionTestCaseArgument deviceSelection;
-    PositiveIntegerTestCaseArgument processesPerTile;
-    PositiveIntegerTestCaseArgument workgroupsPerProcess;
-    BooleanTestCaseArgument synchronize;
+struct MultiProcessComputeSharedBufferArguments : Arguments {
+    MultipleTilesSelectionArgument deviceSelection;
+    PositiveIntegerArgument processesPerTile;
+    PositiveIntegerArgument workgroupsPerProcess;
+    BooleanArgument synchronize;
 
     MultiProcessComputeSharedBufferArguments()
         : deviceSelection(*this, "tiles", "Tiles for execution"),

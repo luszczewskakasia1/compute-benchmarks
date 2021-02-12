@@ -3,14 +3,14 @@
 #include "framework/test_case_argument/abstract/test_case_argument.h"
 #include "framework/utility/string_utils.h"
 
-struct IntegerTestCaseArgument : TestCaseArgument {
-    using TestCaseArgument::TestCaseArgument;
+struct IntegerArgument : Argument {
+    using Argument::Argument;
 
     operator size_t() const {
         return value;
     }
 
-    IntegerTestCaseArgument &operator=(size_t value) {
+    IntegerArgument &operator=(size_t value) {
         this->value = value;
         return *this;
     }
@@ -35,14 +35,14 @@ struct IntegerTestCaseArgument : TestCaseArgument {
     size_t value = 0u;
 };
 
-struct PositiveIntegerTestCaseArgument : IntegerTestCaseArgument {
-    using IntegerTestCaseArgument::IntegerTestCaseArgument;
+struct PositiveIntegerArgument : IntegerArgument {
+    using IntegerArgument::IntegerArgument;
 
     operator size_t() const {
         return value;
     }
 
-    PositiveIntegerTestCaseArgument &operator=(size_t value) {
+    PositiveIntegerArgument &operator=(size_t value) {
         this->value = value;
         return *this;
     }
@@ -52,14 +52,14 @@ struct PositiveIntegerTestCaseArgument : IntegerTestCaseArgument {
     }
 };
 
-struct NonNegativeIntegerTestCaseArgument : IntegerTestCaseArgument {
-    using IntegerTestCaseArgument::IntegerTestCaseArgument;
+struct NonNegativeIntegerArgument : IntegerArgument {
+    using IntegerArgument::IntegerArgument;
 
     operator size_t() const {
         return value;
     }
 
-    NonNegativeIntegerTestCaseArgument &operator=(size_t value) {
+    NonNegativeIntegerArgument &operator=(size_t value) {
         this->value = value;
         return *this;
     }
@@ -69,10 +69,10 @@ struct NonNegativeIntegerTestCaseArgument : IntegerTestCaseArgument {
     }
 };
 
-struct ByteSizeTestCaseArgument : PositiveIntegerTestCaseArgument {
-    using PositiveIntegerTestCaseArgument::PositiveIntegerTestCaseArgument;
+struct ByteSizeArgument : PositiveIntegerArgument {
+    using PositiveIntegerArgument::PositiveIntegerArgument;
 
-    ByteSizeTestCaseArgument &operator=(size_t value) {
+    ByteSizeArgument &operator=(size_t value) {
         this->value = value;
         return *this;
     }
@@ -124,17 +124,17 @@ struct ByteSizeTestCaseArgument : PositiveIntegerTestCaseArgument {
     }
 };
 
-struct BooleanTestCaseArgument : TestCaseArgument {
-    BooleanTestCaseArgument(TestCaseArgumentsBase &parent, const std::string &key, const std::string &extraHelp)
-        : TestCaseArgument(parent, key, extraHelp + " (0 or 1)") {}
-    BooleanTestCaseArgument(TestCaseArgumentsBase &parent, const std::string &key)
-        : TestCaseArgument(parent, key, "(0 or 1)") {}
+struct BooleanArgument : Argument {
+    BooleanArgument(ArgumentsBase &parent, const std::string &key, const std::string &extraHelp)
+        : Argument(parent, key, extraHelp + " (0 or 1)") {}
+    BooleanArgument(ArgumentsBase &parent, const std::string &key)
+        : Argument(parent, key, "(0 or 1)") {}
 
     operator bool() const {
         return value != 0;
     }
 
-    BooleanTestCaseArgument &operator=(bool value) {
+    BooleanArgument &operator=(bool value) {
         this->value = value;
         return *this;
     }

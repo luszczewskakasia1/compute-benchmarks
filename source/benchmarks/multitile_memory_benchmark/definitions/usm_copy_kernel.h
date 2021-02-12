@@ -7,14 +7,14 @@
 #include "framework/test_case_argument/test_case_argument_compression.h"
 #include "framework/utility/common_help_message.h"
 
-struct UsmCopyKernelArguments : TestCaseArguments {
-    MultiDeviceSelectionTestCaseArgument contextPlacement;
-    DeviceSelectionTestCaseArgument queuePlacement;
-    UsmDeviceSelectionTestCaseArgument srcPlacement;
-    UsmDeviceSelectionTestCaseArgument dstPlacement;
-    ByteSizeTestCaseArgument size;
-    BooleanTestCaseArgument forceBlitter;
-    BooleanTestCaseArgument useEvents;
+struct UsmCopyKernelArguments : Arguments {
+    MultiDeviceSelectionArgument contextPlacement;
+    DeviceSelectionArgument queuePlacement;
+    UsmDeviceSelectionArgument srcPlacement;
+    UsmDeviceSelectionArgument dstPlacement;
+    ByteSizeArgument size;
+    BooleanArgument forceBlitter;
+    BooleanArgument useEvents;
 
     UsmCopyKernelArguments()
         : contextPlacement(*this, "context", "How context will be created"),

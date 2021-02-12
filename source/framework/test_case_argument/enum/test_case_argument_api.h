@@ -3,8 +3,8 @@
 #include "framework/enum/api.h"
 #include "framework/test_case_argument/abstract/test_case_argument_enum.h"
 
-struct ApiTestCaseArgument : EnumTestCaseArgument<ApiTestCaseArgument, Api> {
-    using EnumTestCaseArgument::EnumTestCaseArgument;
+struct ApiArgument : EnumArgument<ApiArgument, Api> {
+    using EnumArgument::EnumArgument;
     ThisType &operator=(EnumType value) {
         this->value = value;
         return *this;

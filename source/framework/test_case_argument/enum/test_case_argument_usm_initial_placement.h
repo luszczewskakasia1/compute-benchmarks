@@ -3,8 +3,8 @@
 #include "framework/enum/usm_initial_placement.h"
 #include "framework/test_case_argument/abstract/test_case_argument_enum.h"
 
-struct UsmInitialPlacementTestCaseArgument : EnumTestCaseArgument<UsmInitialPlacementTestCaseArgument, UsmInitialPlacement> {
-    using EnumTestCaseArgument::EnumTestCaseArgument;
+struct UsmInitialPlacementArgument : EnumArgument<UsmInitialPlacementArgument, UsmInitialPlacement> {
+    using EnumArgument::EnumArgument;
     ThisType &operator=(EnumType value) {
         this->value = value;
         return *this;

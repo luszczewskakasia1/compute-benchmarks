@@ -6,11 +6,11 @@
 #include <cstring>
 
 struct SingleQueueWorkloadSharedBufferParameters : WorkloadParameters {
-    PositiveIntegerTestCaseArgument operationsCount;
-    PositiveIntegerTestCaseArgument workgroupCount;
-    PositiveIntegerTestCaseArgument workgroupSize;
-    IntegerTestCaseArgument bufferIpcHandle;
-    NonNegativeIntegerTestCaseArgument offsetWithinBuffer;
+    PositiveIntegerArgument operationsCount;
+    PositiveIntegerArgument workgroupCount;
+    PositiveIntegerArgument workgroupSize;
+    IntegerArgument bufferIpcHandle;
+    NonNegativeIntegerArgument offsetWithinBuffer;
 
     SingleQueueWorkloadSharedBufferParameters()
         : operationsCount(*this, "operationsCount", "Number of redundant operations performed in kernel to make it take longer"),

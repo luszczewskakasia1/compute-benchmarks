@@ -7,13 +7,13 @@
 #include "framework/test_case_argument/test_case_argument_long_hex.h"
 #include "framework/utility/common_help_message.h"
 
-struct UsmFillSpecificPatternArguments : TestCaseArguments {
-    MemoryPlacementTestCaseArgument memoryPlacement;
-    ByteSizeTestCaseArgument bufferSize;
-    BufferContentsTestCaseArgument contents;
-    LongHexTestCaseArgument pattern;
-    BooleanTestCaseArgument forceBlitter;
-    BooleanTestCaseArgument useEvents;
+struct UsmFillSpecificPatternArguments : Arguments {
+    MemoryPlacementArgument memoryPlacement;
+    ByteSizeArgument bufferSize;
+    BufferContentsArgument contents;
+    LongHexArgument pattern;
+    BooleanArgument forceBlitter;
+    BooleanArgument useEvents;
 
     UsmFillSpecificPatternArguments()
         : memoryPlacement(*this, "memory", "Placement of the buffer"),

@@ -4,8 +4,8 @@
 #include "framework/test_case_argument/test_case_argument_basic.h"
 #include "framework/utility/common_help_message.h"
 
-struct WriteTimestampArguments : TestCaseArguments {
-    PositiveIntegerTestCaseArgument measuredCommands;
+struct WriteTimestampArguments : Arguments {
+    PositiveIntegerArgument measuredCommands;
 
     WriteTimestampArguments()
         : measuredCommands(*this, "measuredCommands", CommonHelpMessage::measuredCommandsCount()) {}

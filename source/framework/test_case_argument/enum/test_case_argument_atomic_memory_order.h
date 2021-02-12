@@ -3,8 +3,8 @@
 #include "framework/enum/atomic_memory_order.h"
 #include "framework/test_case_argument/abstract/test_case_argument_enum.h"
 
-struct AtomicMemoryOrderTestCaseArgument : EnumTestCaseArgument<AtomicMemoryOrderTestCaseArgument, AtomicMemoryOrder> {
-    using EnumTestCaseArgument::EnumTestCaseArgument;
+struct AtomicMemoryOrderArgument : EnumArgument<AtomicMemoryOrderArgument, AtomicMemoryOrder> {
+    using EnumArgument::EnumArgument;
     ThisType &operator=(EnumType value) {
         this->value = value;
         return *this;

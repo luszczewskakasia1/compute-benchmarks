@@ -4,9 +4,9 @@
 #include "framework/test_case_argument/test_case_argument_basic.h"
 #include "framework/utility/common_help_message.h"
 
-struct UsmSharedMigrateCpuArguments : TestCaseArguments {
-    BooleanTestCaseArgument accessAllBytes;
-    ByteSizeTestCaseArgument bufferSize;
+struct UsmSharedMigrateCpuArguments : Arguments {
+    BooleanArgument accessAllBytes;
+    ByteSizeArgument bufferSize;
 
     UsmSharedMigrateCpuArguments()
         : accessAllBytes(*this, "accessAllBytes", "Select, whether entire resource or only one byte will be accessed on CPU"),

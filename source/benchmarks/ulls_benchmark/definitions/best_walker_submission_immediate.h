@@ -2,7 +2,7 @@
 
 #include "framework/test_case/test_case.h"
 
-struct BestWalkerSubmissionImmediateArguments : TestCaseArguments {};
+struct BestWalkerSubmissionImmediateArguments : Arguments {};
 
 struct BestWalkerSubmissionImmediate : TestCase<BestWalkerSubmissionImmediateArguments> {
     using TestCase<BestWalkerSubmissionImmediateArguments>::TestCase;

@@ -4,10 +4,10 @@
 #include "framework/test_case_argument/test_case_argument_compression.h"
 #include "framework/utility/common_help_message.h"
 
-struct ReadDeviceMemBufferArguments : TestCaseArguments {
-    ByteSizeTestCaseArgument size;
-    CompressionBooleanTestCaseArgument compressed;
-    //ByteSizeTestCaseArgument numWaves;
+struct ReadDeviceMemBufferArguments : Arguments {
+    ByteSizeArgument size;
+    CompressionBooleanArgument compressed;
+    //ByteSizeArgument numWaves;
 
     ReadDeviceMemBufferArguments()
         : size(*this, "size", "Size of the buffer"),

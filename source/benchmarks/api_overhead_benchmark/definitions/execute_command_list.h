@@ -3,8 +3,8 @@
 #include "framework/test_case/test_case.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
 
-struct ExecuteCommandListArguments : TestCaseArguments {
-    BooleanTestCaseArgument useFence;
+struct ExecuteCommandListArguments : Arguments {
+    BooleanArgument useFence;
 
     ExecuteCommandListArguments()
         : useFence(*this, "UseFence", "Pass a non-null ze_fence_handle_t to the API call") {}

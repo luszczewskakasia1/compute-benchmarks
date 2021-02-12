@@ -3,8 +3,8 @@
 #include "framework/enum/atomic_scope.h"
 #include "framework/test_case_argument/abstract/test_case_argument_enum.h"
 
-struct AtomicScopeTestCaseArgument : EnumTestCaseArgument<AtomicScopeTestCaseArgument, AtomicScope> {
-    using EnumTestCaseArgument::EnumTestCaseArgument;
+struct AtomicScopeArgument : EnumArgument<AtomicScopeArgument, AtomicScope> {
+    using EnumArgument::EnumArgument;
     ThisType &operator=(EnumType value) {
         this->value = value;
         return *this;

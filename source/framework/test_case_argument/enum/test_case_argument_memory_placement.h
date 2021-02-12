@@ -3,8 +3,8 @@
 #include "framework/enum/memory_placement.h"
 #include "framework/test_case_argument/abstract/test_case_argument_enum.h"
 
-struct MemoryPlacementTestCaseArgument : EnumTestCaseArgument<MemoryPlacementTestCaseArgument, MemoryPlacement> {
-    using EnumTestCaseArgument::EnumTestCaseArgument;
+struct MemoryPlacementArgument : EnumArgument<MemoryPlacementArgument, MemoryPlacement> {
+    using EnumArgument::EnumArgument;
     ThisType &operator=(EnumType value) {
         this->value = value;
         return *this;

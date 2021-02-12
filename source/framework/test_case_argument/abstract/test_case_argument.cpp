@@ -5,17 +5,17 @@
 
 #include <iomanip>
 
-TestCaseArgument::TestCaseArgument(TestCaseArgumentsBase &parent, const std::string &key, const std::string &extraHelp)
+Argument::Argument(ArgumentsBase &parent, const std::string &key, const std::string &extraHelp)
     : key(key),
       extraHelp(extraHelp) {
     parent.arguments.push_back(this);
 }
 
-const std::string TestCaseArgument::getKey() const {
+const std::string Argument::getKey() const {
     return key;
 }
 
-std::string TestCaseArgument::getHelp() const {
+std::string Argument::getHelp() const {
     std::ostringstream result;
     if (!extraHelp.empty()) {
         const int maxSize = 25;
@@ -29,7 +29,7 @@ std::string TestCaseArgument::getHelp() const {
     return result.str();
 }
 
-void TestCaseArgument::parse(CommandLineArgument &argument) {
+void Argument::parse(CommandLineArgument &argument) {
     if (argument.isKeyEqualTo(this->key)) {
         argument.markAsProcessed();
         parseImpl(argument.getValue());
@@ -37,6 +37,6 @@ void TestCaseArgument::parse(CommandLineArgument &argument) {
     }
 }
 
-std::string TestCaseArgument::getHelpEntry(const std::string &key) const {
+std::string Argument::getHelpEntry(const std::string &key) const {
     return std::string("--") + key + "=X ";
 }

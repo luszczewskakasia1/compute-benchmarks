@@ -6,23 +6,23 @@
 #include <string>
 #include <vector>
 
-struct TestCaseArgument;
+struct Argument;
 
-struct TestCaseArgumentsBase {
+struct ArgumentsBase {
     bool parseArgument(CommandLineArgument &commandLineArgument);
     bool parseArguments(CommandLineArguments &commandLineArguments);
     virtual bool validateArguments() const;
     std::string getHelp(size_t indent) const;
 
-    std::vector<const TestCaseArgument *> getUnparsedArguments() const;
+    std::vector<const Argument *> getUnparsedArguments() const;
 
-    std::vector<TestCaseArgument *> arguments;
+    std::vector<Argument *> arguments;
 
   protected:
     virtual bool validateArgumentsExtra() const { return true; } // This is optional. Use this for validating dependencies between arguments if any.
 };
 
-struct TestCaseArguments : TestCaseArgumentsBase {
+struct Arguments : ArgumentsBase {
 
     std::string getCurrentConfig(bool commandLine) const;
     bool validateArguments() const override;

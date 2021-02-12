@@ -3,9 +3,9 @@
 #include "framework/test_case/test_case.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
 
-struct EmptyKernelArguments : TestCaseArguments {
-    PositiveIntegerTestCaseArgument workgroupCount;
-    PositiveIntegerTestCaseArgument workgroupSize;
+struct EmptyKernelArguments : Arguments {
+    PositiveIntegerArgument workgroupCount;
+    PositiveIntegerArgument workgroupSize;
 
     EmptyKernelArguments()
         : workgroupCount(*this, "wgc", "Workgroup count"),

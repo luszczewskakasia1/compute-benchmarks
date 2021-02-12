@@ -5,10 +5,10 @@
 #include "framework/test_case_argument/enum/test_case_argument_usm_device_selection.h"
 #include "framework/test_case_argument/test_case_argument_compression.h"
 
-struct UsmSharedMigrateGpuArguments : TestCaseArguments {
-    MultiDeviceSelectionTestCaseArgument contextPlacement;
-    UsmSharedDeviceSelectionTestCaseArgument bufferPlacement;
-    ByteSizeTestCaseArgument bufferSize;
+struct UsmSharedMigrateGpuArguments : Arguments {
+    MultiDeviceSelectionArgument contextPlacement;
+    UsmSharedDeviceSelectionArgument bufferPlacement;
+    ByteSizeArgument bufferSize;
 
     UsmSharedMigrateGpuArguments()
         : contextPlacement(*this, "context", "How context will be created"),

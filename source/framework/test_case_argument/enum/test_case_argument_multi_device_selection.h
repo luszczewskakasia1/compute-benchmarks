@@ -3,8 +3,8 @@
 #include "framework/enum/device_selection.h"
 #include "framework/test_case_argument/abstract/test_case_argument_bitfield_enum.h"
 
-struct MultiDeviceSelectionTestCaseArgument : BitfieldEnumTestCaseArgument<MultiDeviceSelectionTestCaseArgument, DeviceSelection> {
-    using BitfieldEnumTestCaseArgument::BitfieldEnumTestCaseArgument;
+struct MultiDeviceSelectionArgument : BitfieldEnumArgument<MultiDeviceSelectionArgument, DeviceSelection> {
+    using BitfieldEnumArgument::BitfieldEnumArgument;
     ThisType &operator=(EnumType value) {
         this->value = value;
         return *this;
@@ -16,8 +16,8 @@ struct MultiDeviceSelectionTestCaseArgument : BitfieldEnumTestCaseArgument<Multi
     const static inline std::string enumValuesNames[5] = {"Root", "Tile0", "Tile1", "Tile2", "Tile3"};
 };
 
-struct MultipleTilesSelectionTestCaseArgument : BitfieldEnumTestCaseArgument<MultipleTilesSelectionTestCaseArgument, DeviceSelection> {
-    using BitfieldEnumTestCaseArgument::BitfieldEnumTestCaseArgument;
+struct MultipleTilesSelectionArgument : BitfieldEnumArgument<MultipleTilesSelectionArgument, DeviceSelection> {
+    using BitfieldEnumArgument::BitfieldEnumArgument;
     ThisType &operator=(EnumType value) {
         this->value = value;
         return *this;

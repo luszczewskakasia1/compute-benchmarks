@@ -3,14 +3,14 @@
 #include "framework/test_case_argument/test_case_argument_basic.h"
 #include "framework/utility/hex_helper.h"
 
-struct LongHexTestCaseArgument : TestCaseArgument {
-    using TestCaseArgument::TestCaseArgument;
+struct LongHexArgument : Argument {
+    using Argument::Argument;
 
     operator const std::vector<uint8_t> &() const {
         return bytes;
     }
 
-    LongHexTestCaseArgument &operator=(const std::string &hex) {
+    LongHexArgument &operator=(const std::string &hex) {
         parseImpl(hex);
         return *this;
     }

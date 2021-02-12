@@ -20,7 +20,7 @@ template <typename _Arguments>
 class TestCase : public TestCaseInterface {
   public:
     using Arguments = _Arguments;
-    static_assert(std::is_base_of_v<TestCaseArguments, Arguments>, "Arguments class should derive from TestCaseArguments");
+    static_assert(std::is_base_of_v<Arguments, Arguments>, "Arguments class should derive from Arguments");
 
     struct BenchmarkImplementation {
         using Function = std::function<TestResult(Arguments, Statistics &)>;
@@ -48,7 +48,7 @@ class TestCase : public TestCaseInterface {
 
         // Check if all test case arguments were set (no defaults)
         if (const auto unparsedArgs = arguments.getUnparsedArguments(); !unparsedArgs.empty()) {
-            const auto getKey = +[](const TestCaseArgument *a) { return a->getKey(); };
+            const auto getKey = +[](const Argument *a) { return a->getKey(); };
             std::cerr << CommonHelpMessage::errorUnsetArguments() << joinStrings(", ", unparsedArgs, getKey) << std::endl;
             error = true;
         }
@@ -141,8 +141,8 @@ class TestCase : public TestCaseInterface {
 
         // Check arg filters
         for (const std::string &argFilter : Configuration::get().argFilter.get()) {
-            const std::vector<TestCaseArgument *> &args = arguments.arguments;
-            const auto matches = [&](TestCaseArgument *arg) { return arg->toString() == argFilter; };
+            const std::vector<Argument *> &args = arguments.arguments;
+            const auto matches = [&](Argument *arg) { return arg->toString() == argFilter; };
             const bool requirementMet = std::any_of(args.begin(), args.end(), matches);
             if (!requirementMet) {
                 return TestResult::FilteredOut;

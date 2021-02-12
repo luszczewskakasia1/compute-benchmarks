@@ -3,8 +3,8 @@
 #include "framework/enum/map_flags.h"
 #include "framework/test_case_argument/abstract/test_case_argument_enum.h"
 
-struct MapFlagsTestCaseArgument : EnumTestCaseArgument<MapFlagsTestCaseArgument, MapFlags> {
-    using EnumTestCaseArgument::EnumTestCaseArgument;
+struct MapFlagsArgument : EnumArgument<MapFlagsArgument, MapFlags> {
+    using EnumArgument::EnumArgument;
     ThisType &operator=(EnumType value) {
         this->value = value;
         return *this;

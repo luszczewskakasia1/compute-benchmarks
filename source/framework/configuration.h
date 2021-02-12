@@ -11,7 +11,7 @@
 
 #include <memory>
 
-struct Configuration : TestCaseArgumentsBase {
+struct Configuration : ArgumentsBase {
   private:
     static std::unique_ptr<Configuration> instance;
 
@@ -32,26 +32,26 @@ struct Configuration : TestCaseArgumentsBase {
     bool validateArgumentsExtra() const override;
 
     // OCL params
-    NonNegativeIntegerTestCaseArgument oclPlatformIndex;
-    NonNegativeIntegerTestCaseArgument oclDeviceIndex;
-    BooleanTestCaseArgument oclUseOOQ;
+    NonNegativeIntegerArgument oclPlatformIndex;
+    NonNegativeIntegerArgument oclDeviceIndex;
+    BooleanArgument oclUseOOQ;
 
     // L0 params
-    NonNegativeIntegerTestCaseArgument l0DriverIndex;
-    NonNegativeIntegerTestCaseArgument l0DeviceIndex;
+    NonNegativeIntegerArgument l0DriverIndex;
+    NonNegativeIntegerArgument l0DeviceIndex;
 
     // Api agnostic params
-    DeviceSelectionTestCaseArgument subDeviceSelection;
-    BooleanFlagTestCaseArgument csv;
-    BooleanFlagTestCaseArgument verbose;
-    PositiveIntegerTestCaseArgument iterations;
-    ApiTestCaseArgument selectedApi;
-    BooleanFlagTestCaseArgument noIntelExtensions;
-    BooleanFlagTestCaseArgument dumpCommandLines;
-    BooleanFlagTestCaseArgument noop;
-    BooleanTestCaseArgument dumpErrorsImmediately;
-    StringListTestCaseArgument argFilter;
-    StringListTestCaseArgument testFilter;
+    DeviceSelectionArgument subDeviceSelection;
+    BooleanFlagArgument csv;
+    BooleanFlagArgument verbose;
+    PositiveIntegerArgument iterations;
+    ApiArgument selectedApi;
+    BooleanFlagArgument noIntelExtensions;
+    BooleanFlagArgument dumpCommandLines;
+    BooleanFlagArgument noop;
+    BooleanArgument dumpErrorsImmediately;
+    StringListArgument argFilter;
+    StringListArgument testFilter;
 
     BenchmarkInfo::BenchmarkSpecificConfigurationBase *benchmarkSpecificConfiguration = nullptr;
 

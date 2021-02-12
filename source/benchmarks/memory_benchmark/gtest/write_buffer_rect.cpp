@@ -6,7 +6,7 @@
 
 static const inline RegisterTestCase<WriteBufferRect> registerTestCase{};
 
-using Tuple = ThreeComponentUintTestCaseArgument::TupleType;
+using Tuple = ThreeComponentUintArgument::TupleType;
 class WriteBufferRectTestEntireBuffer : public ::testing::TestWithParam<std::tuple<bool, Tuple>> {
 };
 

@@ -3,11 +3,11 @@
 #include "framework/test_case/test_case.h"
 #include "framework/test_case_argument/test_case_argument_basic.h"
 
-struct FlushTimeArguments : TestCaseArguments {
-    PositiveIntegerTestCaseArgument workgroupCount;
-    IntegerTestCaseArgument workgroupSize;
-    BooleanTestCaseArgument useOoq;
-    BooleanTestCaseArgument useEvent;
+struct FlushTimeArguments : Arguments {
+    PositiveIntegerArgument workgroupCount;
+    IntegerArgument workgroupSize;
+    BooleanArgument useOoq;
+    BooleanArgument useEvent;
 
     FlushTimeArguments()
         : workgroupCount(*this, "wgc", "Workgroup count"),

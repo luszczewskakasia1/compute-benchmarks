@@ -40,7 +40,7 @@ class Workload {
         bool error = false;
 
         if (const auto unparsedArgs = parameters.getUnparsedArguments(); !unparsedArgs.empty()) {
-            const auto getKey = +[](const TestCaseArgument *a) { return a->getKey(); };
+            const auto getKey = +[](const Argument *a) { return a->getKey(); };
             std::cerr << CommonHelpMessage::errorUnsetArguments() << joinStrings(", ", unparsedArgs, getKey) << std::endl;
             error = true;
         }
