@@ -61,14 +61,14 @@ class Workload {
     ProcessResult run(const ArgumentContainerT &arguments) {
         WorkloadStatistics statistics{arguments.iterations};
         WorkloadSynchronization synchronization{arguments.iterations, arguments.synchronize};
-        WorkloadIo io;
-        TestResult result = runImpl(arguments, statistics, synchronization, io);
+        std::unique_ptr<WorkloadIo> io = WorkloadIo::create(arguments);
+        TestResult result = runImpl(arguments, statistics, synchronization, *io);
         if (result == TestResult::Success) {
             FATAL_ERROR_UNLESS(statistics.isFull(), "test did not generate as many values as expected");
             FATAL_ERROR_UNLESS(synchronization.validate(), "test did not synchronize the correct amount of times");
-            statistics.printStatistics();
+            statistics.printStatistics(*io);
         } else {
-            synchronization.executeRemainingSynchronizations(io);
+            synchronization.executeRemainingSynchronizations(*io);
         }
         return toProcessResult(result);
     }

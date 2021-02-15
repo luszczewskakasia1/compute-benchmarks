@@ -1,0 +1,26 @@
+#include "framework/workload/workload_io.h"
+
+#include <iostream>
+
+class WorkloadIoWindows : public WorkloadIo {
+  public:
+    void writeToConsole(const std::string &message) override {
+        std::cerr << message;
+    }
+
+    void writeToMeasurements(const std::string &measurements) override {
+        std::cout << measurement << ' ';
+    }
+
+    void writeSynchronizationChar(char c) override {
+        std::cout << c;
+    }
+
+    char readSynchronizationChar() override {
+        return std::cin.get();
+    }
+};
+
+std::unique_ptr<WorkloadIo> WorkloadIo::create(const WorkloadArgumentContainer &arguments) {
+    return std::unique_ptr<WorkloadIo>(new WorkloadIoWindows());
+}

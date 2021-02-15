@@ -1,6 +1,7 @@
 #include "workload_statistics.h"
 
 #include "framework/utility/error.h"
+#include "framework/workload/workload_io.h"
 
 #include <iostream>
 
@@ -26,6 +27,6 @@ bool WorkloadStatistics::isFull() const {
     return samplesCount == maxSamplesCount;
 }
 
-void WorkloadStatistics::printStatistics() {
-    std::cout << result.str() << std::endl;
+void WorkloadStatistics::printStatistics(WorkloadIo &io) {
+    io.writeToMeasurements(result.str());
 }

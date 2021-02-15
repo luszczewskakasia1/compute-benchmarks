@@ -5,12 +5,14 @@
 #include <chrono>
 #include <sstream>
 
+class WorkloadIo;
+
 class WorkloadStatistics : public Statistics {
   public:
     using Statistics::Statistics;
     using Clock = std::chrono::high_resolution_clock;
 
-    void printStatistics();
+    void printStatistics(WorkloadIo &io);
 
     void pushValue(Clock::duration time, const std::string &description = "") override;
     void pushValue(Clock::duration time, uint64_t size, const std::string &description = "") override;
