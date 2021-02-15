@@ -90,6 +90,9 @@ void Process::run() {
     FATAL_ERROR_IF_SYS_CALL_FAILED(SetHandleInformation(processDataWindows->processStdOut.read, HANDLE_FLAG_INHERIT, 0), "setting handle inheritance")
 
     // Prepare arguments
+    this->addArgument("synchronizationPipeIn", "0");
+    this->addArgument("synchronizationPipeOut", "0");
+    this->addArgument("measurementPipe", "0");
     std::ostringstream commandLine = {};
     for (const auto &argument : this->arguments) {
         commandLine << argument.first;

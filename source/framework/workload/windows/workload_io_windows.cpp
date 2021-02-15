@@ -9,7 +9,7 @@ class WorkloadIoWindows : public WorkloadIo {
     }
 
     void writeToMeasurements(const std::string &measurements) override {
-        std::cout << measurement << ' ';
+        std::cout << measurements << ' ';
     }
 
     void writeSynchronizationChar(char c) override {
