@@ -21,9 +21,9 @@ static std::string getErrorFromErrno() {
 
 struct ProcessDataLinux {
     struct ProcessPipes {
-        int pipes[2];
-        int &read() { return pipes[0]; }
-        int &write() { return pipes[1]; }
+        int pipes[2] = {};
+        const int &read = pipes[0];
+        const int &write = pipes[1];
     };
     ProcessPipes processStdOut = {};
     ProcessPipes processStdIn = {};
@@ -51,21 +51,21 @@ void Process::run() {
         // We're in parent process
 
         // Close pipes that we won't need (these are descriptors, which will be used by child)
-        FATAL_ERROR_IF_SYS_CALL_FAILED(close(processDataLinux->processStdIn.read()), "closing pipe failed");
-        FATAL_ERROR_IF_SYS_CALL_FAILED(close(processDataLinux->processStdOut.write()), "closing pipe failed");
+        FATAL_ERROR_IF_SYS_CALL_FAILED(close(processDataLinux->processStdIn.read), "closing pipe failed");
+        FATAL_ERROR_IF_SYS_CALL_FAILED(close(processDataLinux->processStdOut.write), "closing pipe failed");
 
         // Store all data in Process class
         this->osSpecificData = processDataLinux.release();
     } else {
         // Override current stdout and stdin in with pipes connected to parent
-        FATAL_ERROR_IF_SYS_CALL_FAILED(dup2(processDataLinux->processStdIn.read(), STDIN_FILENO), "dup2 for stdin failed");
-        FATAL_ERROR_IF_SYS_CALL_FAILED(dup2(processDataLinux->processStdOut.write(), STDOUT_FILENO), "dup2 for stdout failed");
+        FATAL_ERROR_IF_SYS_CALL_FAILED(dup2(processDataLinux->processStdIn.read, STDIN_FILENO), "dup2 for stdin failed");
+        FATAL_ERROR_IF_SYS_CALL_FAILED(dup2(processDataLinux->processStdOut.write, STDOUT_FILENO), "dup2 for stdout failed");
 
         // Close unneeded pipes
-        FATAL_ERROR_IF_SYS_CALL_FAILED(close(processDataLinux->processStdOut.read()), "closing pipe failed");
-        FATAL_ERROR_IF_SYS_CALL_FAILED(close(processDataLinux->processStdOut.write()), "closing pipe failed");
-        FATAL_ERROR_IF_SYS_CALL_FAILED(close(processDataLinux->processStdIn.read()), "closing pipe failed");
-        FATAL_ERROR_IF_SYS_CALL_FAILED(close(processDataLinux->processStdIn.write()), "closing pipe failed");
+        FATAL_ERROR_IF_SYS_CALL_FAILED(close(processDataLinux->processStdOut.read), "closing pipe failed");
+        FATAL_ERROR_IF_SYS_CALL_FAILED(close(processDataLinux->processStdOut.write), "closing pipe failed");
+        FATAL_ERROR_IF_SYS_CALL_FAILED(close(processDataLinux->processStdIn.read), "closing pipe failed");
+        FATAL_ERROR_IF_SYS_CALL_FAILED(close(processDataLinux->processStdIn.write), "closing pipe failed");
 
         // Prepare arguments
         std::vector<std::string> argumentsForExecStrings = {};
@@ -111,8 +111,8 @@ void Process::freeOsSpecificData() {
         return;
     }
 
-    FATAL_ERROR_IF_SYS_CALL_FAILED(close(processDataLinux->processStdIn.write()), "closing pipe failed");
-    FATAL_ERROR_IF_SYS_CALL_FAILED(close(processDataLinux->processStdOut.read()), "closing pipe failed");
+    FATAL_ERROR_IF_SYS_CALL_FAILED(close(processDataLinux->processStdIn.write), "closing pipe failed");
+    FATAL_ERROR_IF_SYS_CALL_FAILED(close(processDataLinux->processStdOut.read), "closing pipe failed");
     delete processDataLinux;
 }
 
@@ -155,7 +155,7 @@ const std::string &Process::getStdout() {
         const static size_t bufferSize = 1024u;
         char buffer[bufferSize];
         while (true) {
-            ssize_t numberOfBytesRead = read(processDataLinux->processStdOut.read(), buffer, bufferSize);
+            ssize_t numberOfBytesRead = read(processDataLinux->processStdOut.read, buffer, bufferSize);
             FATAL_ERROR_IF_SYS_CALL_FAILED(numberOfBytesRead, "reading a child process stdOut failed");
 
             if (numberOfBytesRead == 0) {
@@ -176,7 +176,7 @@ void Process::synchronizationSignal() {
     ProcessDataLinux *processDataLinux = static_cast<ProcessDataLinux *>(this->osSpecificData);
 
     char buffer = ProcessSynchronizationHelper::synchronizationChar;
-    ssize_t numberOfBytesWritten = write(processDataLinux->processStdIn.write(), &buffer, 1);
+    ssize_t numberOfBytesWritten = write(processDataLinux->processStdIn.write, &buffer, 1);
     FATAL_ERROR_IF_SYS_CALL_FAILED(numberOfBytesWritten, "reading a child process stdOut failed");
     FATAL_ERROR_IF(numberOfBytesWritten == 0, "No character was written when waiting on a child process");
 }
@@ -185,7 +185,7 @@ void Process::synchronizationWait() {
     ProcessDataLinux *processDataLinux = static_cast<ProcessDataLinux *>(this->osSpecificData);
 
     char buffer = {};
-    ssize_t numberOfBytesRead = read(processDataLinux->processStdOut.read(), &buffer, 1u);
+    ssize_t numberOfBytesRead = read(processDataLinux->processStdOut.read, &buffer, 1u);
     FATAL_ERROR_IF_SYS_CALL_FAILED(numberOfBytesRead, "reading a child process stdOut failed");
     FATAL_ERROR_IF(numberOfBytesRead == 0, "No character was read when waiting on a child process");
     FATAL_ERROR_IF(buffer != ProcessSynchronizationHelper::synchronizationChar, std::string("Invalid synchronization received from child process: '") + buffer + "'");
