@@ -26,7 +26,7 @@ static TestResult run(const UsmFillArguments &arguments, Statistics &statistics)
     ze_event_handle_t event{};
     if (arguments.useEvents) {
         ze_event_pool_desc_t eventPoolDesc{ZE_STRUCTURE_TYPE_EVENT_POOL_DESC};
-        eventPoolDesc.flags = ZE_EVENT_POOL_FLAG_KERNEL_TIMESTAMP;
+        eventPoolDesc.flags = ZE_EVENT_POOL_FLAG_KERNEL_TIMESTAMP | ZE_EVENT_POOL_FLAG_HOST_VISIBLE;
         eventPoolDesc.count = 1;
         ASSERT_ZE_RESULT_SUCCESS(zeEventPoolCreate(levelzero.context, &eventPoolDesc, 1, &levelzero.commandQueueDevice, &eventPool));
         ze_event_desc_t eventDesc{ZE_STRUCTURE_TYPE_EVENT_DESC};
