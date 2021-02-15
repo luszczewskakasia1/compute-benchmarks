@@ -5,7 +5,7 @@
 #include <iostream>
 #include <unistd.h>
 
-class WorkloadIoLinux: public WorkloadIo {
+class WorkloadIoLinux : public WorkloadIo {
   public:
     WorkloadIoLinux(int synchronizationPipeIn, int synchronizationPipeOut, int measurementPipe)
         : synchronizationPipeIn(synchronizationPipeIn),
@@ -24,7 +24,6 @@ class WorkloadIoLinux: public WorkloadIo {
         } else {
             std::cout << measurements << ' ';
         }
-
     }
 
     void writeSynchronizationChar(char c) override {
@@ -39,7 +38,7 @@ class WorkloadIoLinux: public WorkloadIo {
     }
 
     char readSynchronizationChar() override {
-        if (synchronizationPipeIn){
+        if (synchronizationPipeIn) {
             char buffer = {};
             ssize_t numberOfBytesRead = read(synchronizationPipeIn, &buffer, 1u);
             FATAL_ERROR_IF_SYS_CALL_FAILED(numberOfBytesRead, "Reading synchronization char in a child process failed");

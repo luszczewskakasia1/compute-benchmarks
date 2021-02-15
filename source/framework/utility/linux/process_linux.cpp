@@ -10,8 +10,6 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-
-
 struct ProcessDataLinux {
     struct ProcessPipes {
         int pipes[2] = {};

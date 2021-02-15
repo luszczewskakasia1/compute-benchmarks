@@ -2,8 +2,8 @@
 
 #include "framework/workload/workload_argument_container.h"
 
-#include <string>
 #include <memory>
+#include <string>
 
 class WorkloadIo {
   public:
