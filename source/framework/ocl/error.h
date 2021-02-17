@@ -2,24 +2,23 @@
 
 #include "framework/utility/error.h"
 
-#include <gtest/gtest.h>
 #include <string>
 
-#define ASSERT_CL_SUCCESS(retVal)                    \
-    {                                                \
-        const auto tempVarForDefine = (retVal);      \
-        if (tempVarForDefine != CL_SUCCESS) {        \
-            EXPECT_EQ(CL_SUCCESS, tempVarForDefine); \
-            return TestResult::Error;                \
-        }                                            \
+#define ASSERT_CL_SUCCESS(retVal)                                                                    \
+    {                                                                                                \
+        const cl_int tempVarForDefine = (retVal);                                                    \
+        if (tempVarForDefine != CL_SUCCESS) {                                                        \
+            NON_FATAL_ERROR("ASSERT_CL_SUCCESS", #retVal, std::to_string(tempVarForDefine).c_str()); \
+            return TestResult::Error;                                                                \
+        }                                                                                            \
     }
 
-#define EXPECT_CL_SUCCESS(retVal)                    \
-    {                                                \
-        const auto tempVarForDefine = (retVal);      \
-        if (tempVarForDefine != CL_SUCCESS) {        \
-            EXPECT_EQ(CL_SUCCESS, tempVarForDefine); \
-        }                                            \
+#define EXPECT_CL_SUCCESS(retVal)                                                                    \
+    {                                                                                                \
+        const auto tempVarForDefine = (retVal);                                                      \
+        if (tempVarForDefine != CL_SUCCESS) {                                                        \
+            NON_FATAL_ERROR("EXPECT_CL_SUCCESS", #retVal, std::to_string(tempVarForDefine).c_str()); \
+        }                                                                                            \
     }
 
 #define CL_SUCCESS_OR_RETURN_VALUE(retVal, value) \

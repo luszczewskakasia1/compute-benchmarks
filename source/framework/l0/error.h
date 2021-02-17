@@ -5,21 +5,21 @@
 #include <gtest/gtest.h>
 #include <string>
 
-#define ASSERT_ZE_RESULT_SUCCESS(retVal)                    \
-    {                                                       \
-        const auto tempVarForDefine = (retVal);             \
-        if (tempVarForDefine != ZE_RESULT_SUCCESS) {        \
-            EXPECT_EQ(ZE_RESULT_SUCCESS, tempVarForDefine); \
-            return TestResult::Error;                       \
-        }                                                   \
+#define ASSERT_ZE_RESULT_SUCCESS(retVal)                                                                    \
+    {                                                                                                       \
+        const ze_result_t tempVarForDefine = (retVal);                                                      \
+        if (tempVarForDefine != ZE_RESULT_SUCCESS) {                                                        \
+            NON_FATAL_ERROR("ASSERT_ZE_RESULT_SUCCESS", #retVal, std::to_string(tempVarForDefine).c_str()); \
+            return TestResult::Error;                                                                       \
+        }                                                                                                   \
     }
 
-#define EXPECT_ZE_RESULT_SUCCESS(retVal)                    \
-    {                                                       \
-        const auto tempVarForDefine = (retVal);             \
-        if (tempVarForDefine != ZE_RESULT_SUCCESS) {        \
-            EXPECT_EQ(ZE_RESULT_SUCCESS, tempVarForDefine); \
-        }                                                   \
+#define EXPECT_ZE_RESULT_SUCCESS(retVal)                                                                    \
+    {                                                                                                       \
+        const ze_result_t tempVarForDefine = (retVal);                                                      \
+        if (tempVarForDefine != ZE_RESULT_SUCCESS) {                                                        \
+            NON_FATAL_ERROR("EXPECT_ZE_RESULT_SUCCESS", #retVal, std::to_string(tempVarForDefine).c_str()); \
+        }                                                                                                   \
     }
 
 #define ZE_RESULT_SUCCESS_OR_RETURN_VALUE(retVal, value) \

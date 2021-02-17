@@ -36,6 +36,7 @@ int executeSingleTest(const std::string &testName, CommandLineArguments &command
     }
 
     TestCaseInterface *testCase = it->second.get();
+    replaceGtestListener<SingleTestGtestListener>();
     if (!testCase->runFromCommandLine(commandLineArguments)) {
         std::cerr << "Error parsing command line\n";
         return 1;
@@ -43,7 +44,7 @@ int executeSingleTest(const std::string &testName, CommandLineArguments &command
     return 0;
 }
 
-int executeAllTests(int argc, char **argv, CommandLineArguments &commandLineArguments) {
+int executeAllTests(CommandLineArguments &commandLineArguments) {
     printDeviceInfo();
     printVersion(false, "Benchmark version: ");
 
@@ -59,10 +60,7 @@ int executeAllTests(int argc, char **argv, CommandLineArguments &commandLineArgu
         return 1;
     }
 
-    ::testing::InitGoogleTest(&argc, argv);
-    auto &listeners = ::testing::UnitTest::GetInstance()->listeners();
-    delete listeners.Release(listeners.default_result_printer());
-    listeners.Append(new CustomEventListener());
+    replaceGtestListener<AllTestsGtestListener>();
     return RUN_ALL_TESTS();
 }
 
@@ -135,5 +133,6 @@ int main(int argc, char **argv) {
         }
     }
 
-    return executeAllTests(argc, argv, commandLineArguments);
+    ::testing::InitGoogleTest(&argc, argv);
+    return executeAllTests(commandLineArguments);
 }

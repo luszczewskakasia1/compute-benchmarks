@@ -1,15 +1,32 @@
 #pragma once
 
 #include <exception>
+#include <gtest/gtest.h>
 #include <iostream>
+#include <sstream>
 
 template <typename... Args>
-inline void printFatalError(const char *label, Args &&... args) {
+inline void printToOstream(std::ostream &stream, Args &&...args) {
+    (stream << ... << args);
+}
+
+template <typename... Args>
+inline void printFatalError(const char *label, Args &&...args) {
     static_assert(sizeof...(args) > 0, "A textual message of the FATAL_ERROR is required");
-    std::cerr << label << ": ";
-    (std::cerr << ... << args);
+    printToOstream(std::cerr, label, ": ", std::forward<Args>(args)...);
     std::cerr << std::endl;
 }
+
+inline std::string composeErrorStringForMacro(const char *file, int line, const char *macroName, const char *macroArg, const char *macroArgValue) {
+    std::ostringstream result{};
+    result << "FAILED assertion " << macroName << '(' << macroArg << ")\n";
+    result << "\tvalue: " << macroArgValue << "\n";
+    result << "\tLocation: " << file << ':' << line;
+    return result.str();
+}
+
+#define NON_FATAL_ERROR(macroName, macroArg, macroArgValue) \
+    GTEST_NONFATAL_FAILURE_(composeErrorStringForMacro(__FILE__, __LINE__, macroName, macroArg, macroArgValue).c_str());
 
 #define FATAL_ERROR(...)                   \
     printFatalError("ERROR", __VA_ARGS__); \
