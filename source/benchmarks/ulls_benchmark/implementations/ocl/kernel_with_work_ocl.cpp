@@ -21,11 +21,13 @@ static TestResult run(const KernelWithWorkArguments &arguments, Statistics &stat
     ASSERT_CL_SUCCESS(retVal);
 
     // Create kernel
-    auto spirvModule = FileHelper::loadBinaryFile(selectKernel(arguments.usedIds));
-    if (spirvModule.size() == 0) {
+    const std::vector<uint8_t> kernelSource = FileHelper::loadTextFile(selectKernel(arguments.usedIds, "cl"));
+    if (kernelSource.size() == 0) {
         return TestResult::KernelNotFound;
     }
-    cl_program program = clCreateProgramWithIL(opencl.context, spirvModule.data(), spirvModule.size(), &retVal);
+    const char *source = reinterpret_cast<const char *>(kernelSource.data());
+    const size_t sourceLength = kernelSource.size();
+    cl_program program = clCreateProgramWithSource(opencl.context, 1, &source, &sourceLength, &retVal);
     ASSERT_CL_SUCCESS(retVal);
     ASSERT_CL_SUCCESS(clBuildProgram(program, 1, &opencl.device, nullptr, nullptr, nullptr));
     cl_kernel kernel = clCreateKernel(program, "write_one", &retVal);

@@ -4,6 +4,8 @@
 #include "framework/argument/enum/work_item_id_usage_argument.h"
 #include "framework/test_case/test_case.h"
 
+#include <sstream>
+
 struct KernelWithWorkArguments : TestCaseArgumentContainer {
     WorkItemIdUsageArgument usedIds;
     PositiveIntegerArgument workgroupCount;
@@ -28,15 +30,21 @@ struct KernelWithWork : TestCase<KernelWithWorkArguments> {
     }
 };
 
-inline auto selectKernel(WorkItemIdUsage usedIds) {
+inline auto selectKernel(WorkItemIdUsage usedIds, const char *extension) {
+    std::ostringstream result{};
     switch (usedIds) {
     case WorkItemIdUsage::None:
-        return "ulls_benchmark_write_one.spv";
+        result << "ulls_benchmark_write_one";
+        break;
     case WorkItemIdUsage::Global:
-        return "ulls_benchmark_write_one_global_ids.spv";
+        result << "ulls_benchmark_write_one_global_ids";
+        break;
     case WorkItemIdUsage::Local:
-        return "ulls_benchmark_write_one_local_ids.spv";
+        result << "ulls_benchmark_write_one_local_ids";
+        break;
     default:
         FATAL_ERROR("Unknown work item id usage");
     }
+    result << '.' << extension;
+    return result.str();
 }

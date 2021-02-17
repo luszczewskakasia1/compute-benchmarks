@@ -20,7 +20,7 @@ static TestResult run(const KernelWithWorkArguments &arguments, Statistics &stat
     ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, buffer, bufferSize))
 
     // Create kernel
-    auto spirvModule = FileHelper::loadBinaryFile(selectKernel(arguments.usedIds));
+    auto spirvModule = FileHelper::loadBinaryFile(selectKernel(arguments.usedIds, "spv"));
     if (spirvModule.size() == 0) {
         return TestResult::KernelNotFound;
     }
