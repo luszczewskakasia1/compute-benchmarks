@@ -17,16 +17,20 @@ inline void printFatalError(const char *label, Args &&...args) {
     std::cerr << std::endl;
 }
 
-inline std::string composeErrorStringForMacro(const char *file, int line, const char *macroName, const char *macroArg, const char *macroArgValue) {
+inline std::string composeErrorStringForMacro(const char *file, int line, const char *macroName, const char *macroArg, const char *macroArgValue, const char *macroArgValueEnum) {
     std::ostringstream result{};
     result << "FAILED assertion " << macroName << '(' << macroArg << ")\n";
-    result << "\tvalue: " << macroArgValue << "\n";
+    result << "\tvalue: " << macroArgValue;
+    if (macroArgValueEnum) {
+        result << " (" << macroArgValueEnum << ')';
+    }
+    result << '\n';
     result << "\tLocation: " << file << ':' << line;
     return result.str();
 }
 
-#define NON_FATAL_ERROR(macroName, macroArg, macroArgValue) \
-    GTEST_NONFATAL_FAILURE_(composeErrorStringForMacro(__FILE__, __LINE__, macroName, macroArg, macroArgValue).c_str());
+#define NON_FATAL_ERROR(macroName, macroArg, macroArgValue, macroArgValueEnum) \
+    GTEST_NONFATAL_FAILURE_(composeErrorStringForMacro(__FILE__, __LINE__, macroName, macroArg, macroArgValue, macroArgValueEnum).c_str());
 
 #define FATAL_ERROR(...)                   \
     printFatalError("ERROR", __VA_ARGS__); \

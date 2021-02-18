@@ -1,23 +1,24 @@
 #pragma once
 
+#include "framework/ocl/error_codes.h"
 #include "framework/utility/error.h"
 
 #include <string>
 
-#define ASSERT_CL_SUCCESS(retVal)                                                                    \
-    {                                                                                                \
-        const cl_int tempVarForDefine = (retVal);                                                    \
-        if (tempVarForDefine != CL_SUCCESS) {                                                        \
-            NON_FATAL_ERROR("ASSERT_CL_SUCCESS", #retVal, std::to_string(tempVarForDefine).c_str()); \
-            return TestResult::Error;                                                                \
-        }                                                                                            \
+#define ASSERT_CL_SUCCESS(retVal)                                                                                                        \
+    {                                                                                                                                    \
+        const cl_int tempVarForDefine = (retVal);                                                                                        \
+        if (tempVarForDefine != CL_SUCCESS) {                                                                                            \
+            NON_FATAL_ERROR("ASSERT_CL_SUCCESS", #retVal, std::to_string(tempVarForDefine).c_str(), oclErrorToString(tempVarForDefine)); \
+            return TestResult::Error;                                                                                                    \
+        }                                                                                                                                \
     }
 
 #define EXPECT_CL_SUCCESS(retVal)                                                                    \
     {                                                                                                \
         const auto tempVarForDefine = (retVal);                                                      \
         if (tempVarForDefine != CL_SUCCESS) {                                                        \
-            NON_FATAL_ERROR("EXPECT_CL_SUCCESS", #retVal, std::to_string(tempVarForDefine).c_str()); \
+            NON_FATAL_ERROR("EXPECT_CL_SUCCESS", #retVal, std::to_string(tempVarForDefine).c_str(), oclErrorToString(tempVarForDefine)); \
         }                                                                                            \
     }
 
