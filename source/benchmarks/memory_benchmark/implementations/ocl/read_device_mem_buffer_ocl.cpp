@@ -17,9 +17,15 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
 
     // Setup
     cl_int retVal;
-
     QueueProperties queueProperties = QueueProperties::create().setProfiling(true);
     Opencl opencl(queueProperties);
+
+    // Check platform we're on
+    IntelProduct intelProduct = getIntelProduct(opencl);
+    IntelGen gpuGen = getIntelGen(intelProduct);
+    if (gpuGen == IntelGen::Unknown) {
+        return TestResult::DeviceNotCapable; //tbd for comp
+    }
 
     const size_t singleSendSizeInBytes = 128U;
     const size_t numOfSends = 16U; // per 128Byte in send, 2k-4k tiles in one loop iteration
@@ -29,9 +35,6 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     size_t euNum = 0;
 
     ASSERT_CL_SUCCESS(clGetDeviceInfo(opencl.device, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(euNum), &euNum, nullptr));
-
-    IntelProduct intelProduct = getIntelProduct(opencl);
-    IntelGen gpuGen = getIntelGen(intelProduct);
 
     const bool useLargeGRF = gpuGen == IntelGen::Gen12hp ? true : false;
     const std::string largeGrfOpt = useLargeGRF ? " -cl-intel-256-GRF-per-thread " : " ";
@@ -146,28 +149,23 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     const size_t lws = 8;
     size_t gws = numHwThreads * subgroupSize;
 
-    if (intelProduct != IntelProduct::Unknown) {
-        const cl_uint atsThreasLargeGRFMode = 4;
-        // check if surface can be covered with more than one slice
-        if ((2 * numHwThreads * threadTileSizeInSubgroup) < static_cast<cl_uint>(arguments.size)) {
-            slotMask = numHwThreads;
-            sliceSize = numHwThreads * threadTileSizeInSubgroup;
-            const auto numMaxSlices = static_cast<cl_uint>(arguments.size) / sliceSize;
-            // can cover with more than one slice for all threads
-            sliceMask = 1;
-            do {
-                sliceMask *= 2;
-            } while (sliceMask <= numMaxSlices);
+    const cl_uint atsThreasLargeGRFMode = 4;
+    // check if surface can be covered with more than one slice
+    if ((2 * numHwThreads * threadTileSizeInSubgroup) < static_cast<cl_uint>(arguments.size)) {
+        slotMask = numHwThreads;
+        sliceSize = numHwThreads * threadTileSizeInSubgroup;
+        const auto numMaxSlices = static_cast<cl_uint>(arguments.size) / sliceSize;
+        // can cover with more than one slice for all threads
+        sliceMask = 1;
+        do {
+            sliceMask *= 2;
+        } while (sliceMask <= numMaxSlices);
 
-            sliceMask /= 2;
-            sliceMask -= 1;
-        } else {
-            slotMask = static_cast<cl_uint>(arguments.size) / threadTileSizeInSubgroup;
-            slotMask -= 1;
-        }
+        sliceMask /= 2;
+        sliceMask -= 1;
     } else {
-        //tbd for comp
-        ASSERT_CL_SUCCESS(-1);
+        slotMask = static_cast<cl_uint>(arguments.size) / threadTileSizeInSubgroup;
+        slotMask -= 1;
     }
 
     retVal |= clSetKernelArg(kernel, 0, sizeof(source), &source);
