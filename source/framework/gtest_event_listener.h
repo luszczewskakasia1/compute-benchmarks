@@ -7,7 +7,23 @@
 #include <gtest/gtest.h>
 #include <sstream>
 
-class CustomEventListener : public ::testing::TestEventListener {
+struct GtestListener : ::testing::TestEventListener {
+    void OnTestProgramStart(const ::testing::UnitTest &unitTest) override {}
+    void OnTestProgramEnd(const ::testing::UnitTest &unitTest) override {}
+    void OnTestIterationStart(const ::testing::UnitTest &unitTest, int iteration) override {}
+    void OnTestIterationEnd(const ::testing::UnitTest &unitTest, int iteration) override {}
+    void OnEnvironmentsSetUpStart(const ::testing::UnitTest &unitTest) override {}
+    void OnEnvironmentsSetUpEnd(const ::testing::UnitTest &unitTest) override {}
+    void OnEnvironmentsTearDownStart(const ::testing::UnitTest &testCase) override {}
+    void OnEnvironmentsTearDownEnd(const ::testing::UnitTest &testCase) override {}
+    void OnTestCaseStart(const ::testing::TestCase &testCase) override {}
+    void OnTestCaseEnd(const ::testing::TestCase &testCase) override {}
+    void OnTestStart(const ::testing::TestInfo &testCase) override {}
+    void OnTestPartResult(const ::testing::TestPartResult &testPartResult) override {}
+    void OnTestEnd(const ::testing::TestInfo &testCase) override {}
+};
+
+class AllTestsGtestListener : public GtestListener {
     struct ErrorInfo {
         ErrorInfo() : name(), errorMessage() {}
         std::ostringstream name;
@@ -24,25 +40,12 @@ class CustomEventListener : public ::testing::TestEventListener {
         dumpErrors();
     }
 
-    void OnTestIterationStart(const ::testing::UnitTest &unitTest, int iteration) override {}
-    void OnTestIterationEnd(const ::testing::UnitTest &unitTest, int iteration) override {}
-
-    void OnEnvironmentsSetUpStart(const ::testing::UnitTest &unitTest) override {}
-    void OnEnvironmentsSetUpEnd(const ::testing::UnitTest &unitTest) override {}
-
-    void OnEnvironmentsTearDownStart(const ::testing::UnitTest &testCase) override {}
-    void OnEnvironmentsTearDownEnd(const ::testing::UnitTest &testCase) override {}
-
-    void OnTestCaseStart(const ::testing::TestCase &testCase) override {}
-    void OnTestCaseEnd(const ::testing::TestCase &testCase) override {}
-
     void OnTestStart(const ::testing::TestInfo &testCase) override {
         currentTestCaseErrorInfo = {};
     }
     void OnTestPartResult(const ::testing::TestPartResult &testPartResult) override {
         if (testPartResult.failed()) {
-            currentTestCaseErrorInfo.errorMessage << testPartResult.file_name() << ":" << testPartResult.line_number() << "\n"
-                                                  << testPartResult.message() << "\n";
+            currentTestCaseErrorInfo.errorMessage << testPartResult.message() << "\n";
         }
     }
     void OnTestEnd(const ::testing::TestInfo &testCase) override {
@@ -68,3 +71,20 @@ class CustomEventListener : public ::testing::TestEventListener {
 
     std::vector<ErrorInfo> errorInfos = {};
 };
+
+class SingleTestGtestListener : public GtestListener {
+    void OnTestPartResult(const ::testing::TestPartResult &testPartResult) override {
+        if (testPartResult.failed()) {
+            std::cout << "\n"
+                      << testPartResult.message()
+                      << "\n";
+        }
+    }
+};
+
+template <typename ListenerType>
+void replaceGtestListener() {
+    auto &listeners = ::testing::UnitTest::GetInstance()->listeners();
+    delete listeners.Release(listeners.default_result_printer());
+    listeners.Append(new ListenerType());
+}
