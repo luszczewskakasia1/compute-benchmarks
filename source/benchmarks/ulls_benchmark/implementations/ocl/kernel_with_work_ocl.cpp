@@ -7,9 +7,16 @@
 
 #include <gtest/gtest.h>
 
+#define PROVIDE_PROFLING_DETAILS 0
+
 static TestResult run(const KernelWithWorkArguments &arguments, Statistics &statistics) {
     // Setup
+#if PROVIDE_PROFLING_DETAILS == 1
+    QueueProperties queueProperties = QueueProperties::create().setProfiling(true);
+    Opencl opencl(queueProperties);
+#else
     Opencl opencl;
+#endif
     Timer timer;
     cl_int retVal{};
     const size_t gws = arguments.workgroupCount * arguments.workgroupSize;
@@ -39,12 +46,30 @@ static TestResult run(const KernelWithWorkArguments &arguments, Statistics &stat
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
     ASSERT_CL_SUCCESS(retVal);
 
+#if PROVIDE_PROFLING_DETAILS == 1
+    cl_event profilingEvent;
+    cl_ulong queued{}, start{}, end{};
+#endif
+
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
         timer.measureStart();
+#if PROVIDE_PROFLING_DETAILS == 1
+        ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &profilingEvent));
+#else
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
+#endif
+
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
+
+#if PROVIDE_PROFLING_DETAILS == 1
+        ASSERT_CL_SUCCESS(clGetEventProfilingInfo(profilingEvent, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, nullptr));
+        ASSERT_CL_SUCCESS(clGetEventProfilingInfo(profilingEvent, CL_PROFILING_COMMAND_QUEUED, sizeof(cl_ulong), &queued, nullptr));
+        ASSERT_CL_SUCCESS(clGetEventProfilingInfo(profilingEvent, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, nullptr));
+        ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
+        printf("\n Queued %lu Start %lu End %lu, delta %lu\n ", queued, start, end, end - start);
+#endif
         statistics.pushValue(timer.get());
     }
 
