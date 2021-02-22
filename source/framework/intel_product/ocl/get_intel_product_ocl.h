@@ -17,6 +17,10 @@
      (((c)&0x00ff0000) == (PCI_CLASS_DISPLAY << 16)) ||                                               \
      ((((c)&0x00ffff00) == ((PCI_CLASS_MULTIMEDIA << 16) | (PCI_SUBCLASS_MULTIMEDIA_VIDEO << 8)))) || \
      ((((c)&0x00ffff00) == ((PCI_CLASS_PROCESSOR << 16) | (PCI_SUBCLASS_PROCESSOR_COPROC << 8)))))
+
+#elif WIN32
+#include <Windows.h>
+#include <winreg.h>
 #endif
 
 inline IntelProduct getIntelProduct(cl_device_id device) {
@@ -63,7 +67,53 @@ inline IntelProduct getIntelProduct(cl_device_id device) {
     }
 
     pci_system_cleanup();
+
+#elif WIN32
+
+    HKEY Key{};
+    DWORD success = ERROR_SUCCESS;
+    std::string value;
+
+    success = RegOpenKeyExA(HKEY_LOCAL_MACHINE,
+                            "Software\\Intel\\KMD\\",
+                            0,
+                            KEY_READ,
+                            &Key);
+    if (ERROR_SUCCESS == success) {
+        DWORD regType = REG_NONE;
+        DWORD regSize = 0;
+        success = RegQueryValueExA(Key,
+                                   "SystemInfo",
+                                   NULL,
+                                   &regType,
+                                   NULL,
+                                   &regSize);
+        if (ERROR_SUCCESS == success) {
+            auto regData = std::make_unique<char[]>(regSize);
+            success = RegQueryValueExA(Key,
+                                       "SystemInfo",
+                                       NULL,
+                                       &regType,
+                                       reinterpret_cast<LPBYTE>(regData.get()),
+                                       &regSize);
+
+            if (ERROR_SUCCESS == success) {
+                value = regData.get();
+                std::string::size_type idx = value.find("0x", 0);
+                if ( idx < value.size() && (idx + 2) < value.size() ) {
+                    std::string devId = value.substr(idx + 2, 5);
+                    const auto product = getIntelProduct(static_cast<uint32_t>((std::stoi(devId, nullptr, 16))));
+                    RegCloseKey(Key);
+                    return product;
+                }
+
+            }
+        }
+        RegCloseKey(Key);
+    }
+
 #endif
+
     return IntelProduct::Unknown;
 }
 
