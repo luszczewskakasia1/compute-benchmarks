@@ -16,6 +16,9 @@ static TestResult run(const UsmMemsetArguments &arguments, Statistics &statistic
     if (opencl.commandQueue == nullptr) {
         return TestResult::DeviceNotCapable;
     }
+    if (!QueueFamiliesHelper::validateCapability(opencl.commandQueue, CL_QUEUE_CAPABILITY_FILL_BUFFER_INTEL)) {
+        return TestResult::DeviceNotCapable;
+    }
     Timer timer;
     auto clMemFreeINTEL = (pfn_clMemFreeINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clMemFreeINTEL");
     auto clEnqueueMemsetINTEL = (pfn_clEnqueueMemsetINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clEnqueueMemsetINTEL");

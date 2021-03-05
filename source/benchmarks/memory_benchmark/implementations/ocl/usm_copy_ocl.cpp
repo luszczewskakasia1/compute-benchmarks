@@ -17,6 +17,9 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
     if (opencl.commandQueue == nullptr) {
         return TestResult::DeviceNotCapable;
     }
+    if (!QueueFamiliesHelper::validateCapabilities(opencl.commandQueue, CL_QUEUE_CAPABILITY_TRANSFER_BUFFER_INTEL, CL_QUEUE_CAPABILITY_FILL_BUFFER_INTEL)) {
+        return TestResult::DeviceNotCapable;
+    }
     Timer timer;
     auto clMemFreeINTEL = (pfn_clMemFreeINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clMemFreeINTEL");
     auto clEnqueueMemcpyINTEL = (pfn_clEnqueueMemcpyINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clEnqueueMemcpyINTEL");

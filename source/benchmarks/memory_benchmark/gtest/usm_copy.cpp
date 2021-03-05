@@ -32,7 +32,7 @@ INSTANTIATE_TEST_SUITE_P(
         ::CommonGtestArgs::allApis(),
         ::testing::Values(MemoryPlacement::Device, MemoryPlacement::Host, MemoryPlacement::Shared),
         ::testing::Values(MemoryPlacement::Device, MemoryPlacement::Host, MemoryPlacement::Shared),
-        ::testing::Values(128 * megaByte, 512 * megaByte),
+        ::testing::Values(128 , 512 ),
         ::testing::Values(BufferContents::Zeros),
         ::testing::Values(false, true),
         ::testing::Values(false)));
