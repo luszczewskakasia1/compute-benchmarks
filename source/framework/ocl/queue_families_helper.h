@@ -45,20 +45,26 @@ class QueueFamiliesHelper {
     };
 
     static inline std::vector<QueueFamilyDesc> queryQueueFamilies(cl_device_id device) {
-        cl_uint numFamilies{};
-        cl_int retVal = clGetDeviceInfo(device, CL_DEVICE_NUM_QUEUE_FAMILIES_INTEL, sizeof(numFamilies), &numFamilies, nullptr);
-        if (retVal != CL_SUCCESS || numFamilies == 0) {
+        // Get families count
+        size_t familyPropertiesSize{};
+        cl_int retVal = clGetDeviceInfo(device, CL_DEVICE_QUEUE_FAMILY_PROPERTIES_INTEL, 0, nullptr, &familyPropertiesSize);
+        if (retVal != CL_SUCCESS) {
+            return {};
+        }
+        size_t familiesCount = familyPropertiesSize / sizeof(cl_queue_family_properties_intel);
+        if (familiesCount == 0 || familiesCount * sizeof(cl_queue_family_properties_intel) != familyPropertiesSize) {
             return {};
         }
 
-        auto families = std::make_unique<cl_queue_family_properties_intel[]>(numFamilies);
-        retVal = clGetDeviceInfo(device, CL_DEVICE_QUEUE_FAMILY_PROPERTIES_INTEL, sizeof(families[0]) * numFamilies, families.get(), nullptr);
+        // Get families
+        auto families = std::make_unique<cl_queue_family_properties_intel[]>(familiesCount);
+        retVal = clGetDeviceInfo(device, CL_DEVICE_QUEUE_FAMILY_PROPERTIES_INTEL, familyPropertiesSize, families.get(), nullptr);
         if (retVal != CL_SUCCESS) {
             return {};
         }
 
         std::vector<QueueFamilyDesc> result = {};
-        for (auto familyIndex = 0u; familyIndex < numFamilies; familyIndex++) {
+        for (auto familyIndex = 0u; familyIndex < familiesCount; familyIndex++) {
             QueueFamilyDesc desc{};
             desc.properties.properties[0] = CL_QUEUE_FAMILY_INTEL;
             desc.properties.properties[1] = familyIndex;
@@ -66,11 +72,15 @@ class QueueFamiliesHelper {
             desc.properties.properties[3] = 0;
             desc.properties.propertiesCount = 4;
             desc.queueCount = families[familyIndex].count;
-            desc.copyOnly = (families[familyIndex].capabilities & CL_QUEUE_CAPABILITY_KERNEL_INTEL) == 0;
+            desc.copyOnly = !validateCapability(families[familyIndex].capabilities, CL_QUEUE_CAPABILITY_KERNEL_INTEL);
 
             result.push_back(desc);
         }
 
         return result;
+    }
+
+    static bool validateCapability(cl_command_queue_capabilities_intel queueCapabilities, cl_command_queue_capabilities_intel capability) {
+        return queueCapabilities == CL_QUEUE_DEFAULT_CAPABILITIES_INTEL || ((queueCapabilities & capability) == capability);
     }
 };
