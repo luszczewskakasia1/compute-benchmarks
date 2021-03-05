@@ -12,7 +12,7 @@
 static TestResult run(const UsmCopyKernelArguments &arguments, Statistics &statistics) {
     // Setup
     cl_int retVal;
-    QueueProperties queueProperties = QueueProperties::create().setDeviceSelection(arguments.queuePlacement).setForceBlitter(arguments.forceBlitter).setProfiling(arguments.useEvents).allowCreationFail();
+    QueueProperties queueProperties = QueueProperties::create().setDeviceSelection(arguments.queuePlacement).setProfiling(arguments.useEvents).allowCreationFail();
     ContextProperties contextProperties = ContextProperties::create().setDeviceSelection(arguments.contextPlacement).allowCreationFail();
     Opencl opencl(queueProperties, contextProperties);
     if (opencl.context == nullptr || opencl.commandQueue == nullptr) {
