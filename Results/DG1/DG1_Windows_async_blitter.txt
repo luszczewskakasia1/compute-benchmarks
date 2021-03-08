@@ -1,0 +1,15 @@
+OpenCL Platform: Intel(R) OpenCL HD Graphics
+        Device: Intel(R) Iris(R) Xe MAX Graphics
+                driverVersion: 30.0.16.9999
+                computeUnits:  96
+                clockFreq:     1650
+
+Running 10 iterations of each benchmark
+
+                                                                                                                       TestCase      Mean [us]    Median [us]         StdDev       Min [us]       Max [us]
+                                                        KernelAndCopy(api=ocl twoQueues=0 runKernel=1 runCopy=0 useCopyQueue=0)      17216.940      17214.850          0.11%      17175.500      17241.400
+                                                        KernelAndCopy(api=ocl twoQueues=0 runKernel=0 runCopy=1 useCopyQueue=0)      18426.740      18484.350          0.51%      18296.400      18522.500
+                                                        KernelAndCopy(api=ocl twoQueues=0 runKernel=1 runCopy=1 useCopyQueue=0)      35200.080      35201.250          0.02%      35189.900      35209.600
+                                                        KernelAndCopy(api=ocl twoQueues=1 runKernel=1 runCopy=1 useCopyQueue=0)      35196.760      35196.100          0.02%      35187.000      35216.200
+                                                        KernelAndCopy(api=ocl twoQueues=0 runKernel=0 runCopy=1 useCopyQueue=1)      17853.510      17862.000          0.11%      17816.500      17870.400
+                                                        KernelAndCopy(api=ocl twoQueues=1 runKernel=1 runCopy=1 useCopyQueue=1)      17880.560      17891.350          0.18%      17814.200      17909.600
