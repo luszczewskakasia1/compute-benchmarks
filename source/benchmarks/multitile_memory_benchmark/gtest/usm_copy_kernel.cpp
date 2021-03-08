@@ -8,7 +8,7 @@
 
 static const inline RegisterTestCase<UsmCopyKernel> registerTestCase{};
 
-class UsmCopyKernelTest : public ::testing::TestWithParam<std::tuple<Api, DeviceSelection, DeviceSelection, DeviceSelection, DeviceSelection, size_t, bool, bool>> {};
+class UsmCopyKernelTest : public ::testing::TestWithParam<std::tuple<Api, DeviceSelection, DeviceSelection, DeviceSelection, DeviceSelection, size_t, bool>> {};
 
 TEST_P(UsmCopyKernelTest, Test) {
     UsmCopyKernelArguments args;
@@ -18,8 +18,7 @@ TEST_P(UsmCopyKernelTest, Test) {
     args.srcPlacement = std::get<3>(GetParam());
     args.dstPlacement = std::get<4>(GetParam());
     args.size = std::get<5>(GetParam());
-    args.forceBlitter = std::get<6>(GetParam());
-    args.useEvents = std::get<7>(GetParam());
+    args.useEvents = std::get<6>(GetParam());
 
     if (!args.validateArgumentsExtra()) {
         GTEST_SKIP(); // If above arguments make no sense (e.g. queue created outside of the context), skip the case
@@ -40,5 +39,4 @@ INSTANTIATE_TEST_SUITE_P(
         ::CommonGtestArgs::usmDeviceSelections(),
         ::CommonGtestArgs::usmDeviceSelections(),
         ::testing::Values(512 * megaByte),
-        ::testing::Values(false, true),
         ::testing::Values(false)));

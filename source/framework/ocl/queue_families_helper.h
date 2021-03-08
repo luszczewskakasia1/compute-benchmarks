@@ -37,40 +37,83 @@ class QueueFamiliesHelper {
         return result;
     }
 
+    static bool validateCapability(cl_command_queue queue, cl_command_queue_capabilities_intel capability) {
+        return validateCapability(getQueueCapabilities(queue), capability);
+    }
+
+    template <typename... Args>
+    static bool validateCapabilities(cl_command_queue queue, Args &&...args) {
+        return validateCapabilities(getQueueCapabilities(queue), std::forward<Args>(args)...);
+    }
+
   private:
     struct QueueFamilyDesc {
         PropertiesForSelectingQueue properties;
+        cl_command_queue_capabilities_intel capabilitites;
         size_t queueCount;
         bool copyOnly;
     };
 
     static inline std::vector<QueueFamilyDesc> queryQueueFamilies(cl_device_id device) {
-        cl_uint numFamilies{};
-        cl_int retVal = clGetDeviceInfo(device, CL_DEVICE_NUM_QUEUE_FAMILIES_INTEL, sizeof(numFamilies), &numFamilies, nullptr);
-        if (retVal != CL_SUCCESS || numFamilies == 0) {
+        // Get families count
+        size_t familyPropertiesSize{};
+        cl_int retVal = clGetDeviceInfo(device, CL_DEVICE_QUEUE_FAMILY_PROPERTIES_INTEL, 0, nullptr, &familyPropertiesSize);
+        if (retVal != CL_SUCCESS) {
+            return {};
+        }
+        size_t familiesCount = familyPropertiesSize / sizeof(cl_queue_family_properties_intel);
+        if (familiesCount == 0 || familiesCount * sizeof(cl_queue_family_properties_intel) != familyPropertiesSize) {
             return {};
         }
 
-        auto families = std::make_unique<cl_queue_family_properties_intel[]>(numFamilies);
-        retVal = clGetDeviceInfo(device, CL_DEVICE_QUEUE_FAMILY_PROPERTIES_INTEL, sizeof(families[0]) * numFamilies, families.get(), nullptr);
+        // Get families
+        auto families = std::make_unique<cl_queue_family_properties_intel[]>(familiesCount);
+        retVal = clGetDeviceInfo(device, CL_DEVICE_QUEUE_FAMILY_PROPERTIES_INTEL, familyPropertiesSize, families.get(), nullptr);
         if (retVal != CL_SUCCESS) {
             return {};
         }
 
         std::vector<QueueFamilyDesc> result = {};
-        for (auto familyIndex = 0u; familyIndex < numFamilies; familyIndex++) {
+        for (auto familyIndex = 0u; familyIndex < familiesCount; familyIndex++) {
             QueueFamilyDesc desc{};
             desc.properties.properties[0] = CL_QUEUE_FAMILY_INTEL;
             desc.properties.properties[1] = familyIndex;
             desc.properties.properties[2] = CL_QUEUE_INDEX_INTEL;
             desc.properties.properties[3] = 0;
             desc.properties.propertiesCount = 4;
+            desc.capabilitites = families[familyIndex].capabilities;
             desc.queueCount = families[familyIndex].count;
-            desc.copyOnly = (families[familyIndex].capabilities & CL_QUEUE_CAPABILITY_KERNEL_INTEL) == 0;
+            desc.copyOnly = !validateCapability(families[familyIndex].capabilities, CL_QUEUE_CAPABILITY_KERNEL_INTEL);
 
             result.push_back(desc);
         }
 
         return result;
+    }
+
+    static cl_command_queue_capabilities_intel getQueueCapabilities(cl_command_queue queue) {
+        cl_uint familyIndex = {};
+        EXPECT_CL_SUCCESS(clGetCommandQueueInfo(queue, CL_QUEUE_FAMILY_INTEL, sizeof(familyIndex), &familyIndex, nullptr));
+        cl_device_id device = {};
+        EXPECT_CL_SUCCESS(clGetCommandQueueInfo(queue, CL_QUEUE_DEVICE, sizeof(device), &device, nullptr));
+
+        const auto families = queryQueueFamilies(device);
+        const auto family = families[familyIndex];
+        return family.capabilitites;
+    }
+
+    static bool validateCapability(cl_command_queue_capabilities_intel queueCapabilities, cl_command_queue_capabilities_intel capability) {
+        return queueCapabilities == CL_QUEUE_DEFAULT_CAPABILITIES_INTEL || ((queueCapabilities & capability) == capability);
+    }
+
+    template <typename... Args>
+    static bool validateCapabilities(cl_command_queue_capabilities_intel queueCapabilities, cl_command_queue_capabilities_intel capability, Args &&...args) {
+        if (!validateCapability(queueCapabilities, capability)) {
+            return false;
+        }
+        if constexpr (sizeof...(Args) > 0) {
+            return validateCapabilities(queueCapabilities, std::forward<Args>(args)...);
+        }
+        return true;
     }
 };

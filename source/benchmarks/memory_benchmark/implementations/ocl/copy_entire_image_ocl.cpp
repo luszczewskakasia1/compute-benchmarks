@@ -16,6 +16,9 @@ static TestResult run(const CopyEntireImageArguments &arguments, Statistics &sta
     if (opencl.commandQueue == nullptr) {
         return TestResult::DeviceNotCapable;
     }
+    if (!QueueFamiliesHelper::validateCapability(opencl.commandQueue, CL_QUEUE_CAPABILITY_TRANSFER_IMAGE_INTEL)) {
+        return TestResult::DeviceNotCapable;
+    }
     if (!ImageHelperOcl::validateImageDimensions(opencl.device, arguments.size)) {
         return TestResult::DeviceNotCapable;
     }

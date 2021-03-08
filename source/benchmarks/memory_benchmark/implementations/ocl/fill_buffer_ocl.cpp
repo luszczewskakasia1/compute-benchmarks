@@ -20,6 +20,9 @@ static TestResult run(const FillBufferArguments &arguments, Statistics &statisti
     if (opencl.commandQueue == nullptr) {
         return TestResult::DeviceNotCapable;
     }
+    if (!QueueFamiliesHelper::validateCapability(opencl.commandQueue, CL_QUEUE_CAPABILITY_FILL_BUFFER_INTEL)) {
+        return TestResult::DeviceNotCapable;
+    }
     Timer timer;
     cl_int retVal;
 

@@ -13,7 +13,6 @@ struct UsmCopyKernelArguments : TestCaseArgumentContainer {
     UsmDeviceSelectionArgument srcPlacement;
     UsmDeviceSelectionArgument dstPlacement;
     ByteSizeArgument size;
-    BooleanArgument forceBlitter;
     BooleanArgument useEvents;
 
     UsmCopyKernelArguments()
@@ -22,7 +21,6 @@ struct UsmCopyKernelArguments : TestCaseArgumentContainer {
           srcPlacement(*this, "src", "Placement of memory for the source buffer"),
           dstPlacement(*this, "dst", "Placement of memory for the destination buffer"),
           size(*this, "size", "Size of the buffers"),
-          forceBlitter(*this, "forceBlitter", CommonHelpMessage::forceBlitter()),
           useEvents(*this, "useEvents", CommonHelpMessage::useEvents()) {}
 
     bool validateArgumentsExtra() const override {
