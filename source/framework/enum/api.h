@@ -32,6 +32,17 @@ inline std::string to_string(Api api) {
 }
 } // namespace std
 
+inline std::string getUserFriendlyApiName(Api api) {
+    switch (api) {
+    case Api::OpenCL:
+        return "OpenCL";
+    case Api::L0:
+        return "LevelZero";
+    default:
+        FATAL_ERROR("Unknown API");
+    }
+}
+
 inline Api parseApi(const std::string &value) {
     if (value == "ocl") {
         return Api::OpenCL;

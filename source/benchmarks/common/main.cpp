@@ -91,9 +91,16 @@ int printHelp() {
                 "All available test cases with their parameters:\n";
     // clang-format on
     for (const auto &entry : TestMap::get()) {
-        TestCaseInterface &testCase = *entry.second.get();
+        const TestCaseInterface &testCase = *entry.second.get();
+        const std::vector<Api> apis = testCase.getApisWithImplementation();
+        if (apis.size() == 0) {
+            continue;
+        }
+
         std::cout << '\t' << testCase.getTestCaseName() << " - " << testCase.getHelp();
-        const auto helpParameters = testCase.getHelpParameters();
+        std::cout << " Supported compute APIs: " << joinStrings(", ", apis, getUserFriendlyApiName) << ".";
+
+        const std::string helpParameters = testCase.getHelpParameters();
         if (helpParameters.size() != 0) {
             std::cout << " Parameters:\n"
                       << helpParameters;

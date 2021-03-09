@@ -33,6 +33,17 @@ class TestCase : public TestCaseInterface {
 
     std::string getHelpParameters() const override { return ArgumentContainerT{}.getHelp(2u); }
 
+    std::vector<Api> getApisWithImplementation() const override {
+        std::vector<Api> apis = {};
+        for (int apiIndex = static_cast<int>(Api::FIRST); apiIndex <= static_cast<int>(Api::LAST); apiIndex++) {
+            if (implementations[apiIndex].function != nullptr) {
+                const Api api = static_cast<Api>(apiIndex);
+                apis.push_back(api);
+            }
+        }
+        return apis;
+    }
+
     bool runFromCommandLine(CommandLineArguments &commandLineArguments) override {
         // Parse test-specific parameters
         ArgumentContainerT arguments;
