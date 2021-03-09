@@ -1,7 +1,7 @@
-#include "framework/ocl/buffer_contents_helper_ocl.h"
-#include "framework/ocl/compression_helper.h"
-#include "framework/ocl/map_flags_ocl.h"
 #include "framework/ocl/opencl.h"
+#include "framework/ocl/utility/buffer_contents_helper_ocl.h"
+#include "framework/ocl/utility/compression_helper.h"
+#include "framework/ocl/utility/map_flags_ocl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
 

@@ -1,6 +1,6 @@
-#include "framework/ocl/compression_helper.h"
 #include "framework/ocl/intel_product/get_intel_product_ocl.h"
 #include "framework/ocl/opencl.h"
+#include "framework/ocl/utility/compression_helper.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/file_helper.h"
 #include "framework/utility/memory_constants.h"

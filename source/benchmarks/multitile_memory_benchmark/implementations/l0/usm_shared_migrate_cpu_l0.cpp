@@ -1,5 +1,5 @@
 #include "framework/l0/levelzero.h"
-#include "framework/l0/usm_helper.h"
+#include "framework/l0/utility/usm_helper.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/file_helper.h"
 #include "framework/utility/timer.h"

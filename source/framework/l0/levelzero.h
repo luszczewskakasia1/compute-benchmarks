@@ -2,9 +2,8 @@
 
 #include "framework/configuration.h"
 #include "framework/l0/context_properties.h"
-#include "framework/l0/error.h"
 #include "framework/l0/queue_properties.h"
-#include "framework/utility/error.h"
+#include "framework/l0/utility/error.h"
 
 #include <level_zero/ze_api.h>
 

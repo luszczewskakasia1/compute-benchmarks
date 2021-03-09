@@ -100,13 +100,12 @@ inline IntelProduct getIntelProduct(cl_device_id device) {
             if (ERROR_SUCCESS == success) {
                 value = regData.get();
                 std::string::size_type idx = value.find("0x", 0);
-                if ( idx < value.size() && (idx + 2) < value.size() ) {
+                if (idx < value.size() && (idx + 2) < value.size()) {
                     std::string devId = value.substr(idx + 2, 5);
                     const auto product = getIntelProduct(static_cast<uint32_t>((std::stoi(devId, nullptr, 16))));
                     RegCloseKey(Key);
                     return product;
                 }
-
             }
         }
         RegCloseKey(Key);

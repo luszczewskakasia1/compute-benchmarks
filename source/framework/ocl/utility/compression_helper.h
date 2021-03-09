@@ -1,7 +1,7 @@
 #pragma once
 
 #include "framework/ocl/cl.h"
-#include "framework/ocl/error.h"
+#include "framework/ocl/utility/error.h"
 #include "framework/test_case/test_case.h"
 
 namespace OCL::CompressionHelper {

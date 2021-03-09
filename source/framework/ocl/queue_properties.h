@@ -3,7 +3,7 @@
 #include "framework/configuration.h"
 #include "framework/enum/device_selection.h"
 #include "framework/ocl/cl.h"
-#include "framework/ocl/queue_families_helper.h"
+#include "framework/ocl/utility/queue_families_helper.h"
 
 namespace OCL {
 struct QueueProperties {

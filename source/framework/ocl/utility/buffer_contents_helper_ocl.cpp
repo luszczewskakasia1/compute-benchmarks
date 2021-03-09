@@ -1,7 +1,7 @@
 #include "buffer_contents_helper_ocl.h"
 
-#include "framework/ocl/error.h"
 #include "framework/ocl/function_signatures_ocl.h"
+#include "framework/ocl/utility/error.h"
 
 #include <memory>
 

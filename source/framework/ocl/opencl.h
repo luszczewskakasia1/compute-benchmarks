@@ -1,10 +1,10 @@
 #pragma once
 
 #include "framework/ocl/context_properties.h"
-#include "framework/ocl/error.h"
-#include "framework/ocl/extensions_helper.h"
 #include "framework/ocl/function_signatures_ocl.h"
 #include "framework/ocl/queue_properties.h"
+#include "framework/ocl/utility/error.h"
+#include "framework/ocl/utility/extensions_helper.h"
 #include "framework/test_case/test_case.h"
 
 namespace OCL {
