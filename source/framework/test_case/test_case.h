@@ -3,6 +3,7 @@
 #include "framework/benchmark_info.h"
 #include "framework/configuration.h"
 #include "framework/enum/api.h"
+#include "framework/supported_apis.h"
 #include "framework/test_case/test_case_argument_container.h"
 #include "framework/test_case/test_case_interface.h"
 #include "framework/test_case/test_case_statistics.h"
@@ -105,6 +106,9 @@ class TestCase : public TestCaseInterface {
         const auto selectedApi = Configuration::get().selectedApi;
         if (arguments.api != selectedApi && selectedApi != Api::All) {
             return TestResult::SkippedApi;
+        }
+        if (!isApiSupported(arguments.api)) {
+            return TestResult::UnsupportedApi;
         }
 
         // Get implementation

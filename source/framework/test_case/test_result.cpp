@@ -10,6 +10,7 @@ const static std::unordered_map<TestResult, TestResultHelper::TestResultInfo> te
     {TestResult::DeviceNotCapable,        { "NO_SUPPORT",      true ,        false,     true } },
     {TestResult::KernelNotFound,          { "MISSING_KERNEL",  true ,        true ,     true } },
     {TestResult::SkippedApi,              { "SKIPPED",         false,        false,     true } },
+    {TestResult::UnsupportedApi,          { "SKIPPED",         false,        false,     true } },
     {TestResult::NoImplementation,        { "NO_IMPLEMENT",    true ,        false,     true } },
     {TestResult::IntelExtensionsRequired, { "NO_SUPPORT",      true ,        false,     true } },
     {TestResult::InvalidArgs,             { "INVALID_ARGS",    true ,        true ,     true } },

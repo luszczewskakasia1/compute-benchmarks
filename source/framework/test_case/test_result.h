@@ -9,7 +9,8 @@ enum class TestResult {
     DriverFunctionNotFound,  // extension function was not found and test is skipped
     DeviceNotCapable,        // device does not support some functionality needed in test (e.g. compression)
     KernelNotFound,          // binary kernel was not found in working directory
-    SkippedApi,              // selected API should not be run
+    SkippedApi,              // selected API should not be run, because of user has disabled it with a command-line argument
+    UnsupportedApi,          // selected API should not be run, because it is not built in current binary
     NoImplementation,        // Test is not implemented in current API
     IntelExtensionsRequired, // Intel extensions are required, but they are disabled
     InvalidArgs,             // Invalid arguments specific to the test case were supplied
