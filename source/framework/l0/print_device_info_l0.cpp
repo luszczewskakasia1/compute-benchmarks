@@ -1,10 +1,11 @@
-#include "framework/intel_product/l0/get_intel_product_l0.h"
+#include "print_device_info_l0.h"
+
+#include "framework/l0/intel_product/get_intel_product_l0.h"
 #include "framework/l0/levelzero.h"
-#include "framework/print_device_info.h"
 
 #include <iomanip>
 
-static void printDeviceInfoL0() {
+void printDeviceInfoL0() {
     LevelZero levelzero{QueueProperties::create().disable()};
 
     ze_driver_properties_t driverProperties{ZE_STRUCTURE_TYPE_DRIVER_PROPERTIES};
@@ -25,5 +26,3 @@ static void printDeviceInfoL0() {
 
     std::cout << std::endl;
 }
-
-static RegisterPrintDeviceInfoFunction registerFunction(Api::L0, printDeviceInfoL0);

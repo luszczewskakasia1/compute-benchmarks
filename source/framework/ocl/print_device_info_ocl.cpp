@@ -1,8 +1,9 @@
-#include "framework/intel_product/ocl/get_intel_product_ocl.h"
-#include "framework/ocl/opencl.h"
-#include "framework/print_device_info.h"
+#include "print_device_info_ocl.h"
 
-static void printDeviceInfoOcl() {
+#include "framework/ocl/intel_product/get_intel_product_ocl.h"
+#include "framework/ocl/opencl.h"
+
+void printDeviceInfoOcl() {
     QueueProperties queueProperties = QueueProperties::create().disable();
     Opencl opencl(queueProperties);
     char bufferString[4096];
@@ -31,5 +32,3 @@ static void printDeviceInfoOcl() {
 
     std::cout << std::endl;
 }
-
-static RegisterPrintDeviceInfoFunction registerFunction(Api::OpenCL, printDeviceInfoOcl);
