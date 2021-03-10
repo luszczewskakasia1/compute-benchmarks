@@ -19,7 +19,7 @@ static TestResult run(const UsmFillArguments &arguments, Statistics &statistics)
 
     // Create buffer
     void *buffer{};
-    ASSERT_ZE_RESULT_SUCCESS(UsmHelper::allocate(arguments.memoryPlacement, levelzero.context, levelzero.device, arguments.bufferSize, &buffer));
+    ASSERT_ZE_RESULT_SUCCESS(UsmHelper::allocate(arguments.usmMemoryPlacement, levelzero.context, levelzero.device, arguments.bufferSize, &buffer));
     ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, buffer, arguments.bufferSize));
 
     // Create event

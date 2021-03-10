@@ -2,7 +2,7 @@
 
 #include "framework/utility/error.h"
 
-enum class MemoryPlacement {
+enum class UsmMemoryPlacement {
     Unknown,
     Host,
     Device,

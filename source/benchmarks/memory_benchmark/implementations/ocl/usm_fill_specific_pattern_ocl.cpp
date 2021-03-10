@@ -28,7 +28,7 @@ static TestResult run(const UsmFillSpecificPatternArguments &arguments, Statisti
     }
 
     // Create buffer
-    void *buffer = UsmHelper::allocate(arguments.memoryPlacement, opencl.platform, opencl.context, opencl.device, arguments.bufferSize, &retVal);
+    void *buffer = UsmHelper::allocate(arguments.usmMemoryPlacement, opencl.platform, opencl.context, opencl.device, arguments.bufferSize, &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
     // Warmup

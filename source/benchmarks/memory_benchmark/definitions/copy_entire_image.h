@@ -1,7 +1,7 @@
 #pragma once
 
 #include "framework/argument/basic_argument.h"
-#include "framework/argument/enum/memory_placement_argument.h"
+#include "framework/argument/enum/usm_memory_placement_argument.h"
 #include "framework/argument/three_component_uint_argument.h"
 #include "framework/test_case/test_case.h"
 #include "framework/utility/common_help_message.h"

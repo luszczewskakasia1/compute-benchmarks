@@ -1,9 +1,9 @@
 #pragma once
 
 #include "framework/argument/abstract/enum_argument.h"
-#include "framework/enum/memory_placement.h"
+#include "framework/enum/usm_memory_placement.h"
 
-struct MemoryPlacementArgument : EnumArgument<MemoryPlacementArgument, MemoryPlacement> {
+struct UsmMemoryPlacementArgument : EnumArgument<UsmMemoryPlacementArgument, UsmMemoryPlacement> {
     using EnumArgument::EnumArgument;
     ThisType &operator=(EnumType value) {
         this->value = value;

@@ -2,13 +2,13 @@
 
 #include "framework/argument/basic_argument.h"
 #include "framework/argument/enum/buffer_contents_argument.h"
-#include "framework/argument/enum/memory_placement_argument.h"
+#include "framework/argument/enum/usm_memory_placement_argument.h"
 #include "framework/argument/long_hex_argument.h"
 #include "framework/test_case/test_case.h"
 #include "framework/utility/common_help_message.h"
 
 struct UsmFillSpecificPatternArguments : TestCaseArgumentContainer {
-    MemoryPlacementArgument memoryPlacement;
+    UsmMemoryPlacementArgument usmMemoryPlacement;
     ByteSizeArgument bufferSize;
     BufferContentsArgument contents;
     LongHexArgument pattern;
@@ -16,7 +16,7 @@ struct UsmFillSpecificPatternArguments : TestCaseArgumentContainer {
     BooleanArgument useEvents;
 
     UsmFillSpecificPatternArguments()
-        : memoryPlacement(*this, "memory", "Placement of the buffer"),
+        : usmMemoryPlacement(*this, "memory", "Placement of the buffer"),
           bufferSize(*this, "size", "Size of the buffer"),
           contents(*this, "contents", "Contents of the buffer"),
           pattern(*this, "pattern", "The fill pattern represented hexadecimally, e.g. 0x91ABCD1254"),

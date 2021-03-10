@@ -2,13 +2,13 @@
 
 #include "framework/argument/basic_argument.h"
 #include "framework/argument/enum/buffer_contents_argument.h"
-#include "framework/argument/enum/memory_placement_argument.h"
+#include "framework/argument/enum/usm_memory_placement_argument.h"
 #include "framework/test_case/test_case.h"
 #include "framework/utility/common_help_message.h"
 
 struct UsmCopyArguments : TestCaseArgumentContainer {
-    MemoryPlacementArgument sourcePlacement;
-    MemoryPlacementArgument destinationPlacement;
+    UsmMemoryPlacementArgument sourcePlacement;
+    UsmMemoryPlacementArgument destinationPlacement;
     ByteSizeArgument size;
     BufferContentsArgument contents;
     BooleanArgument forceBlitter;

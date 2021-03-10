@@ -1,20 +1,20 @@
 #pragma once
 
 #include "framework/enum/device_selection.h"
-#include "framework/enum/memory_placement.h"
+#include "framework/enum/usm_memory_placement.h"
 #include "framework/l0/levelzero.h"
 
 namespace L0::UsmHelper {
 
-inline ze_result_t allocate(MemoryPlacement placement, ze_context_handle_t context, ze_device_handle_t device, size_t size, void **buffer) {
+inline ze_result_t allocate(UsmMemoryPlacement placement, ze_context_handle_t context, ze_device_handle_t device, size_t size, void **buffer) {
     const ze_host_mem_alloc_desc_t hostAllocDesc{ZE_STRUCTURE_TYPE_HOST_MEM_ALLOC_DESC};
     const ze_device_mem_alloc_desc_t deviceAllocDesc{ZE_STRUCTURE_TYPE_DEVICE_MEM_ALLOC_DESC};
     switch (placement) {
-    case MemoryPlacement::Device:
+    case UsmMemoryPlacement::Device:
         return zeMemAllocDevice(context, &deviceAllocDesc, size, 0, device, buffer);
-    case MemoryPlacement::Host:
+    case UsmMemoryPlacement::Host:
         return zeMemAllocHost(context, &hostAllocDesc, size, 0, buffer);
-    case MemoryPlacement::Shared:
+    case UsmMemoryPlacement::Shared:
         return zeMemAllocShared(context, &deviceAllocDesc, &hostAllocDesc, size, 0, device, buffer);
     default:
         FATAL_ERROR("Unknown placement");
