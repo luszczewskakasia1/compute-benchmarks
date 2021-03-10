@@ -1,6 +1,7 @@
 #include "kernel_helper.h"
 
 #include "framework/utility/atomic_operation_helper.h"
+#include "framework/utility/compiler_options_builder.h"
 
 #include <algorithm>
 
@@ -101,33 +102,27 @@ KernelHelper::DataForKernel KernelHelper::getDataForKernel(DataType dataType,
 }
 
 std::string KernelHelper::getCompilerOptions(DataType dataType, AtomicOperation operation, size_t otherArgumentBufferSize) {
-    std::ostringstream result{};
-    result << getCompilerOptionForAtomicOp(operation) << " "
-           << getCompilerOption("ATOMIC_DATATYPE", DataTypeHelper::toOpenclC(dataType)) << " "
-           << getCompilerOption("DATATYPE", DataTypeHelper::toOpenclC(dataType)) << " "
-           << getCompilerOption("OTHER_ARGUMENT_BUFFER_SIZE", std::to_string(otherArgumentBufferSize)) << " ";
-    return result.str();
+    CompilerOptionsBuilder options{};
+    addAtomicOpMacro(options, operation);
+    options.addDefinitionKeyValue("ATOMIC_DATATYPE", DataTypeHelper::toOpenclC(dataType));
+    options.addDefinitionKeyValue("DATATYPE", DataTypeHelper::toOpenclC(dataType));
+    options.addDefinitionKeyValue("OTHER_ARGUMENT_BUFFER_SIZE", std::to_string(otherArgumentBufferSize));
+    return options.str();
 }
 
 std::string KernelHelper::getCompilerOptionsExplicit(DataType dataType, AtomicOperation operation, AtomicMemoryOrder order,
                                                      AtomicScope scope, size_t otherArgumentBufferSize) {
-    std::ostringstream result{};
-    result << getCompilerOptionForAtomicOpExplicit(operation, order, scope) << " "
-           << getCompilerOption("ATOMIC_DATATYPE", DataTypeHelper::toExplicitAtomicOpenclC(dataType)) << " "
-           << getCompilerOption("DATATYPE", DataTypeHelper::toOpenclC(dataType)) << " "
-           << getCompilerOption("OTHER_ARGUMENT_BUFFER_SIZE", std::to_string(otherArgumentBufferSize)) << " "
-           << "-DOCL_20 "
-           << "-cl-std=CL2.0";
-    return result.str();
+    CompilerOptionsBuilder options{};
+    addExplicitAtomicOpMacro(options, operation, order, scope);
+    options.addOptionOpenCl20();
+    options.addDefinition("OCL_20");
+    options.addDefinitionKeyValue("ATOMIC_DATATYPE", DataTypeHelper::toExplicitAtomicOpenclC(dataType));
+    options.addDefinitionKeyValue("DATATYPE", DataTypeHelper::toOpenclC(dataType));
+    options.addDefinitionKeyValue("OTHER_ARGUMENT_BUFFER_SIZE", std::to_string(otherArgumentBufferSize));
+    return options.str();
 }
 
-std::string KernelHelper::getCompilerOption(const std::string &key, const std::string &value) {
-    std::ostringstream result{};
-    result << "-D " << key << "=" << value;
-    return result.str();
-}
-
-std::string KernelHelper::getCompilerOptionForAtomicOp(AtomicOperation operation) {
+void KernelHelper::addAtomicOpMacro(CompilerOptionsBuilder &options, AtomicOperation operation) {
     const static char *functionNames[] = {"ERROR",
                                           "atomic_add", "atomic_sub",
                                           "atomic_xchg", "atomic_cmpxchg",
@@ -136,10 +131,8 @@ std::string KernelHelper::getCompilerOptionForAtomicOp(AtomicOperation operation
                                           "atomic_and", "atomic_or",
                                           "atomic_xor"};
 
-    std::ostringstream result{};
-    result << "-D ATOMIC_OP(address,other)="
-           << functionNames[static_cast<int>(operation)]
-           << "(address";
+    std::ostringstream macroBody{};
+    macroBody << functionNames[static_cast<int>(operation)] << "(address";
     switch (operation) {
     case AtomicOperation::Add:
     case AtomicOperation::Sub:
@@ -149,22 +142,23 @@ std::string KernelHelper::getCompilerOptionForAtomicOp(AtomicOperation operation
     case AtomicOperation::Or:
     case AtomicOperation::Xor:
     case AtomicOperation::Xchg:
-        result << ",other";
+        macroBody << ",other";
         break;
     case AtomicOperation::Inc:
     case AtomicOperation::Dec:
         break;
     case AtomicOperation::CmpXchg:
-        result << ",other,other";
+        macroBody << ",other,other";
         break;
     default:
         FATAL_ERROR("Unknown atomic operation");
     }
-    result << ")";
-    return result.str();
+    macroBody << ")";
+
+    options.addMacro("ATOMIC_OP", {"address", "other"}, macroBody.str().c_str());
 }
 
-std::string KernelHelper::getCompilerOptionForAtomicOpExplicit(AtomicOperation operation, AtomicMemoryOrder order, AtomicScope scope) {
+void KernelHelper::addExplicitAtomicOpMacro(CompilerOptionsBuilder &options, AtomicOperation operation, AtomicMemoryOrder order, AtomicScope scope) {
     const static char *functionNames[] = {"ERROR",
                                           "atomic_fetch_add_explicit", "atomic_fetch_sub_explicit",
                                           "atomic_exchange_explicit", "atomic_compare_exchange_strong_explicit",
@@ -173,10 +167,8 @@ std::string KernelHelper::getCompilerOptionForAtomicOpExplicit(AtomicOperation o
                                           "atomic_fetch_and_explicit", "atomic_fetch_or_explicit",
                                           "atomic_fetch_xor_explicit"};
 
-    std::ostringstream result{};
-    result << "-D ATOMIC_OP(address,other)="
-           << functionNames[static_cast<int>(operation)]
-           << "(address";
+    std::ostringstream macroBody{};
+    macroBody << functionNames[static_cast<int>(operation)] << "(address";
     switch (operation) {
     case AtomicOperation::Add:
     case AtomicOperation::Sub:
@@ -186,22 +178,21 @@ std::string KernelHelper::getCompilerOptionForAtomicOpExplicit(AtomicOperation o
     case AtomicOperation::Or:
     case AtomicOperation::Xor:
     case AtomicOperation::Xchg:
-        result << ",other";
+        macroBody << ",other";
         break;
     case AtomicOperation::Inc:
     case AtomicOperation::Dec:
-        result << ",1";
+        macroBody << ",1";
         break;
-
     case AtomicOperation::CmpXchg:
-        result << ",&other,other," << AtomicMemoryOrderHelper::toOpenclC(order);
+        macroBody << ",&other,other," << AtomicMemoryOrderHelper::toOpenclC(order);
         break;
     default:
         FATAL_ERROR("Unknown atomic operation");
     }
+    macroBody << "," << AtomicMemoryOrderHelper::toOpenclC(order)
+              << "," << AtomicScopeHelper::toOpenclC(scope)
+              << ")";
 
-    result << "," << AtomicMemoryOrderHelper::toOpenclC(order)
-           << "," << AtomicScopeHelper::toOpenclC(scope)
-           << ")";
-    return result.str();
+    options.addMacro("ATOMIC_OP", {"address", "other"}, macroBody.str().c_str());
 }

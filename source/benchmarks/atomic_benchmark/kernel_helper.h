@@ -7,6 +7,8 @@
 
 #include <cstddef>
 
+class CompilerOptionsBuilder;
+
 struct KernelHelper {
     struct DataForKernel {
         size_t sizeOfDataType;
@@ -22,7 +24,6 @@ struct KernelHelper {
                                                   AtomicScope scope, size_t otherArgumentBufferSize);
 
   private:
-    static std::string getCompilerOption(const std::string &key, const std::string &value);
-    static std::string getCompilerOptionForAtomicOp(AtomicOperation operation);
-    static std::string getCompilerOptionForAtomicOpExplicit(AtomicOperation operation, AtomicMemoryOrder order, AtomicScope scope);
+    static void addAtomicOpMacro(CompilerOptionsBuilder &options, AtomicOperation operation);
+    static void addExplicitAtomicOpMacro(CompilerOptionsBuilder &options, AtomicOperation operation, AtomicMemoryOrder order, AtomicScope scope);
 };
