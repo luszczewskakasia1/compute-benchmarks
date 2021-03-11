@@ -198,6 +198,10 @@ __kernel void one_local_atomic(__global DATATYPE *buffer, const __global DATATYP
 
     // Write the result back
     if (get_local_id(0) == 0) {
+#ifdef OCL_20
+        *buffer = atomic_load(&sharedVariable);
+#else
         *buffer = sharedVariable;
+#endif
     }
 }
