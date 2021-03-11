@@ -174,3 +174,30 @@ __kernel void separate_atomics(__global ATOMIC_DATATYPE *buffer, __global DATATY
         ATOMIC_OP_128(bufferElement, otherArgument)
     }
 }
+
+__kernel void one_local_atomic(__global DATATYPE *buffer, const __global DATATYPE *otherArgumentBuffer, const uint iterations, const DATATYPE initialValue) {
+    // Define SLM variable
+    local ATOMIC_DATATYPE sharedVariable;
+
+    // Initialize variable
+    if (get_local_id(0) == 0) {
+#ifdef OCL_20
+        atomic_init(&sharedVariable, initialValue);
+#else
+        sharedVariable = initialValue;
+#endif
+    }
+    barrier(CLK_LOCAL_MEM_FENCE);
+
+    // Apply atomic operations on the SLM variable
+    const DATATYPE otherArgument = otherArgumentBuffer[get_global_id(0) % OTHER_ARGUMENT_BUFFER_SIZE];
+    for (uint i = 0; i < iterations; i++) {
+        ATOMIC_OP_128(&sharedVariable, otherArgument)
+    }
+    barrier(CLK_LOCAL_MEM_FENCE);
+
+    // Write the result back
+    if (get_local_id(0) == 0) {
+        *buffer = sharedVariable;
+    }
+}
