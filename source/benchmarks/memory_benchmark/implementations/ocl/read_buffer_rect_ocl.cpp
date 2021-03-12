@@ -3,11 +3,11 @@
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
 
-#include "definitions/write_buffer_rect.h"
+#include "definitions/read_buffer_rect.h"
 
 #include <gtest/gtest.h>
 
-static TestResult run(const WriteBufferRectArguments &arguments, Statistics &statistics) {
+static TestResult run(const ReadBufferRectArguments &arguments, Statistics &statistics) {
     if (arguments.compressed && arguments.noIntelExtensions) {
         return TestResult::DeviceNotCapable;
     }
@@ -37,18 +37,18 @@ static TestResult run(const WriteBufferRectArguments &arguments, Statistics &sta
 
     // Warmup
     size_t bufferOffset[3] = {};
-    ASSERT_CL_SUCCESS(clEnqueueWriteBufferRect(opencl.commandQueue, buffer, CL_BLOCKING,
-                                               bufferOffset, arguments.origin, arguments.region,
-                                               arguments.rPitch, arguments.sPitch, arguments.rPitch, arguments.sPitch,
-                                               cpuBuffer.get(), 0, nullptr, nullptr));
+    ASSERT_CL_SUCCESS(clEnqueueReadBufferRect(opencl.commandQueue, buffer, CL_BLOCKING,
+                                              bufferOffset, arguments.origin, arguments.region,
+                                              arguments.rPitch, arguments.sPitch, arguments.rPitch, arguments.sPitch,
+                                              cpuBuffer.get(), 0, nullptr, nullptr));
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
         timer.measureStart();
-        ASSERT_CL_SUCCESS(clEnqueueWriteBufferRect(opencl.commandQueue, buffer, CL_NON_BLOCKING,
-                                                   bufferOffset, arguments.origin, arguments.region,
-                                                   arguments.rPitch, arguments.sPitch, arguments.rPitch, arguments.sPitch,
-                                                   cpuBuffer.get(), 0, nullptr, nullptr));
+        ASSERT_CL_SUCCESS(clEnqueueReadBufferRect(opencl.commandQueue, buffer, CL_NON_BLOCKING,
+                                                  bufferOffset, arguments.origin, arguments.region,
+                                                  arguments.rPitch, arguments.sPitch, arguments.rPitch, arguments.sPitch,
+                                                  cpuBuffer.get(), 0, nullptr, nullptr));
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue))
         timer.measureEnd();
         statistics.pushValue(timer.get(), arguments.size);
@@ -58,4 +58,4 @@ static TestResult run(const WriteBufferRectArguments &arguments, Statistics &sta
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<WriteBufferRect> registerTestCase(run, Api::OpenCL);
+static RegisterTestCaseImplementation<ReadBufferRect> registerTestCase(run, Api::OpenCL);
