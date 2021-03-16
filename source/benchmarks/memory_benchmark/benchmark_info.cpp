@@ -20,7 +20,7 @@ BenchmarkInfoImpl::MeasurementUnit BenchmarkInfoImpl::getMeasurementUnit() {
 }
 
 int BenchmarkInfoImpl::getTestCaseNameColumnWidth() {
-    return 121;
+    return 124;
 }
 
 std::unique_ptr<BenchmarkInfoImpl::BenchmarkSpecificConfigurationBase> BenchmarkInfoImpl::createBenchmarkSpecificConfiguration(ArgumentContainer &testCaseArguments) {
