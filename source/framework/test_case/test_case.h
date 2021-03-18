@@ -71,7 +71,9 @@ class TestCase : public TestCaseInterface {
         }
 
         // Try running with all possible APIs. If some are disabled, e.g. --api=ocl is passed, then the rest will be skipped in run() method
-        TestCaseStatistics::printStatisticsHeader(Configuration::get().printType);
+        if (!Configuration::get().noHeaders) {
+            TestCaseStatistics::printStatisticsHeader(Configuration::get().printType);
+        }
         for (int apiIndex = static_cast<int>(Api::FIRST); apiIndex <= static_cast<int>(Api::LAST); apiIndex++) {
             arguments.api = static_cast<Api>(apiIndex);
             run(arguments);

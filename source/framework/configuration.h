@@ -49,6 +49,7 @@ struct Configuration : ArgumentContainer {
     BooleanFlagArgument noIntelExtensions;
     BooleanFlagArgument dumpCommandLines;
     BooleanFlagArgument noop;
+    BooleanFlagArgument noHeaders;
     BooleanArgument dumpErrorsImmediately;
     StringListArgument argFilter;
     StringListArgument testFilter;

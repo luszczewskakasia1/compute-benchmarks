@@ -18,6 +18,7 @@ Configuration::Configuration()
       noIntelExtensions(*this, "no-intel-extensions", "do not run benchmark requiring Intel specific extensions"),
       dumpCommandLines(*this, "dumpCommandLines", "output commandline arguments to run the each test"),
       noop(*this, "noop", "do not run any tests, only print their names and parameters"),
+      noHeaders(*this, "noHeaders", "Do not print any informational messages at the top of the output"),
       dumpErrorsImmediately(*this, "dumpErrorsImmediately", "print errors to stdout immediately after they happen, not at the end of the run"),
       argFilter(*this, "argFilter", "filter tests by their arguments"),
       testFilter(*this, "testFilter", "filter tests by their names"),
@@ -41,6 +42,7 @@ Configuration::Configuration()
     dumpCommandLines = false;
     subDeviceSelection = DeviceSelection::Root;
     noop = false;
+    noHeaders = false;
     dumpErrorsImmediately = false;
     argFilter = std::vector<std::string>();
     testFilter = std::vector<std::string>();

@@ -25,8 +25,10 @@ int printVersion(bool enableWarning, const char *prefix = "") {
 }
 
 int executeSingleTest(const std::string &testName, CommandLineArguments &commandLineArguments) {
-    printDeviceInfo();
-    printVersion(false, "Benchmark version: ");
+    if (!Configuration::get().noHeaders) {
+        printDeviceInfo();
+        printVersion(false, "Benchmark version: ");
+    }
 
     const auto &testMap = TestMap::get();
     auto it = testMap.find(testName);
@@ -45,8 +47,10 @@ int executeSingleTest(const std::string &testName, CommandLineArguments &command
 }
 
 int executeAllTests(CommandLineArguments &commandLineArguments) {
-    printDeviceInfo();
-    printVersion(false, "Benchmark version: ");
+    if (!Configuration::get().noHeaders) {
+        printDeviceInfo();
+        printVersion(false, "Benchmark version: ");
+    }
 
     for (auto &commandLineArgument : commandLineArguments) {
         if (commandLineArgument.getKey().find("gtest_") == 0) {
