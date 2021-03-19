@@ -27,6 +27,7 @@ if (BUILD_FOR_PUBLISHING)
     set(INCLUDE_VERSION_COMMENT "(Enabled by BUILD_FOR_PUBLISHING)")
 endif()
 benchmark_option(INCLUDE_VERSION OFF ${INCLUDE_VERSION_COMMENT})
+benchmark_option(VERSION_INDEX "01")
 
 # Miscellaneous flags
 benchmark_option_group("Miscellaneous flags")

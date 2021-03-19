@@ -12,9 +12,16 @@ if [ -d "$cmake_dir" ]; then
     done
 fi
 
+# Get index
+echo "Input two-digit index of the release within current day. For first release of today, input \"01\", for second release, input \"02\" and so on."
+while [[ ! "$version_index" =~ [0-9][0-9] ]]; do
+    echo -n "Index: "
+    read version_index
+done
+
 # Run CMake
 binary_dir="build/bin"
-./build.sh -DBUILD_FOR_PUBLISHING=ON
+./build.sh -DBUILD_FOR_PUBLISHING=ON -DVERSION_INDEX=$version_index
 
 # Compile
 pushd $cmake_dir >/dev/null 2>&1

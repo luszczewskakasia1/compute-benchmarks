@@ -20,13 +20,12 @@ endif()
 
 # Produce version string
 string(TIMESTAMP versionDate "%Y%m%d")
-set(versionIndex "01")
 execute_process (COMMAND git log -1 --format=%h
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     OUTPUT_VARIABLE versionCommit
     OUTPUT_STRIP_TRAILING_WHITESPACE
 )
-set(BENCHMARK_VERSION "${versionDate}_${versionIndex}_${versionCommit}")
+set(BENCHMARK_VERSION "${versionDate}_${VERSION_INDEX}_${versionCommit}")
 
 # Publish build additional handling
 if(BUILD_FOR_PUBLISHING)
