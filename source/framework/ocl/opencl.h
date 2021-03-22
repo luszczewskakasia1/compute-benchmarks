@@ -75,7 +75,7 @@ struct Opencl {
         }
     }
 
-    cl_command_queue createQueue(const QueueProperties &queueProperties) {
+    cl_command_queue createQueue(QueueProperties queueProperties) {
         if (!queueProperties.createQueue) {
             return nullptr;
         }
@@ -84,17 +84,22 @@ struct Opencl {
         cl_int retVal{};
         cl_command_queue queue{};
         cl_queue_properties properties[maxPropertiesCount] = {};
+        const bool needsQueueSelection = queueProperties.forceBlitter;
+
+        // Force legacy path, if the new path is not supported
+        if (needsQueueSelection && !getExtensions().isCommandQueueFamiliesSupported()) {
+            queueProperties.setUseLegacyQueueFamilySelection(true);
+        }
 
         // Create queue
         if (queueProperties.fillQueueProperties(deviceForQueue, properties, maxPropertiesCount)) {
             queue = clCreateCommandQueueWithProperties(this->context, deviceForQueue, properties, &retVal);
         }
 
-        // Fallback to legacy path for blitter queue
-        if (queue == nullptr && queueProperties.forceBlitter) {
-            QueueProperties queuePropertiesLegacy = queueProperties;
-            queuePropertiesLegacy.setUseLegacyQueueFamilySelection(true);
-            if (queuePropertiesLegacy.fillQueueProperties(deviceForQueue, properties, maxPropertiesCount)) {
+        // If family selection with cl_intel_queue_families failed, try the legacy path
+        if (queue == nullptr && needsQueueSelection && !queueProperties.useLegacyQueueFamilySelection) {
+            queueProperties.setUseLegacyQueueFamilySelection(true);
+            if (queueProperties.fillQueueProperties(deviceForQueue, properties, maxPropertiesCount)) {
                 queue = clCreateCommandQueueWithProperties(this->context, deviceForQueue, properties, &retVal);
             }
         }
