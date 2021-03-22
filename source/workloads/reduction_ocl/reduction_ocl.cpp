@@ -1,24 +1,26 @@
 #include "framework/ocl/opencl.h"
+#include "framework/ocl/utility/profiling_helper.h"
 #include "framework/utility/file_helper.h"
 #include "framework/utility/timer.h"
 #include "framework/workload/register_workload.h"
 
-struct Reduction : WorkloadArgumentContainer {
+struct ReductionArguments : WorkloadArgumentContainer {
     PositiveIntegerArgument numberOfElements;
 
-    Reduction()
+    ReductionArguments()
         : numberOfElements(*this, "numberOfElements", "Number of elements that will be reduced") {}
 };
 
-struct ReductionWorkload : Workload<Reduction> {};
+struct ReductionWorkload : Workload<ReductionArguments> {};
 
-TestResult run(const Reduction &arguments, Statistics &statistics, WorkloadSynchronization &synchronization, WorkloadIo &io) {
+TestResult run(const ReductionArguments &arguments, Statistics &statistics, WorkloadSynchronization &synchronization, WorkloadIo &io) {
     QueueProperties queueProperties = QueueProperties::create().setProfiling(true);
     Opencl opencl(queueProperties);
-    cl_event profilingEvent{};
+    cl_event profilingEvent;
     Timer timer;
     cl_int retVal;
 
+    // Create kernel
     std::string kernelSource = R"(
        
        __kernel void reduction(__global uint *results) {
@@ -27,7 +29,6 @@ TestResult run(const Reduction &arguments, Statistics &statistics, WorkloadSynch
        }
        
 )";
-
     const char *pKernelSource = kernelSource.c_str();
     const size_t kernelSizes = kernelSource.size();
     cl_program program = clCreateProgramWithSource(opencl.context, 1, &pKernelSource, &kernelSizes, &retVal);
@@ -36,46 +37,52 @@ TestResult run(const Reduction &arguments, Statistics &statistics, WorkloadSynch
     cl_kernel kernel = clCreateKernel(program, "reduction", &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
-    // Warmup kernel
-    const size_t gws = arguments.numberOfElements;
-    const size_t lws = 1;
-
+    // Prepare data
     const size_t sizeInBytes = arguments.numberOfElements * sizeof(int);
     std::vector<int> data;
     data.resize(arguments.numberOfElements);
-
     size_t expectedSum = 0u;
     size_t value = 0u;
-
     for (int i = 0; i < arguments.numberOfElements; i++) {
         value++;
         if (value > 4)
             value = 0;
-        data[i] = value;
+        data[i] = static_cast<int>(value);
         expectedSum += value;
     }
 
+    // Create buffer
     cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, sizeInBytes, data.data(), &retVal);
     ASSERT_CL_SUCCESS(retVal);
+
+    // Warmup kernel
+    const size_t gws = arguments.numberOfElements;
+    const size_t lws = 1;
     ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 0, sizeof(buffer), &buffer));
     ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
-    int returned;
-    ASSERT_CL_SUCCESS(clEnqueueReadBuffer(opencl.commandQueue, buffer, true, 0u, 4u, &returned, 0u, nullptr, nullptr));
-    EXPECT_EQ(returned, expectedSum);
+    // Validate results
+    int actualSum;
+    ASSERT_CL_SUCCESS(clEnqueueReadBuffer(opencl.commandQueue, buffer, true, 0u, 4u, &actualSum, 0u, nullptr, nullptr));
+    if (actualSum != expectedSum) {
+        ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));
+        ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
+        ASSERT_CL_SUCCESS(clReleaseProgram(program));
+        return TestResult::VerificationFail;
+    }
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
+        synchronization.synchronize(io);
+
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, &profilingEvent));
         ASSERT_CL_SUCCESS(clWaitForEvents(1, &profilingEvent));
 
-        cl_ulong end{}, start{};
-        ASSERT_CL_SUCCESS(clGetEventProfilingInfo(profilingEvent, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, nullptr));
-        ASSERT_CL_SUCCESS(clGetEventProfilingInfo(profilingEvent, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, nullptr));
+        cl_ulong timeNs{};
+        ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
         ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
-        const auto kernelTime = std::chrono::nanoseconds(end - start);
-        printf("\n kernel executed with %llu nanoseconds", kernelTime);
+        statistics.pushValue(std::chrono::nanoseconds{timeNs});
     }
 
     ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));

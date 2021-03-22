@@ -1,1 +1,1 @@
-add_workload(reduction ocl)
+add_workload(reduction_ocl ocl)
