@@ -1,6 +1,5 @@
 #include "framework/ocl/opencl.h"
 #include "framework/ocl/utility/profiling_helper.h"
-#include "framework/utility/file_helper.h"
 #include "framework/utility/timer.h"
 #include "framework/workload/register_workload.h"
 
@@ -16,19 +15,15 @@ struct ReductionWorkload : Workload<ReductionArguments> {};
 TestResult run(const ReductionArguments &arguments, Statistics &statistics, WorkloadSynchronization &synchronization, WorkloadIo &io) {
     QueueProperties queueProperties = QueueProperties::create().setProfiling(true);
     Opencl opencl(queueProperties);
-    cl_event profilingEvent;
-    Timer timer;
     cl_int retVal;
 
     // Create kernel
     std::string kernelSource = R"(
-       
        __kernel void reduction(__global uint *results) {
             if(get_global_id(0) != 0 )
             atomic_add(&results[0], results[get_global_id(0)]);
        }
-       
-)";
+    )";
     const char *pKernelSource = kernelSource.c_str();
     const size_t kernelSizes = kernelSource.size();
     cl_program program = clCreateProgramWithSource(opencl.context, 1, &pKernelSource, &kernelSizes, &retVal);
@@ -39,8 +34,7 @@ TestResult run(const ReductionArguments &arguments, Statistics &statistics, Work
 
     // Prepare data
     const size_t sizeInBytes = arguments.numberOfElements * sizeof(int);
-    std::vector<int> data;
-    data.resize(arguments.numberOfElements);
+    auto data = std::make_unique<int[]>(arguments.numberOfElements);
     size_t expectedSum = 0u;
     size_t value = 0u;
     for (int i = 0; i < arguments.numberOfElements; i++) {
@@ -52,7 +46,7 @@ TestResult run(const ReductionArguments &arguments, Statistics &statistics, Work
     }
 
     // Create buffer
-    cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, sizeInBytes, data.data(), &retVal);
+    cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, sizeInBytes, data.get(), &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
     // Warmup kernel
@@ -74,6 +68,7 @@ TestResult run(const ReductionArguments &arguments, Statistics &statistics, Work
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
+        cl_event profilingEvent{};
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, &profilingEvent));
         ASSERT_CL_SUCCESS(clWaitForEvents(1, &profilingEvent));
 
