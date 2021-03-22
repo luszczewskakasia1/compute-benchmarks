@@ -16,3 +16,5 @@ endfunction()
 
 add_subdirectory(single_queue_workload_l0)
 add_subdirectory(single_queue_workload_shared_buffer_l0)
+add_subdirectory(reduction_ocl)
+

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "framework/configuration.h"
 #include "framework/test_case/test_result.h"
 #include "framework/utility/common_help_message.h"
 #include "framework/workload/workload.h"
