@@ -32,6 +32,7 @@ benchmark_option(VERSION_INDEX "01")
 # Miscellaneous flags
 benchmark_option_group("Miscellaneous flags")
 benchmark_option(OUTPUT_DIR "${CMAKE_BINARY_DIR}/bin")
+benchmark_option(BUILD_HELLO_WORLD OFF)
 if (UNIX)
     benchmark_option(USE_PCIACCESS ON)
 else()

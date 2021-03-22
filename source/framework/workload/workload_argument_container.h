@@ -20,7 +20,7 @@ struct WorkloadArgumentContainer : ArgumentContainer {
         // Default values
         iterations = 10;
 
-        // Default values for parameters used by benchmarks calling the workload
+        // Default values for parameters used by benchmarks calling the workload. Not meant to be used by humans.
         synchronize = false;
         synchronizationPipeIn = 0;
         synchronizationPipeOut = 0;

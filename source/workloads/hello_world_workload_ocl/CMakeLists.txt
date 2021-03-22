@@ -1,0 +1,1 @@
+add_workload(hello_world_workload_ocl ocl)
