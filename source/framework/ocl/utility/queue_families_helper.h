@@ -43,7 +43,7 @@ class QueueFamiliesHelper {
     }
 
     template <typename... Args>
-    static bool validateCapabilities(cl_command_queue queue, Args &&... args) {
+    static bool validateCapabilities(cl_command_queue queue, Args &&...args) {
         return validateCapabilities(getQueueCapabilities(queue), std::forward<Args>(args)...);
     }
 
@@ -94,7 +94,10 @@ class QueueFamiliesHelper {
 
     static cl_command_queue_capabilities_intel getQueueCapabilities(cl_command_queue queue) {
         cl_uint familyIndex = {};
-        EXPECT_CL_SUCCESS(clGetCommandQueueInfo(queue, CL_QUEUE_FAMILY_INTEL, sizeof(familyIndex), &familyIndex, nullptr));
+        cl_int retVal = clGetCommandQueueInfo(queue, CL_QUEUE_FAMILY_INTEL, sizeof(familyIndex), &familyIndex, nullptr));
+        if (retVal != CL_SUCCESS) {
+            return CL_QUEUE_DEFAULT_CAPABILITIES_INTEL;
+        }
         cl_device_id device = {};
         EXPECT_CL_SUCCESS(clGetCommandQueueInfo(queue, CL_QUEUE_DEVICE, sizeof(device), &device, nullptr));
 
@@ -108,7 +111,7 @@ class QueueFamiliesHelper {
     }
 
     template <typename... Args>
-    static bool validateCapabilities(cl_command_queue_capabilities_intel queueCapabilities, cl_command_queue_capabilities_intel capability, Args &&... args) {
+    static bool validateCapabilities(cl_command_queue_capabilities_intel queueCapabilities, cl_command_queue_capabilities_intel capability, Args &&...args) {
         if (!validateCapability(queueCapabilities, capability)) {
             return false;
         }
