@@ -12,6 +12,7 @@ struct IntegerArgument : Argument {
 
     IntegerArgument &operator=(size_t value) {
         this->value = value;
+        markAsParsed();
         return *this;
     }
 
@@ -44,6 +45,7 @@ struct PositiveIntegerArgument : IntegerArgument {
 
     PositiveIntegerArgument &operator=(size_t value) {
         this->value = value;
+        markAsParsed();
         return *this;
     }
 
@@ -61,6 +63,7 @@ struct NonNegativeIntegerArgument : IntegerArgument {
 
     NonNegativeIntegerArgument &operator=(size_t value) {
         this->value = value;
+        markAsParsed();
         return *this;
     }
 
@@ -74,6 +77,7 @@ struct ByteSizeArgument : PositiveIntegerArgument {
 
     ByteSizeArgument &operator=(size_t value) {
         this->value = value;
+        markAsParsed();
         return *this;
     }
 
@@ -136,6 +140,7 @@ struct BooleanArgument : Argument {
 
     BooleanArgument &operator=(bool value) {
         this->value = value;
+        markAsParsed();
         return *this;
     }
 

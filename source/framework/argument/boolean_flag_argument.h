@@ -11,6 +11,7 @@ struct BooleanFlagArgument : Argument {
 
     BooleanFlagArgument &operator=(bool value) {
         this->value = value;
+        markAsParsed();
         return *this;
     }
 

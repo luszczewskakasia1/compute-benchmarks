@@ -33,8 +33,12 @@ void Argument::parse(CommandLineArgument &argument) {
     if (argument.isKeyEqualTo(this->key)) {
         argument.markAsProcessed();
         parseImpl(argument.getValue());
-        this->parsed = true;
+        markAsParsed();
     }
+}
+
+void Argument::markAsParsed() {
+    this->parsed = true;
 }
 
 std::string Argument::getHelpEntry(const std::string &key) const {

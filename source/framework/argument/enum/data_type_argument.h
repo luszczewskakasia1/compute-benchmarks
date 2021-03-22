@@ -7,6 +7,7 @@ struct DataTypeArgument : EnumArgument<DataTypeArgument, DataType> {
     using EnumArgument::EnumArgument;
     ThisType &operator=(EnumType value) {
         this->value = value;
+        markAsParsed();
         return *this;
     }
 

@@ -19,6 +19,7 @@ struct StringListArgument : Argument {
     StringListArgument &operator=(const std::vector<std::string> &value) {
         this->value = value;
         this->isValid = true;
+        markAsParsed();
         return *this;
     }
 

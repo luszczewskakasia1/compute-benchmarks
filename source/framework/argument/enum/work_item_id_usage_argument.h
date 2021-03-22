@@ -7,6 +7,7 @@ struct WorkItemIdUsageArgument : EnumArgument<WorkItemIdUsageArgument, WorkItemI
     using EnumArgument::EnumArgument;
     ThisType &operator=(EnumType value) {
         this->value = value;
+        markAsParsed();
         return *this;
     }
 

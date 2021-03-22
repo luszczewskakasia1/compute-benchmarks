@@ -7,6 +7,7 @@ struct UsmInitialPlacementArgument : EnumArgument<UsmInitialPlacementArgument, U
     using EnumArgument::EnumArgument;
     ThisType &operator=(EnumType value) {
         this->value = value;
+        markAsParsed();
         return *this;
     }
 

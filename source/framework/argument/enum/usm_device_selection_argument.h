@@ -17,6 +17,7 @@ struct UsmDeviceSelectionArgumentBase : BitfieldEnumArgument<DeviceSelectionArgu
 
     UsmDeviceSelectionArgumentBase &operator=(EnumType value) {
         this->value = value;
+        markAsParsed();
         return *this;
     }
 

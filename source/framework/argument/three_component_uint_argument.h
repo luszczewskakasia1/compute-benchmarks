@@ -14,6 +14,7 @@ struct ThreeComponentUintArgument : Argument {
 
     ThreeComponentUintArgument &operator=(TupleType value) {
         assign(value);
+        markAsParsed();
         return *this;
     }
 

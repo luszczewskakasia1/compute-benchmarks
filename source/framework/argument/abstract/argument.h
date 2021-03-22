@@ -22,6 +22,7 @@ struct Argument {
     }
 
     void parse(CommandLineArgument &argument);
+    void markAsParsed();
 
     virtual bool validate() const {
         return true;

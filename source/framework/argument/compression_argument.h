@@ -8,6 +8,7 @@ struct CompressionBooleanArgument : BooleanArgument {
 
     CompressionBooleanArgument &operator=(bool value) {
         this->value = value;
+        markAsParsed();
         return *this;
     }
 

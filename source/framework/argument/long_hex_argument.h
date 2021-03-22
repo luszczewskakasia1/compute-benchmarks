@@ -12,6 +12,7 @@ struct LongHexArgument : Argument {
 
     LongHexArgument &operator=(const std::string &hex) {
         parseImpl(hex);
+        markAsParsed();
         return *this;
     }
 

@@ -7,6 +7,7 @@ struct MultiDeviceSelectionArgument : BitfieldEnumArgument<MultiDeviceSelectionA
     using BitfieldEnumArgument::BitfieldEnumArgument;
     ThisType &operator=(EnumType value) {
         this->value = value;
+        markAsParsed();
         return *this;
     }
 
