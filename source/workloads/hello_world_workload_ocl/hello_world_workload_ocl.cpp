@@ -1,8 +1,11 @@
 /**************************************************************************************************
 This is an example workload written to help benchmark creators add their own test cases and
 understand what needs to be done. Its is meant to serve merely as a code sample and should not be
-used to any serious performance analysis. This file can be used as a template for creating custom
-workloads after stripping the comments.
+used to any serious performance analysis.
+
+This file is a step by step guide on what needs to be done to create a workload. The
+hello_world_template_workload_ocl.cpp file contains the same code, but without the verbose
+comments. It may be used as a template for creating new tests.
 
 If you run this application without parameters, it will tell you which ones you're missing. Example
 valid invocation is:
