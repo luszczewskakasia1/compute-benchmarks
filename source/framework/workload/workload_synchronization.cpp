@@ -30,7 +30,11 @@ void WorkloadSynchronization::synchronize(WorkloadIo &workloadIo) {
 }
 
 bool WorkloadSynchronization::validate() {
-    return synchronizationCount == expectedSynchronizationCount;
+    if (synchronizationEnabled) {
+        return synchronizationCount == expectedSynchronizationCount;
+    } else {
+        return true;
+    }
 }
 
 void WorkloadSynchronization::executeRemainingSynchronizations(WorkloadIo &workloadIo) {

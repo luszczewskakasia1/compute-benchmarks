@@ -74,8 +74,6 @@ TestResult run(const ReductionArguments &arguments, Statistics &statistics, Work
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
-        synchronization.synchronize(io);
-
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, &profilingEvent));
         ASSERT_CL_SUCCESS(clWaitForEvents(1, &profilingEvent));
 
