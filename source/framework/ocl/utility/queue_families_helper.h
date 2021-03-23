@@ -94,7 +94,7 @@ class QueueFamiliesHelper {
 
     static cl_command_queue_capabilities_intel getQueueCapabilities(cl_command_queue queue) {
         cl_uint familyIndex = {};
-        cl_int retVal = clGetCommandQueueInfo(queue, CL_QUEUE_FAMILY_INTEL, sizeof(familyIndex), &familyIndex, nullptr));
+        cl_int retVal = clGetCommandQueueInfo(queue, CL_QUEUE_FAMILY_INTEL, sizeof(familyIndex), &familyIndex, nullptr);
         if (retVal != CL_SUCCESS) {
             return CL_QUEUE_DEFAULT_CAPABILITIES_INTEL;
         }
