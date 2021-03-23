@@ -8,10 +8,10 @@
 
 static const inline RegisterTestCase<Reduction> registerTestCase{};
 
-class CopyBufferTest : public ::testing::TestWithParam<std::tuple<Api, size_t>> {
+class ReductionTest : public ::testing::TestWithParam<std::tuple<Api, size_t>> {
 };
 
-TEST_P(CopyBufferTest, Test) {
+TEST_P(ReductionTest, Test) {
     ReductionArguments args;
     args.api = std::get<0>(GetParam());
     args.numberOfElements = std::get<1>(GetParam());
@@ -22,8 +22,8 @@ TEST_P(CopyBufferTest, Test) {
 
 using namespace MemoryConstants;
 INSTANTIATE_TEST_SUITE_P(
-    CopyBufferTest,
-    CopyBufferTest,
+    ReductionTest,
+    ReductionTest,
     ::testing::Combine(
         ::CommonGtestArgs::allApis(),
         ::testing::Values(128000000)));
