@@ -1,5 +1,7 @@
+#include "framework/configuration.h"
 #include "framework/ocl/opencl.h"
 #include "framework/ocl/utility/profiling_helper.h"
+#include "framework/print_device_info.h"
 #include "framework/utility/timer.h"
 #include "framework/workload/register_workload.h"
 
@@ -58,10 +60,10 @@ TestResult run(const ReductionArguments &arguments, Statistics &statistics, Work
     const size_t gws = arguments.numberOfElements;
     const size_t lws = 1;
     ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 0, sizeof(buffer), &buffer));
-    ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &profilingEvent));
+    ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, &profilingEvent));
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
-    ASSERT_CL_SUCCESS(clEnqueueReadBuffer(opencl.commandQueue, buffer, true, 0u, 4u, &actualSum, 0u, nullptr, nullptr ));
+    ASSERT_CL_SUCCESS(clEnqueueReadBuffer(opencl.commandQueue, buffer, true, 0u, 4u, &actualSum, 0u, nullptr, nullptr));
     if (actualSum != expectedSum) {
         ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));
         ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
@@ -76,20 +78,21 @@ TestResult run(const ReductionArguments &arguments, Statistics &statistics, Work
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
+        int zero = 0u;
+        ASSERT_CL_SUCCESS(clEnqueueWriteBuffer(opencl.commandQueue, buffer, true, 0u, 4u, &zero, 0u, nullptr, nullptr));
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, &profilingEvent));
         ASSERT_CL_SUCCESS(clWaitForEvents(1, &profilingEvent));
         ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
         totalTime += timeNs;
         ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
         if (i + 1 < arguments.iterations)
-        statistics.pushValue(std::chrono::nanoseconds{timeNs});
+            statistics.pushValue(std::chrono::nanoseconds{timeNs});
     }
-    
+
     uint32_t iterationCount = arguments.iterations + 1;
-    double timePerIteration = (double) totalTime / (double) iterationCount;
+    double timePerIteration = (double)totalTime / (double)iterationCount;
 
     printf("\n samples gathered %d , element count %lu , timePerIteration (us) %f Bandwidth (GB/s) %f \n", iterationCount, gws, timePerIteration / 1000.0, sizeInBytes / timePerIteration);
-
 
     ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));
     ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
@@ -99,6 +102,8 @@ TestResult run(const ReductionArguments &arguments, Statistics &statistics, Work
 }
 
 int main(int argc, char **argv) {
+    //printDeviceInfo();
+
     ReductionWorkload workload;
     ReductionWorkload::implementation = run;
     return workload.runFromCommandLine(argc, argv);
