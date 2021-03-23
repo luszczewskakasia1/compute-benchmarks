@@ -1,0 +1,1 @@
+add_benchmark(miscellaneous_benchmark ocl)

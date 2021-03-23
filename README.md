@@ -10,6 +10,7 @@ api_overhead_benchmark | duration of various API calls |
 gpu_cmds_benchmark | duration of various commands on the GPU |
 overlap_benchmark | GPU operations overlapping |
 atomic_benchmark | Atomic operations in kernels |
+miscellaneous_benchmark | Different simple compute scenarios |
 
 ## How to run benchmarks
 For specific information about how to run the benchmarks, please run the binary with "--help" parameter.
