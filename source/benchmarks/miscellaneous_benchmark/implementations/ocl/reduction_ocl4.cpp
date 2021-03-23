@@ -109,8 +109,10 @@ TestResult run(const ReductionArguments4 &arguments, Statistics &statistics) {
 
     ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
     ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
-    cl_ulong totalTime = timeNs;
-    statistics.pushValue(std::chrono::nanoseconds{timeNs});
+    ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent2, timeNs2));
+    ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent2));
+    cl_ulong totalTime = timeNs + timeNs2;
+    statistics.pushValue(std::chrono::nanoseconds{timeNs + timeNs2});
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
@@ -119,7 +121,7 @@ TestResult run(const ReductionArguments4 &arguments, Statistics &statistics) {
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
         ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
-        ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs2));
+        ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent2, timeNs2));
         totalTime += timeNs;
         totalTime += timeNs2;
 
