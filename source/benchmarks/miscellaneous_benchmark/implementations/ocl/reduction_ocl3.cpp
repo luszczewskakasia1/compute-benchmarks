@@ -15,12 +15,12 @@ TestResult run(const ReductionArguments3 &arguments, Statistics &statistics) {
        __kernel void reduction(__global uint4 *results) {
             uint4 values = results[get_global_id(0)];
             uint value = values.x + values.y + values.z + values.w;
-            local uint localSums[1024u];
+            local uint localSums[512u];
             localSums[get_local_id(0)] = value;
             barrier(CLK_LOCAL_MEM_FENCE);
             if(get_local_id(0)==0){
                 uint sum = 0u;
-                for(int i = 0 ; i < 1024u ; i++ ){
+                for(int i = 0 ; i < 512u ; i++ ){
                     sum += localSums[i];
                 }
                 atomic_add(&(((global uint*)results)[get_global_size(0)*4]), sum);
@@ -70,7 +70,7 @@ TestResult run(const ReductionArguments3 &arguments, Statistics &statistics) {
 
     // Warmup kernel
     const size_t gws = arguments.numberOfElements / 4;
-    const size_t lws = 1024;
+    const size_t lws = 512u;
     ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 0, sizeof(buffer), &buffer));
     ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &profilingEvent));
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
