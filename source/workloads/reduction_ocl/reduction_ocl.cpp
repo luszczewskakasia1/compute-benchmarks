@@ -49,16 +49,19 @@ TestResult run(const ReductionArguments &arguments, Statistics &statistics, Work
     cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, sizeInBytes, data.get(), &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
+    // Validate results
+    int actualSum;
+    cl_event profilingEvent{};
+    cl_ulong timeNs{};
+
     // Warmup kernel
     const size_t gws = arguments.numberOfElements;
     const size_t lws = 1;
     ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 0, sizeof(buffer), &buffer));
-    ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
+    ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &profilingEvent));
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
-    // Validate results
-    int actualSum;
-    ASSERT_CL_SUCCESS(clEnqueueReadBuffer(opencl.commandQueue, buffer, true, 0u, 4u, &actualSum, 0u, nullptr, nullptr));
+    ASSERT_CL_SUCCESS(clEnqueueReadBuffer(opencl.commandQueue, buffer, true, 0u, 4u, &actualSum, 0u, nullptr, nullptr ));
     if (actualSum != expectedSum) {
         ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));
         ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
@@ -66,17 +69,27 @@ TestResult run(const ReductionArguments &arguments, Statistics &statistics, Work
         return TestResult::VerificationFail;
     }
 
+    ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
+    ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
+    cl_ulong totalTime = timeNs;
+    statistics.pushValue(std::chrono::nanoseconds{timeNs});
+
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
-        cl_event profilingEvent{};
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, &profilingEvent));
         ASSERT_CL_SUCCESS(clWaitForEvents(1, &profilingEvent));
-
-        cl_ulong timeNs{};
         ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
+        totalTime += timeNs;
         ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
+        if (i + 1 < arguments.iterations)
         statistics.pushValue(std::chrono::nanoseconds{timeNs});
     }
+    
+    uint32_t iterationCount = arguments.iterations + 1;
+    double timePerIteration = (double) totalTime / (double) iterationCount;
+
+    printf("\n samples gathered %d , element count %lu , timePerIteration (us) %f Bandwidth (GB/s) %f \n", iterationCount, gws, timePerIteration / 1000.0, sizeInBytes / timePerIteration);
+
 
     ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));
     ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
