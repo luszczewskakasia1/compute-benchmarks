@@ -12,9 +12,9 @@ TestResult run(const ReductionArguments3 &arguments, Statistics &statistics) {
 
     // Create kernel
     std::string kernelSource = R"(
-       __kernel void reduction(__global uint4 *results) {
-            uint4 values = results[get_global_id(0)];
-            uint value = values.x + values.y + values.z + values.w;
+       __kernel void reduction(__global uint16 *results) {
+            uint16 values = results[get_global_id(0)];
+            uint value = values.s0 + values.s1 + values.s2 + values.s3+ values.s4 + values.s5 + values.s6+ values.s7 + values.s8 + values.s9+ values.sa + values.sb + values.sc+ values.sd + values.se + values.sf;
             local uint localSums[512u];
             localSums[get_local_id(0)] = value;
             barrier(CLK_LOCAL_MEM_FENCE);
@@ -23,7 +23,7 @@ TestResult run(const ReductionArguments3 &arguments, Statistics &statistics) {
                 for(int i = 0 ; i < 512u ; i++ ){
                     sum += localSums[i];
                 }
-                atomic_add(&(((global uint*)results)[get_global_size(0)*4]), sum);
+                atomic_add(&(((global uint*)results)[get_global_size(0)*16]), sum);
             }
        }
     )";
@@ -69,7 +69,7 @@ TestResult run(const ReductionArguments3 &arguments, Statistics &statistics) {
     cl_ulong timeNs{};
 
     // Warmup kernel
-    const size_t gws = arguments.numberOfElements / 4;
+    const size_t gws = arguments.numberOfElements / 16;
     const size_t lws = 512u;
     ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 0, sizeof(buffer), &buffer));
     ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &profilingEvent));
