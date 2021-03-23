@@ -5,7 +5,7 @@
 
 #include "definitions/reduction.h"
 
-TestResult run(const ReductionArguments &arguments, Statistics &statistics) {
+static TestResult run(const ReductionArguments &arguments, Statistics &statistics) {
     QueueProperties queueProperties = QueueProperties::create().setProfiling(true);
     Opencl opencl(queueProperties);
     cl_int retVal;
