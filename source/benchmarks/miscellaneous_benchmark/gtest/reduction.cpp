@@ -26,4 +26,4 @@ INSTANTIATE_TEST_SUITE_P(
     ReductionTest,
     ::testing::Combine(
         ::CommonGtestArgs::allApis(),
-        ::testing::Values(128000000)));
+        ::testing::Values(128000000, 256000000, 512000000)));
