@@ -4,7 +4,7 @@ bool supportedApis[static_cast<int>(Api::COUNT)] = {};
 
 RegisterSupportedApi::RegisterSupportedApi(Api api) {
     auto &slot = ::supportedApis[static_cast<int>(api)];
-    FATAL_ERROR_IF(slot, "Api support registered multiple times");
+    DEVELOPER_WARNING_IF(slot, "Api support registered multiple times");
     slot = true;
 }
 

@@ -65,8 +65,8 @@ class Workload {
         std::unique_ptr<WorkloadIo> io = WorkloadIo::create(arguments);
         TestResult result = runImpl(arguments, statistics, synchronization, *io);
         if (result == TestResult::Success) {
-            FATAL_ERROR_UNLESS(statistics.isFull(), "test did not generate as many values as expected");
-            FATAL_ERROR_UNLESS(synchronization.validate(), "test did not synchronize the correct amount of times");
+            DEVELOPER_WARNING_IF(statistics.isFull(), "test did not generate as many values as expected");
+            DEVELOPER_WARNING_IF(synchronization.validate(), "test did not synchronize the correct amount of times");
             statistics.printStatistics(*io);
         } else {
             synchronization.executeRemainingSynchronizations(*io);

@@ -77,7 +77,7 @@ bool Configuration::parseArgumentsForConfiguration(CommandLineArguments &argumen
 }
 
 void Configuration::loadDefaultConfiguration() {
-    FATAL_ERROR_IF(Configuration::instance != nullptr, "Configuration parsed multiple times");
+    DEVELOPER_WARNING_IF(Configuration::instance != nullptr, "Configuration parsed multiple times");
     Configuration::instance = std::make_unique<Configuration>();
 }
 

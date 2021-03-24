@@ -21,7 +21,7 @@ const static std::unordered_map<TestResult, TestResultHelper::TestResultInfo> te
 // clang-format on
 
 const TestResultHelper::TestResultInfo &TestResultHelper::getTestResultInfo(TestResult testResult) {
-    FATAL_ERROR_IF(testResult == TestResult::Success, "Tried to get metadata for TestResult::Success. This is a benchmark framework issue.");
+    DEVELOPER_WARNING_IF(testResult == TestResult::Success, "Tried to get metadata for TestResult::Success. This is a benchmark framework issue.");
 
     const auto testResultInfo = testResultInfoMapping.find(testResult);
     FATAL_ERROR_IF(testResultInfo == testResultInfoMapping.end(), "No metadata for TestResult found. This is a benchmark framework issue.");

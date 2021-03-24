@@ -6,12 +6,12 @@
 #include <sstream>
 
 template <typename... Args>
-inline void printToOstream(std::ostream &stream, Args &&... args) {
+inline void printToOstream(std::ostream &stream, Args &&...args) {
     (stream << ... << args);
 }
 
 template <typename... Args>
-inline void printFatalError(const char *label, Args &&... args) {
+inline void printMessageLine(const char *label, Args &&...args) {
     static_assert(sizeof...(args) > 0, "A textual message of the FATAL_ERROR is required");
     printToOstream(std::cerr, label, ": ", std::forward<Args>(args)...);
     std::cerr << std::endl;
@@ -32,8 +32,8 @@ inline std::string composeErrorStringForMacro(const char *file, int line, const 
 #define NON_FATAL_ERROR(macroName, macroArg, macroArgValue, macroArgValueEnum) \
     GTEST_NONFATAL_FAILURE_(composeErrorStringForMacro(__FILE__, __LINE__, macroName, macroArg, macroArgValue, macroArgValueEnum).c_str());
 
-#define FATAL_ERROR(...)                   \
-    printFatalError("ERROR", __VA_ARGS__); \
+#define FATAL_ERROR(...)                    \
+    printMessageLine("ERROR", __VA_ARGS__); \
     throw std::exception();
 
 #define FATAL_ERROR_IF(condition, ...) \
@@ -43,6 +43,14 @@ inline std::string composeErrorStringForMacro(const char *file, int line, const 
 
 #define FATAL_ERROR_UNLESS(condition, message) FATAL_ERROR_IF(!(condition), (message))
 
-#define FATAL_ERROR_IN_DESTRUCTOR(...)     \
-    printFatalError("ERROR", __VA_ARGS__); \
+#define FATAL_ERROR_IN_DESTRUCTOR(...)      \
+    printMessageLine("ERROR", __VA_ARGS__); \
     std::abort();
+
+#define DEVELOPER_WARNING(...) \
+    printMessageLine("DEVELOPER_WARNING", __VA_ARGS__);
+
+#define DEVELOPER_WARNING_IF(condition, ...) \
+    if (condition) {                         \
+        DEVELOPER_WARNING(__VA_ARGS__)       \
+    }
