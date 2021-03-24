@@ -100,8 +100,8 @@ TestResult run(const ReductionArguments5 &arguments, Statistics &statistics) {
 
     ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
     ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
-    cl_ulong totalTime = timeNs;
-    statistics.pushValue(std::chrono::nanoseconds{timeNs});
+    statistics.pushValue(std::chrono::nanoseconds{timeNs}, "time", MeasurementUnit::Microseconds);
+    statistics.pushValue(std::chrono::nanoseconds{timeNs}, sizeInBytes, "bw", MeasurementUnit::GigabytesPerSecond);
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
@@ -110,16 +110,13 @@ TestResult run(const ReductionArguments5 &arguments, Statistics &statistics) {
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &profilingEvent));
         ASSERT_CL_SUCCESS(clWaitForEvents(1, &profilingEvent));
         ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
-        totalTime += timeNs;
+
         ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
-        if (i + 1 < arguments.iterations)
-            statistics.pushValue(std::chrono::nanoseconds{timeNs});
+        if (i + 1 < arguments.iterations) {
+            statistics.pushValue(std::chrono::nanoseconds{timeNs}, "time", MeasurementUnit::Microseconds);
+            statistics.pushValue(std::chrono::nanoseconds{timeNs}, sizeInBytes, "bw", MeasurementUnit::GigabytesPerSecond);
+        }
     }
-
-    uint32_t iterationCount = arguments.iterations + 1;
-    double timePerIteration = (double)totalTime / (double)iterationCount;
-
-    printf("\n Variant 3 samples gathered %d , element count %lu , timePerIteration (us) %f Bandwidth (GB/s) %f \n", iterationCount, (size_t)arguments.numberOfElements, timePerIteration / 1000.0, sizeInBytes / timePerIteration);
 
     ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));
     ASSERT_CL_SUCCESS(clReleaseKernel(kernel));
