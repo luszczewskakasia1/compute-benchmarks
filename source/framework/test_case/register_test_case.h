@@ -17,8 +17,10 @@ struct RegisterTestCase {
     explicit RegisterTestCase() {
         using ExpectedBaseClass = TestCase<typename ConcreteTestCase::ArgumentContainerT>;
         static_assert(std::is_base_of_v<ExpectedBaseClass, ConcreteTestCase>, "ConcreteTestCase should derive from TestCase");
+        TestMap &testMap = TestMap::get();
 
         auto testCase = std::unique_ptr<TestCaseInterface>(new ConcreteTestCase());
+        DEVELOPER_WARNING_IF(testMap.find(testCase->getTestCaseName()) != testMap.end(), "Multiple tests have a name \"", testCase->getTestCaseName(), "\"");
         TestMap::get()[testCase->getTestCaseName()] = std::move(testCase);
     }
 };
