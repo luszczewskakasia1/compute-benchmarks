@@ -1,5 +1,6 @@
 #pragma once
 
+#include "framework/enum/measurement_unit.h"
 #include "framework/utility/error.h"
 
 #include <chrono>
@@ -10,8 +11,8 @@ class Statistics {
 
     Statistics(size_t maxSamplesCount) : maxSamplesCount(maxSamplesCount) {}
 
-    virtual void pushValue(Clock::duration time, const std::string &description = "") = 0;
-    virtual void pushValue(Clock::duration time, uint64_t size, const std::string &description = "") = 0;
+    virtual void pushValue(Clock::duration time, const std::string &description = "", MeasurementUnit unit = MeasurementUnit::Default) = 0;
+    virtual void pushValue(Clock::duration time, uint64_t size, const std::string &description = "", MeasurementUnit unit = MeasurementUnit::Default) = 0;
 
     virtual bool isEmpty() const = 0;
     virtual bool isFull() const = 0;

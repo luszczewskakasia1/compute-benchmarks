@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-void WorkloadStatistics::pushValue(Clock::duration time, const std::string &description) {
+void WorkloadStatistics::pushValue(Clock::duration time, const std::string &description, MeasurementUnit unit) {
     FATAL_ERROR_IF(description != "", "WorkloadStatistics does not support multiple statistics groups");
     FATAL_ERROR_IF(samplesCount == maxSamplesCount, "Too many values pushed by the test");
     samplesCount++;
@@ -14,7 +14,7 @@ void WorkloadStatistics::pushValue(Clock::duration time, const std::string &desc
     result << timeNanoseconds << ' ';
 }
 
-void WorkloadStatistics::pushValue(Clock::duration time, uint64_t size, const std::string &description) {
+void WorkloadStatistics::pushValue(Clock::duration time, uint64_t size, const std::string &description, MeasurementUnit unit) {
     FATAL_ERROR_IF(description != "", "WorkloadStatistics does not support multiple statistics groups");
     FATAL_ERROR("Not implemented");
 }

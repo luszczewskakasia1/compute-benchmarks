@@ -14,17 +14,20 @@
 TestCaseStatistics::TestCaseStatistics(size_t maxSamplesCount, Configuration::PrintType printType)
     : Statistics(maxSamplesCount),
       printType(printType) {
-    this->samplesMap[""] = {};
 }
 
-void TestCaseStatistics::pushValue(Clock::duration time, const std::string &description) {
-    static_assert(std::is_floating_point_v<Value>, "Need floating point type for the above cast to work properly");
+void TestCaseStatistics::pushValue(Clock::duration time, const std::string &description, MeasurementUnit unit) {
+    static_assert(std::is_floating_point_v<Value>, "Need floating point type for the below cast to work properly");
     const Value timeSeconds = std::chrono::duration_cast<std::chrono::duration<Value>>(time).count();
 
-    switch (BenchmarkInfo::get().getMeasurementUnit()) {
+    if (unit == MeasurementUnit::Default) {
+        unit = BenchmarkInfo::get().getMeasurementUnit();
+    }
+
+    switch (unit) {
     case MeasurementUnit::Microseconds: {
         const Value timeMicroseconds = timeSeconds * 1e6;
-        this->pushValue(timeMicroseconds, description);
+        this->pushValue(timeMicroseconds, description, unit);
         break;
     }
     case MeasurementUnit::GigabytesPerSecond:
@@ -34,20 +37,24 @@ void TestCaseStatistics::pushValue(Clock::duration time, const std::string &desc
     }
 }
 
-void TestCaseStatistics::pushValue(Clock::duration time, uint64_t size, const std::string &description) {
-    static_assert(std::is_floating_point_v<Value>, "Need floating point type for the above cast to work properly");
+void TestCaseStatistics::pushValue(Clock::duration time, uint64_t size, const std::string &description, MeasurementUnit unit) {
+    static_assert(std::is_floating_point_v<Value>, "Need floating point type for the below cast to work properly");
     const Value timeSeconds = std::chrono::duration_cast<std::chrono::duration<Value>>(time).count();
 
-    switch (BenchmarkInfo::get().getMeasurementUnit()) {
+    if (unit == MeasurementUnit::Default) {
+        unit = BenchmarkInfo::get().getMeasurementUnit();
+    }
+
+    switch (unit) {
     case MeasurementUnit::Microseconds: {
         const Value timeMicroseconds = timeSeconds * 1e6;
-        this->pushValue(timeMicroseconds, description);
+        this->pushValue(timeMicroseconds, description, unit);
         break;
     }
     case MeasurementUnit::GigabytesPerSecond: {
         const Value timeNanoseconds = timeSeconds * 1e9;
         const Value bandwidth = size / timeNanoseconds; // Bytes/Nanoseconds = Gigabytes/Seconds
-        this->pushValue(bandwidth, description);
+        this->pushValue(bandwidth, description, unit);
         break;
     }
     default:
@@ -57,7 +64,7 @@ void TestCaseStatistics::pushValue(Clock::duration time, uint64_t size, const st
 
 bool TestCaseStatistics::isEmpty() const {
     for (auto &samplesEntry : samplesMap) {
-        if (samplesEntry.second.size() != 0) {
+        if (samplesEntry.second.vector.size() != 0) {
             return false;
         }
     }
@@ -65,19 +72,28 @@ bool TestCaseStatistics::isEmpty() const {
 }
 
 bool TestCaseStatistics::isFull() const {
+    DEVELOPER_WARNING_IF(samplesMap.size() == 0, "Test did not generate any values");
     for (auto &samplesEntry : samplesMap) {
-        if (samplesEntry.second.size() != maxSamplesCount) {
+        if (samplesEntry.second.vector.size() != maxSamplesCount) {
             return false;
         }
     }
     return true;
 }
 
-void TestCaseStatistics::pushValue(Value value, const std::string &description) {
+void TestCaseStatistics::pushValue(Value value, const std::string &description, MeasurementUnit unit) {
     auto &samples = this->samplesMap[description];
-    FATAL_ERROR_IF(samples.size() == maxSamplesCount, "Too many values pushed by the test");
 
-    samples.push_back(value);
+    // We expect a precise amount of measurements requested by the user.
+    FATAL_ERROR_IF(samples.vector.size() == maxSamplesCount, "Too many values pushed by the test");
+
+    // Set unit for all samples with our description if it is not set. All samples must have the same unit
+    if (samples.unit != unit) {
+        FATAL_ERROR_IF(samples.unit != MeasurementUnit::Unknown, "Different units used for the same measurement");
+        samples.unit = unit;
+    }
+
+    samples.vector.push_back(value);
     if (std::isinf(value)) {
         this->reachedInfinity = true;
     }
@@ -156,13 +172,14 @@ void TestCaseStatistics::printStatistics(const std::string &testCaseName) const 
 void TestCaseStatistics::printStatisticsDefault(const std::string &testCaseName) const {
     const auto columns = ColumnInfo::getColumns();
 
+    bool isFirst = true;
     for (const auto &samplesEntry : this->samplesMap) {
         const auto &samplesName = samplesEntry.first;
         const auto &samples = samplesEntry.second;
-        const MetricsStrings metricsStrings{Metrics{samples}, this->reachedInfinity};
+        const MetricsStrings metricsStrings{Metrics{samples.vector}, this->reachedInfinity};
 
         int column = 0;
-        std::cout << std::setw(columns[column++].width) << ((samplesName == "") ? testCaseName : "");
+        std::cout << std::setw(columns[column++].width) << (isFirst ? testCaseName : "");
         std::cout << std::setw(columns[column++].width) << metricsStrings.mean;
         std::cout << std::setw(columns[column++].width) << metricsStrings.median;
         std::cout << std::setw(columns[column++].width) << metricsStrings.standardDeviation;
@@ -170,12 +187,14 @@ void TestCaseStatistics::printStatisticsDefault(const std::string &testCaseName)
         std::cout << std::setw(columns[column++].width) << metricsStrings.max;
         std::cout << ' ' << samplesName;
         std::cout << std::endl;
+
+        isFirst = false;
     }
 }
 
 void TestCaseStatistics::printStatisticsCsv(const std::string &testCaseName) const {
     const auto samples = this->samplesMap.at("");
-    const MetricsStrings metricsStrings{Metrics{samples}, this->reachedInfinity};
+    const MetricsStrings metricsStrings{Metrics{samples.vector}, this->reachedInfinity};
 
     std::cout << testCaseName << ",";
     std::cout << metricsStrings.mean << ",";
@@ -194,7 +213,7 @@ void TestCaseStatistics::printStatisticsVerbose() const {
         }
         std::cout << "results: [ ";
 
-        for (const auto &sample : samplesEntry.second) {
+        for (const auto &sample : samplesEntry.second.vector) {
             std::cout << sample << ' ';
         }
         std::cout << "]\n";
