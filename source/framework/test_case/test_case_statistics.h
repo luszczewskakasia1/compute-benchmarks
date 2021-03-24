@@ -60,12 +60,14 @@ struct TestCaseStatistics::Metrics {
 };
 
 struct TestCaseStatistics::MetricsStrings {
-    MetricsStrings(const Metrics &metrics, bool reachedInfinity);
+    MetricsStrings(const std::string &name, const Samples &samples, bool reachedInfinity);
+    Metrics metrics;
     std::string min;
     std::string max;
     std::string mean;
     std::string median;
     std::string standardDeviation;
+    std::string label;
 
   private:
     static std::string generateMin(Value min);
@@ -74,4 +76,5 @@ struct TestCaseStatistics::MetricsStrings {
     static std::string generateMedian(Value median);
     static std::string generateStandardDeviation(Value standardDeviation, bool reachedInfinity);
     static std::string generate(Value value);
+    static std::string generateLabel(const std::string &name, MeasurementUnit unit);
 };

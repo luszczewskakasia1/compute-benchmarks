@@ -102,27 +102,20 @@ void TestCaseStatistics::pushValue(Value value, const std::string &description, 
 struct ColumnInfo {
     int width;
     const char *label;
-    bool printUnit;
 
-    static constexpr size_t getColumnCount() { return 6; }
-    static std::array<ColumnInfo, 6> getColumns() {
+    static constexpr size_t getColumnCount() { return 7; }
+    static std::array<ColumnInfo, 7> getColumns() {
         return {{
-            {BenchmarkInfo::get().getTestCaseNameColumnWidth(), "TestCase", false},
-            {15, "Mean", true},
-            {15, "Median", true},
-            {15, "StdDev", false},
-            {15, "Min", true},
-            {15, "Max", true},
+            {BenchmarkInfo::get().getTestCaseNameColumnWidth(), "TestCase"},
+            {15, "Mean"},
+            {15, "Median"},
+            {15, "StdDev"},
+            {15, "Min"},
+            {15, "Max"},
+            {15, "Label [unit]"},
         }};
     }
 };
-
-static std::string getColumnName(const std::string &label, const std::string &unit, bool hasUnit) {
-    if (hasUnit) {
-        return label + " [" + unit + "]";
-    }
-    return label;
-}
 
 void TestCaseStatistics::printStatisticsHeader(Configuration::PrintType printType) {
     const std::string unit = std::to_string(BenchmarkInfo::get().getMeasurementUnit());
@@ -132,7 +125,7 @@ void TestCaseStatistics::printStatisticsHeader(Configuration::PrintType printTyp
     case Configuration::PrintType::DefaultWithVerbose:
     case Configuration::PrintType::Default: {
         for (const ColumnInfo &column : columns) {
-            std::cout << std::setw(column.width) << getColumnName(column.label, unit, column.printUnit);
+            std::cout << std::setw(column.width) << column.label;
         }
         std::cout << std::endl;
         break;
@@ -140,7 +133,7 @@ void TestCaseStatistics::printStatisticsHeader(Configuration::PrintType printTyp
     case Configuration::PrintType::Csv:
         for (int columnIndex = 0; columnIndex < columnCount; columnIndex++) {
             const ColumnInfo &column = columns[columnIndex];
-            std::cout << getColumnName(column.label, unit, column.printUnit);
+            std::cout << column.label;
             if (columnIndex != columnCount - 1) {
                 std::cout << ",";
             }
@@ -174,9 +167,9 @@ void TestCaseStatistics::printStatisticsDefault(const std::string &testCaseName)
 
     bool isFirst = true;
     for (const auto &samplesEntry : this->samplesMap) {
-        const auto &samplesName = samplesEntry.first;
-        const auto &samples = samplesEntry.second;
-        const MetricsStrings metricsStrings{Metrics{samples.vector}, this->reachedInfinity};
+        const std::string &samplesName = samplesEntry.first;
+        const Samples &samples = samplesEntry.second;
+        const MetricsStrings metricsStrings{samplesName, samples, this->reachedInfinity};
 
         int column = 0;
         std::cout << std::setw(columns[column++].width) << (isFirst ? testCaseName : "");
@@ -185,7 +178,7 @@ void TestCaseStatistics::printStatisticsDefault(const std::string &testCaseName)
         std::cout << std::setw(columns[column++].width) << metricsStrings.standardDeviation;
         std::cout << std::setw(columns[column++].width) << metricsStrings.min;
         std::cout << std::setw(columns[column++].width) << metricsStrings.max;
-        std::cout << ' ' << samplesName;
+        std::cout << std::setw(columns[column++].width) << metricsStrings.label;
         std::cout << std::endl;
 
         isFirst = false;
@@ -193,8 +186,12 @@ void TestCaseStatistics::printStatisticsDefault(const std::string &testCaseName)
 }
 
 void TestCaseStatistics::printStatisticsCsv(const std::string &testCaseName) const {
-    const auto samples = this->samplesMap.at("");
-    const MetricsStrings metricsStrings{Metrics{samples.vector}, this->reachedInfinity};
+    const auto samplesEntry = this->samplesMap.begin();
+    FATAL_ERROR_IF(samplesEntry == this->samplesMap.end(), "Test did not generate any values");
+
+    const std::string &samplesName = samplesEntry->first;
+    const Samples &samples = samplesEntry->second;
+    const MetricsStrings metricsStrings{samplesName, samples, this->reachedInfinity};
 
     std::cout << testCaseName << ",";
     std::cout << metricsStrings.mean << ",";
@@ -202,6 +199,8 @@ void TestCaseStatistics::printStatisticsCsv(const std::string &testCaseName) con
     std::cout << metricsStrings.standardDeviation << ",";
     std::cout << metricsStrings.min << ",";
     std::cout << metricsStrings.max;
+    std::cout << metricsStrings.max;
+    std::cout << metricsStrings.label;
     std::cout << std::endl;
 }
 
@@ -297,12 +296,14 @@ TestCaseStatistics::Value TestCaseStatistics::Metrics::calculateStandardDeviatio
     return stdDev;
 }
 
-TestCaseStatistics::MetricsStrings::MetricsStrings(const Metrics &metrics, bool reachedInfinity)
-    : min(generateMin(metrics.min)),
+TestCaseStatistics::MetricsStrings::MetricsStrings(const std::string &name, const Samples &samples, bool reachedInfinity)
+    : metrics(samples.vector),
+      min(generateMin(metrics.min)),
       max(generateMax(metrics.max)),
       mean(generateMean(metrics.mean, reachedInfinity)),
       median(generateMedian(metrics.median)),
-      standardDeviation(generateStandardDeviation(metrics.standardDeviation, reachedInfinity)) {
+      standardDeviation(generateStandardDeviation(metrics.standardDeviation, reachedInfinity)),
+      label(generateLabel(name, samples.unit)) {
 }
 
 std::string TestCaseStatistics::MetricsStrings::generateMin(Value min) {
@@ -338,4 +339,11 @@ std::string TestCaseStatistics::MetricsStrings::generate(Value value) {
     std::ostringstream result{};
     result << std::fixed << std::setprecision(3) << value;
     return result.str();
+}
+
+std::string TestCaseStatistics::MetricsStrings::generateLabel(const std::string &name, MeasurementUnit unit) {
+    if (name.empty()) {
+        return std::to_string(unit);
+    }
+    return name + " " + std::to_string(unit);
 }

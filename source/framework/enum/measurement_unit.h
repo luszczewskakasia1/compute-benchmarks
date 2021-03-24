@@ -15,9 +15,9 @@ namespace std {
 inline std::string to_string(MeasurementUnit unit) {
     switch (unit) {
     case MeasurementUnit::Microseconds:
-        return "us";
+        return "[us]";
     case MeasurementUnit::GigabytesPerSecond:
-        return "GB/s";
+        return "[GB/s]";
     default:
         FATAL_ERROR("Unknown measurement unit");
     }
