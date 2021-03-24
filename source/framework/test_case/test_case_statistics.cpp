@@ -198,8 +198,7 @@ void TestCaseStatistics::printStatisticsCsv(const std::string &testCaseName) con
     std::cout << metricsStrings.median << ",";
     std::cout << metricsStrings.standardDeviation << ",";
     std::cout << metricsStrings.min << ",";
-    std::cout << metricsStrings.max;
-    std::cout << metricsStrings.max;
+    std::cout << metricsStrings.max << ",";
     std::cout << metricsStrings.label;
     std::cout << std::endl;
 }
