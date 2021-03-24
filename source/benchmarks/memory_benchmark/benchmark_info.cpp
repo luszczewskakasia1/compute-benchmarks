@@ -10,12 +10,12 @@ std::string BenchmarkInfoImpl::getBenchmarkDescription() {
     return "Memory Benchmark is a set of tests aimed at measuring bandwidth of memory transfers.";
 }
 
-BenchmarkInfoImpl::MeasurementUnit BenchmarkInfoImpl::getMeasurementUnit() {
+MeasurementUnit BenchmarkInfoImpl::getMeasurementUnit() {
     auto configuration = static_cast<BenchmarkSpecificConfiguration *>(Configuration::get().benchmarkSpecificConfiguration);
     if (configuration->printBandwidth) {
-        return BenchmarkInfoImpl::MeasurementUnit::GigabytesPerSecond;
+        return MeasurementUnit::GigabytesPerSecond;
     } else {
-        return BenchmarkInfoImpl::MeasurementUnit::Microseconds;
+        return MeasurementUnit::Microseconds;
     }
 }
 

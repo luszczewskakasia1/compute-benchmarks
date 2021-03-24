@@ -22,12 +22,12 @@ void TestCaseStatistics::pushValue(Clock::duration time, const std::string &desc
     const Value timeSeconds = std::chrono::duration_cast<std::chrono::duration<Value>>(time).count();
 
     switch (BenchmarkInfo::get().getMeasurementUnit()) {
-    case BenchmarkInfo::MeasurementUnit::Microseconds: {
+    case MeasurementUnit::Microseconds: {
         const Value timeMicroseconds = timeSeconds * 1e6;
         this->pushValue(timeMicroseconds, description);
         break;
     }
-    case BenchmarkInfo::MeasurementUnit::GigabytesPerSecond:
+    case MeasurementUnit::GigabytesPerSecond:
         FATAL_ERROR("Buffer size needs to be passed in bandwidth mode");
     default:
         FATAL_ERROR("Unknown measurement unit");
@@ -39,12 +39,12 @@ void TestCaseStatistics::pushValue(Clock::duration time, uint64_t size, const st
     const Value timeSeconds = std::chrono::duration_cast<std::chrono::duration<Value>>(time).count();
 
     switch (BenchmarkInfo::get().getMeasurementUnit()) {
-    case BenchmarkInfo::MeasurementUnit::Microseconds: {
+    case MeasurementUnit::Microseconds: {
         const Value timeMicroseconds = timeSeconds * 1e6;
         this->pushValue(timeMicroseconds, description);
         break;
     }
-    case BenchmarkInfo::MeasurementUnit::GigabytesPerSecond: {
+    case MeasurementUnit::GigabytesPerSecond: {
         const Value timeNanoseconds = timeSeconds * 1e9;
         const Value bandwidth = size / timeNanoseconds; // Bytes/Nanoseconds = Gigabytes/Seconds
         this->pushValue(bandwidth, description);
@@ -109,18 +109,7 @@ static std::string getColumnName(const std::string &label, const std::string &un
 }
 
 void TestCaseStatistics::printStatisticsHeader(Configuration::PrintType printType) {
-    std::string unit = "";
-    switch (BenchmarkInfo::get().getMeasurementUnit()) {
-    case BenchmarkInfo::MeasurementUnit::Microseconds:
-        unit = "us";
-        break;
-    case BenchmarkInfo::MeasurementUnit::GigabytesPerSecond:
-        unit = "GB/s";
-        break;
-    default:
-        FATAL_ERROR("Unknown measurement unit");
-    }
-
+    const std::string unit = std::to_string(BenchmarkInfo::get().getMeasurementUnit());
     const auto columns = ColumnInfo::getColumns();
     const auto columnCount = ColumnInfo::getColumnCount();
     switch (printType) {
