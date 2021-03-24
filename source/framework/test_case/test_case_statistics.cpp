@@ -178,7 +178,7 @@ void TestCaseStatistics::printStatisticsDefault(const std::string &testCaseName)
         std::cout << std::setw(columns[column++].width) << metricsStrings.standardDeviation;
         std::cout << std::setw(columns[column++].width) << metricsStrings.min;
         std::cout << std::setw(columns[column++].width) << metricsStrings.max;
-        std::cout << std::setw(columns[column++].width) << metricsStrings.label;
+        std::cout << ' ' << std::setw(columns[column++].width - 1) << metricsStrings.label;
         std::cout << std::endl;
 
         isFirst = false;
