@@ -84,11 +84,11 @@ struct Opencl {
         cl_int retVal{};
         cl_command_queue queue{};
         cl_queue_properties properties[maxPropertiesCount] = {};
-        const bool needsQueueSelection = queueProperties.forceBlitter;
+        const bool needsQueueSelection = queueProperties.selectedEngine != Engine::Unknown;
 
         // Force legacy path, if the new path is not supported
         if (needsQueueSelection && !getExtensions().isCommandQueueFamiliesSupported()) {
-            queueProperties.setUseLegacyQueueFamilySelection(true);
+            queueProperties.setUseLegacyEngineSelection(true);
         }
 
         // Create queue
@@ -97,8 +97,8 @@ struct Opencl {
         }
 
         // If family selection with cl_intel_queue_families failed, try the legacy path
-        if (queue == nullptr && needsQueueSelection && !queueProperties.useLegacyQueueFamilySelection) {
-            queueProperties.setUseLegacyQueueFamilySelection(true);
+        if (queue == nullptr && needsQueueSelection && !queueProperties.useLegacyEngineSelection) {
+            queueProperties.setUseLegacyEngineSelection(true);
             if (queueProperties.fillQueueProperties(deviceForQueue, properties, maxPropertiesCount)) {
                 queue = clCreateCommandQueueWithProperties(this->context, deviceForQueue, properties, &retVal);
             }
