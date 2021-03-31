@@ -1,5 +1,3 @@
-#pragma once
-
 #include "get_intel_product_l0.h"
 
 #include "framework/intel_product/get_intel_product.h"

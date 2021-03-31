@@ -34,8 +34,9 @@ inline IntelGen getIntelGen(IntelProduct product) {
 }
 #undef INTEL_PRODUCT
 
-inline IntelGen getIntelGen(uint32_t deviceId) {
-    return getIntelGen(getIntelProduct(deviceId));
+template <typename Arg>
+inline IntelGen getIntelGen(Arg &&arg) {
+    return getIntelGen(getIntelProduct(std::forward<Arg>(arg)));
 }
 
 #define INTEL_PRODUCT(PRODUCT, GEN) case IntelProduct::PRODUCT: return #PRODUCT;
