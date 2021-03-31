@@ -135,6 +135,10 @@ struct Opencl {
 
   private:
     cl_context createContext(const ContextProperties &contextProperties) {
+        if (!contextProperties.createContext) {
+            return nullptr;
+        }
+
         std::vector<cl_device_id> devicesForContext = getDevices(contextProperties.deviceSelection, false);
         if (devicesForContext.size() == 0) {
             FATAL_ERROR_IF(contextProperties.requireCreationSuccess, "Failed getting devices for context");

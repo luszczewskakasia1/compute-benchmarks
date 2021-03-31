@@ -48,6 +48,9 @@ struct LevelZero {
     // QueueProperties.
     size_t getSubDevicesCount() const { return subDevices.size(); }
 
+    // Create LevelZero context
+    ze_context_handle_t createContext(const ContextProperties &contextProperties);
+
     // Creates queue with given properties. These methods aren't needed to be called by the user in scenarios with only one queue.
     // Queue will be created by default, unless disabled in QueueProperties. These methods allow the user to create
     // additional queues. Queues are tracked internally and will be released automatically.

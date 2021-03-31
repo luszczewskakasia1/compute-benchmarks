@@ -6,6 +6,7 @@
 namespace OCL {
 struct ContextProperties {
     DeviceSelection deviceSelection = DeviceSelection::Unknown;
+    bool createContext = true;
     bool requireCreationSuccess = true;
 
     static ContextProperties create() {
@@ -15,6 +16,11 @@ struct ContextProperties {
 
     ContextProperties &setDeviceSelection(DeviceSelection deviceSelection) {
         this->deviceSelection = deviceSelection;
+        return *this;
+    }
+
+    ContextProperties &disable() {
+        createContext = false;
         return *this;
     }
 

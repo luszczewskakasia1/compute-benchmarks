@@ -40,9 +40,11 @@ LevelZero::LevelZero(const QueueProperties &queueProperties, const ContextProper
         this->device = getDevice(contextProperties.deviceSelection);
     }
 
-    // Create context
-    const ze_context_desc_t contextDesc{ZE_STRUCTURE_TYPE_CONTEXT_DESC};
-    EXPECT_ZE_RESULT_SUCCESS(zeContextCreate(driver, &contextDesc, &context));
+    // Create context on the default device
+    this->context = createContext(contextProperties);
+    if (this->context == nullptr) {
+        return;
+    }
 
     // Create queue
     const auto [queue, queueInfo] = createQueue(queueProperties);
@@ -115,6 +117,17 @@ std::vector<LevelZero::QueueInfo> LevelZero::queryQueueFamilies(ze_device_handle
         }
     }
     return result;
+}
+
+ze_context_handle_t LevelZero::createContext(const ContextProperties &contextProperties) {
+    if (!contextProperties.createContext) {
+        return nullptr;
+    }
+
+    const ze_context_desc_t contextDesc{ZE_STRUCTURE_TYPE_CONTEXT_DESC};
+    ze_context_handle_t context;
+    EXPECT_ZE_RESULT_SUCCESS(zeContextCreate(driver, &contextDesc, &context));
+    return context;
 }
 
 std::pair<ze_command_queue_handle_t, LevelZero::QueueInfo> LevelZero::createQueue(const QueueProperties &queueProperties) {
