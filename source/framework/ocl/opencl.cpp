@@ -53,7 +53,7 @@ Opencl::~Opencl() {
     for (auto &commandQueue : commandQueues) {
         EXPECT_CL_SUCCESS(clReleaseCommandQueue(commandQueue));
     }
-    if (context) {
+    for (auto &contexts : contexts) {
         EXPECT_CL_SUCCESS(clReleaseContext(context));
     }
     for (auto &subDevice : subDevices) {
@@ -115,6 +115,10 @@ cl_context Opencl::createContext(const ContextProperties &contextProperties) {
     cl_context context = clCreateContext(nullptr, static_cast<cl_uint>(devicesForContext.size()), devicesForContext.data(), nullptr, nullptr, &retVal);
     if (contextProperties.requireCreationSuccess) {
         CL_SUCCESS_OR_ERROR(retVal, "Context creation failed");
+    }
+
+    if (context) {
+        this->contexts.push_back(context);
     }
     return context;
 }

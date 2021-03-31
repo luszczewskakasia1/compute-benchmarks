@@ -48,6 +48,7 @@ struct Opencl {
     // Internal fields managed by the Opencl class
     cl_device_id rootDevice;
     std::vector<cl_device_id> subDevices{};
+    std::vector<cl_context> contexts{};
     std::vector<cl_command_queue> commandQueues{};
     std::unique_ptr<ExtensionsHelper> extensionsHelper{};
 };
