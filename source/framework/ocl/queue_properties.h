@@ -2,6 +2,7 @@
 
 #include "framework/configuration.h"
 #include "framework/enum/device_selection.h"
+#include "framework/enum/engine.h"
 #include "framework/ocl/cl.h"
 #include "framework/ocl/utility/queue_families_helper.h"
 
@@ -10,8 +11,8 @@ struct QueueProperties {
     bool createQueue = true;
     bool requireCreationSuccess = true;
     bool profiling = false;
-    bool forceBlitter = false;
-    bool useLegacyQueueFamilySelection = false;
+    Engine selectedEngine = Engine::Unknown;
+    bool useLegacyEngineSelection = false;
     int ooq = -1;
     DeviceSelection deviceSelection = DeviceSelection::Unknown;
 
@@ -26,12 +27,17 @@ struct QueueProperties {
     }
 
     QueueProperties &setForceBlitter(bool bcs) {
-        this->forceBlitter = bcs;
+        this->selectedEngine = bcs ? Engine::Bcs : Engine::Unknown;
         return *this;
     }
 
-    QueueProperties &setUseLegacyQueueFamilySelection(bool useLegacy) {
-        this->useLegacyQueueFamilySelection = useLegacy;
+    QueueProperties &setForceEngine(Engine engine) {
+        this->selectedEngine = engine;
+        return *this;
+    }
+
+    QueueProperties &setUseLegacyEngineSelection(bool useLegacy) {
+        this->useLegacyEngineSelection = useLegacy;
         return *this;
     }
 
@@ -66,8 +72,8 @@ struct QueueProperties {
         if (this->ooq == 1 || (this->ooq == -1 && Configuration::get().oclUseOOQ)) {
             properties[1] |= CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
         }
-        if (this->forceBlitter) {
-            const auto propertiesForBlitter = QueueFamiliesHelper::getPropertiesForSelectingBlitter(device, this->useLegacyQueueFamilySelection);
+        if (this->selectedEngine != Engine::Unknown) {
+            const auto propertiesForBlitter = QueueFamiliesHelper::getPropertiesForSelectingEngine(device, this->selectedEngine, this->useLegacyEngineSelection);
             if (propertiesForBlitter == nullptr) {
                 return false;
             }

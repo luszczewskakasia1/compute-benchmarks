@@ -1,5 +1,7 @@
 #pragma once
 
+#include "framework/enum/measurement_unit.h"
+
 #include <memory>
 #include <string>
 
@@ -22,10 +24,6 @@ class BenchmarkInfo {
     std::string getBenchmarkFilename();
 
     // Unit of numbers that are returned by all tests in the given framework
-    enum class MeasurementUnit {
-        Microseconds,
-        GigabytesPerSecond,
-    };
     virtual MeasurementUnit getMeasurementUnit() = 0;
 
     // Width of the first column containing names of test cases.

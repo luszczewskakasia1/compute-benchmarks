@@ -13,7 +13,7 @@ struct Reduction3 : TestCase<ReductionArguments3> {
     using TestCase<ReductionArguments3>::TestCase;
 
     std::string getTestCaseName() const override {
-        return "Reduction";
+        return "Reduction3";
     }
 
     std::string getHelp() const override {

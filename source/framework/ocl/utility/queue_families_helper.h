@@ -1,5 +1,6 @@
 #pragma once
 
+#include "framework/enum/engine.h"
 #include "framework/ocl/cl.h"
 #include "framework/ocl/utility/error.h"
 
@@ -13,27 +14,66 @@ class QueueFamiliesHelper {
         cl_uint propertiesCount;
     };
 
-    static inline std::unique_ptr<PropertiesForSelectingQueue> getPropertiesForSelectingBlitter(cl_device_id device, bool useLegacy) {
+    static inline std::unique_ptr<PropertiesForSelectingQueue> getPropertiesForSelectingEngine(cl_device_id device, Engine engine, bool useLegacy) {
         if (useLegacy) {
-            return getPropertiesForSelectingBlitterLegacy();
+            return getPropertiesForSelectingEngineLegacy(engine);
         } else {
-            return getPropertiesForSelectingBlitterNew(device);
+            return getPropertiesForSelectingEngineNew(device, engine);
         }
     }
 
-    static inline std::unique_ptr<PropertiesForSelectingQueue> getPropertiesForSelectingBlitterNew(cl_device_id device) {
-        for (const auto &queueFamilyDesc : queryQueueFamilies(device)) {
-            if (queueFamilyDesc.copyOnly) {
-                return std::make_unique<PropertiesForSelectingQueue>(queueFamilyDesc.properties);
+    static inline std::unique_ptr<PropertiesForSelectingQueue> getPropertiesForSelectingEngineNew(cl_device_id device, Engine engine) {
+        const EngineGroup engineGroup = EngineHelper::getEngineGroup(engine);
+        const size_t engineIndex = EngineHelper::getEngineIndexWithinGroup(engine);
+
+        const auto &families = queryQueueFamilies(device);
+        for (const auto &queueFamilyDesc : families) {
+            if (engineGroup != queueFamilyDesc.type) {
+                continue;
             }
+            if (engineIndex >= queueFamilyDesc.queueCount) {
+                continue;
+            }
+
+            auto result = std::make_unique<PropertiesForSelectingQueue>();
+            result->properties[0] = CL_QUEUE_FAMILY_INTEL;
+            result->properties[1] = queueFamilyDesc.familyIndex;
+            result->properties[2] = CL_QUEUE_INDEX_INTEL;
+            result->properties[3] = engineIndex;
+            result->propertiesCount = 4;
+            return result;
         }
         return nullptr;
     }
 
-    static inline std::unique_ptr<PropertiesForSelectingQueue> getPropertiesForSelectingBlitterLegacy() {
+    static inline std::unique_ptr<PropertiesForSelectingQueue> getPropertiesForSelectingEngineLegacy(Engine engine) {
+        cl_queue_properties selectionProperty{};
+        switch (engine) {
+        case Engine::Rcs:
+            selectionProperty = CL_QUEUE_FAMILY_TYPE_RCS_DEPRECATED_INTEL;
+            break;
+        case Engine::Ccs0:
+            selectionProperty = CL_QUEUE_FAMILY_TYPE_CCS0_DEPRECATED_INTEL;
+            break;
+        case Engine::Ccs1:
+            selectionProperty = CL_QUEUE_FAMILY_TYPE_CCS1_DEPRECATED_INTEL;
+            break;
+        case Engine::Ccs2:
+            selectionProperty = CL_QUEUE_FAMILY_TYPE_CCS2_DEPRECATED_INTEL;
+            break;
+        case Engine::Ccs3:
+            selectionProperty = CL_QUEUE_FAMILY_TYPE_CCS3_DEPRECATED_INTEL;
+            break;
+        case Engine::Bcs:
+            selectionProperty = CL_QUEUE_FAMILY_TYPE_BCS_DEPRECATED_INTEL;
+            break;
+        default:
+            return nullptr;
+        }
+
         auto result = std::make_unique<PropertiesForSelectingQueue>();
         result->properties[0] = CL_QUEUE_FAMILY_DEPRECATED_INTEL;
-        result->properties[1] = CL_QUEUE_FAMILY_TYPE_BCS_DEPRECATED_INTEL;
+        result->properties[1] = selectionProperty;
         result->propertiesCount = 2;
         return result;
     }
@@ -43,16 +83,16 @@ class QueueFamiliesHelper {
     }
 
     template <typename... Args>
-    static bool validateCapabilities(cl_command_queue queue, Args &&... args) {
+    static bool validateCapabilities(cl_command_queue queue, Args &&...args) {
         return validateCapabilities(getQueueCapabilities(queue), std::forward<Args>(args)...);
     }
 
   private:
     struct QueueFamilyDesc {
-        PropertiesForSelectingQueue properties;
+        size_t familyIndex;
         cl_command_queue_capabilities_intel capabilitites;
         size_t queueCount;
-        bool copyOnly;
+        EngineGroup type;
     };
 
     static inline std::vector<QueueFamilyDesc> queryQueueFamilies(cl_device_id device) {
@@ -77,15 +117,10 @@ class QueueFamiliesHelper {
         std::vector<QueueFamilyDesc> result = {};
         for (auto familyIndex = 0u; familyIndex < familiesCount; familyIndex++) {
             QueueFamilyDesc desc{};
-            desc.properties.properties[0] = CL_QUEUE_FAMILY_INTEL;
-            desc.properties.properties[1] = familyIndex;
-            desc.properties.properties[2] = CL_QUEUE_INDEX_INTEL;
-            desc.properties.properties[3] = 0;
-            desc.properties.propertiesCount = 4;
+            desc.familyIndex = familyIndex;
             desc.capabilitites = families[familyIndex].capabilities;
             desc.queueCount = families[familyIndex].count;
-            desc.copyOnly = !validateCapability(families[familyIndex].capabilities, CL_QUEUE_CAPABILITY_KERNEL_INTEL);
-
+            desc.type = EngineHelper::parseEngineGroup(families[familyIndex].name);
             result.push_back(desc);
         }
 
@@ -94,7 +129,10 @@ class QueueFamiliesHelper {
 
     static cl_command_queue_capabilities_intel getQueueCapabilities(cl_command_queue queue) {
         cl_uint familyIndex = {};
-        EXPECT_CL_SUCCESS(clGetCommandQueueInfo(queue, CL_QUEUE_FAMILY_INTEL, sizeof(familyIndex), &familyIndex, nullptr));
+        cl_int retVal = clGetCommandQueueInfo(queue, CL_QUEUE_FAMILY_INTEL, sizeof(familyIndex), &familyIndex, nullptr);
+        if (retVal != CL_SUCCESS) {
+            return CL_QUEUE_DEFAULT_CAPABILITIES_INTEL;
+        }
         cl_device_id device = {};
         EXPECT_CL_SUCCESS(clGetCommandQueueInfo(queue, CL_QUEUE_DEVICE, sizeof(device), &device, nullptr));
 
@@ -108,7 +146,7 @@ class QueueFamiliesHelper {
     }
 
     template <typename... Args>
-    static bool validateCapabilities(cl_command_queue_capabilities_intel queueCapabilities, cl_command_queue_capabilities_intel capability, Args &&... args) {
+    static bool validateCapabilities(cl_command_queue_capabilities_intel queueCapabilities, cl_command_queue_capabilities_intel capability, Args &&...args) {
         if (!validateCapability(queueCapabilities, capability)) {
             return false;
         }

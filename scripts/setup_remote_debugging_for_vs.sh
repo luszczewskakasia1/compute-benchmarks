@@ -1,7 +1,8 @@
 echo -n "Machine IP: "
 read ip
 
-while IFS= read -r settings_file; do
+while IFS= read -r project_file; do
+    settings_file=$project_file.user
     benchmark_name=`basename $settings_file | cut -d'.' -f1`
 
     echo "Setting up $benchmark_name..."
@@ -17,6 +18,6 @@ while IFS= read -r settings_file; do
     echo "    <DebuggerFlavor>WindowsRemoteDebugger</DebuggerFlavor>                                       "  >> $settings_file
     echo "  </PropertyGroup>                                                                               "  >> $settings_file
     echo "</Project>                                                                                       "  >> $settings_file
-done < <(find ../build/source/ -name "*.vcxproj.user" | grep benchmarks/.*_benchmark)
+done < <(find ../build/source/ -name "*.vcxproj" | grep benchmarks/.*_benchmark)
 
 echo "Done!"

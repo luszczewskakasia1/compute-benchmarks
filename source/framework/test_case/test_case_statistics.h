@@ -11,12 +11,16 @@ class TestCaseStatistics : public Statistics {
     using Clock = std::chrono::high_resolution_clock;
     using Value = double;
     using SamplesVector = std::vector<Value>;
-    using SamplesMap = std::map<std::string, SamplesVector>;
+    struct Samples {
+        MeasurementUnit unit = MeasurementUnit::Unknown;
+        SamplesVector vector = {};
+    };
+    using SamplesMap = std::map<std::string, Samples>;
 
     explicit TestCaseStatistics(size_t maxSamplesCount, Configuration::PrintType printType);
 
-    void pushValue(Clock::duration time, const std::string &description = "") override;
-    void pushValue(Clock::duration time, uint64_t size, const std::string &description = "") override;
+    void pushValue(Clock::duration time, const std::string &description = "", MeasurementUnit unit = MeasurementUnit::Default) override;
+    void pushValue(Clock::duration time, uint64_t size, const std::string &description = "", MeasurementUnit unit = MeasurementUnit::Default) override;
 
     bool isEmpty() const override;
     bool isFull() const override;
@@ -26,7 +30,7 @@ class TestCaseStatistics : public Statistics {
     void printStatisticsString(const std::string &testCaseName, const std::string &message) const;
 
   private:
-    void pushValue(Value value, const std::string &description);
+    void pushValue(Value value, const std::string &description, MeasurementUnit unit);
     void printStatisticsDefault(const std::string &testCaseName) const;
     void printStatisticsCsv(const std::string &testCaseName) const;
     void printStatisticsVerbose() const;
@@ -56,12 +60,14 @@ struct TestCaseStatistics::Metrics {
 };
 
 struct TestCaseStatistics::MetricsStrings {
-    MetricsStrings(const Metrics &metrics, bool reachedInfinity);
+    MetricsStrings(const std::string &name, const Samples &samples, bool reachedInfinity);
+    Metrics metrics;
     std::string min;
     std::string max;
     std::string mean;
     std::string median;
     std::string standardDeviation;
+    std::string label;
 
   private:
     static std::string generateMin(Value min);
@@ -70,4 +76,5 @@ struct TestCaseStatistics::MetricsStrings {
     static std::string generateMedian(Value median);
     static std::string generateStandardDeviation(Value standardDeviation, bool reachedInfinity);
     static std::string generate(Value value);
+    static std::string generateLabel(const std::string &name, MeasurementUnit unit);
 };

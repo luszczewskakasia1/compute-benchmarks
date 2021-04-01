@@ -8,8 +8,8 @@ std::string BenchmarkInfoImpl::getBenchmarkDescription() {
     return "Overlap Benchmark is a set of tests aimed at measuring how different commands benefit for simultaneous execution.";
 }
 
-BenchmarkInfoImpl::MeasurementUnit BenchmarkInfoImpl::getMeasurementUnit() {
-    return BenchmarkInfoImpl::MeasurementUnit::Microseconds;
+MeasurementUnit BenchmarkInfoImpl::getMeasurementUnit() {
+    return MeasurementUnit::Microseconds;
 }
 
 int BenchmarkInfoImpl::getTestCaseNameColumnWidth() {

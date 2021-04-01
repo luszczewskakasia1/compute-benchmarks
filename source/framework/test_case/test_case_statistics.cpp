@@ -14,40 +14,47 @@
 TestCaseStatistics::TestCaseStatistics(size_t maxSamplesCount, Configuration::PrintType printType)
     : Statistics(maxSamplesCount),
       printType(printType) {
-    this->samplesMap[""] = {};
 }
 
-void TestCaseStatistics::pushValue(Clock::duration time, const std::string &description) {
-    static_assert(std::is_floating_point_v<Value>, "Need floating point type for the above cast to work properly");
+void TestCaseStatistics::pushValue(Clock::duration time, const std::string &description, MeasurementUnit unit) {
+    static_assert(std::is_floating_point_v<Value>, "Need floating point type for the below cast to work properly");
     const Value timeSeconds = std::chrono::duration_cast<std::chrono::duration<Value>>(time).count();
 
-    switch (BenchmarkInfo::get().getMeasurementUnit()) {
-    case BenchmarkInfo::MeasurementUnit::Microseconds: {
+    if (unit == MeasurementUnit::Default) {
+        unit = BenchmarkInfo::get().getMeasurementUnit();
+    }
+
+    switch (unit) {
+    case MeasurementUnit::Microseconds: {
         const Value timeMicroseconds = timeSeconds * 1e6;
-        this->pushValue(timeMicroseconds, description);
+        this->pushValue(timeMicroseconds, description, unit);
         break;
     }
-    case BenchmarkInfo::MeasurementUnit::GigabytesPerSecond:
+    case MeasurementUnit::GigabytesPerSecond:
         FATAL_ERROR("Buffer size needs to be passed in bandwidth mode");
     default:
         FATAL_ERROR("Unknown measurement unit");
     }
 }
 
-void TestCaseStatistics::pushValue(Clock::duration time, uint64_t size, const std::string &description) {
-    static_assert(std::is_floating_point_v<Value>, "Need floating point type for the above cast to work properly");
+void TestCaseStatistics::pushValue(Clock::duration time, uint64_t size, const std::string &description, MeasurementUnit unit) {
+    static_assert(std::is_floating_point_v<Value>, "Need floating point type for the below cast to work properly");
     const Value timeSeconds = std::chrono::duration_cast<std::chrono::duration<Value>>(time).count();
 
-    switch (BenchmarkInfo::get().getMeasurementUnit()) {
-    case BenchmarkInfo::MeasurementUnit::Microseconds: {
+    if (unit == MeasurementUnit::Default) {
+        unit = BenchmarkInfo::get().getMeasurementUnit();
+    }
+
+    switch (unit) {
+    case MeasurementUnit::Microseconds: {
         const Value timeMicroseconds = timeSeconds * 1e6;
-        this->pushValue(timeMicroseconds, description);
+        this->pushValue(timeMicroseconds, description, unit);
         break;
     }
-    case BenchmarkInfo::MeasurementUnit::GigabytesPerSecond: {
+    case MeasurementUnit::GigabytesPerSecond: {
         const Value timeNanoseconds = timeSeconds * 1e9;
         const Value bandwidth = size / timeNanoseconds; // Bytes/Nanoseconds = Gigabytes/Seconds
-        this->pushValue(bandwidth, description);
+        this->pushValue(bandwidth, description, unit);
         break;
     }
     default:
@@ -57,7 +64,7 @@ void TestCaseStatistics::pushValue(Clock::duration time, uint64_t size, const st
 
 bool TestCaseStatistics::isEmpty() const {
     for (auto &samplesEntry : samplesMap) {
-        if (samplesEntry.second.size() != 0) {
+        if (samplesEntry.second.vector.size() != 0) {
             return false;
         }
     }
@@ -65,19 +72,28 @@ bool TestCaseStatistics::isEmpty() const {
 }
 
 bool TestCaseStatistics::isFull() const {
+    DEVELOPER_WARNING_IF(samplesMap.size() == 0, "Test did not generate any values");
     for (auto &samplesEntry : samplesMap) {
-        if (samplesEntry.second.size() != maxSamplesCount) {
+        if (samplesEntry.second.vector.size() != maxSamplesCount) {
             return false;
         }
     }
     return true;
 }
 
-void TestCaseStatistics::pushValue(Value value, const std::string &description) {
+void TestCaseStatistics::pushValue(Value value, const std::string &description, MeasurementUnit unit) {
     auto &samples = this->samplesMap[description];
-    FATAL_ERROR_IF(samples.size() == maxSamplesCount, "Too many values pushed by the test");
 
-    samples.push_back(value);
+    // We expect a precise amount of measurements requested by the user.
+    FATAL_ERROR_IF(samples.vector.size() == maxSamplesCount, "Too many values pushed by the test");
+
+    // Set unit for all samples with our description if it is not set. All samples must have the same unit
+    if (samples.unit != unit) {
+        FATAL_ERROR_IF(samples.unit != MeasurementUnit::Unknown, "Different units used for the same measurement");
+        samples.unit = unit;
+    }
+
+    samples.vector.push_back(value);
     if (std::isinf(value)) {
         this->reachedInfinity = true;
     }
@@ -86,48 +102,30 @@ void TestCaseStatistics::pushValue(Value value, const std::string &description) 
 struct ColumnInfo {
     int width;
     const char *label;
-    bool printUnit;
 
-    static constexpr size_t getColumnCount() { return 6; }
-    static std::array<ColumnInfo, 6> getColumns() {
+    static constexpr size_t getColumnCount() { return 7; }
+    static std::array<ColumnInfo, 7> getColumns() {
         return {{
-            {BenchmarkInfo::get().getTestCaseNameColumnWidth(), "TestCase", false},
-            {15, "Mean", true},
-            {15, "Median", true},
-            {15, "StdDev", false},
-            {15, "Min", true},
-            {15, "Max", true},
+            {BenchmarkInfo::get().getTestCaseNameColumnWidth(), "TestCase"},
+            {15, "Mean"},
+            {15, "Median"},
+            {15, "StdDev"},
+            {15, "Min"},
+            {15, "Max"},
+            {15, "Label [unit]"},
         }};
     }
 };
 
-static std::string getColumnName(const std::string &label, const std::string &unit, bool hasUnit) {
-    if (hasUnit) {
-        return label + " [" + unit + "]";
-    }
-    return label;
-}
-
 void TestCaseStatistics::printStatisticsHeader(Configuration::PrintType printType) {
-    std::string unit = "";
-    switch (BenchmarkInfo::get().getMeasurementUnit()) {
-    case BenchmarkInfo::MeasurementUnit::Microseconds:
-        unit = "us";
-        break;
-    case BenchmarkInfo::MeasurementUnit::GigabytesPerSecond:
-        unit = "GB/s";
-        break;
-    default:
-        FATAL_ERROR("Unknown measurement unit");
-    }
-
+    const std::string unit = std::to_string(BenchmarkInfo::get().getMeasurementUnit());
     const auto columns = ColumnInfo::getColumns();
     const auto columnCount = ColumnInfo::getColumnCount();
     switch (printType) {
     case Configuration::PrintType::DefaultWithVerbose:
     case Configuration::PrintType::Default: {
         for (const ColumnInfo &column : columns) {
-            std::cout << std::setw(column.width) << getColumnName(column.label, unit, column.printUnit);
+            std::cout << std::setw(column.width) << column.label;
         }
         std::cout << std::endl;
         break;
@@ -135,7 +133,7 @@ void TestCaseStatistics::printStatisticsHeader(Configuration::PrintType printTyp
     case Configuration::PrintType::Csv:
         for (int columnIndex = 0; columnIndex < columnCount; columnIndex++) {
             const ColumnInfo &column = columns[columnIndex];
-            std::cout << getColumnName(column.label, unit, column.printUnit);
+            std::cout << column.label;
             if (columnIndex != columnCount - 1) {
                 std::cout << ",";
             }
@@ -167,33 +165,41 @@ void TestCaseStatistics::printStatistics(const std::string &testCaseName) const 
 void TestCaseStatistics::printStatisticsDefault(const std::string &testCaseName) const {
     const auto columns = ColumnInfo::getColumns();
 
+    bool isFirst = true;
     for (const auto &samplesEntry : this->samplesMap) {
-        const auto &samplesName = samplesEntry.first;
-        const auto &samples = samplesEntry.second;
-        const MetricsStrings metricsStrings{Metrics{samples}, this->reachedInfinity};
+        const std::string &samplesName = samplesEntry.first;
+        const Samples &samples = samplesEntry.second;
+        const MetricsStrings metricsStrings{samplesName, samples, this->reachedInfinity};
 
         int column = 0;
-        std::cout << std::setw(columns[column++].width) << ((samplesName == "") ? testCaseName : "");
+        std::cout << std::setw(columns[column++].width) << (isFirst ? testCaseName : "");
         std::cout << std::setw(columns[column++].width) << metricsStrings.mean;
         std::cout << std::setw(columns[column++].width) << metricsStrings.median;
         std::cout << std::setw(columns[column++].width) << metricsStrings.standardDeviation;
         std::cout << std::setw(columns[column++].width) << metricsStrings.min;
         std::cout << std::setw(columns[column++].width) << metricsStrings.max;
-        std::cout << ' ' << samplesName;
+        std::cout << ' ' << std::setw(columns[column++].width - 1) << metricsStrings.label;
         std::cout << std::endl;
+
+        isFirst = false;
     }
 }
 
 void TestCaseStatistics::printStatisticsCsv(const std::string &testCaseName) const {
-    const auto samples = this->samplesMap.at("");
-    const MetricsStrings metricsStrings{Metrics{samples}, this->reachedInfinity};
+    const auto samplesEntry = this->samplesMap.begin();
+    FATAL_ERROR_IF(samplesEntry == this->samplesMap.end(), "Test did not generate any values");
+
+    const std::string &samplesName = samplesEntry->first;
+    const Samples &samples = samplesEntry->second;
+    const MetricsStrings metricsStrings{samplesName, samples, this->reachedInfinity};
 
     std::cout << testCaseName << ",";
     std::cout << metricsStrings.mean << ",";
     std::cout << metricsStrings.median << ",";
     std::cout << metricsStrings.standardDeviation << ",";
     std::cout << metricsStrings.min << ",";
-    std::cout << metricsStrings.max;
+    std::cout << metricsStrings.max << ",";
+    std::cout << metricsStrings.label;
     std::cout << std::endl;
 }
 
@@ -205,7 +211,7 @@ void TestCaseStatistics::printStatisticsVerbose() const {
         }
         std::cout << "results: [ ";
 
-        for (const auto &sample : samplesEntry.second) {
+        for (const auto &sample : samplesEntry.second.vector) {
             std::cout << sample << ' ';
         }
         std::cout << "]\n";
@@ -289,12 +295,14 @@ TestCaseStatistics::Value TestCaseStatistics::Metrics::calculateStandardDeviatio
     return stdDev;
 }
 
-TestCaseStatistics::MetricsStrings::MetricsStrings(const Metrics &metrics, bool reachedInfinity)
-    : min(generateMin(metrics.min)),
+TestCaseStatistics::MetricsStrings::MetricsStrings(const std::string &name, const Samples &samples, bool reachedInfinity)
+    : metrics(samples.vector),
+      min(generateMin(metrics.min)),
       max(generateMax(metrics.max)),
       mean(generateMean(metrics.mean, reachedInfinity)),
       median(generateMedian(metrics.median)),
-      standardDeviation(generateStandardDeviation(metrics.standardDeviation, reachedInfinity)) {
+      standardDeviation(generateStandardDeviation(metrics.standardDeviation, reachedInfinity)),
+      label(generateLabel(name, samples.unit)) {
 }
 
 std::string TestCaseStatistics::MetricsStrings::generateMin(Value min) {
@@ -330,4 +338,11 @@ std::string TestCaseStatistics::MetricsStrings::generate(Value value) {
     std::ostringstream result{};
     result << std::fixed << std::setprecision(3) << value;
     return result.str();
+}
+
+std::string TestCaseStatistics::MetricsStrings::generateLabel(const std::string &name, MeasurementUnit unit) {
+    if (name.empty()) {
+        return std::to_string(unit);
+    }
+    return name + " " + std::to_string(unit);
 }

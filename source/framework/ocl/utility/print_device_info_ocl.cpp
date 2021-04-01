@@ -4,8 +4,9 @@
 #include "framework/ocl/opencl.h"
 
 void printDeviceInfoOcl() {
+    ContextProperties contextProperties = ContextProperties::create().disable();
     QueueProperties queueProperties = QueueProperties::create().disable();
-    Opencl opencl(queueProperties);
+    Opencl opencl(queueProperties, contextProperties);
     char bufferString[4096];
     cl_uint bufferUint;
 

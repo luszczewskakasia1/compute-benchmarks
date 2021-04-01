@@ -111,8 +111,8 @@ TestResult run(const ReductionArguments4 &arguments, Statistics &statistics) {
     ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
     ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent2, timeNs2));
     ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent2));
-    cl_ulong totalTime = timeNs + timeNs2;
-    statistics.pushValue(std::chrono::nanoseconds{timeNs + timeNs2});
+    statistics.pushValue(std::chrono::nanoseconds{timeNs}, "time", MeasurementUnit::Microseconds);
+    statistics.pushValue(std::chrono::nanoseconds{timeNs}, sizeInBytes, "bw", MeasurementUnit::GigabytesPerSecond);
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
@@ -122,19 +122,13 @@ TestResult run(const ReductionArguments4 &arguments, Statistics &statistics) {
 
         ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
         ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent2, timeNs2));
-        totalTime += timeNs;
-        totalTime += timeNs2;
-
         ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
         ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent2));
-        if (i + 1 < arguments.iterations)
-            statistics.pushValue(std::chrono::nanoseconds{timeNs + timeNs2});
+        if (i + 1 < arguments.iterations) {
+            statistics.pushValue(std::chrono::nanoseconds{timeNs + timeNs2}, "time", MeasurementUnit::Microseconds);
+            statistics.pushValue(std::chrono::nanoseconds{timeNs + timeNs2}, sizeInBytes, "bw", MeasurementUnit::GigabytesPerSecond);
+        }
     }
-
-    uint32_t iterationCount = arguments.iterations + 1;
-    double timePerIteration = (double)totalTime / (double)iterationCount;
-
-    printf("\n Variant 4 samples gathered %d , element count %lu , timePerIteration (us) %f Bandwidth (GB/s) %f \n", iterationCount, (size_t)arguments.numberOfElements, timePerIteration / 1000.0, sizeInBytes / timePerIteration);
 
     ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));
     ASSERT_CL_SUCCESS(clReleaseMemObject(partialSums));

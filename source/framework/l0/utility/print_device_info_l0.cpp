@@ -6,7 +6,9 @@
 #include <iomanip>
 
 void printDeviceInfoL0() {
-    LevelZero levelzero{QueueProperties::create().disable()};
+    ContextProperties contextProperties = ContextProperties::create().disable();
+    QueueProperties queueProperties = QueueProperties::create().disable();
+    LevelZero levelzero(queueProperties, contextProperties);
 
     ze_driver_properties_t driverProperties{ZE_STRUCTURE_TYPE_DRIVER_PROPERTIES};
     ZE_RESULT_SUCCESS_OR_ERROR(zeDriverGetProperties(levelzero.driver, &driverProperties));
