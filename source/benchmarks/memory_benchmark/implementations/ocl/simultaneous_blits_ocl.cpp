@@ -76,7 +76,7 @@ static TestResult run(const SimultaneousBlitterCopiesArguments &arguments, Stati
             ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(queue.event, timeNs));
             ASSERT_CL_SUCCESS(clReleaseEvent(queue.event));
 
-            maxGpuTime += std::max(maxGpuTime, std::chrono::nanoseconds(timeNs));
+            maxGpuTime = std::max(maxGpuTime, std::chrono::nanoseconds(timeNs));
             statistics.pushValue(std::chrono::nanoseconds(timeNs), arguments.size, queue.name);
         }
 
