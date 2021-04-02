@@ -4,11 +4,11 @@
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
 
-#include "definitions/simultaneous_blits.h"
+#include "definitions/usm_copy_multiple_blits.h"
 
 #include <gtest/gtest.h>
 
-static TestResult run(const SimultaneousBlitterCopiesArguments &arguments, Statistics &statistics) {
+static TestResult run(const UsmCopyMultipleBlitsArguments &arguments, Statistics &statistics) {
     // Setup
     cl_int retVal{};
     QueueProperties queueProperties = QueueProperties::create().disable();
@@ -60,36 +60,32 @@ static TestResult run(const SimultaneousBlitterCopiesArguments &arguments, Stati
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
         timer.measureStart();
-
         for (PerQueueData &queue : queues) {
             ASSERT_CL_SUCCESS(clEnqueueMemcpyINTEL(queue.queue, CL_FALSE, queue.dstBuffer, queue.srcBuffer, arguments.size, 0, nullptr, &queue.event));
         }
-
         for (PerQueueData &queue : queues) {
             ASSERT_CL_SUCCESS(clFlush(queue.queue));
         }
-
         for (PerQueueData &queue : queues) {
             ASSERT_CL_SUCCESS(clFinish(queue.queue));
         }
-
         timer.measureEnd();
 
+        // Report individual engines results and get time of the slowest engine
         std::chrono::nanoseconds maxGpuTime{};
         for (PerQueueData &queue : queues) {
             cl_ulong timeNs = 0ul;
-
             ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(queue.event, timeNs));
             ASSERT_CL_SUCCESS(clReleaseEvent(queue.event));
+            statistics.pushValue(std::chrono::nanoseconds(timeNs), arguments.size, queue.name);
 
             maxGpuTime = std::max(maxGpuTime, std::chrono::nanoseconds(timeNs));
-            statistics.pushValue(std::chrono::nanoseconds(timeNs), arguments.size, queue.name);
         }
 
+        // Report total results
         const uint64_t totalSize = arguments.size * queues.size();
-        const std::chrono::nanoseconds cpuTime = timer.get();
         statistics.pushValue(maxGpuTime, totalSize, "Total (Gpu)");
-        statistics.pushValue(cpuTime, totalSize, "Total (Cpu)");
+        statistics.pushValue(timer.get(), totalSize, "Total (Cpu)");
     }
 
     for (PerQueueData &queue : queues) {
@@ -99,4 +95,4 @@ static TestResult run(const SimultaneousBlitterCopiesArguments &arguments, Stati
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<SimultaneousBlits> registerTestCase(run, Api::OpenCL, true);
+static RegisterTestCaseImplementation<UsmCopyMultipleBlits> registerTestCase(run, Api::OpenCL, true);

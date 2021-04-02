@@ -8,27 +8,31 @@
 
 using BcsBitmaskArgument = BitmaskArgument<9, false>;
 
-struct SimultaneousBlitterCopiesArguments : TestCaseArgumentContainer {
+struct UsmCopyMultipleBlitsArguments : TestCaseArgumentContainer {
     UsmMemoryPlacementArgument sourcePlacement;
     UsmMemoryPlacementArgument destinationPlacement;
     ByteSizeArgument size;
     BcsBitmaskArgument blitters;
 
-    SimultaneousBlitterCopiesArguments()
+    UsmCopyMultipleBlitsArguments()
         : sourcePlacement(*this, "src", "Placement of the source buffer"),
           destinationPlacement(*this, "dst", "Placement of the destination buffer"),
-          size(*this, "size", "Size of the buffer"),
+          size(*this, "size", "Size of the operation processed by each engine"),
           blitters(*this, "blitters", "A bit mask for selecting copy engines") {}
 };
 
-struct SimultaneousBlits : TestCase<SimultaneousBlitterCopiesArguments> {
-    using TestCase<SimultaneousBlitterCopiesArguments>::TestCase;
+struct UsmCopyMultipleBlits : TestCase<UsmCopyMultipleBlitsArguments> {
+    using TestCase<UsmCopyMultipleBlitsArguments>::TestCase;
 
     std::string getTestCaseName() const override {
-        return "SimultaneousBlits";
+        return "UsmCopyMultipleBlits";
     }
 
     std::string getHelp() const override {
-        return "allocates two unified shared memory buffers and measures copy bandwidth between them.";
+        return "allocates two unified shared memory buffers for each enabled blitter and measures "
+               "copy bandwidth between them. Results for each individual blitter engine is "
+               "measured using GPU-based timings and reported separately. Total bandwidths are "
+               "calculated by dividing the sum of sizes of all operation by the worst time among "
+               "all engines.";
     }
 };
