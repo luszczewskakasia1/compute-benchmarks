@@ -69,18 +69,22 @@ static TestResult run(const SimultaneousBlitterCopiesArguments &arguments, Stati
             ASSERT_CL_SUCCESS(clFlush(queue.queue));
         }
 
+        for (PerQueueData &queue : queues) {
+            ASSERT_CL_SUCCESS(clFinish(queue.queue));
+        }
+
+        timer.measureEnd();
+
         std::chrono::nanoseconds maxGpuTime{};
         for (PerQueueData &queue : queues) {
             cl_ulong timeNs = 0ul;
-            ASSERT_CL_SUCCESS(clFinish(queue.queue));
+
             ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(queue.event, timeNs));
             ASSERT_CL_SUCCESS(clReleaseEvent(queue.event));
 
             maxGpuTime = std::max(maxGpuTime, std::chrono::nanoseconds(timeNs));
             statistics.pushValue(std::chrono::nanoseconds(timeNs), arguments.size, queue.name);
         }
-
-        timer.measureEnd();
 
         const uint64_t totalSize = arguments.size * queues.size();
         const std::chrono::nanoseconds cpuTime = timer.get();
