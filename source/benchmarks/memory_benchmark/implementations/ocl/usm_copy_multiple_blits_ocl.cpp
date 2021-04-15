@@ -8,6 +8,62 @@
 
 #include <gtest/gtest.h>
 
+class BlitSizeAssigner {
+  public:
+    BlitSizeAssigner(size_t bufferSize) : bufferSize(bufferSize) {}
+
+    void addMainCopyEngine() {
+        FATAL_ERROR_IF(mainCopyEnginePresent, "Multiple main copy engines detected");
+        mainCopyEnginePresent = true;
+    }
+
+    void addLinkCopyEngine() {
+        linkCopyEnginesCount++;
+    }
+
+    size_t getChunksCount() const {
+        if (linkCopyEnginesCount == 0) {
+            return 1;
+        }
+        return linkCopyEnginesCount + static_cast<size_t>(mainCopyEnginePresent) * linkCopyEnginesCount;
+    }
+
+    size_t getChunkSize() const {
+        return bufferSize / getChunksCount();
+    }
+
+    size_t getCopySizeForEngine(bool isMainCopyEngine) const {
+        FATAL_ERROR_IF(isMainCopyEngine && !mainCopyEnginePresent, "Unexpected main copy engine");
+        FATAL_ERROR_IF(!isMainCopyEngine && linkCopyEnginesCount == 0, "Unexpected link copy engine");
+
+        size_t result = getChunkSize();
+        if (isMainCopyEngine && linkCopyEnginesCount > 0) {
+            result *= linkCopyEnginesCount;
+        }
+        return result;
+    }
+
+    std::pair<size_t, size_t> getSpaceForBlit(bool isMainCopyEngine) {
+        const size_t offset = this->offset;
+        const size_t size = getCopySizeForEngine(isMainCopyEngine);
+        this->offset += size;
+        return {offset, size};
+    }
+
+    void validate() const {
+        const auto chunksCount = getChunksCount();
+
+        DEVELOPER_WARNING_IF(offset < bufferSize, "Buffer is divided to ", chunksCount, " chunks, but bufferSize is ",
+                             "not divisible by ", chunksCount, ". Only ", offset, " out of specified ", bufferSize, " bytes will be copied.");
+        DEVELOPER_WARNING_IF(offset > bufferSize, "Access out of buffer bounds will happen");
+    }
+
+    const size_t bufferSize;
+    size_t linkCopyEnginesCount = 0;
+    bool mainCopyEnginePresent = false;
+    size_t offset = 0;
+};
+
 static TestResult run(const UsmCopyMultipleBlitsArguments &arguments, Statistics &statistics) {
     // Setup
     cl_int retVal{};
@@ -24,21 +80,20 @@ static TestResult run(const UsmCopyMultipleBlitsArguments &arguments, Statistics
     struct PerQueueData {
         cl_command_queue queue; // freed by the OpenCL class
         std::string name;
-        bool isLinkCopyEngine;
+        bool isMainCopyEngine;
         cl_event event = nullptr;
         void *copySrc;
         void *copyDst;
         size_t copySize = 0;
     };
-    size_t mainCopyEngineCount = 0;
-    size_t linkCopyEngineCount = 0;
+    BlitSizeAssigner blitSizeAssigner{arguments.size};
     std::vector<PerQueueData> queues;
     for (size_t blitterIndex : arguments.blitters.getEnabledBits()) {
-        const bool isLinkCopyEngine = blitterIndex > 0;
-        if (isLinkCopyEngine) {
-            linkCopyEngineCount++;
+        const bool isMainCopyEngine = blitterIndex == 0;
+        if (isMainCopyEngine) {
+            blitSizeAssigner.addMainCopyEngine();
         } else {
-            mainCopyEngineCount++;
+            blitSizeAssigner.addLinkCopyEngine();
         }
 
         const Engine engine = EngineHelper::getBlitterEngineFromIndex(blitterIndex);
@@ -48,7 +103,7 @@ static TestResult run(const UsmCopyMultipleBlitsArguments &arguments, Statistics
             return TestResult::DeviceNotCapable;
         }
         const std::string queueName = EngineHelper::getEngineName(engine);
-        queues.push_back(PerQueueData{queue, queueName, isLinkCopyEngine});
+        queues.push_back(PerQueueData{queue, queueName, isMainCopyEngine});
     }
 
     // Create buffers
@@ -58,21 +113,14 @@ static TestResult run(const UsmCopyMultipleBlitsArguments &arguments, Statistics
     ASSERT_CL_SUCCESS(retVal);
 
     // Calculate copyOffset and copySize for each copy engine
-    const size_t chunksCount = linkCopyEngineCount + mainCopyEngineCount * linkCopyEngineCount;
-    const size_t chunksSize = arguments.size / chunksCount;
-    const size_t copySizeForMainCopyEngine = chunksSize * linkCopyEngineCount;
-    const size_t copySizeForLinkCopyEngine = chunksSize;
-    size_t copyOffset = 0;
     for (auto i = 0u; i < queues.size(); i++) {
-        const size_t copySize = queues[i].isLinkCopyEngine ? copySizeForLinkCopyEngine : copySizeForMainCopyEngine;
-        queues[i].copySrc = static_cast<char *>(srcBuffer) + copyOffset;
-        queues[i].copyDst = static_cast<char *>(dstBuffer) + copyOffset;
-        queues[i].copySize = copySize;
-        copyOffset += copySize;
+        const auto [offset, size] = blitSizeAssigner.getSpaceForBlit(queues[i].isMainCopyEngine);
+        queues[i].copySrc = static_cast<char *>(srcBuffer) + offset;
+        queues[i].copyDst = static_cast<char *>(dstBuffer) + offset;
+        queues[i].copySize = size;
+        std::cout << size << '\n';
     }
-    DEVELOPER_WARNING_IF(copyOffset < arguments.size, "Buffer is divided to ", chunksCount, " chunks, but bufferSize is ",
-                         "not divisible by ", chunksCount, ". Only ", copyOffset, " out of specified ", arguments.size, " bytes will be copied.");
-    DEVELOPER_WARNING_IF(copyOffset > arguments.size, "Access out of buffer bounds will happen");
+    blitSizeAssigner.validate();
 
     // Warmup
     for (PerQueueData &queue : queues) {
