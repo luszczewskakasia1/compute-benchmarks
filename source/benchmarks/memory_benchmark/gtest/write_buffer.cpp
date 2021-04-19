@@ -8,7 +8,7 @@
 
 static const inline RegisterTestCase<WriteBuffer> registerTestCase{};
 
-class WriteBufferTest : public ::testing::TestWithParam<std::tuple<Api, size_t, BufferContents, bool, bool>> {
+class WriteBufferTest : public ::testing::TestWithParam<std::tuple<Api, size_t, BufferContents, bool, bool, bool>> {
 };
 
 TEST_P(WriteBufferTest, Test) {
@@ -18,6 +18,7 @@ TEST_P(WriteBufferTest, Test) {
     args.contents = std::get<2>(GetParam());
     args.compressed = std::get<3>(GetParam());
     args.useEvents = std::get<4>(GetParam());
+    args.usmHostPointer = std::get<5>(GetParam());
 
     WriteBuffer test;
     test.run(args);
@@ -31,5 +32,6 @@ INSTANTIATE_TEST_SUITE_P(
         ::CommonGtestArgs::allApis(),
         ::testing::Values(128 * megaByte, 512 * megaByte),
         ::testing::Values(BufferContents::Zeros),
+        ::testing::Values(false, true),
         ::testing::Values(false, true),
         ::testing::Values(false, true)));
