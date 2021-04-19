@@ -33,3 +33,7 @@ std::string CommonHelpMessage::measuredCommandsCount() {
 std::string CommonHelpMessage::atomicDataType() {
     return "Data type of the atomic. Keep in mind not all operations are supported for floating points";
 }
+
+std::string CommonHelpMessage::useUsmHostPointer() {
+    return "Host pointer is using host USM memory";
+}
