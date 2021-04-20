@@ -10,12 +10,14 @@ struct ReadBufferArguments : TestCaseArgumentContainer {
     BufferContentsArgument contents;
     CompressionBooleanArgument compressed;
     BooleanArgument useEvents;
+    BooleanArgument usmHostPointer;
 
     ReadBufferArguments()
         : size(*this, "size", "Size of the buffer"),
           contents(*this, "contents", "Contents of the buffer"),
           compressed(*this, "compressed", CommonHelpMessage::compression("buffer")),
-          useEvents(*this, "useEvents", CommonHelpMessage::useEvents()) {}
+          useEvents(*this, "useEvents", CommonHelpMessage::useEvents()),
+          usmHostPointer(*this, "usmHostPointer", CommonHelpMessage::useUsmHostPointer()) {}
 };
 
 struct ReadBuffer : TestCase<ReadBufferArguments> {

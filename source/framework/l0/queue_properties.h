@@ -1,12 +1,14 @@
 #pragma once
 
+#include "framework/enum/engine.h"
+
 #include <level_zero/ze_api.h>
 
 namespace L0 {
 struct QueueProperties {
     bool createQueue = true;
     bool requireCreationSuccess = true;
-    bool forceBlitter = false;
+    Engine selectedEngine = Engine::Ccs0;
     DeviceSelection deviceSelection = DeviceSelection::Unknown;
 
     static QueueProperties create() {
@@ -20,7 +22,12 @@ struct QueueProperties {
     }
 
     QueueProperties &setForceBlitter(bool bcs) {
-        this->forceBlitter = bcs;
+        this->selectedEngine = bcs ? Engine::Bcs : Engine::Ccs0;
+        return *this;
+    }
+
+    QueueProperties &setForceEngine(Engine engine) {
+        this->selectedEngine = engine;
         return *this;
     }
 

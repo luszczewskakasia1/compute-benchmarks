@@ -10,7 +10,7 @@
 #include <gtest/gtest.h>
 
 static TestResult run(const WriteBufferArguments &arguments, Statistics &statistics) {
-    if (arguments.compressed && arguments.noIntelExtensions) {
+    if ((arguments.compressed || arguments.usmHostPointer) && arguments.noIntelExtensions) {
         return TestResult::DeviceNotCapable;
     }
 
@@ -24,7 +24,21 @@ static TestResult run(const WriteBufferArguments &arguments, Statistics &statist
     const cl_mem_flags compressionHint = CompressionHelper::getCompressionFlags(arguments.compressed, arguments.noIntelExtensions);
     const cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE | compressionHint, arguments.size, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
-    auto cpuBuffer = std::make_unique<uint8_t[]>(arguments.size);
+    
+    std::unique_ptr<uint8_t[]> cpuBuffer;
+    void *cpuBufferPtr = nullptr;
+
+    auto clMemFreeINTEL = (pfn_clMemFreeINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clMemFreeINTEL");
+    auto clHostMemAllocINTEL = (pfn_clHostMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clHostMemAllocINTEL");
+
+    if (arguments.usmHostPointer) {
+        cpuBufferPtr = clHostMemAllocINTEL(opencl.context, nullptr, arguments.size, 0llu, &retVal);
+        ASSERT_CL_SUCCESS(retVal);
+    } else {
+        cpuBuffer = std::make_unique<uint8_t[]>(arguments.size);
+        cpuBufferPtr = cpuBuffer.get();
+    }
+
 
     // Check buffer compression
     const auto compressionStatus = CompressionHelper::verifyCompression(buffer, arguments.compressed, arguments.noIntelExtensions);
@@ -34,7 +48,7 @@ static TestResult run(const WriteBufferArguments &arguments, Statistics &statist
     }
 
     // Warmup
-    ASSERT_CL_SUCCESS(clEnqueueWriteBuffer(opencl.commandQueue, buffer, CL_BLOCKING, 0, arguments.size, cpuBuffer.get(), 0, nullptr, nullptr));
+    ASSERT_CL_SUCCESS(clEnqueueWriteBuffer(opencl.commandQueue, buffer, CL_BLOCKING, 0, arguments.size, cpuBufferPtr, 0, nullptr, nullptr));
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
@@ -44,7 +58,7 @@ static TestResult run(const WriteBufferArguments &arguments, Statistics &statist
         cl_event *eventForEnqueue = arguments.useEvents ? &profilingEvent : nullptr;
 
         timer.measureStart();
-        ASSERT_CL_SUCCESS(clEnqueueWriteBuffer(opencl.commandQueue, buffer, CL_NON_BLOCKING, 0, arguments.size, cpuBuffer.get(), 0, nullptr, eventForEnqueue));
+        ASSERT_CL_SUCCESS(clEnqueueWriteBuffer(opencl.commandQueue, buffer, CL_NON_BLOCKING, 0, arguments.size, cpuBufferPtr, 0, nullptr, eventForEnqueue));
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue))
         timer.measureEnd();
 
@@ -59,6 +73,11 @@ static TestResult run(const WriteBufferArguments &arguments, Statistics &statist
     }
 
     ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));
+
+    if (arguments.usmHostPointer) {
+        clMemFreeINTEL(opencl.context, cpuBufferPtr);
+    }
+
     return TestResult::Success;
 }
 

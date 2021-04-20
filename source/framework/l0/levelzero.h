@@ -4,6 +4,7 @@
 #include "framework/l0/context_properties.h"
 #include "framework/l0/queue_properties.h"
 #include "framework/l0/utility/error.h"
+#include "framework/l0/utility/queue_families_helper.h"
 
 #include <level_zero/ze_api.h>
 
@@ -15,15 +16,6 @@ namespace L0 {
 //
 // LevelZero performs it's own cleanup.
 struct LevelZero {
-    // Additional data of the command queue, which cannot be queried after creation
-    struct QueueInfo {
-        bool isCopyOnly = {};
-        size_t maxFillSize = {};
-        size_t count;
-        ze_device_handle_t device = {};
-        ze_command_queue_desc_t desc = {};
-    };
-
     // Public fields, accessible in benchmarks
     const size_t driverIndex;
     const size_t rootDeviceIndex;
@@ -41,17 +33,17 @@ struct LevelZero {
     LevelZero(const QueueProperties &queueProperties, const ContextProperties &contextProperties);
     ~LevelZero();
 
-    // Queries available queue families on the device and returns their descriptions.
-    static std::vector<QueueInfo> queryQueueFamilies(ze_device_handle_t device);
-
     // Returns how many subDevices has been created. Will return 0, if no subDevices were specified in ContextProperties or
     // QueueProperties.
     size_t getSubDevicesCount() const { return subDevices.size(); }
 
+    // Create LevelZero context
+    ze_context_handle_t createContext(const ContextProperties &contextProperties);
+
     // Creates queue with given properties. These methods aren't needed to be called by the user in scenarios with only one queue.
     // Queue will be created by default, unless disabled in QueueProperties. These methods allow the user to create
     // additional queues. Queues are tracked internally and will be released automatically.
-    std::pair<ze_command_queue_handle_t, QueueInfo> createQueue(const QueueProperties &queueProperties);
+    QueueFamiliesHelper::QueueDesc createQueue(const QueueProperties &queueProperties);
     ze_command_queue_handle_t createQueue(ze_device_handle_t device, ze_command_queue_desc_t desc);
 
     // Returns device for given DeviceSelection. Getting multiple devices at once, e.g. Tile0|Tile1 is forbidden.
