@@ -67,7 +67,6 @@ static TestResult run(const UsmCopyMultipleBlitsArguments &arguments, Statistics
         queues[i].copySrc = static_cast<char *>(srcBuffer) + offset;
         queues[i].copyDst = static_cast<char *>(dstBuffer) + offset;
         queues[i].copySize = size;
-        std::cout << size << '\n';
     }
     blitSizeAssigner.validate();
 

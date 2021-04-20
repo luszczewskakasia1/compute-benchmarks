@@ -64,7 +64,6 @@ static TestResult run(const UsmFillMultipleBlitsArguments &arguments, Statistics
         const auto [offset, size] = blitSizeAssigner.getSpaceForBlit(queues[i].isMainCopyEngine);
         queues[i].fillDst = static_cast<char *>(dstBuffer) + offset;
         queues[i].fillSize = size;
-        std::cout << size << '\n';
     }
     blitSizeAssigner.validate();
 
