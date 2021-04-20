@@ -5,6 +5,7 @@
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
 
+#include "blit_size_assigner.h"
 #include "definitions/usm_fill_multiple_blits.h"
 
 #include <gtest/gtest.h>
@@ -23,13 +24,23 @@ static TestResult run(const UsmFillMultipleBlitsArguments &arguments, Statistics
 
     // Create selected blitter queues
     struct PerQueueData {
-        cl_command_queue queue = nullptr; // freed by the OpenCL class
-        std::string name = "";
-        void *buffer = nullptr;
+        cl_command_queue queue; // freed by the OpenCL class
+        std::string name;
+        bool isMainCopyEngine;
         cl_event event = nullptr;
+        void *fillDst = nullptr;
+        size_t fillSize = 0;
     };
+    BlitSizeAssigner blitSizeAssigner{arguments.size};
     std::vector<PerQueueData> queues;
     for (size_t blitterIndex : arguments.blitters.getEnabledBits()) {
+        const bool isMainCopyEngine = blitterIndex == 0;
+        if (isMainCopyEngine) {
+            blitSizeAssigner.addMainCopyEngine();
+        } else {
+            blitSizeAssigner.addLinkCopyEngine();
+        }
+
         const Engine engine = EngineHelper::getBlitterEngineFromIndex(blitterIndex);
         const QueueProperties blitterQueueProperties = QueueProperties::create().setForceEngine(engine).setProfiling(true);
         const cl_command_queue queue = opencl.createQueue(blitterQueueProperties);
@@ -37,14 +48,21 @@ static TestResult run(const UsmFillMultipleBlitsArguments &arguments, Statistics
             return TestResult::DeviceNotCapable;
         }
         const std::string queueName = EngineHelper::getEngineName(engine);
-        queues.push_back(PerQueueData{queue, queueName});
+        queues.push_back(PerQueueData{queue, queueName, isMainCopyEngine});
     }
 
     // Create buffer
-    for (PerQueueData &queue : queues) {
-        queue.buffer = UsmHelper::allocate(arguments.memoryPlacement, opencl.platform, opencl.context, opencl.device, arguments.size, &retVal);
-        ASSERT_CL_SUCCESS(retVal);
+    void *dstBuffer = UsmHelper::allocate(arguments.memoryPlacement, opencl.platform, opencl.context, opencl.device, arguments.size, &retVal);
+    ASSERT_CL_SUCCESS(retVal);
+
+    // Calculate copyOffset and copySize for each copy engine
+    for (auto i = 0u; i < queues.size(); i++) {
+        const auto [offset, size] = blitSizeAssigner.getSpaceForBlit(queues[i].isMainCopyEngine);
+        queues[i].fillDst = static_cast<char *>(dstBuffer) + offset;
+        queues[i].fillSize = size;
+        std::cout << size << '\n';
     }
+    blitSizeAssigner.validate();
 
     // Create pattern
     const auto pattern = std::make_unique<uint8_t[]>(arguments.patternSize);
@@ -52,7 +70,7 @@ static TestResult run(const UsmFillMultipleBlitsArguments &arguments, Statistics
 
     // Warmup
     for (PerQueueData &queue : queues) {
-        ASSERT_CL_SUCCESS(clEnqueueMemFillINTEL(queue.queue, queue.buffer, pattern.get(), arguments.patternSize, arguments.size, 0, nullptr, nullptr));
+        ASSERT_CL_SUCCESS(clEnqueueMemFillINTEL(queue.queue, queue.fillDst, pattern.get(), arguments.patternSize, queue.fillSize, 0, nullptr, nullptr));
         ASSERT_CL_SUCCESS(clFlush(queue.queue));
     }
     for (PerQueueData &queue : queues) {
@@ -63,7 +81,7 @@ static TestResult run(const UsmFillMultipleBlitsArguments &arguments, Statistics
     for (int i = 0; i < arguments.iterations; i++) {
         timer.measureStart();
         for (PerQueueData &queue : queues) {
-            ASSERT_CL_SUCCESS(clEnqueueMemFillINTEL(queue.queue, queue.buffer, pattern.get(), arguments.patternSize, arguments.size, 0, nullptr, &queue.event));
+            ASSERT_CL_SUCCESS(clEnqueueMemFillINTEL(queue.queue, queue.fillDst, pattern.get(), arguments.patternSize, queue.fillSize, 0, nullptr, nullptr));
         }
         for (PerQueueData &queue : queues) {
             ASSERT_CL_SUCCESS(clFlush(queue.queue));
@@ -90,9 +108,7 @@ static TestResult run(const UsmFillMultipleBlitsArguments &arguments, Statistics
         statistics.pushValue(timer.get(), totalSize, "Total (Cpu)");
     }
 
-    for (PerQueueData &queue : queues) {
-        ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, queue.buffer));
-    }
+    ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, dstBuffer));
     return TestResult::Success;
 }
 
