@@ -47,6 +47,10 @@ static TestResult run(const UsmCopyMultipleBlitsArguments &arguments, Statistics
         if (queue == nullptr) {
             return TestResult::DeviceNotCapable;
         }
+        if (!QueueFamiliesHelper::validateCapability(queue, CL_QUEUE_CAPABILITY_TRANSFER_BUFFER_INTEL)) {
+            return TestResult::DeviceNotCapable;
+        }
+
         const std::string queueName = EngineHelper::getEngineName(engine);
         queues.push_back(PerQueueData{queue, queueName, isMainCopyEngine});
     }
