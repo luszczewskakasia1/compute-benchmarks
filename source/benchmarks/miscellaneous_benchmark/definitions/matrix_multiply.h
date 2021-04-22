@@ -17,7 +17,7 @@ struct MatrixMultiply : TestCase<MatrixMultiplyArguments> {
     using TestCase<MatrixMultiplyArguments>::TestCase;
 
     std::string getTestCaseName() const override {
-        return "Matrix Multiply";
+        return "VectorSum";
     }
 
     std::string getHelp() const override {
