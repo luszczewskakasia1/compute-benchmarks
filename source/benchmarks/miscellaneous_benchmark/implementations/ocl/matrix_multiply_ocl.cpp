@@ -88,6 +88,10 @@ static TestResult run(const MatrixMultiplyArguments &arguments, Statistics &stat
     ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
     ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
 
+    //warmup
+    ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 3, nullptr, gws, nullptr, 0, nullptr, &profilingEvent));
+    ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
+
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 3, nullptr, gws, nullptr, 0, nullptr, &profilingEvent));
