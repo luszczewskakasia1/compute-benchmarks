@@ -36,6 +36,13 @@ inline std::string toLower(const std::string &arg) {
     return result;
 }
 
+inline bool containsIllegalCharacters(const std::string &string, const std::string &illegalCharacters) {
+    const auto predicate = [illegalCharacters](char c) {
+        return illegalCharacters.find(c) != std::string::npos;
+    };
+    return std::any_of(string.begin(), string.end(), predicate);
+}
+
 inline std::vector<std::string> splitString(const std::string &string) {
     std::vector<std::string> result = {};
     std::istringstream stringStream(string);

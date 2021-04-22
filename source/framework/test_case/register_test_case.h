@@ -2,6 +2,7 @@
 
 #include "framework/test_case/test_case.h"
 #include "framework/test_map.h"
+#include "framework/utility/string_utils.h"
 
 template <typename TestCase>
 struct RegisterTestCaseImplementation {
@@ -21,6 +22,9 @@ struct RegisterTestCase {
 
         auto testCase = std::unique_ptr<TestCaseInterface>(new ConcreteTestCase());
         DEVELOPER_WARNING_IF(testMap.find(testCase->getTestCaseName()) != testMap.end(), "Multiple tests have a name \"", testCase->getTestCaseName(), "\"");
+        DEVELOPER_WARNING_IF(testCase->getTestCaseName().empty(), "Test case with empty name detected");
+        DEVELOPER_WARNING_IF(containsIllegalCharacters(testCase->getTestCaseName(), " -:='\""), "Test case name \"", testCase->getTestCaseName(), "\" contains illegal characters");
+
         TestMap::get()[testCase->getTestCaseName()] = std::move(testCase);
     }
 };
