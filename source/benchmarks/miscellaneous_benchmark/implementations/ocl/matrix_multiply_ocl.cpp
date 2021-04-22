@@ -87,8 +87,6 @@ static TestResult run(const MatrixMultiplyArguments &arguments, Statistics &stat
 
     ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
     ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
-    //statistics.pushValue(std::chrono::nanoseconds{timeNs}, "time", MeasurementUnit::Microseconds);
-    statistics.pushValue(std::chrono::nanoseconds{timeNs}, sizeInBytes * 3, "bw", MeasurementUnit::GigabytesPerSecond);
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
@@ -96,10 +94,8 @@ static TestResult run(const MatrixMultiplyArguments &arguments, Statistics &stat
         ASSERT_CL_SUCCESS(clWaitForEvents(1, &profilingEvent));
         ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
         ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
-        if (i + 1 < arguments.iterations) {
-            //statistics.pushValue(std::chrono::nanoseconds{timeNs}, "time", MeasurementUnit::Microseconds);
-            statistics.pushValue(std::chrono::nanoseconds{timeNs}, sizeInBytes * 3, "bw", MeasurementUnit::GigabytesPerSecond);
-        }
+        //statistics.pushValue(std::chrono::nanoseconds{timeNs}, "time", MeasurementUnit::Microseconds);
+        statistics.pushValue(std::chrono::nanoseconds{timeNs}, sizeInBytes * 3, "bw", MeasurementUnit::GigabytesPerSecond);
     }
 
     ASSERT_CL_SUCCESS(clReleaseMemObject(bufferX));
