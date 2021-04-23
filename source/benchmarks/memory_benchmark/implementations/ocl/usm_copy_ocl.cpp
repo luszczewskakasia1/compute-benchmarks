@@ -10,7 +10,7 @@
 #include <gtest/gtest.h>
 
 static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics) {
-    if (arguments.sourcePlacement == UsmMemoryPlacement::NonUsm || arguments.destinationPlacement == UsmMemoryPlacement::NonUsm) {
+    if ((arguments.sourcePlacement == UsmMemoryPlacement::NonUsm) || (arguments.destinationPlacement == UsmMemoryPlacement::NonUsm)) {
         return TestResult::DeviceNotCapable;
     }
     
