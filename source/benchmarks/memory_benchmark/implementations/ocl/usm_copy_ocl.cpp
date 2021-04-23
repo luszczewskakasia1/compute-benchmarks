@@ -39,8 +39,16 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
-        ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillUsmBuffer(opencl.commandQueue, source, arguments.size, arguments.contents));
-        ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillUsmBuffer(opencl.commandQueue, destination, arguments.size, arguments.contents));
+        if (arguments.sourcePlacement == UsmMemoryPlacement::NonUsm) {
+            std::memset(source, 0, arguments.size);
+        } else {
+            ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillUsmBuffer(opencl.commandQueue, source, arguments.size, arguments.contents));
+        }
+        if (arguments.destinationPlacement == UsmMemoryPlacement::NonUsm) {
+            std::memset(destination, 0, arguments.size);
+        } else {
+            ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillUsmBuffer(opencl.commandQueue, source, arguments.size, arguments.contents));
+        }
 
         cl_event profilingEvent{};
         cl_event *eventForEnqueue = arguments.useEvents ? &profilingEvent : nullptr;
