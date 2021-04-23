@@ -28,6 +28,6 @@ INSTANTIATE_TEST_SUITE_P(
     MatrixMultiplyTest,
     ::testing::Combine(
         ::CommonGtestArgs::allApis(),
-        ::testing::Values(128, 256, 512, 513),
+        ::testing::Values(128, 256, 512),
         ::testing::Values(128, 256, 512, 513),
         ::testing::Values(128, 256, 512, 513)));
