@@ -21,9 +21,8 @@ inline void *allocate(UsmMemoryPlacement placement, cl_platform_id platform, cl_
         return clSharedMemAllocINTEL(context, device, nullptr, bufferSize, 0, retVal);
     }
     case UsmMemoryPlacement::NonUsm: {
-        return malloc(bufferSize);   
+        return malloc(bufferSize);
     }
-
 
     default:
         FATAL_ERROR("Unknown placement");

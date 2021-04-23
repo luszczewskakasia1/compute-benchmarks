@@ -13,6 +13,6 @@ struct UsmMemoryPlacementArgument : EnumArgument<UsmMemoryPlacementArgument, Usm
 
     const static inline std::string enumName = "memory placement";
     const static inline EnumType invalidEnumValue = EnumType::Unknown;
-    const static inline EnumType enumValues[3] = {EnumType::Device, EnumType::Host, EnumType::Shared};
-    const static inline std::string enumValuesNames[3] = {"Device", "Host", "Shared"};
+    const static inline EnumType enumValues[4] = {EnumType::Device, EnumType::Host, EnumType::Shared, EnumType::NonUsm};
+    const static inline std::string enumValuesNames[4] = {"Device", "Host", "Shared", "non-USM"};
 };
