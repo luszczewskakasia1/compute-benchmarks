@@ -7,4 +7,5 @@ enum class UsmMemoryPlacement {
     Host,
     Device,
     Shared,
+    NonUsm
 };

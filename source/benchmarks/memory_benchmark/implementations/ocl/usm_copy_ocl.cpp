@@ -10,6 +10,10 @@
 #include <gtest/gtest.h>
 
 static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics) {
+    if (arguments.sourcePlacement == UsmMemoryPlacement::NonUsm || arguments.destinationPlacement == UsmMemoryPlacement::NonUsm) {
+        return TestResult::DeviceNotCapable;
+    }
+    
     // Setup
     cl_int retVal{};
     QueueProperties queueProperties = QueueProperties::create().setProfiling(arguments.useEvents).setForceBlitter(arguments.forceBlitter).allowCreationFail();

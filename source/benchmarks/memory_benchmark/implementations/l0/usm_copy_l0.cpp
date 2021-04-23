@@ -82,8 +82,18 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
         ASSERT_ZE_RESULT_SUCCESS(zeEventPoolDestroy(eventPool));
         ASSERT_ZE_RESULT_SUCCESS(zeEventDestroy(event));
     }
-    ASSERT_ZE_RESULT_SUCCESS(zeMemFree(levelzero.context, destination));
-    ASSERT_ZE_RESULT_SUCCESS(zeMemFree(levelzero.context, source));
+    if (arguments.sourcePlacement == UsmMemoryPlacement::NonUsm) {
+        free(source);
+    } else {
+        ASSERT_ZE_RESULT_SUCCESS(zeMemFree(levelzero.context, source));    
+    }
+    if (arguments.destinationPlacement == UsmMemoryPlacement::NonUsm) {
+        free(destination);
+    }
+    else {
+        ASSERT_ZE_RESULT_SUCCESS(zeMemFree(levelzero.context, destination));
+    }
+
     return TestResult::Success;
 }
 
