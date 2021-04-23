@@ -10,10 +10,6 @@
 #include <gtest/gtest.h>
 
 static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics) {
-    if ((arguments.sourcePlacement == UsmMemoryPlacement::NonUsm) || (arguments.destinationPlacement == UsmMemoryPlacement::NonUsm)) {
-        return TestResult::DeviceNotCapable;
-    }
-    
     // Setup
     cl_int retVal{};
     QueueProperties queueProperties = QueueProperties::create().setProfiling(arguments.useEvents).setForceBlitter(arguments.forceBlitter).allowCreationFail();
@@ -63,9 +59,17 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
             statistics.pushValue(timer.get(), arguments.size);
         }
     }
+    if (arguments.sourcePlacement == UsmMemoryPlacement::NonUsm) {
+        free(source);
+    } else {
+        ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, source));
+    }
+    if (arguments.destinationPlacement == UsmMemoryPlacement::NonUsm) {
+        free(destination);
+    } else {
+        ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, destination));
+    }
 
-    ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, destination));
-    ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, source));
     return TestResult::Success;
 }
 

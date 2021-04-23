@@ -20,6 +20,11 @@ inline void *allocate(UsmMemoryPlacement placement, cl_platform_id platform, cl_
         auto clSharedMemAllocINTEL = (pfn_clDeviceMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(platform, "clSharedMemAllocINTEL");
         return clSharedMemAllocINTEL(context, device, nullptr, bufferSize, 0, retVal);
     }
+    case UsmMemoryPlacement::NonUsm: {
+        return malloc(bufferSize);   
+    }
+
+
     default:
         FATAL_ERROR("Unknown placement");
     }
