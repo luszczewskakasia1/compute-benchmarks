@@ -58,8 +58,12 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
 
     // Benchmark
     for (auto i = 0; i < arguments.iterations; i++) {
-        ASSERT_ZE_RESULT_SUCCESS(BufferContentsHelperL0::fillBuffer(levelzero, source, arguments.size, arguments.contents));
-        ASSERT_ZE_RESULT_SUCCESS(BufferContentsHelperL0::fillBuffer(levelzero, destination, arguments.size, arguments.contents));
+        if (arguments.sourcePlacement != UsmMemoryPlacement::NonUsm) {
+            ASSERT_ZE_RESULT_SUCCESS(BufferContentsHelperL0::fillBuffer(levelzero, source, arguments.size, arguments.contents));
+        }
+        if (arguments.destinationPlacement != UsmMemoryPlacement::NonUsm) {
+            ASSERT_ZE_RESULT_SUCCESS(BufferContentsHelperL0::fillBuffer(levelzero, destination, arguments.size, arguments.contents));
+        }
 
         timer.measureStart();
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
