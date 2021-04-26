@@ -21,8 +21,13 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
     void *source{}, *destination{};
     ASSERT_ZE_RESULT_SUCCESS(UsmHelper::allocate(arguments.sourcePlacement, levelzero.context, levelzero.device, arguments.size, &source));
     ASSERT_ZE_RESULT_SUCCESS(UsmHelper::allocate(arguments.destinationPlacement, levelzero.context, levelzero.device, arguments.size, &destination));
-    ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, source, arguments.size));
-    ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, destination, arguments.size));
+
+    if (arguments.sourcePlacement != UsmMemoryPlacement::NonUsm) {
+        ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, source, arguments.size));
+    }
+    if (arguments.destinationPlacement != UsmMemoryPlacement::NonUsm) {
+        ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, destination, arguments.size));
+    }
 
     // Create event
     ze_event_pool_handle_t eventPool{};
@@ -73,8 +78,12 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
     }
 
     // Evict buffers
-    ASSERT_ZE_RESULT_SUCCESS(zeContextEvictMemory(levelzero.context, levelzero.device, destination, arguments.size));
-    ASSERT_ZE_RESULT_SUCCESS(zeContextEvictMemory(levelzero.context, levelzero.device, source, arguments.size));
+    if (arguments.sourcePlacement != UsmMemoryPlacement::NonUsm) {
+        ASSERT_ZE_RESULT_SUCCESS(zeContextEvictMemory(levelzero.context, levelzero.device, destination, arguments.size));
+    }
+    if (arguments.destinationPlacement == UsmMemoryPlacement::NonUsm) {
+        ASSERT_ZE_RESULT_SUCCESS(zeContextEvictMemory(levelzero.context, levelzero.device, source, arguments.size));
+    }
 
     // Cleanup
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));
@@ -85,12 +94,11 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
     if (arguments.sourcePlacement == UsmMemoryPlacement::NonUsm) {
         free(source);
     } else {
-        ASSERT_ZE_RESULT_SUCCESS(zeMemFree(levelzero.context, source));    
+        ASSERT_ZE_RESULT_SUCCESS(zeMemFree(levelzero.context, source));
     }
     if (arguments.destinationPlacement == UsmMemoryPlacement::NonUsm) {
         free(destination);
-    }
-    else {
+    } else {
         ASSERT_ZE_RESULT_SUCCESS(zeMemFree(levelzero.context, destination));
     }
 
