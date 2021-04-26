@@ -18,6 +18,7 @@ inline ze_result_t allocate(UsmMemoryPlacement placement, ze_context_handle_t co
         return zeMemAllocShared(context, &deviceAllocDesc, &hostAllocDesc, size, 0, device, buffer);
     case UsmMemoryPlacement::NonUsm: {
         *buffer = malloc(size);
+        return ZE_RESULT_SUCCESS;
     }
     default:
         FATAL_ERROR("Unknown placement");
