@@ -47,7 +47,7 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
         if (arguments.destinationPlacement == UsmMemoryPlacement::NonUsm) {
             std::memset(destination, 0, arguments.size);
         } else {
-            ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillUsmBuffer(opencl.commandQueue, source, arguments.size, arguments.contents));
+            ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillUsmBuffer(opencl.commandQueue, destination, arguments.size, arguments.contents));
         }
 
         cl_event profilingEvent{};
