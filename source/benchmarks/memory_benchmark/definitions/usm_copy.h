@@ -13,6 +13,7 @@ struct UsmCopyArguments : TestCaseArgumentContainer {
     BufferContentsArgument contents;
     BooleanArgument forceBlitter;
     BooleanArgument useEvents;
+    BooleanArgument reuseCommandList;
 
     UsmCopyArguments()
         : sourcePlacement(*this, "src", "Placement of the source buffer"),
@@ -20,7 +21,8 @@ struct UsmCopyArguments : TestCaseArgumentContainer {
           size(*this, "size", "Size of the buffer"),
           contents(*this, "contents", "Contents of the buffers"),
           forceBlitter(*this, "forceBlitter", CommonHelpMessage::forceBlitter()),
-          useEvents(*this, "useEvents", CommonHelpMessage::useEvents()) {}
+          useEvents(*this, "useEvents", CommonHelpMessage::useEvents()),
+          reuseCommandList(*this, "reuseCmdList", "Command list is reused between iterations") {}
 };
 
 struct UsmCopy : TestCase<UsmCopyArguments> {

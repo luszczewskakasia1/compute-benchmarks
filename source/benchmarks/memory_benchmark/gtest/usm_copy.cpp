@@ -7,7 +7,7 @@ static const inline RegisterTestCase<UsmCopy> registerTestCase{};
 
 #include <gtest/gtest.h>
 
-class UsmCopyTest : public ::testing::TestWithParam<std::tuple<Api, UsmMemoryPlacement, UsmMemoryPlacement, size_t, BufferContents, bool, bool>> {
+class UsmCopyTest : public ::testing::TestWithParam<std::tuple<Api, UsmMemoryPlacement, UsmMemoryPlacement, size_t, BufferContents, bool, bool, bool>> {
 };
 
 TEST_P(UsmCopyTest, Test) {
@@ -19,6 +19,7 @@ TEST_P(UsmCopyTest, Test) {
     args.contents = std::get<4>(GetParam());
     args.forceBlitter = std::get<5>(GetParam());
     args.useEvents = std::get<6>(GetParam());
+    args.reuseCommandList = std::get<7>(GetParam());
 
     UsmCopy test;
     test.run(args);
@@ -35,4 +36,5 @@ INSTANTIATE_TEST_SUITE_P(
         ::testing::Values(128 * megaByte, 512 * megaByte),
         ::testing::Values(BufferContents::Zeros),
         ::testing::Values(false, true),
-        ::testing::Values(false)));
+        ::testing::Values(false),
+        ::testing::Values(false, true)));

@@ -66,6 +66,12 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
         }
 
         timer.measureStart();
+        if (!arguments.reuseCommandList) {
+            ASSERT_ZE_RESULT_SUCCESS(zeCommandListReset(cmdList));
+            ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendMemoryCopy(cmdList, destination, source, arguments.size, event, 0, nullptr));
+            ASSERT_ZE_RESULT_SUCCESS(zeCommandListClose(cmdList));
+        }
+
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
         timer.measureEnd();
