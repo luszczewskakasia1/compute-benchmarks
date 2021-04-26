@@ -82,10 +82,10 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
     }
 
     // Evict buffers
-    if (arguments.sourcePlacement != UsmMemoryPlacement::NonUsm) {
+    if (arguments.destinationPlacement != UsmMemoryPlacement::NonUsm) {
         ASSERT_ZE_RESULT_SUCCESS(zeContextEvictMemory(levelzero.context, levelzero.device, destination, arguments.size));
     }
-    if (arguments.destinationPlacement != UsmMemoryPlacement::NonUsm) {
+    if (arguments.sourcePlacement != UsmMemoryPlacement::NonUsm) {
         ASSERT_ZE_RESULT_SUCCESS(zeContextEvictMemory(levelzero.context, levelzero.device, source, arguments.size));
     }
 
