@@ -14,7 +14,7 @@ fi
 
 # Get index
 echo "Input two-digit index of the release within current day. For first release of today, input \"01\", for second release, input \"02\" and so on."
-while [[ ! "$version_index" =~ [0-9][0-9] ]]; do
+while [[ ! "$version_index" =~ ^[0-9][0-9]$ ]]; do
     echo -n "Index: "
     read version_index
 done
