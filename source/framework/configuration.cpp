@@ -22,6 +22,7 @@ Configuration::Configuration()
       dumpErrorsImmediately(*this, "dumpErrorsImmediately", "print errors to stdout immediately after they happen, not at the end of the run"),
       argFilter(*this, "argFilter", "filter tests by their arguments"),
       testFilter(*this, "testFilter", "filter tests by their names"),
+      returnSubmissionTimeInsteadOfWorkloadTime(*this, "forceSubmissionProfiling", "Overrides profiling to return submission time instead of workload time"),
       benchmarkSpecificConfiguration(createBenchmarkSpecificConfiguration()) {
 
     // OCL params
@@ -46,6 +47,7 @@ Configuration::Configuration()
     dumpErrorsImmediately = false;
     argFilter = std::vector<std::string>();
     testFilter = std::vector<std::string>();
+    returnSubmissionTimeInsteadOfWorkloadTime = false;
 }
 
 Configuration::~Configuration() {

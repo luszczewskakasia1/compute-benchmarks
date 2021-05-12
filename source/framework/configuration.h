@@ -53,6 +53,7 @@ struct Configuration : ArgumentContainer {
     BooleanArgument dumpErrorsImmediately;
     StringListArgument argFilter;
     StringListArgument testFilter;
+    BooleanFlagArgument returnSubmissionTimeInsteadOfWorkloadTime;
 
     BenchmarkInfo::BenchmarkSpecificConfigurationBase *benchmarkSpecificConfiguration = nullptr;
 
