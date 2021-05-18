@@ -1,7 +1,29 @@
+/*
+ * INTEL CONFIDENTIAL
+ * Copyright (c) 2021 Intel Corporation. All Rights Reserved.
+ *
+ * The source code contained or described herein and all documents related to the
+ * source code ("Material") are owned by Intel Corporation or its suppliers
+ * or licensors. Title to the Material remains with Intel Corporation or its
+ * suppliers and licensors. The Material contains trade secrets and proprietary
+ * and confidential information of Intel or its suppliers and licensors. The
+ * Material is protected by worldwide copyright and trade secret laws and
+ * treaty provisions. No part of the Material may be used, copied, reproduced,
+ * modified, published, uploaded, posted, transmitted, distributed, or
+ * disclosed in any way without Intel's prior express written permission.
+ *
+ * No license under any patent, copyright, trade secret or other intellectual
+ * property right is granted to or conferred upon you by disclosure or delivery
+ * of the Materials, either expressly, by implication, inducement, estoppel or
+ * otherwise. Any license under such intellectual property rights must be
+ * express and approved by Intel in writing.
+ */
+
 #pragma once
 
 #include "framework/configuration.h"
 #include "framework/l0/context_properties.h"
+#include "framework/l0/extension_properties.h"
 #include "framework/l0/queue_properties.h"
 #include "framework/l0/utility/error.h"
 #include "framework/l0/utility/queue_families_helper.h"
@@ -9,6 +31,11 @@
 #include <level_zero/ze_api.h>
 
 namespace L0 {
+struct ImportHostPointerExtension {
+    L0ImportExternalPointer importExternalPointer = nullptr;
+    L0ReleaseImportedPointer releaseExternalPointer = nullptr;
+    L0GetHostPointerBaseAddress getHostPointerBaseAddress = nullptr;
+};
 
 // Class handles regular LevelZero boilerplate code, such as querying driver handle, devices, creating contexts,
 // and queues. It is configurable by the QueueProperties and ContextProperties objects, allowing to perform the
@@ -26,11 +53,15 @@ struct LevelZero {
     ze_command_queue_desc_t commandQueueDesc{};
     ze_device_handle_t commandQueueDevice{};
     size_t commandQueueMaxFillSize{};
+    ImportHostPointerExtension importHostPointer{};
 
     // Constructors, destructor
     LevelZero() : LevelZero(QueueProperties::create()) {}
     LevelZero(const QueueProperties &queueProperties) : LevelZero(queueProperties, ContextProperties::create()) {}
-    LevelZero(const QueueProperties &queueProperties, const ContextProperties &contextProperties);
+    LevelZero(const QueueProperties &queueProperties, const ContextProperties &contextProperties)
+        : LevelZero(queueProperties, contextProperties, ExtensionProperties::create()) {}
+    LevelZero(const QueueProperties &queueProperties, const ContextProperties &contextProperties,
+              const ExtensionProperties &extensionProperties);
     ~LevelZero();
 
     // Returns how many subDevices has been created. Will return 0, if no subDevices were specified in ContextProperties or
@@ -64,6 +95,8 @@ struct LevelZero {
     }
     uint64_t getTimerResoultion(DeviceSelection deviceSelection) const { return getDeviceProperties(deviceSelection).timerResolution; }
     uint64_t getTimerResoultion(ze_device_handle_t device) const { return getDeviceProperties(device).timerResolution; }
+
+    void initializeImportHostPointerExtension(const ExtensionProperties &extensionProperties);
 
   private:
     // Queriers subDevices of the root device and creates them if any. This method is only called when it's necessary, i.e. user

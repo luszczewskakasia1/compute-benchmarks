@@ -1,3 +1,24 @@
+/*
+ * INTEL CONFIDENTIAL
+ * Copyright (c) 2021 Intel Corporation. All Rights Reserved.
+ *
+ * The source code contained or described herein and all documents related to the
+ * source code ("Material") are owned by Intel Corporation or its suppliers
+ * or licensors. Title to the Material remains with Intel Corporation or its
+ * suppliers and licensors. The Material contains trade secrets and proprietary
+ * and confidential information of Intel or its suppliers and licensors. The
+ * Material is protected by worldwide copyright and trade secret laws and
+ * treaty provisions. No part of the Material may be used, copied, reproduced,
+ * modified, published, uploaded, posted, transmitted, distributed, or
+ * disclosed in any way without Intel's prior express written permission.
+ *
+ * No license under any patent, copyright, trade secret or other intellectual
+ * property right is granted to or conferred upon you by disclosure or delivery
+ * of the Materials, either expressly, by implication, inducement, estoppel or
+ * otherwise. Any license under such intellectual property rights must be
+ * express and approved by Intel in writing.
+ */
+
 #include "framework/l0/levelzero.h"
 #include "framework/l0/utility/buffer_contents_helper_l0.h"
 #include "framework/l0/utility/usm_helper.h"
@@ -10,7 +31,11 @@
 
 static TestResult run(const UsmFillArguments &arguments, Statistics &statistics) {
     QueueProperties queueProperties = QueueProperties::create().setForceBlitter(arguments.forceBlitter).allowCreationFail();
-    LevelZero levelzero(queueProperties);
+    ContextProperties contextProperties = ContextProperties::create();
+    ExtensionProperties extensionProperties = ExtensionProperties::create().setImportHostPointerFunctions(
+        arguments.usmMemoryPlacement == UsmMemoryPlacement::NonUsmImported);
+
+    LevelZero levelzero(queueProperties, contextProperties, extensionProperties);
     if (levelzero.commandQueue == nullptr || arguments.patternSize > levelzero.commandQueueMaxFillSize) {
         return TestResult::DeviceNotCapable;
     }
@@ -19,7 +44,7 @@ static TestResult run(const UsmFillArguments &arguments, Statistics &statistics)
 
     // Create buffer
     void *buffer{};
-    ASSERT_ZE_RESULT_SUCCESS(UsmHelper::allocate(arguments.usmMemoryPlacement, levelzero.context, levelzero.device, arguments.bufferSize, &buffer));
+    ASSERT_ZE_RESULT_SUCCESS(UsmHelper::allocate(arguments.usmMemoryPlacement, levelzero, arguments.bufferSize, &buffer));
     ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, buffer, arguments.bufferSize));
 
     // Create event
@@ -41,6 +66,12 @@ static TestResult run(const UsmFillArguments &arguments, Statistics &statistics)
     const auto pattern = std::make_unique<uint8_t[]>(arguments.patternSize);
     if (arguments.patternContents == BufferContents::Random) {
         BufferContentsHelperL0::fillWithRandomBytes(pattern.get(), arguments.patternSize);
+    }
+    if (arguments.usmMemoryPlacement == UsmMemoryPlacement::NonUsmImported) {
+        ASSERT_ZE_RESULT_SUCCESS(levelzero.importHostPointer.importExternalPointer(
+            levelzero.driver, pattern.get(), arguments.patternSize));
+        ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device,
+                                                             pattern.get(), arguments.patternSize));
     }
 
     // Create command list
@@ -84,7 +115,13 @@ static TestResult run(const UsmFillArguments &arguments, Statistics &statistics)
         ASSERT_ZE_RESULT_SUCCESS(zeEventPoolDestroy(eventPool));
         ASSERT_ZE_RESULT_SUCCESS(zeEventDestroy(event));
     }
-    ASSERT_ZE_RESULT_SUCCESS(zeMemFree(levelzero.context, buffer));
+    ASSERT_ZE_RESULT_SUCCESS(UsmHelper::deallocate(arguments.usmMemoryPlacement, levelzero, buffer));
+    if (arguments.usmMemoryPlacement == UsmMemoryPlacement::NonUsmImported) {
+        ASSERT_ZE_RESULT_SUCCESS(zeContextEvictMemory(levelzero.context, levelzero.device,
+                                                      pattern.get(), arguments.patternSize));
+        ASSERT_ZE_RESULT_SUCCESS(levelzero.importHostPointer.releaseExternalPointer(
+            levelzero.driver, pattern.get()));
+    }
     return TestResult::Success;
 }
 

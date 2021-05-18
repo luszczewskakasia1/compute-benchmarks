@@ -21,16 +21,24 @@
 
 #pragma once
 
-#include "framework/enum/device_selection.h"
-#include "framework/enum/usm_memory_placement.h"
-#include "framework/l0/levelzero.h"
+#include <level_zero/ze_api.h>
+#include <level_zero/zex_driver.h>
 
-namespace L0::UsmHelper {
+namespace L0 {
+using L0ImportExternalPointer = decltype(&zexDriverImportExternalPointer);
+using L0ReleaseImportedPointer = decltype(&zexDriverReleaseImportedPointer);
+using L0GetHostPointerBaseAddress = decltype(&zexDriverGetHostPointerBaseAddress);
 
-ze_result_t allocate(UsmMemoryPlacement placement, LevelZero &levelZero, size_t size, void **buffer);
+struct ExtensionProperties {
+    bool getImportHostPointerFunctions = false;
 
-ze_result_t deallocate(UsmMemoryPlacement placement, LevelZero &levelZero, void *buffer);
+    static ExtensionProperties create() {
+        return ExtensionProperties();
+    }
 
-ze_result_t allocate(DeviceSelection placement, LevelZero &levelzero, size_t size, void **outBuffer);
-
-} // namespace L0::UsmHelper
+    ExtensionProperties &setImportHostPointerFunctions(bool value) {
+        getImportHostPointerFunctions = value;
+        return *this;
+    }
+};
+} // namespace L0
