@@ -1,6 +1,6 @@
 /*
  * INTEL CONFIDENTIAL
- * Copyright (c) 2019 - 2020 Intel Corporation. All Rights Reserved.
+ * Copyright (c) 2019 - 2021 Intel Corporation. All Rights Reserved.
  *
  * The source code contained or described herein and all documents related to the
  * source code ("Material") are owned by Intel Corporation or its suppliers
@@ -58,6 +58,26 @@ extern "C" {
 ZE_DLLEXPORT ze_result_t ZE_APICALL
 zexInit(
     ze_init_flag_t flags ///< [in] initialization flags
+);
+
+ZE_DLLEXPORT ze_result_t ZE_APICALL
+zexDriverImportExternalPointer(
+    ze_driver_handle_t hDriver, ///< [in] handle of the driver
+    void *ptr,                  ///< [in] pointer to be imported to the driver
+    size_t size                 ///< [in] size to be imported
+);
+
+ZE_DLLEXPORT ze_result_t ZE_APICALL
+zexDriverReleaseImportedPointer(
+    ze_driver_handle_t hDriver, ///< [in] handle of the driver
+    void *ptr                   ///< [in] pointer to be released from the driver
+);
+
+ZE_DLLEXPORT ze_result_t ZE_APICALL
+zexDriverGetHostPointerBaseAddress(
+    ze_driver_handle_t hDriver, ///< [in] handle of the driver
+    void *ptr,                  ///< [in] pointer to be checked if imported to the driver
+    void **baseAddress          ///< [out] if not null, returns address of the base pointer of the imported pointer
 );
 
 #if defined(__cplusplus)
