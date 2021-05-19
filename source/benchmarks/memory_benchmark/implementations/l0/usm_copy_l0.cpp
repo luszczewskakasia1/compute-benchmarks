@@ -1,3 +1,24 @@
+/*
+ * INTEL CONFIDENTIAL
+ * Copyright (c) 2021 Intel Corporation. All Rights Reserved.
+ *
+ * The source code contained or described herein and all documents related to the
+ * source code ("Material") are owned by Intel Corporation or its suppliers
+ * or licensors. Title to the Material remains with Intel Corporation or its
+ * suppliers and licensors. The Material contains trade secrets and proprietary
+ * and confidential information of Intel or its suppliers and licensors. The
+ * Material is protected by worldwide copyright and trade secret laws and
+ * treaty provisions. No part of the Material may be used, copied, reproduced,
+ * modified, published, uploaded, posted, transmitted, distributed, or
+ * disclosed in any way without Intel's prior express written permission.
+ *
+ * No license under any patent, copyright, trade secret or other intellectual
+ * property right is granted to or conferred upon you by disclosure or delivery
+ * of the Materials, either expressly, by implication, inducement, estoppel or
+ * otherwise. Any license under such intellectual property rights must be
+ * express and approved by Intel in writing.
+ */
+
 #include "framework/l0/levelzero.h"
 #include "framework/l0/utility/buffer_contents_helper_l0.h"
 #include "framework/l0/utility/usm_helper.h"
@@ -10,17 +31,23 @@
 
 static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics) {
     QueueProperties queueProperties = QueueProperties::create().setForceBlitter(arguments.forceBlitter).allowCreationFail();
-    LevelZero levelzero(queueProperties);
+    ContextProperties contextProperties = ContextProperties::create();
+    ExtensionProperties extensionProperties = ExtensionProperties::create().setImportHostPointerFunctions(
+        (arguments.sourcePlacement == UsmMemoryPlacement::NonUsmImported ||
+         arguments.destinationPlacement == UsmMemoryPlacement::NonUsmImported));
+
+    LevelZero levelzero(queueProperties, contextProperties, extensionProperties);
     if (levelzero.commandQueue == nullptr) {
         return TestResult::DeviceNotCapable;
     }
+
     Timer timer;
     const uint64_t timerResolution = levelzero.getTimerResoultion(levelzero.device);
 
     // Create buffers
     void *source{}, *destination{};
-    ASSERT_ZE_RESULT_SUCCESS(UsmHelper::allocate(arguments.sourcePlacement, levelzero.context, levelzero.device, arguments.size, &source));
-    ASSERT_ZE_RESULT_SUCCESS(UsmHelper::allocate(arguments.destinationPlacement, levelzero.context, levelzero.device, arguments.size, &destination));
+    ASSERT_ZE_RESULT_SUCCESS(UsmHelper::allocate(arguments.sourcePlacement, levelzero, arguments.size, &source));
+    ASSERT_ZE_RESULT_SUCCESS(UsmHelper::allocate(arguments.destinationPlacement, levelzero, arguments.size, &destination));
 
     if (arguments.sourcePlacement != UsmMemoryPlacement::NonUsm) {
         ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, source, arguments.size));
@@ -101,16 +128,9 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
         ASSERT_ZE_RESULT_SUCCESS(zeEventPoolDestroy(eventPool));
         ASSERT_ZE_RESULT_SUCCESS(zeEventDestroy(event));
     }
-    if (arguments.sourcePlacement == UsmMemoryPlacement::NonUsm) {
-        free(source);
-    } else {
-        ASSERT_ZE_RESULT_SUCCESS(zeMemFree(levelzero.context, source));
-    }
-    if (arguments.destinationPlacement == UsmMemoryPlacement::NonUsm) {
-        free(destination);
-    } else {
-        ASSERT_ZE_RESULT_SUCCESS(zeMemFree(levelzero.context, destination));
-    }
+
+    ASSERT_ZE_RESULT_SUCCESS(UsmHelper::deallocate(arguments.sourcePlacement, levelzero, source));
+    ASSERT_ZE_RESULT_SUCCESS(UsmHelper::deallocate(arguments.destinationPlacement, levelzero, destination));
 
     return TestResult::Success;
 }

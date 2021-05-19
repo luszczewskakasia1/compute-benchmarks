@@ -1,3 +1,24 @@
+/*
+ * INTEL CONFIDENTIAL
+ * Copyright (c) 2021 Intel Corporation. All Rights Reserved.
+ *
+ * The source code contained or described herein and all documents related to the
+ * source code ("Material") are owned by Intel Corporation or its suppliers
+ * or licensors. Title to the Material remains with Intel Corporation or its
+ * suppliers and licensors. The Material contains trade secrets and proprietary
+ * and confidential information of Intel or its suppliers and licensors. The
+ * Material is protected by worldwide copyright and trade secret laws and
+ * treaty provisions. No part of the Material may be used, copied, reproduced,
+ * modified, published, uploaded, posted, transmitted, distributed, or
+ * disclosed in any way without Intel's prior express written permission.
+ *
+ * No license under any patent, copyright, trade secret or other intellectual
+ * property right is granted to or conferred upon you by disclosure or delivery
+ * of the Materials, either expressly, by implication, inducement, estoppel or
+ * otherwise. Any license under such intellectual property rights must be
+ * express and approved by Intel in writing.
+ */
+
 #include "framework/l0/levelzero.h"
 #include "framework/l0/utility/buffer_contents_helper_l0.h"
 #include "framework/l0/utility/usm_helper.h"
@@ -10,8 +31,13 @@
 
 static TestResult run(const UsmFillSpecificPatternArguments &arguments, Statistics &statistics) {
     const std::vector<uint8_t> &pattern = arguments.pattern;
+    uint8_t *patternAddress = const_cast<uint8_t *>(pattern.data());
     QueueProperties queueProperties = QueueProperties::create().setForceBlitter(arguments.forceBlitter).allowCreationFail();
-    LevelZero levelzero(queueProperties);
+    ContextProperties contextProperties = ContextProperties::create();
+    ExtensionProperties extensionProperties = ExtensionProperties::create().setImportHostPointerFunctions(
+        arguments.usmMemoryPlacement == UsmMemoryPlacement::NonUsmImported);
+
+    LevelZero levelzero(queueProperties, contextProperties, extensionProperties);
     if (levelzero.commandQueue == nullptr || pattern.size() > levelzero.commandQueueMaxFillSize) {
         return TestResult::DeviceNotCapable;
     }
@@ -20,8 +46,15 @@ static TestResult run(const UsmFillSpecificPatternArguments &arguments, Statisti
 
     // Create buffer
     void *buffer{};
-    ASSERT_ZE_RESULT_SUCCESS(UsmHelper::allocate(arguments.usmMemoryPlacement, levelzero.context, levelzero.device, arguments.bufferSize, &buffer));
+    ASSERT_ZE_RESULT_SUCCESS(UsmHelper::allocate(arguments.usmMemoryPlacement, levelzero, arguments.bufferSize, &buffer));
     ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, buffer, arguments.bufferSize));
+
+    if (arguments.usmMemoryPlacement == UsmMemoryPlacement::NonUsmImported) {
+        ASSERT_ZE_RESULT_SUCCESS(levelzero.importHostPointer.importExternalPointer(
+            levelzero.driver, patternAddress, pattern.size()));
+        ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device,
+                                                             patternAddress, pattern.size()));
+    }
 
     // Create event
     ze_event_pool_handle_t eventPool{};
@@ -79,7 +112,13 @@ static TestResult run(const UsmFillSpecificPatternArguments &arguments, Statisti
         ASSERT_ZE_RESULT_SUCCESS(zeEventPoolDestroy(eventPool));
         ASSERT_ZE_RESULT_SUCCESS(zeEventDestroy(event));
     }
-    ASSERT_ZE_RESULT_SUCCESS(zeMemFree(levelzero.context, buffer));
+    ASSERT_ZE_RESULT_SUCCESS(UsmHelper::deallocate(arguments.usmMemoryPlacement, levelzero, buffer));
+    if (arguments.usmMemoryPlacement == UsmMemoryPlacement::NonUsmImported) {
+        ASSERT_ZE_RESULT_SUCCESS(zeContextEvictMemory(levelzero.context, levelzero.device,
+                                                      patternAddress, pattern.size()));
+        ASSERT_ZE_RESULT_SUCCESS(levelzero.importHostPointer.releaseExternalPointer(
+            levelzero.driver, patternAddress));
+    }
     return TestResult::Success;
 }
 

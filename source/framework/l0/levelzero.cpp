@@ -1,9 +1,31 @@
+/*
+ * INTEL CONFIDENTIAL
+ * Copyright (c) 2021 Intel Corporation. All Rights Reserved.
+ *
+ * The source code contained or described herein and all documents related to the
+ * source code ("Material") are owned by Intel Corporation or its suppliers
+ * or licensors. Title to the Material remains with Intel Corporation or its
+ * suppliers and licensors. The Material contains trade secrets and proprietary
+ * and confidential information of Intel or its suppliers and licensors. The
+ * Material is protected by worldwide copyright and trade secret laws and
+ * treaty provisions. No part of the Material may be used, copied, reproduced,
+ * modified, published, uploaded, posted, transmitted, distributed, or
+ * disclosed in any way without Intel's prior express written permission.
+ *
+ * No license under any patent, copyright, trade secret or other intellectual
+ * property right is granted to or conferred upon you by disclosure or delivery
+ * of the Materials, either expressly, by implication, inducement, estoppel or
+ * otherwise. Any license under such intellectual property rights must be
+ * express and approved by Intel in writing.
+ */
+
 #include "levelzero.h"
 
 #include "framework/l0/utility/queue_families_helper.h"
 
 namespace L0 {
-LevelZero::LevelZero(const QueueProperties &queueProperties, const ContextProperties &contextProperties)
+LevelZero::LevelZero(const QueueProperties &queueProperties, const ContextProperties &contextProperties,
+                     const ExtensionProperties &extensionProperties)
     : driverIndex(Configuration::get().l0DriverIndex),
       rootDeviceIndex(Configuration::get().l0DeviceIndex) {
     EXPECT_ZE_RESULT_SUCCESS(zeInit(ZE_INIT_FLAG_GPU_ONLY));
@@ -54,6 +76,8 @@ LevelZero::LevelZero(const QueueProperties &queueProperties, const ContextProper
     this->commandQueueDesc = queueDesc.desc;
     this->commandQueueDevice = queueDesc.family.device;
     this->commandQueueMaxFillSize = queueDesc.family.maxFillSize;
+
+    initializeImportHostPointerExtension(extensionProperties);
 }
 
 LevelZero::~LevelZero() {
@@ -128,6 +152,28 @@ ze_command_queue_handle_t LevelZero::createQueue(ze_device_handle_t device, ze_c
     EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueCreate(this->context, device, &desc, &queue));
     this->commandQueues.push_back(queue);
     return queue;
+}
+
+void LevelZero::initializeImportHostPointerExtension(const ExtensionProperties &extensionProperties) {
+    if (!extensionProperties.getImportHostPointerFunctions) {
+        return;
+    }
+
+    EXPECT_ZE_RESULT_SUCCESS(
+        zeDriverGetExtensionFunctionAddress(this->driver,
+                                            "zexDriverImportExternalPointer",
+                                            reinterpret_cast<void **>(&this->importHostPointer.importExternalPointer)));
+    FATAL_ERROR_IF(this->importHostPointer.importExternalPointer == nullptr, "zexDriverImportExternalPointer retrieved nullptr");
+    EXPECT_ZE_RESULT_SUCCESS(
+        zeDriverGetExtensionFunctionAddress(this->driver,
+                                            "zexDriverReleaseImportedPointer",
+                                            reinterpret_cast<void **>(&this->importHostPointer.releaseExternalPointer)));
+    FATAL_ERROR_IF(this->importHostPointer.releaseExternalPointer == nullptr, "zexDriverReleaseImportedPointer retrieved nullptr");
+    EXPECT_ZE_RESULT_SUCCESS(
+        zeDriverGetExtensionFunctionAddress(this->driver,
+                                            "zexDriverGetHostPointerBaseAddress",
+                                            reinterpret_cast<void **>(&this->importHostPointer.getHostPointerBaseAddress)));
+    FATAL_ERROR_IF(this->importHostPointer.getHostPointerBaseAddress == nullptr, "zexDriverGetHostPointerBaseAddress retrieved nullptr");
 }
 
 } // namespace L0
