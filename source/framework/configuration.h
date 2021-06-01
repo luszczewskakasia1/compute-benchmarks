@@ -32,7 +32,7 @@ struct Configuration : ArgumentContainer {
     bool validateArgumentsExtra() const override;
 
     // OCL params
-    NonNegativeIntegerArgument oclPlatformIndex;
+    IntegerArgument oclPlatformIndex;
     NonNegativeIntegerArgument oclDeviceIndex;
     BooleanArgument oclUseOOQ;
 

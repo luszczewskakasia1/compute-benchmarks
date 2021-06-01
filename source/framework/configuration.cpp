@@ -26,7 +26,7 @@ Configuration::Configuration()
       benchmarkSpecificConfiguration(createBenchmarkSpecificConfiguration()) {
 
     // OCL params
-    oclPlatformIndex = 0;
+    oclPlatformIndex = -1;
     oclDeviceIndex = 0;
     oclUseOOQ = true;
 
