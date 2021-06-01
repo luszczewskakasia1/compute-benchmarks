@@ -22,7 +22,7 @@
 #pragma once
 
 #include <level_zero/ze_api.h>
-#include <level_zero/zex_driver.h>
+#include <level_zero/zex_api.h>
 
 namespace L0 {
 using L0ImportExternalPointer = decltype(&zexDriverImportExternalPointer);
