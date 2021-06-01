@@ -42,7 +42,7 @@ static TestResult run(const UsmCopyMultipleBlitsArguments &arguments, Statistics
         }
 
         const Engine engine = EngineHelper::getBlitterEngineFromIndex(blitterIndex);
-        const QueueProperties blitterQueueProperties = QueueProperties::create().setForceEngine(engine).setProfiling(true);
+        const QueueProperties blitterQueueProperties = QueueProperties::create().setForceEngine(engine).setProfiling(true).allowCreationFail();
         const cl_command_queue queue = opencl.createQueue(blitterQueueProperties);
         if (queue == nullptr) {
             return TestResult::DeviceNotCapable;
