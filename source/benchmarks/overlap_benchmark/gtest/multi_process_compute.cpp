@@ -8,7 +8,7 @@
 
 static const inline RegisterTestCase<MultiProcessCompute> registerTestCase{};
 
-class MultiProcessComputeTest : public ::testing::TestWithParam<std::tuple<Api, DeviceSelection, size_t, size_t, bool>> {
+class MultiProcessComputeTest : public ::testing::TestWithParam<std::tuple<Api, DeviceSelection, size_t, size_t, bool, size_t>> {
 };
 
 TEST_P(MultiProcessComputeTest, Test) {
@@ -18,7 +18,7 @@ TEST_P(MultiProcessComputeTest, Test) {
     args.processesPerTile = std::get<2>(GetParam());
     args.workgroupsPerProcess = std::get<3>(GetParam());
     args.synchronize = std::get<4>(GetParam());
-
+    args.operationsPerKernelCount = std::get<5>(GetParam());
     MultiProcessCompute test;
     test.run(args);
 }
@@ -36,4 +36,5 @@ INSTANTIATE_TEST_SUITE_P(
             DeviceSelection::Tile0 | DeviceSelection::Tile1 | DeviceSelection::Tile2 | DeviceSelection::Tile3),
         ::testing::Values(1, 2, 4, 8),
         ::testing::Values(1, 300),
-        ::testing::Values(false, true)));
+        ::testing::Values(false, true),
+        ::testing::Values(5000, 500000)));

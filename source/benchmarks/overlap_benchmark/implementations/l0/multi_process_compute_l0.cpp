@@ -24,7 +24,7 @@ static TestResult run(const MultiProcessComputeArguments &arguments, Statistics 
     ProcessGroup processes{"single_queue_workload_l0", subDevicesForExecution.size()};
     processes.addArgumentAll("iterations", std::to_string(arguments.iterations));
     processes.addArgumentAll("synchronize", std::to_string(arguments.synchronize));
-    processes.addArgumentAll("operationsCount", std::to_string(MultiProcessHelperL0::workloadOperationsCount));
+    processes.addArgumentAll("operationsCount", std::to_string(arguments.operationsPerKernelCount));
     processes.addArgumentAll("wgc", std::to_string(arguments.workgroupsPerProcess));
     processes.addArgumentAll("wgs", std::to_string(MultiProcessHelperL0::workloadWorkgroupSize));
     for (auto i = 0u; i < processes.size(); i++) {
