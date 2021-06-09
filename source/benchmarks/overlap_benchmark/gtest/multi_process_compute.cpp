@@ -34,6 +34,6 @@ INSTANTIATE_TEST_SUITE_P(
             DeviceSelection::Tile1,
             DeviceSelection::Tile0 | DeviceSelection::Tile1,
             DeviceSelection::Tile0 | DeviceSelection::Tile1 | DeviceSelection::Tile2 | DeviceSelection::Tile3),
-        ::testing::Values(1, 2, 4),
+        ::testing::Values(1, 2, 4, 8),
         ::testing::Values(1, 300),
         ::testing::Values(false, true)));
