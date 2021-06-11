@@ -9,3 +9,25 @@ add_subdirectory(miscellaneous_benchmark)
 add_subdirectory(multitile_memory_benchmark)
 add_subdirectory(overlap_benchmark)
 add_subdirectory(ulls_benchmark)
+
+
+if (GENERATE_DOCS)
+    set(TARGET_NAME generate_docs)
+    add_custom_target(${TARGET_NAME})
+
+    message(STATUS "Setting up target for docs generation. To generate docs, build ${TARGET_NAME}. Targets used for docs generation:")
+    get_property(TARGETS_FOR_DOCS_GENERATION GLOBAL PROPERTY TARGETS_FOR_DOCS_GENERATION)
+    foreach(TARGET ${TARGETS_FOR_DOCS_GENERATION})
+        message(STATUS "    ${TARGET}")
+    endforeach()
+
+
+    foreach(TARGET ${TARGETS_FOR_DOCS_GENERATION})
+        add_dependencies(${TARGET_NAME} ${TARGET})
+        add_custom_command(
+            TARGET ${TARGET_NAME}
+            POST_BUILD
+            COMMAND "$<TARGET_FILE:${TARGET}>" --generateDocs --generateDocsPath=${CMAKE_SOURCE_DIR}/TESTS.md
+        )
+    endforeach()
+endif()
