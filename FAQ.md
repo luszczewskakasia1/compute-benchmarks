@@ -74,8 +74,13 @@ Yes, run the benchmark with --csv parameter.
 
 
 
+### What tests are supported?
+Every benchmark binary can be run with --help parameter, which provides a short description for each test case. You can also check the documentation in [TESTS.md](TESTS.md).
+
+
+
 ### What does test XXX do?
-Every benchmark binary can be run with --help parameter, which provides a short description for each test case.
+Every benchmark binary can be run with --help parameter, which provides a short description for each test case. You can also check the documentation in [TESTS.md](TESTS.md).
 
 
 
