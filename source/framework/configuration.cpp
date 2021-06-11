@@ -47,7 +47,7 @@ Configuration::Configuration()
     noop = false;
     noHeaders = false;
     generateDocs = false;
-    generateDocsPath = "TESTS.md";
+    generateDocsPath = "";
     dumpErrorsImmediately = false;
     argFilter = std::vector<std::string>();
     testFilter = std::vector<std::string>();

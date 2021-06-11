@@ -24,3 +24,17 @@ std::vector<uint8_t> FileHelper::loadBinaryFile(const std::string &filePath) {
 std::vector<uint8_t> FileHelper::loadTextFile(const std::string &filePath) {
     return loadFile(filePath, std::ios::in);
 }
+
+FileHelper::FileOrConsole::FileOrConsole(const std::string &filePath, std::ios::openmode openMode, std::ostream &fallback) 
+    : fallback(fallback) {
+    if (!filePath.empty()) {
+        this->ownedFile = std::make_unique<std::ofstream>(filePath, openMode);
+    }
+}
+
+std::ostream &FileHelper::FileOrConsole::get() {
+    if (ownedFile) {
+        return *ownedFile;
+    }
+    return fallback;
+}

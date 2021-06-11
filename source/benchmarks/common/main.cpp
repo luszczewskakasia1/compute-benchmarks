@@ -5,8 +5,8 @@
 #include "framework/test_map.h"
 #include "framework/utility/common_help_message.h"
 #include "framework/utility/string_utils.h"
+#include "framework/utility/file_helper.h"
 
-#include <fstream>
 #include <gtest/gtest.h>
 #include <iostream>
 
@@ -26,10 +26,8 @@ int printVersion(bool enableWarning, const char *prefix = "") {
 }
 
 int generateDocs(const std::string &docsFileName) {
-    std::ofstream file{docsFileName, std::ios::app};
-    if (!file) {
-        return 1;
-    }
+    FileHelper::FileOrConsole fileOrConsole {docsFileName, std::ios::app, std::cout};
+    std::ostream &file = fileOrConsole.get();
 
     file << "# " << BenchmarkInfo::get().getBenchmarkName() << '\n';
     file << BenchmarkInfo::get().getBenchmarkDescription() << '\n';
