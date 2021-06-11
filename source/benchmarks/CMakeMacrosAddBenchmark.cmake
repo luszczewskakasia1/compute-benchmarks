@@ -40,6 +40,11 @@ function (add_benchmark_for_api BASE_TARGET_NAME APPEND_API_TO_TARGET_NAME REGIS
         string(APPEND TARGET_NAME "_${APIS}")
     endif()
 
+    # Log benchmark name
+    if (LOG_BENCHMARK_TARGETS)
+        message(STATUS "Adding benchmark: ${TARGET_NAME}")
+    endif()
+
     # Register for docs generations
     if (REGISTER_FOR_DOCS_GENERATION)
         set_property(GLOBAL APPEND PROPERTY TARGETS_FOR_DOCS_GENERATION ${TARGET_NAME})
