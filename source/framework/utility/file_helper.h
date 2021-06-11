@@ -1,9 +1,9 @@
 #pragma once
 
-#include <iostream>
 #include <fstream>
-#include <vector>
+#include <iostream>
 #include <memory>
+#include <vector>
 
 struct FileHelper {
     static std::vector<uint8_t> loadFile(const std::string &filePath, std::ios_base::openmode openMode);
@@ -11,11 +11,11 @@ struct FileHelper {
     static std::vector<uint8_t> loadTextFile(const std::string &filePath);
 
     class FileOrConsole {
-        public:
+      public:
         FileOrConsole(const std::string &filePath, std::ios::openmode openMode, std::ostream &fallback);
         std::ostream &get();
 
-        private:
+      private:
         std::ostream &fallback;
         std::unique_ptr<std::ofstream> ownedFile = {};
     };

@@ -6,10 +6,10 @@ Opencl::Opencl(const QueueProperties &queueProperties, const ContextProperties &
     // Get Platform
     cl_uint numPlatforms;
     EXPECT_CL_SUCCESS(clGetPlatformIDs(0, nullptr, &numPlatforms));
-    
+
     auto platforms = std::make_unique<cl_platform_id[]>(numPlatforms);
     EXPECT_CL_SUCCESS(clGetPlatformIDs(numPlatforms, platforms.get(), nullptr));
-    
+
     auto platformIndex = Configuration::get().oclPlatformIndex;
     cl_uint numDevices;
     cl_int retVal = CL_SUCCESS;

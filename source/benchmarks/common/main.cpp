@@ -4,8 +4,8 @@
 #include "framework/print_device_info.h"
 #include "framework/test_map.h"
 #include "framework/utility/common_help_message.h"
-#include "framework/utility/string_utils.h"
 #include "framework/utility/file_helper.h"
+#include "framework/utility/string_utils.h"
 
 #include <gtest/gtest.h>
 #include <iostream>
@@ -26,7 +26,7 @@ int printVersion(bool enableWarning, const char *prefix = "") {
 }
 
 int generateDocs(const std::string &docsFileName) {
-    FileHelper::FileOrConsole fileOrConsole {docsFileName, std::ios::app, std::cout};
+    FileHelper::FileOrConsole fileOrConsole{docsFileName, std::ios::app, std::cout};
     std::ostream &file = fileOrConsole.get();
 
     file << "# " << BenchmarkInfo::get().getBenchmarkName() << '\n';

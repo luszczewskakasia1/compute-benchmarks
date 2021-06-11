@@ -24,7 +24,7 @@ static TestResult run(const WriteBufferArguments &arguments, Statistics &statist
     const cl_mem_flags compressionHint = CompressionHelper::getCompressionFlags(arguments.compressed, arguments.noIntelExtensions);
     const cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE | compressionHint, arguments.size, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
-    
+
     std::unique_ptr<uint8_t[]> cpuBuffer;
     void *cpuBufferPtr = nullptr;
 
@@ -38,7 +38,6 @@ static TestResult run(const WriteBufferArguments &arguments, Statistics &statist
         cpuBuffer = std::make_unique<uint8_t[]>(arguments.size);
         cpuBufferPtr = cpuBuffer.get();
     }
-
 
     // Check buffer compression
     const auto compressionStatus = CompressionHelper::verifyCompression(buffer, arguments.compressed, arguments.noIntelExtensions);

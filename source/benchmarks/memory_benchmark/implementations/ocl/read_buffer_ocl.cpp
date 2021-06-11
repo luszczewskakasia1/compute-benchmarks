@@ -24,7 +24,7 @@ static TestResult run(const ReadBufferArguments &arguments, Statistics &statisti
     const cl_mem_flags compressionHint = CompressionHelper::getCompressionFlags(arguments.compressed, arguments.noIntelExtensions);
     const cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE | compressionHint, arguments.size, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
-    
+
     std::unique_ptr<uint8_t[]> cpuBuffer;
     void *cpuBufferPtr = nullptr;
 

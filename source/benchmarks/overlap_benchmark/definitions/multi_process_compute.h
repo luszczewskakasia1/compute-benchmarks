@@ -16,7 +16,7 @@ struct MultiProcessComputeArguments : TestCaseArgumentContainer {
           processesPerTile(*this, "processesPerTile", "Number of processes that will be started on each of the tiles specified"),
           workgroupsPerProcess(*this, "workgroupsPerProcess", "Number of workgroups that each process will start"),
           synchronize(*this, "synchronize", "Synchronize all processes before each iteration"),
-          operationsPerKernelCount (*this, "opsPerKernel", "Operations performed in kernel, used to steer its execution time"){}
+          operationsPerKernelCount(*this, "opsPerKernel", "Operations performed in kernel, used to steer its execution time") {}
 };
 
 struct MultiProcessCompute : TestCase<MultiProcessComputeArguments> {
