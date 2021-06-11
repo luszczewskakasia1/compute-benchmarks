@@ -46,10 +46,11 @@ int generateDocs(const std::string &docsFileName) {
             file << "<li>" << argument->getHelp() << "</li>";
         }
         file << "</ul>|";
-        file << (testCase->isApiImplemented(Api::OpenCL) ? ":heavy_check_mark:" : ":x:") << '|';
         file << (testCase->isApiImplemented(Api::L0) ? ":heavy_check_mark:" : ":x:") << '|';
+        file << (testCase->isApiImplemented(Api::OpenCL) ? ":heavy_check_mark:" : ":x:") << '|';
         file << '\n';
     }
+    file << "\n\n\n";
 
     return 0;
 }
