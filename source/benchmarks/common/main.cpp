@@ -25,8 +25,7 @@ int printVersion(bool enableWarning, const char *prefix = "") {
     return 0;
 }
 
-int generateDocs() {
-    constexpr char *docsFileName = "TESTS.md";
+int generateDocs(const std::string &docsFileName) {
     std::ofstream file{docsFileName, std::ios::app};
     if (!file) {
         return 1;
@@ -162,8 +161,9 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    if (Configuration::get().generateDocs) {
-        return generateDocs();
+    const Configuration &configuration = Configuration::get();
+    if (configuration.generateDocs) {
+        return generateDocs(configuration.generateDocsPath);
     }
 
     for (auto &argument : commandLineArguments) {

@@ -20,6 +20,7 @@ Configuration::Configuration()
       noop(*this, "noop", "do not run any tests, only print their names and parameters"),
       noHeaders(*this, "noHeaders", "Do not print any informational messages at the top of the output"),
       generateDocs(*this, "generateDocs", "Generate .md file describing available tests"),
+      generateDocsPath(*this, "generateDocsPath", "Path for generated docs"),
       dumpErrorsImmediately(*this, "dumpErrorsImmediately", "print errors to stdout immediately after they happen, not at the end of the run"),
       argFilter(*this, "argFilter", "filter tests by their arguments"),
       testFilter(*this, "testFilter", "filter tests by their names"),
@@ -45,6 +46,8 @@ Configuration::Configuration()
     subDeviceSelection = DeviceSelection::Root;
     noop = false;
     noHeaders = false;
+    generateDocs = false;
+    generateDocsPath = "TESTS.md";
     dumpErrorsImmediately = false;
     argFilter = std::vector<std::string>();
     testFilter = std::vector<std::string>();

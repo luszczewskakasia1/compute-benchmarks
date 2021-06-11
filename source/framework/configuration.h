@@ -5,6 +5,7 @@
 #include "framework/argument/boolean_flag_argument.h"
 #include "framework/argument/enum/api_argument.h"
 #include "framework/argument/enum/device_selection_argument.h"
+#include "framework/argument/string_argument.h"
 #include "framework/argument/string_list_argument.h"
 #include "framework/benchmark_info.h"
 #include "framework/utility/command_line_argument.h"
@@ -51,6 +52,7 @@ struct Configuration : ArgumentContainer {
     BooleanFlagArgument noop;
     BooleanFlagArgument noHeaders;
     BooleanFlagArgument generateDocs;
+    StringArgument generateDocsPath;
     BooleanArgument dumpErrorsImmediately;
     StringListArgument argFilter;
     StringListArgument testFilter;
