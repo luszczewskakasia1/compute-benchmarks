@@ -50,6 +50,7 @@ struct Configuration : ArgumentContainer {
     BooleanFlagArgument dumpCommandLines;
     BooleanFlagArgument noop;
     BooleanFlagArgument noHeaders;
+    BooleanFlagArgument generateDocs;
     BooleanArgument dumpErrorsImmediately;
     StringListArgument argFilter;
     StringListArgument testFilter;

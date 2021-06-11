@@ -6,6 +6,7 @@
 #include "framework/utility/common_help_message.h"
 #include "framework/utility/string_utils.h"
 
+#include <fstream>
 #include <gtest/gtest.h>
 #include <iostream>
 
@@ -19,6 +20,36 @@ int printVersion(bool enableWarning, const char *prefix = "") {
     if (enableWarning) {
         std::cerr << "Unknown version. Run CMake with \"-D INCLUDE_VERSION=ON\" to include it in the binary." << std::endl;
         return 1;
+    }
+
+    return 0;
+}
+
+int generateDocs() {
+    constexpr char *docsFileName = "TESTS.md";
+    std::ofstream file{docsFileName, std::ios::app};
+    if (!file) {
+        return 1;
+    }
+
+    file << "# " << BenchmarkInfo::get().getBenchmarkName() << '\n';
+    file << BenchmarkInfo::get().getBenchmarkDescription() << '\n';
+    file << "| Test name | Description | Params | L0 | OCL |\n";
+    file << "|-----------|-------------|--------|----|-----|\n";
+    for (const auto &testEntry : TestMap::get()) {
+        const std::unique_ptr<TestCaseInterface> &testCase = testEntry.second;
+
+        file << testCase->getTestCaseName() << '|';
+        file << testCase->getHelp() << '|';
+        file << "<ul>";
+        const std::unique_ptr<ArgumentContainer> arguments = testCase->getArguments();
+        for (const Argument *argument : arguments->getArguments()) {
+            file << "<li>" << argument->getHelp() << "</li>";
+        }
+        file << "</ul>|";
+        file << (testCase->isApiImplemented(Api::OpenCL) ? ":heavy_check_mark:" : ":x:") << '|';
+        file << (testCase->isApiImplemented(Api::L0) ? ":heavy_check_mark:" : ":x:") << '|';
+        file << '\n';
     }
 
     return 0;
@@ -129,6 +160,10 @@ int main(int argc, char **argv) {
     if (!Configuration::parseArgumentsForConfiguration(commandLineArguments)) {
         std::cerr << "Error parsing command line\n";
         return 1;
+    }
+
+    if (Configuration::get().generateDocs) {
+        return generateDocs();
     }
 
     for (auto &argument : commandLineArguments) {

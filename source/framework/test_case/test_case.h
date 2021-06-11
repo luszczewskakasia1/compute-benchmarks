@@ -31,13 +31,18 @@ class TestCase : public TestCaseInterface {
     };
     static inline BenchmarkImplementation implementations[(int)Api::COUNT];
 
+    std::unique_ptr<ArgumentContainer> getArguments() const override { return std::make_unique<ArgumentContainerT>(); }
     std::string getHelpParameters() const override { return ArgumentContainerT{}.getHelp(2u); }
+
+    bool isApiImplemented(Api api) const override {
+        return implementations[static_cast<int>(api)].function != nullptr;
+    }
 
     std::vector<Api> getApisWithImplementation() const override {
         std::vector<Api> apis = {};
         for (int apiIndex = static_cast<int>(Api::FIRST); apiIndex <= static_cast<int>(Api::LAST); apiIndex++) {
-            if (implementations[apiIndex].function != nullptr) {
-                const Api api = static_cast<Api>(apiIndex);
+            const Api api = static_cast<Api>(apiIndex);
+            if (isApiImplemented(api)) {
                 apis.push_back(api);
             }
         }
