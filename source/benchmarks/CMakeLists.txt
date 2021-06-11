@@ -21,7 +21,11 @@ if (GENERATE_DOCS)
         message(STATUS "    ${TARGET}")
     endforeach()
 
-
+    add_custom_command(
+        TARGET ${TARGET_NAME}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E remove ${CMAKE_SOURCE_DIR}/TESTS.md
+    )
     foreach(TARGET ${TARGETS_FOR_DOCS_GENERATION})
         add_dependencies(${TARGET_NAME} ${TARGET})
         add_custom_command(
