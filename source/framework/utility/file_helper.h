@@ -14,6 +14,7 @@ struct FileHelper {
       public:
         FileOrConsole(const std::string &filePath, std::ios::openmode openMode, std::ostream &fallback);
         std::ostream &get();
+        bool hasOwnedFile() const { return ownedFile != nullptr; }
 
       private:
         std::ostream &fallback;

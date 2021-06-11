@@ -50,6 +50,10 @@ int generateDocs(const std::string &docsFileName) {
     }
     file << "\n\n\n";
 
+    if (fileOrConsole.hasOwnedFile()) {
+        std::cout << BenchmarkInfo::get().getBenchmarkName() << ": Generated documentation to " << docsFileName << '\n';
+    }
+
     return 0;
 }
 
