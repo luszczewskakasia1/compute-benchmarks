@@ -30,6 +30,7 @@ if (GENERATE_DOCS)
         add_dependencies(${TARGET_NAME} ${TARGET})
         add_custom_command(
             TARGET ${TARGET_NAME}
+            WORKING_DIRECTORY "$<TARGET_FILE_DIR:${TARGET}>"
             POST_BUILD
             COMMAND "$<TARGET_FILE:${TARGET}>" --generateDocs --generateDocsPath=${CMAKE_SOURCE_DIR}/TESTS.md
         )
