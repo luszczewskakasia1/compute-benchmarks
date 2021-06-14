@@ -10,6 +10,8 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 # Enable MT Compilation in VisualStudio
 if (MSVC)
     add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/MP>)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DELAYLOAD:OpenCL.dll")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DELAYLOAD:ze_loader.dll")
 endif()
 
 # Load dependencies
