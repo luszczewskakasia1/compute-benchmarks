@@ -146,7 +146,7 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     const cl_uint numThreadsPerEu = (gpuGen == IntelGen::Gen12hp) ? 8 : 7;
     const cl_uint numHwThreads = (useLargeGRF ? numThreadsPerEu / 2 : 7) * static_cast<cl_uint>(euNum);
 
-    const size_t lws = 8;
+    const size_t lws = 16;
     size_t gws = numHwThreads * subgroupSize;
 
     const cl_uint atsThreasLargeGRFMode = 4;
