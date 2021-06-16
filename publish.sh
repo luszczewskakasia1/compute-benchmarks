@@ -30,6 +30,7 @@ if [ `uname -a | grep Linux | wc -l` == 1 ]; then
 fi
 cmake --build . --config Release $extra_args
 rm -rf bin/Release # There are gtest_main files  there. TODO: steer CMake to not generate them
+rm -rf workloads
 popd >/dev/null 2>&1
 echo
 
