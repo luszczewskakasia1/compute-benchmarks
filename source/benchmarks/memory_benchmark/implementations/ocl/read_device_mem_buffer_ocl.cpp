@@ -26,12 +26,14 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     if (gpuGen == IntelGen::Unknown) {
         return TestResult::DeviceNotCapable; //tbd for comp
     }
+    const size_t multiplier = gpuGen == IntelGen::Gen12_8 ? 2 : 1;
+
 
     const size_t singleSendSizeInBytes = 128U;
     const size_t numOfSends = 16U; // per 128Byte in send, 2k-4k tiles in one loop iteration
     const size_t numOfLoops = 500U;
     const auto threadTileSizeInSubgroup = singleSendSizeInBytes * numOfSends;
-    const size_t subgroupSize = 8;
+    const size_t subgroupSize = 8 * multiplier;
     size_t euNum = 0;
 
     ASSERT_CL_SUCCESS(clGetDeviceInfo(opencl.device, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(euNum), &euNum, nullptr));
@@ -146,7 +148,7 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     const cl_uint numThreadsPerEu = (gpuGen == IntelGen::Gen12hp) ? 8 : 7;
     const cl_uint numHwThreads = (useLargeGRF ? numThreadsPerEu / 2 : 7) * static_cast<cl_uint>(euNum);
 
-    const size_t lws = 16;
+    const size_t lws = subgroupSize * 2;
     size_t gws = numHwThreads * subgroupSize;
 
     const cl_uint atsThreasLargeGRFMode = 4;
