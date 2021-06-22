@@ -29,7 +29,7 @@ INSTANTIATE_TEST_SUITE_P(
     UsmCopyMultipleBlitsTest,
     ::testing::Combine(
         ::CommonGtestArgs::allApis(),
-        ::testing::Values(UsmMemoryPlacement::Device),
-        ::testing::Values(UsmMemoryPlacement::Device),
+        ::testing::Values(UsmMemoryPlacement::Device, UsmMemoryPlacement::Host),
+        ::testing::Values(UsmMemoryPlacement::Device, UsmMemoryPlacement::Host),
         ::testing::Values(512 * megaByte),
         ::testing::Values("000000111", "111111111")));
