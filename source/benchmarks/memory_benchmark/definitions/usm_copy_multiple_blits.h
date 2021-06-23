@@ -29,10 +29,13 @@ struct UsmCopyMultipleBlits : TestCase<UsmCopyMultipleBlitsArguments> {
     }
 
     std::string getHelp() const override {
-        return "allocates two unified shared memory buffers for each enabled blitter and measures "
-               "copy bandwidth between them. Results for each individual blitter engine is "
-               "measured using GPU-based timings and reported separately. Total bandwidths are "
-               "calculated by dividing the sum of sizes of all operation by the worst time among "
-               "all engines.";
+        return "allocates two unified shared memory buffers, divides them into chunks, copies "
+               "each chunk using a different copy engine and measures bandwidth. Results for each "
+               "individual blitter engine is measured using GPU-based timings and reported "
+               "separately. Total bandwidths are calculated by dividing the total buffer size by "
+               "the worst result from all engines. Division of work among blitters is not always "
+               "even - if main copy engine is specified (rightmost bit in --bliters argument), it "
+               "gets a half of the buffer and the rest is divided between remaining copy engines. "
+               "Otherwise the division is even.";
     }
 };

@@ -32,9 +32,8 @@ struct UsmFillMultipleBlits : TestCase<UsmFillMultipleBlitsArguments> {
     }
 
     std::string getHelp() const override {
-        return "allocates a unified shared memory buffer for each enabled blitter and measures "
-               "fill bandwidth. Results for each individual blitter engine is measured using "
-               "GPU-based timings and reported separately. Total bandwidths are calculated by "
-               "dividing the sum of sizes of all operation by the worst time among all engines.";
+        return "allocates a unified shared memory buffer, divides it into chunks, copies each "
+               "chunk using a different copy engine and measures bandwidth. Refer to "
+               "UsmCopyMultipleBlits for more details.";
     }
 };
