@@ -28,7 +28,6 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     }
     const size_t multiplier = gpuGen == IntelGen::Gen12_8 ? 2 : 1;
 
-
     const size_t singleSendSizeInBytes = 128U;
     const size_t numOfSends = 16U; // per 128Byte in send, 2k-4k tiles in one loop iteration
     const size_t numOfLoops = 500U;

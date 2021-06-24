@@ -2,7 +2,7 @@
 Please use ClangFormat to properly format the code. 
   - [Visual Studio extension](https://marketplace.visualstudio.com/items?itemName=LLVMExtensions.ClangFormat).
   - [Visual Studio code extension](https://marketplace.visualstudio.com/items?itemName=xaver.clang-format)
-  - [Script formatting all files (Windows only)](scripts/run_clang-format_on_all_files.cmd)
+  - Script formatting all files [Windows](scripts/run_clang-format_on_all_files.cmd) [Linux](scripts/run_clang-format_on_all_files.sh)
 
 Submit your changes via pull request. Maintainers are allowed to push to the master branch directly.
 
