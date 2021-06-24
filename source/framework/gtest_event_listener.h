@@ -31,10 +31,7 @@ class AllTestsGtestListener : public GtestListener {
     } currentTestCaseErrorInfo{};
 
     void OnTestProgramStart(const ::testing::UnitTest &unitTest) override {
-        if (Configuration::get().noHeaders) {
-            return;
-        }
-        if (Configuration::get().printType != Configuration::PrintType::Csv) {
+        if (!Configuration::get().noHeaders && Configuration::get().printType != Configuration::PrintType::Csv) {
             std::cout << "Running " << Configuration::get().iterations << " iterations of each benchmark\n\n";
         }
         TestCaseStatistics::printStatisticsHeader(Configuration::get().printType);
