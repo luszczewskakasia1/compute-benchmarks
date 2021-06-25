@@ -27,10 +27,11 @@ RUN apt-get update && apt-get install libze-loader ocl-icd-opencl-dev -y
 
 # Install utility applications
 RUN apt-get update && apt-get install -y \
-      git   \
-      cmake \
-      gcc   \
-      g++
+      git                                \
+      cmake                              \
+      gcc                                \
+      g++                                \
+      clang-format
 
 # Setup entrypoint
 COPY ./entrypoint.sh /

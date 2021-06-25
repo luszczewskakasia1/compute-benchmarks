@@ -2,11 +2,24 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, test_ci ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, test_ci ]
 
 jobs:
+  check_formatting:
+    runs-on: [self-hosted, gfx, small, fm6pusghr053] # TODO remove fm6pusghr053 after 2021-06-28
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./
+      with:
+        command: >
+          scripts/run_clang-format_on_all_files.sh   &&
+          echo "Checking diff after formatting..."   &&
+          git diff --exit-code                       &&
+          echo "OK"
+
   build_release:
     runs-on: [self-hosted, gfx, small, fm6pusghr053] # TODO remove fm6pusghr053 after 2021-06-28
 
