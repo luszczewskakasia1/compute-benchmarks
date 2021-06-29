@@ -46,7 +46,7 @@ TestResult run(const SingleQueueWorkloadSharedBufferArguments &arguments, Statis
 
     // Create buffer
     void *bufferBase = nullptr;
-    ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeMemOpenIpcHandle(levelzero.context, levelzero.device, ipcHandle, ZE_IPC_MEMORY_FLAG_TBD, &bufferBase));
+    ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeMemOpenIpcHandle(levelzero.context, levelzero.device, ipcHandle, 0, &bufferBase));
     void *buffer = static_cast<uint8_t *>(bufferBase) + arguments.offsetWithinBuffer;
     ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeContextMakeMemoryResident(levelzero.context, levelzero.device, bufferBase, bufferSizeInBytes));
 
