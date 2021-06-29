@@ -41,7 +41,7 @@ static TestResult run(const MatrixMultiplyArguments &arguments, Statistics &stat
     for (int z = 0u; z < gws[2]; z++) {
         for (int y = 0u; y < gws[1]; y++) {
             for (int x = 0u; x < gws[0]; x++) {
-                int index = x + y * gws[0] + z * gws[0] * gws[1];
+                auto index = x + y * gws[0] + z * gws[0] * gws[1];
                 dataX[index] = counter++;
                 dataY[index] = counter++;
                 results[index] = dataX[index] + dataY[index];
@@ -60,7 +60,6 @@ static TestResult run(const MatrixMultiplyArguments &arguments, Statistics &stat
     ASSERT_CL_SUCCESS(retVal);
 
     // Validate results
-    int actualSum;
     cl_event profilingEvent{};
     cl_ulong timeNs{};
 

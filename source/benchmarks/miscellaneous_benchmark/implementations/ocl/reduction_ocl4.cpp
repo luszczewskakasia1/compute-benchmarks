@@ -82,7 +82,7 @@ TestResult run(const ReductionArguments4 &arguments, Statistics &statistics) {
     // Warmup kernel
     const size_t gws = arguments.numberOfElements / 2;
     const size_t lws = 512u;
-    const cl_uint groupCount = gws / lws;
+    const cl_uint groupCount = static_cast<cl_uint>(gws / lws);
     const size_t dispatchOne = 1u;
 
     cl_mem partialSums = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, groupCount * sizeof(int), nullptr, &retVal);
