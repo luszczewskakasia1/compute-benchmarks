@@ -7,16 +7,18 @@
 #include <gtest/gtest.h>
 
 static TestResult run(const UsmSharedFirstCpuAccessArguments &arguments, Statistics &statistics) {
-    if (arguments.initialPlacement != UsmInitialPlacement::Any) {
-        return TestResult::NoImplementation;
-    }
-
     LevelZero levelzero;
     Timer timer;
 
-    // Create buffers
-    const ze_host_mem_alloc_desc_t hostAllocationDesc{ZE_STRUCTURE_TYPE_HOST_MEM_ALLOC_DESC};
-    const ze_device_mem_alloc_desc_t deviceAllocationDesc{ZE_STRUCTURE_TYPE_DEVICE_MEM_ALLOC_DESC};
+    // Prepare buffer descriptions
+    ze_host_mem_alloc_desc_t hostAllocationDesc{ZE_STRUCTURE_TYPE_HOST_MEM_ALLOC_DESC};
+    if (arguments.initialPlacement == UsmInitialPlacement::Host) {
+        hostAllocationDesc.flags = ZE_HOST_MEM_ALLOC_FLAG_BIAS_INITIAL_PLACEMENT;
+    }
+    ze_device_mem_alloc_desc_t deviceAllocationDesc{ZE_STRUCTURE_TYPE_DEVICE_MEM_ALLOC_DESC};
+    if (arguments.initialPlacement == UsmInitialPlacement::Device) {
+        deviceAllocationDesc.flags = ZE_DEVICE_MEM_ALLOC_FLAG_BIAS_INITIAL_PLACEMENT;
+    }
     void *buffer{};
 
     // Warmup
