@@ -41,9 +41,11 @@ static TestResult run(const UsmCopyKernelArguments &arguments, Statistics &stati
     ASSERT_ZE_RESULT_SUCCESS(zeKernelCreate(module, &kernelDesc, &kernel));
 
     // Configure dispath parameters
-    const uint32_t wgs = 256;
-    const uint32_t wgc = static_cast<uint32_t>(arguments.size) / wgs;
-    ASSERT_ZE_RESULT_SUCCESS(zeKernelSetGroupSize(kernel, wgs, 1, 1));
+    uint32_t wgsX{}, wgsY{}, wgsZ{};
+    const uint32_t elementsCount = arguments.size / sizeof(int);
+    ASSERT_ZE_RESULT_SUCCESS(zeKernelSuggestGroupSize(kernel, elementsCount, 1u, 1u, &wgsX, &wgsY, &wgsZ));
+    const uint32_t wgc = elementsCount / wgsX;
+    ASSERT_ZE_RESULT_SUCCESS(zeKernelSetGroupSize(kernel, wgsX, wgsY, wgsZ));
     const ze_group_count_t dispatchTraits{wgc, 1, 1};
     ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernel, 0, sizeof(src), &src));
     ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernel, 1, sizeof(dst), &dst));
