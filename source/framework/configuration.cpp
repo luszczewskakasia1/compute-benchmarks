@@ -13,6 +13,7 @@ Configuration::Configuration()
       subDeviceSelection(*this, "subDeviceSelection", "Device to be used in the benchmarks. Might be ignored by some specific tests"),
       csv(*this, "csv", "dump results in CSV format for easy imports to spreadsheets"),
       verbose(*this, "verbose", "dump results from all iterations"),
+      interactivePrints(*this, "interactivePrints", "display test name before running it. May cause unexcpected results when redirecting output to files."),
       iterations(*this, "iterations", "select how many times each test will be run"),
       selectedApi(*this, "api", "Compute API to be used"),
       noIntelExtensions(*this, "no-intel-extensions", "do not run benchmark requiring Intel specific extensions"),
@@ -39,6 +40,7 @@ Configuration::Configuration()
     // Api agnostic params
     csv = false;
     verbose = false;
+    interactivePrints = false;
     iterations = 10;
     selectedApi = Api::All;
     noIntelExtensions = false;

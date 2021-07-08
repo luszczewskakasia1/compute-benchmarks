@@ -26,8 +26,10 @@ class TestCaseStatistics : public Statistics {
     bool isFull() const override;
 
     static void printStatisticsHeader(Configuration::PrintType printType);
+    void printStatisticsBeforeTest(const std::string &testCaseName) const;
+    void printClearLineAfterTest() const;
     void printStatistics(const std::string &testCaseName) const;
-    void printStatisticsString(const std::string &testCaseName, const std::string &message) const;
+    void printStatisticsString(const std::string &testCaseName, const std::string &message, char lineEnding = '\n') const;
 
   private:
     void pushValue(Value value, const std::string &description, MeasurementUnit unit);

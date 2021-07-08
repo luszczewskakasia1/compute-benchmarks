@@ -117,7 +117,7 @@ class TestCase : public TestCaseInterface {
     }
 
   private:
-    TestResult runImpl(Statistics &statistics, const ArgumentContainerT &arguments, const std::string &testCaseNameWithConfig) const {
+    TestResult runImpl(TestCaseStatistics &statistics, const ArgumentContainerT &arguments, const std::string &testCaseNameWithConfig) const {
         // Get API
         const auto selectedApi = Configuration::get().selectedApi;
         if (arguments.api != selectedApi && selectedApi != Api::All) {
@@ -181,7 +181,17 @@ class TestCase : public TestCaseInterface {
         }
 
         // Run the test
-        return benchmarkImplementation.function(arguments, statistics);
+        if (Configuration::get().interactivePrints) {
+            // This will print test name before running the actual test along with '\r' character,
+            // so it will be overwritten in next step.
+            statistics.printStatisticsBeforeTest(testCaseNameWithConfig);
+        }
+        const TestResult testResult = benchmarkImplementation.function(arguments, statistics);
+        if (Configuration::get().interactivePrints) {
+            // This will overwrite the test name, because it was only a temporal caption.
+            statistics.printClearLineAfterTest();
+        }
+        return testResult;
     }
 
     static bool parseArguments(ArgumentContainerT &arguments, CommandLineArguments &commandLineArguments) {

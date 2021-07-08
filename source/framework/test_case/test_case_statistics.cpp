@@ -145,6 +145,17 @@ void TestCaseStatistics::printStatisticsHeader(Configuration::PrintType printTyp
     }
 }
 
+void TestCaseStatistics::printStatisticsBeforeTest(const std::string &testCaseName) const {
+    // Ending line with carriage return instead of newline will cause the next print to overwrite this line
+    printStatisticsString(testCaseName, "", '\r');
+}
+
+void TestCaseStatistics::printClearLineAfterTest() const {
+    const ColumnInfo firstColumn = ColumnInfo::getColumns()[0];
+    std::string spaces(firstColumn.width, ' ');
+    std::cout << spaces << '\r';
+}
+
 void TestCaseStatistics::printStatistics(const std::string &testCaseName) const {
     switch (printType) {
     case Configuration::PrintType::Default:
@@ -219,7 +230,7 @@ void TestCaseStatistics::printStatisticsVerbose() const {
     std::cout << '\n';
 }
 
-void TestCaseStatistics::printStatisticsString(const std::string &testCaseName, const std::string &message) const {
+void TestCaseStatistics::printStatisticsString(const std::string &testCaseName, const std::string &message, char lineEnding) const {
     const auto columns = ColumnInfo::getColumns();
     const auto columnCount = ColumnInfo::getColumnCount();
     switch (printType) {
@@ -229,7 +240,7 @@ void TestCaseStatistics::printStatisticsString(const std::string &testCaseName, 
         for (int column = 1; column < columnCount; column++) {
             std::cout << std::setw(columns[column].width) << message;
         }
-        std::cout << std::endl;
+        std::cout << lineEnding;
         break;
     }
     case Configuration::PrintType::Csv: {
@@ -240,7 +251,7 @@ void TestCaseStatistics::printStatisticsString(const std::string &testCaseName, 
                 std::cout << ",";
             }
         }
-        std::cout << std::endl;
+        std::cout << lineEnding;
         break;
     }
     default:

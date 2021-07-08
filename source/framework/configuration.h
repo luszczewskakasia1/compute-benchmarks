@@ -45,6 +45,7 @@ struct Configuration : ArgumentContainer {
     DeviceSelectionArgument subDeviceSelection;
     BooleanFlagArgument csv;
     BooleanFlagArgument verbose;
+    BooleanFlagArgument interactivePrints;
     PositiveIntegerArgument iterations;
     ApiArgument selectedApi;
     BooleanFlagArgument noIntelExtensions;
