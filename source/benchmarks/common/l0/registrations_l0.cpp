@@ -5,6 +5,5 @@
 
 EXECUTE_AT_APP_INIT(RegistrationsL0) {
     DeviceInfo::registerFunctions(Api::L0, L0::printDeviceInfo, L0::printAvailableDevices);
+    SupportedApis::registerSupportedApi(Api::L0);
 }
-
-static RegisterSupportedApi registerApi(Api::L0);

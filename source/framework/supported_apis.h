@@ -2,10 +2,11 @@
 
 #include "framework/enum/api.h"
 
-using PrintDeviceInfoFunction = void (*)();
-struct RegisterSupportedApi {
-    RegisterSupportedApi(Api api);
-};
+class SupportedApis {
+  public:
+    static void registerSupportedApi(Api api);
+    static bool isApiSupported(Api api);
 
-bool isApiSupported(Api api);
-std::vector<Api> getSupportedApis();
+  private:
+    static inline bool supportedApis[static_cast<int>(Api::COUNT)] = {};
+};

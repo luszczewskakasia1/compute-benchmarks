@@ -123,7 +123,7 @@ class TestCase : public TestCaseInterface {
         if (arguments.api != selectedApi && selectedApi != Api::All) {
             return TestResult::SkippedApi;
         }
-        if (!isApiSupported(arguments.api)) {
+        if (!SupportedApis::isApiSupported(arguments.api)) {
             return TestResult::UnsupportedApi;
         }
 

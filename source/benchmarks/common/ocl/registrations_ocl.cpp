@@ -5,6 +5,5 @@
 
 EXECUTE_AT_APP_INIT(RegistrationsOcl) {
     DeviceInfo::registerFunctions(Api::OpenCL, OCL::printDeviceInfo, OCL::printAvailableDevices);
+    SupportedApis::registerSupportedApi(Api::OpenCL);
 }
-
-static RegisterSupportedApi registerApi(Api::OpenCL);
