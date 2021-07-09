@@ -3,6 +3,8 @@
 #include "framework/configuration.h"
 #include "framework/utility/error.h"
 
+DeviceInfo::Functions DeviceInfo::functions[static_cast<int>(Api::COUNT)] = {};
+
 void DeviceInfo::registerFunctions(Api api, PrintDeviceInfoFunction printDeviceInfo, PrintAvailableDevicesFunction printAvailableDevices) {
     FATAL_ERROR_IF(printDeviceInfo == nullptr, "Cannot register null function");
     FATAL_ERROR_IF(printAvailableDevices == nullptr, "Cannot register null function");

@@ -15,5 +15,5 @@ struct DeviceInfo {
         PrintDeviceInfoFunction printDeviceInfo = nullptr;
         PrintAvailableDevicesFunction printAvailableDevices = nullptr;
     };
-    static inline Functions functions[static_cast<int>(Api::COUNT)] = {};
+    static Functions functions[static_cast<int>(Api::COUNT)];
 };
