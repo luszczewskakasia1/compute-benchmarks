@@ -5,7 +5,9 @@
 std::unique_ptr<Configuration> Configuration::instance = {};
 
 Configuration::Configuration()
-    : hwInfo(*this, "hwInfo", "Shows available devices"),
+    : help(*this, "help", "Shows this message"),
+      version(*this, "version", "Shows benchmark version"),
+      hwInfo(*this, "hwInfo", "Shows available devices"),
       generateDocs(*this, "generateDocs", "Generate .md file describing available tests"),
       generateDocsPath(*this, "generateDocsPath", "Path for generated docs"),
       oclPlatformIndex(*this, "oclPlatformIndex", "OpenCL platform index"),
@@ -13,6 +15,7 @@ Configuration::Configuration()
       oclUseOOQ(*this, "oclUseOOQ", "Use out of order queue if it is supported"),
       l0DriverIndex(*this, "l0DriverIndex", "LevelZero driver index"),
       l0DeviceIndex(*this, "l0DeviceIndex", "LevelZero device index inside the driver"),
+      test(*this, "test", "Selects particular test for execution. All arguments of the test must be provided"),
       subDeviceSelection(*this, "subDeviceSelection", "Device to be used in the benchmarks. Might be ignored by some specific tests"),
       csv(*this, "csv", "dump results in CSV format for easy imports to spreadsheets"),
       verbose(*this, "verbose", "dump results from all iterations"),
@@ -31,6 +34,8 @@ Configuration::Configuration()
       benchmarkSpecificConfiguration(createBenchmarkSpecificConfiguration()) {
 
     // Diagnostic params
+    help = false;
+    version = false;
     hwInfo = false;
     generateDocs = false;
     generateDocsPath = "";
@@ -45,6 +50,7 @@ Configuration::Configuration()
     l0DeviceIndex = 0;
 
     // Api agnostic params
+    test = "";
     csv = false;
     verbose = false;
     interactivePrints = false;

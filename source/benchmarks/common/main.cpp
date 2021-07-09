@@ -172,18 +172,14 @@ int main(int argc, char **argv) {
         DeviceInfo::printAvailableDevices();
         return 0;
     }
-
-    for (auto &argument : commandLineArguments) {
-        if (argument.isKeyEqualTo("test")) {
-            argument.markAsProcessed();
-            return executeSingleTest(argument.getValue(), commandLineArguments);
-        }
-        if (argument.isKeyEqualTo("help")) {
-            return printHelp();
-        }
-        if (argument.isKeyEqualTo("version")) {
-            return printVersion(true);
-        }
+    if (configuration.help) {
+        return printHelp();
+    }
+    if (configuration.version) {
+        return printVersion(true);
+    }
+    if (std::string test = configuration.test; test != "") {
+        return executeSingleTest(test, commandLineArguments);
     }
 
     ::testing::InitGoogleTest(&argc, argv);

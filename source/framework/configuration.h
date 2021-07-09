@@ -33,6 +33,8 @@ struct Configuration : ArgumentContainer {
     bool validateArgumentsExtra() const override;
 
     // Diagnostic params
+    BooleanFlagArgument help;
+    BooleanFlagArgument version;
     BooleanFlagArgument hwInfo;
     BooleanFlagArgument generateDocs;
     StringArgument generateDocsPath;
@@ -47,6 +49,7 @@ struct Configuration : ArgumentContainer {
     NonNegativeIntegerArgument l0DeviceIndex;
 
     // Api agnostic params
+    StringArgument test;
     DeviceSelectionArgument subDeviceSelection;
     BooleanFlagArgument csv;
     BooleanFlagArgument verbose;
