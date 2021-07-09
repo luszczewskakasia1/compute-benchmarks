@@ -8,7 +8,7 @@ on:
 
 jobs:
   check_formatting:
-    runs-on: [self-hosted, gfx, small, fm6pusghr053] # TODO remove fm6pusghr053 after 2021-06-28
+    runs-on: [self-hosted, gfx, small]
 
     steps:
     - uses: actions/checkout@v2
@@ -21,7 +21,7 @@ jobs:
           echo "OK"
 
   build_release:
-    runs-on: [self-hosted, gfx, small, fm6pusghr053] # TODO remove fm6pusghr053 after 2021-06-28
+    runs-on: [self-hosted, gfx, small]
 
     steps:
     - uses: actions/checkout@v2
