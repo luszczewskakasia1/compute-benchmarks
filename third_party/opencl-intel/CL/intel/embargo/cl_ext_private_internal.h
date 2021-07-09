@@ -1,6 +1,6 @@
 /*
  * INTEL CONFIDENTIAL
- * Copyright (c) 2016 - 2020 Intel Corporation. All Rights Reserved.
+ * Copyright (c) 2016 - 2021 Intel Corporation. All Rights Reserved.
  *
  * The source code contained or described herein and all documents related to the
  * source code ("Material") are owned by Intel Corporation or its suppliers
@@ -31,6 +31,8 @@
 // clang-format off
 // cl_mem_properties_intel
 #define CL_MEM_DEVICE_ID_INTEL                         0x10011
+
+#define CL_MEM_CACHE_CLOS_INTEL                        0x10012 // placeholder
 
 // cl_context_properties
 #define CL_EXTERNAL_DEVICE_HANDLE_INTEL                0x300B
@@ -65,33 +67,14 @@
 // cl_command_type
 #define CL_COMMAND_ACQUIRE_EXTERNAL_MEMORY             0x1000B
 #define CL_COMMAND_RELEASE_EXTERNAL_MEMORY             0x1000C
-
-////// RESOURCE BARRIER EXT
-#define CL_COMMAND_RESOURCE_BARRIER                    0x10010 // placeholder // added by JC - needs discussion
 ///// cl_intel_pvc_rt_validation
 #define CL_COMMAND_INIT_RT_DISPATCH_GLOBALS_INTEL      0x10011 // placeholder // added by PW - needs discussion
 
-typedef cl_uint cl_resource_barrier_type;
-#define CL_RESOURCE_BARRIER_TYPE_ACQUIRE               0x1 // FLUSH+EVICT
-#define CL_RESOURCE_BARRIER_TYPE_RELEASE               0x2 // FLUSH
-#define CL_RESOURCE_BARRIER_TYPE_DISCARD               0x3 // DISCARD
-
-typedef cl_uint cl_resource_memory_scope;
-#define CL_MEMORY_SCOPE_DEVICE                         0x0 // INCLUDES CROSS-TILE
-#define CL_MEMORY_SCOPE_ALL_SVM_DEVICES                0x1 // CL_MEMORY_SCOPE_DEVICE + CROSS-DEVICE
-
 // cl_kernel_exec_info 
 #define CL_KERNEL_EXEC_INFO_THREAD_ARBITRATION_POLICY_STALL_BASED_ROUND_ROBIN_INTEL 0x10026
-#define CL_KERNEL_EXEC_INFO_EU_THREAD_OVER_DISPATCH_INTEL 0x10027;
+#define CL_KERNEL_EXEC_INFO_EU_THREAD_OVER_DISPATCH_INTEL 0x10027
 
 #pragma pack(push, 1)
-typedef struct _cl_resource_barrier_descriptor_intel {
-    void *svm_allocation_pointer;
-    cl_mem mem_object;
-    cl_resource_barrier_type type;
-    cl_resource_memory_scope scope;
-} cl_resource_barrier_descriptor_intel;
-
 typedef enum _cl_external_mem_handle_type_enum {
     CL_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD = 1,
     CL_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32 = 2,
@@ -116,5 +99,11 @@ typedef struct _cl_external_mem_desc_st {
 // cl_intel_variable_eu_thread_count
 #define CL_DEVICE_EU_THREAD_COUNTS_INTEL 0x1000A // placeholder
 #define CL_KERNEL_EU_THREAD_COUNT_INTEL  0x1000B // placeholder
+
+// cl_device_info - returns the number of cache classes of service supported by a a device (cl_uint)
+#define CL_DEVICE_NUM_CACHE_CLOS_INTEL   0x1000C // placeholder
+
+// cl_device_info - CL_DEVICE_FEATURE_CAPABILITIES_INTEL (cl_device_feature_capabilities_intel)
+#define CL_DEVICE_FEATURE_FLAG_DPAS_INTEL (1 << 1)
 
 // clang-format on
