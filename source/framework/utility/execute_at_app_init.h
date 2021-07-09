@@ -1,9 +1,13 @@
 #pragma once
 
-#define EXECUTE_AT_APP_INIT(identifier)                                                  \
-    struct EXECUTE_AT_APP_INIT_##identifier {                                            \
-        EXECUTE_AT_APP_INIT_##identifier();                                              \
-    };                                                                                   \
-                                                                                         \
-    static EXECUTE_AT_APP_INIT_##identifier EXECUTE_AT_APP_INIT_##identifier##_object{}; \
-    EXECUTE_AT_APP_INIT_##identifier::EXECUTE_AT_APP_INIT_##identifier()
+struct ExecuteAtAppInit {
+    template <typename Code>
+    ExecuteAtAppInit(Code code) {
+        code();
+    }
+};
+
+#define EXECUTE_AT_APP_INIT_WITH_ID(identifier) \
+    static ExecuteAtAppInit EXECUTE_AT_APP_INIT_##identifier##_object = []()
+
+#define EXECUTE_AT_APP_INIT EXECUTE_AT_APP_INIT_WITH_ID(default)
