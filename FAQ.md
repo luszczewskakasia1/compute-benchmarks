@@ -91,8 +91,3 @@ No need to worry about it. CMake requires special config files, so it can discov
 
 ### Why am I getting linker errors related to libze_loader.so?
 You probably cloned the repository on Windows and copied the files over to Linux. Because of that symbolic links pointing to the LevelZero loader break and they are interpreted as raw files. Recommended way is to clone and build the repository on the same system. Or, if you don't care about LevelZero tests, you can disable them with `-DBUILD_L0=OFF` CMake argument.
-
-
-
-### Why am I getting linker errors related to pciaccess.so?
-Same as above. Pciaccess is a library used on Linux in OpenCL tests to discover, what device we are running on. It can be disabled with `-DUSE_PCIACCESS=OFF` CMake argument.

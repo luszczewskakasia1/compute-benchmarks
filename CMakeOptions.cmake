@@ -35,11 +35,6 @@ benchmark_option(OUTPUT_DIR "${CMAKE_BINARY_DIR}/bin")
 benchmark_option(BUILD_HELLO_WORLD OFF)
 benchmark_option(GENERATE_DOCS ON)
 benchmark_option(LOG_BENCHMARK_TARGETS OFF)
-if (UNIX)
-    benchmark_option(USE_PCIACCESS ON)
-else()
-    set(USE_PCIACCESS OFF)
-endif()
 
 # Additional checks
 if (NOT BUILD_L0 AND NOT BUILD_OCL)
