@@ -59,7 +59,7 @@ int generateDocs(const std::string &docsFileName) {
 
 int executeSingleTest(const std::string &testName, CommandLineArguments &commandLineArguments) {
     if (!Configuration::get().noHeaders) {
-        printDeviceInfo();
+        DeviceInfo::printDeviceInfo();
         printVersion(false, "Benchmark version: ");
     }
 
@@ -81,7 +81,7 @@ int executeSingleTest(const std::string &testName, CommandLineArguments &command
 
 int executeAllTests(CommandLineArguments &commandLineArguments) {
     if (!Configuration::get().noHeaders) {
-        printDeviceInfo();
+        DeviceInfo::printDeviceInfo();
         printVersion(false, "Benchmark version: ");
     }
 
@@ -167,6 +167,10 @@ int main(int argc, char **argv) {
     const Configuration &configuration = Configuration::get();
     if (configuration.generateDocs) {
         return generateDocs(configuration.generateDocsPath);
+    }
+    if (configuration.hwInfo) {
+        DeviceInfo::printAvailableDevices();
+        return 0;
     }
 
     for (auto &argument : commandLineArguments) {

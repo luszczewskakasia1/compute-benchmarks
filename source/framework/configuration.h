@@ -32,6 +32,11 @@ struct Configuration : ArgumentContainer {
 
     bool validateArgumentsExtra() const override;
 
+    // Diagnostic params
+    BooleanFlagArgument hwInfo;
+    BooleanFlagArgument generateDocs;
+    StringArgument generateDocsPath;
+
     // OCL params
     IntegerArgument oclPlatformIndex;
     NonNegativeIntegerArgument oclDeviceIndex;
@@ -52,8 +57,6 @@ struct Configuration : ArgumentContainer {
     BooleanFlagArgument dumpCommandLines;
     BooleanFlagArgument noop;
     BooleanFlagArgument noHeaders;
-    BooleanFlagArgument generateDocs;
-    StringArgument generateDocsPath;
     BooleanArgument dumpErrorsImmediately;
     StringListArgument argFilter;
     StringListArgument testFilter;

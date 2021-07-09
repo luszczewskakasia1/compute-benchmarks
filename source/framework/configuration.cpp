@@ -5,7 +5,10 @@
 std::unique_ptr<Configuration> Configuration::instance = {};
 
 Configuration::Configuration()
-    : oclPlatformIndex(*this, "oclPlatformIndex", "OpenCL platform index"),
+    : hwInfo(*this, "hwInfo", "Shows available devices"),
+      generateDocs(*this, "generateDocs", "Generate .md file describing available tests"),
+      generateDocsPath(*this, "generateDocsPath", "Path for generated docs"),
+      oclPlatformIndex(*this, "oclPlatformIndex", "OpenCL platform index"),
       oclDeviceIndex(*this, "oclDeviceIndex", "OpenCL device index inside the platform"),
       oclUseOOQ(*this, "oclUseOOQ", "Use out of order queue if it is supported"),
       l0DriverIndex(*this, "l0DriverIndex", "LevelZero driver index"),
@@ -20,13 +23,17 @@ Configuration::Configuration()
       dumpCommandLines(*this, "dumpCommandLines", "output commandline arguments to run the each test"),
       noop(*this, "noop", "do not run any tests, only print their names and parameters"),
       noHeaders(*this, "noHeaders", "Do not print any informational messages at the top of the output"),
-      generateDocs(*this, "generateDocs", "Generate .md file describing available tests"),
-      generateDocsPath(*this, "generateDocsPath", "Path for generated docs"),
+
       dumpErrorsImmediately(*this, "dumpErrorsImmediately", "print errors to stdout immediately after they happen, not at the end of the run"),
       argFilter(*this, "argFilter", "filter tests by their arguments"),
       testFilter(*this, "testFilter", "filter tests by their names"),
       returnSubmissionTimeInsteadOfWorkloadTime(*this, "forceSubmissionProfiling", "Overrides profiling to return submission time instead of workload time"),
       benchmarkSpecificConfiguration(createBenchmarkSpecificConfiguration()) {
+
+    // Diagnostic params
+    hwInfo = false;
+    generateDocs = false;
+    generateDocsPath = "";
 
     // OCL params
     oclPlatformIndex = -1;
@@ -48,8 +55,6 @@ Configuration::Configuration()
     subDeviceSelection = DeviceSelection::Root;
     noop = false;
     noHeaders = false;
-    generateDocs = false;
-    generateDocsPath = "";
     dumpErrorsImmediately = false;
     argFilter = std::vector<std::string>();
     testFilter = std::vector<std::string>();

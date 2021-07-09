@@ -2,10 +2,18 @@
 
 #include "framework/enum/api.h"
 
-using PrintDeviceInfoFunction = void (*)();
-struct RegisterPrintDeviceInfoFunction {
-    RegisterPrintDeviceInfoFunction(Api api, PrintDeviceInfoFunction function);
-};
-extern PrintDeviceInfoFunction printDeviceInfoFunctions[static_cast<int>(Api::COUNT)];
+struct DeviceInfo {
+    using PrintDeviceInfoFunction = void (*)();
+    using PrintAvailableDevicesFunction = void (*)();
+    static void registerFunctions(Api api, PrintDeviceInfoFunction printDeviceInfo, PrintAvailableDevicesFunction printAvailableDevices);
 
-void printDeviceInfo();
+    static void printDeviceInfo();
+    static void printAvailableDevices();
+
+  private:
+    struct Functions {
+        PrintDeviceInfoFunction printDeviceInfo = nullptr;
+        PrintAvailableDevicesFunction printAvailableDevices = nullptr;
+    };
+    static inline Functions functions[static_cast<int>(Api::COUNT)] = {};
+};

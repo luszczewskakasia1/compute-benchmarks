@@ -1,5 +1,10 @@
-#include "framework/l0/utility/print_device_info_l0.h"
+#include "framework/l0/utility/print_device_info_l0.inl"
+#include "framework/print_device_info.h"
 #include "framework/supported_apis.h"
+#include "framework/utility/execute_at_app_init.h"
 
-static RegisterPrintDeviceInfoFunction registerFunction(Api::L0, ::printDeviceInfoL0);
+EXECUTE_AT_APP_INIT(RegistrationsL0) {
+    DeviceInfo::registerFunctions(Api::L0, L0::printDeviceInfo, L0::printAvailableDevices);
+}
+
 static RegisterSupportedApi registerApi(Api::L0);
