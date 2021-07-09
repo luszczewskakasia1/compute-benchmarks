@@ -3,7 +3,7 @@
 #include "framework/supported_apis.h"
 #include "framework/utility/execute_at_app_init.h"
 
-EXECUTE_AT_APP_INIT(RegistrationsOcl) {
+EXECUTE_AT_APP_INIT {
     DeviceInfo::registerFunctions(Api::OpenCL, OCL::printDeviceInfo, OCL::printAvailableDevices);
     SupportedApis::registerSupportedApi(Api::OpenCL);
 }
