@@ -6,6 +6,7 @@
 #include "framework/utility/common_help_message.h"
 #include "framework/utility/file_helper.h"
 #include "framework/utility/string_utils.h"
+#include "framework/utility/working_directory_helper.h"
 
 #include <gtest/gtest.h>
 #include <iostream>
@@ -151,6 +152,7 @@ int printHelp() {
 
 int main(int argc, char **argv) {
     BenchmarkInfo::set(new BenchmarkInfoImpl());
+    WorkingDirectoryHelper::changeDirectoryToExeDirectory();
 
     CommandLineArguments commandLineArguments = {};
     std::string commandLineArgumentsParsingErrors = {};
