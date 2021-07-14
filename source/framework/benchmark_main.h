@@ -19,7 +19,7 @@ class BenchmarkMain {
 
     int printVersion(bool enableWarning, const char *prefix = "");
     void printHelp();
-    void generateDocs(const std::string &docsFileName);
+    int generateDocs(const std::string &docsFileName);
 
     int executeSingleTest(const std::string &testName, CommandLineArguments &commandLineArguments);
     int executeAllTests(CommandLineArguments &commandLineArguments);

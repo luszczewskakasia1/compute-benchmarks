@@ -6,7 +6,6 @@
 #include "framework/print_device_info.h"
 #include "framework/test_map.h"
 #include "framework/utility/common_help_message.h"
-#include "framework/utility/file_helper.h"
 #include "framework/utility/string_utils.h"
 #include "framework/utility/working_directory_helper.h"
 
@@ -27,34 +26,60 @@ int BenchmarkMain::printVersion(bool enableWarning, const char *prefix) {
     return 0;
 }
 
-void BenchmarkMain::generateDocs(const std::string &docsFileName) {
-    FileHelper::FileOrConsole fileOrConsole{docsFileName, std::ios::app, std::cout};
-    std::ostream &file = fileOrConsole.get();
+int BenchmarkMain::generateDocs(const std::string &docsFileName) {
+    const std::string illegalCharacters = " -:='\"<>|{}[]/.,?\\+$";
 
-    file << "# " << BenchmarkInfo::get().getBenchmarkName() << '\n';
-    file << BenchmarkInfo::get().getBenchmarkDescription() << '\n';
-    file << "| Test name | Description | Params | L0 | OCL |\n";
-    file << "|-----------|-------------|--------|----|-----|\n";
+    // Print benchmark name and description
+    const std::string benchmarkName = BenchmarkInfo::get().getBenchmarkName();
+    if (containsIllegalCharacters(benchmarkName, illegalCharacters)) {
+        std::cerr << "ERROR: benchmark name contains invalid characters.";
+        return 1;
+    }
+    const std::string benchmarkDescription = BenchmarkInfo::get().getBenchmarkDescription();
+    if (containsIllegalCharacters(benchmarkDescription, ";")) {
+        std::cerr << "ERROR: benchmark description contains invalid characters.";
+        return 1;
+    }
+    std::cout << benchmarkName << ";" << benchmarkDescription << '\n';
+
+    // Print test cases
     for (const auto &testEntry : TestMap::get()) {
         const std::unique_ptr<TestCaseInterface> &testCase = testEntry.second;
+        if (testCase->getApisWithImplementation().empty()) {
+            continue;
+        }
 
-        file << testCase->getTestCaseName() << '|';
-        file << testCase->getHelp() << '|';
-        file << "<ul>";
+        // Print test case name and help message.
+        const std::string testCaseName = testCase->getTestCaseName();
+        if (containsIllegalCharacters(testCaseName, illegalCharacters)) {
+            std::cerr << "ERROR: test case \"" << testCaseName << "\" contains illegal characters.";
+            return 1;
+        }
+        const std::string testCaseHelp = testCase->getHelp();
+        if (containsIllegalCharacters(testCaseHelp, ";")) {
+            std::cerr << "ERROR: help message of test case \"" << testCaseName << "\" contains illegal characters.";
+            return 1;
+        }
+        std::cout << " " << testCaseName << ";" << testCaseHelp << '\n';
+
+        // Print test case arguments
         const std::unique_ptr<ArgumentContainer> arguments = testCase->getArguments();
         for (const Argument *argument : arguments->getArguments()) {
-            file << "<li>" << argument->getHelp() << "</li>";
+            const std::string argumentKey = argument->getKey();
+            if (containsIllegalCharacters(argumentKey, illegalCharacters)) {
+                std::cerr << "ERROR: argument \"" << argumentKey << "\" in test case\"" << testCaseName << "\" contains illegal characters.";
+                return 1;
+            }
+            const std::string argumentHelp = argument->getExtraHelp();
+            if (containsIllegalCharacters(argumentKey, ";")) {
+                std::cerr << "ERROR: help message of argument \"" << argumentKey << "\" in test case\"" << testCaseName << "\" contains illegal characters.";
+                return 1;
+            }
+            std::cout << "  " << argumentKey << ";" << argumentHelp << '\n';
         }
-        file << "</ul>|";
-        file << (testCase->isApiImplemented(Api::L0) ? ":heavy_check_mark:" : ":x:") << '|';
-        file << (testCase->isApiImplemented(Api::OpenCL) ? ":heavy_check_mark:" : ":x:") << '|';
-        file << '\n';
     }
-    file << "\n\n\n";
 
-    if (fileOrConsole.hasOwnedFile()) {
-        std::cout << BenchmarkInfo::get().getBenchmarkName() << ": Generated documentation to " << docsFileName << '\n';
-    }
+    return 0;
 }
 
 BenchmarkMain::BenchmarkMain(int argc, char **argv, const std::string benchmarkVersion)
@@ -177,8 +202,7 @@ int BenchmarkMain::main() {
     // Run diagnostic activities
     const Configuration &configuration = Configuration::get();
     if (configuration.generateDocs) {
-        generateDocs(configuration.generateDocsPath);
-        return 0;
+        return generateDocs(configuration.generateDocsPath);
     }
     if (configuration.hwInfo) {
         DeviceInfo::printAvailableDevices();

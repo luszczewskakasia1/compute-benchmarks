@@ -29,6 +29,10 @@ std::string Argument::getHelp() const {
     return result.str();
 }
 
+std::string Argument::getExtraHelp() const {
+    return extraHelp;
+}
+
 void Argument::parse(CommandLineArgument &argument) {
     if (argument.isKeyEqualTo(this->key)) {
         argument.markAsProcessed();

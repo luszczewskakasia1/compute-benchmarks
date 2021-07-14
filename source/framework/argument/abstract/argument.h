@@ -14,6 +14,7 @@ struct Argument {
 
     const std::string getKey() const;
     std::string getHelp() const;
+    std::string getExtraHelp() const;
 
     virtual std::string toString() const {
         std::ostringstream result;
