@@ -30,7 +30,12 @@ jobs:
         command: >
           mkdir build                                              &&
           cd build                                                 &&
-          cmake .. -DCMAKE_BUILD_TYPE=Release -DGENERATE_DOCS=ON   &&
+          cmake ..                                                  \
+            -DCMAKE_BUILD_TYPE=Release                              \
+            -DGENERATE_DOCS=ON BUILD_HELLO_WORLD=OFF                \
+            -BUILD_SINGLE_API_BINARIES=OFF                          \
+            -DBUILD_ALL_API_BINARIES=OFF                            \
+            -DLOG_BENCHMARK_TARGETS=ON                             &&
           echo "Compiling on `nproc` threads"                      &&
           make -j`nproc`                                           &&
           echo "Checking diff after generating documentation..."   &&
