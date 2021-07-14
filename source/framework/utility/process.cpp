@@ -44,12 +44,12 @@ void Process::addHandleForInheritance(int handle) {
 }
 
 std::vector<uint64_t> Process::getMeasurements(size_t expectedCount) {
-    const auto stdOut = getStdout();
-    const auto stdOutSplit = splitString(stdOut);
-    FATAL_ERROR_IF(stdOutSplit.size() != expectedCount, "Child process returned an invalid number of measurements");
+    const auto data = getMeasurements();
+    const auto dataSplit = splitString(data);
+    FATAL_ERROR_IF(dataSplit.size() != expectedCount, "Child process returned an invalid number of measurements");
 
     std::vector<uint64_t> measurementsFromProcess = {};
-    for (const auto measurementString : stdOutSplit) {
+    for (const auto measurementString : dataSplit) {
         const auto measurement = std::atoll(measurementString.c_str());
         measurementsFromProcess.push_back(measurement);
     }

@@ -26,6 +26,7 @@ class Process {
     void run();
     void waitForFinish();
     TestResult getResult();
+    const std::string &getMeasurements();
     const std::string &getStdout();
     void synchronizationSignal();
     void synchronizationWait();

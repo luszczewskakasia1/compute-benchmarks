@@ -199,6 +199,10 @@ const std::string &Process::getStdout() {
     return processDataWindows->stdOut;
 }
 
+const std::string &Process::getMeasurements() {
+    return getStdout(); // TODO: we should be creating a separate pipe. Refer to Linux implementation.
+}
+
 void Process::synchronizationSignal() {
     ProcessDataWindows *processDataWindows = static_cast<ProcessDataWindows *>(this->osSpecificData);
 

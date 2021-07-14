@@ -19,12 +19,15 @@ struct ProcessDataLinux {
     ProcessPipes synchronizationPipeParentToChild = {};
     ProcessPipes synchronizationPipeChildToParent = {};
     ProcessPipes measurementPipe = {};
+    ProcessPipes stdOutPipe = {};
 
     pid_t childPid = {};
     bool ended = false;
     TestResult result = TestResult::Error;
     bool hasStdOut = false;
     std::string stdOut = {};
+    bool hasMeasurements = false;
+    std::string measurements = {};
 };
 
 void Process::run() {
@@ -34,6 +37,7 @@ void Process::run() {
     FATAL_ERROR_IF_SYS_CALL_FAILED(pipe(processDataLinux->synchronizationPipeParentToChild.pipes), "Creating pipe failed, ");
     FATAL_ERROR_IF_SYS_CALL_FAILED(pipe(processDataLinux->synchronizationPipeChildToParent.pipes), "Creating pipe failed, ");
     FATAL_ERROR_IF_SYS_CALL_FAILED(pipe(processDataLinux->measurementPipe.pipes), "Creating pipe failed, ");
+    FATAL_ERROR_IF_SYS_CALL_FAILED(pipe(processDataLinux->stdOutPipe.pipes), "Creating pipe failed, ");
 
     // Fork the process
     processDataLinux->childPid = fork();
@@ -47,22 +51,21 @@ void Process::run() {
         FATAL_ERROR_IF_SYS_CALL_FAILED(close(processDataLinux->synchronizationPipeParentToChild.read), "closing pipe failed");
         FATAL_ERROR_IF_SYS_CALL_FAILED(close(processDataLinux->synchronizationPipeChildToParent.write), "closing pipe failed");
         FATAL_ERROR_IF_SYS_CALL_FAILED(close(processDataLinux->measurementPipe.write), "closing pipe failed");
+        FATAL_ERROR_IF_SYS_CALL_FAILED(close(processDataLinux->stdOutPipe.write), "closing pipe failed");
 
         // Store all data in Process class
         this->osSpecificData = processDataLinux.release();
     } else {
         // We're in child process
 
-        // Redirect stdout to /dev/null
-        const int devNull = open("/dev/null", O_WRONLY);
-        FATAL_ERROR_IF_SYS_CALL_FAILED(devNull, "opening /dev/null failed");
-        FATAL_ERROR_IF_SYS_CALL_FAILED(dup2(devNull, STDOUT_FILENO), "dup2 for stdout failed");
-        FATAL_ERROR_IF_SYS_CALL_FAILED(close(devNull), "closing /dev/null failed");
+        // Redirect stdout to our pipe
+        FATAL_ERROR_IF_SYS_CALL_FAILED(dup2(processDataLinux->stdOutPipe.write, STDOUT_FILENO), "dup2 for stdout failed");
 
         // Close pipes that we won't need (these are descriptors, which will be used by parent)
         FATAL_ERROR_IF_SYS_CALL_FAILED(close(processDataLinux->synchronizationPipeParentToChild.write), "closing pipe failed");
         FATAL_ERROR_IF_SYS_CALL_FAILED(close(processDataLinux->synchronizationPipeChildToParent.read), "closing pipe failed");
         FATAL_ERROR_IF_SYS_CALL_FAILED(close(processDataLinux->measurementPipe.read), "closing pipe failed");
+        FATAL_ERROR_IF_SYS_CALL_FAILED(close(processDataLinux->stdOutPipe.read), "closing pipe failed");
 
         // Below pipe endpoints will be explicitly used by the child workload and they should be closed by it.
         this->addArgument("synchronizationPipeIn", std::to_string(processDataLinux->synchronizationPipeParentToChild.read));
@@ -150,31 +153,46 @@ TestResult Process::getResult() {
     return processDataLinux->result;
 }
 
-const std::string &Process::getStdout() {
-    waitForFinish();
-    ProcessDataLinux *processDataLinux = static_cast<ProcessDataLinux *>(this->osSpecificData);
-    if (!processDataLinux->hasStdOut) {
-        waitForFinish();
+const static std::string readEntirePipe(ProcessDataLinux::ProcessPipes processPipes) {
+    std::ostringstream output{};
+    const static size_t bufferSize = 1024u;
+    char buffer[bufferSize];
+    while (true) {
+        ssize_t numberOfBytesRead = read(processPipes.read, buffer, bufferSize);
+        FATAL_ERROR_IF_SYS_CALL_FAILED(numberOfBytesRead, "reading a child process pipe failed");
 
-        std::ostringstream output{};
-        const static size_t bufferSize = 1024u;
-        char buffer[bufferSize];
-        while (true) {
-            ssize_t numberOfBytesRead = read(processDataLinux->measurementPipe.read, buffer, bufferSize);
-            FATAL_ERROR_IF_SYS_CALL_FAILED(numberOfBytesRead, "reading a child process stdOut failed");
-
-            if (numberOfBytesRead == 0) {
-                break;
-            }
-
-            output << std::string{buffer, static_cast<size_t>(numberOfBytesRead)};
+        if (numberOfBytesRead == 0) {
+            break;
         }
 
+        output << std::string{buffer, static_cast<size_t>(numberOfBytesRead)};
+    }
+
+    return output.str();
+}
+
+const std::string &Process::getStdout() {
+    ProcessDataLinux *processDataLinux = static_cast<ProcessDataLinux *>(this->osSpecificData);
+
+    if (!processDataLinux->hasStdOut) {
+        waitForFinish();
+        processDataLinux->stdOut = readEntirePipe(processDataLinux->stdOutPipe);
         processDataLinux->hasStdOut = true;
-        processDataLinux->stdOut = output.str();
     }
 
     return processDataLinux->stdOut;
+}
+
+const std::string &Process::getMeasurements() {
+    ProcessDataLinux *processDataLinux = static_cast<ProcessDataLinux *>(this->osSpecificData);
+
+    if (!processDataLinux->hasMeasurements) {
+        waitForFinish();
+        processDataLinux->measurements = readEntirePipe(processDataLinux->measurementPipe);
+        processDataLinux->hasMeasurements = true;
+    }
+
+    return processDataLinux->measurements;
 }
 
 void Process::synchronizationSignal() {
