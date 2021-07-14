@@ -18,7 +18,7 @@ if (NOT BUILD_L0 OR NOT BUILD_OCL)
     set(BUILD_ALL_API_BINARIES_COMMENT "(Disabled due to not all APIs being enabled)")
 endif()
 benchmark_option(BUILD_SINGLE_API_BINARIES ON)
-benchmark_option(BUILD_ALL_API_BINARIES ON ${BUILD_ALL_API_BINARIES_COMMENT})
+benchmark_option(BUILD_ALL_API_BINARIES OFF ${BUILD_ALL_API_BINARIES_COMMENT})
 
 # Publish builds and versioning
 benchmark_option_group("Flags for configuring publishable builds and versions")
