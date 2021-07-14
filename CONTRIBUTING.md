@@ -20,4 +20,4 @@ A good way to add new benchmarks is to mimic the existing ones and tweak them to
 6. Regenerate documentation (see below).
 
 ### Generating documentation
-Tests documentation is generated from the code and stored in [TESTS.md](TESTS.md) file. Contributors are required to regenerate the documentation using the [generate_docs.sh](generate_docs.sh) script when adding new tests or changing definition of an existing one.
+Tests documentation is generated from the code and stored in [TESTS.md](TESTS.md) file. Contributors are required to regenerate the documentation by building the *run_docs_generator* target. No further parameters are needed. The [TESTS.md](TESTS.md) file should be automatically updated.
