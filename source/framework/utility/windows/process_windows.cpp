@@ -1,9 +1,11 @@
 #include "framework/utility/error.h"
 #include "framework/utility/process.h"
 #include "framework/utility/process_synchronization_helper.h"
+#include "framework/utility/string_utils.h"
 #include "framework/utility/windows/windows.h"
 
 #include <sstream>
+#include <thread>
 
 struct ProcessDataWindows {
     // Resources to be freed
@@ -14,12 +16,12 @@ struct ProcessDataWindows {
     };
     ProcessPipes processStdOut = {};
     ProcessPipes processStdIn = {};
+    std::unique_ptr<std::thread> asyncReadThread;
 
     // Cached Values
     bool ended = false;
     bool hasResult = false;
     TestResult result = TestResult::Error;
-    bool hasStdOut = false;
     std::string stdOut = {};
 };
 
@@ -48,6 +50,29 @@ class EnvironmentRestorer {
     std::unique_ptr<char[]> storedEnv = {};
     size_t storedEnvSize = {};
 };
+
+void asyncReadThreadBody(ProcessDataWindows *processDataWindows) {
+    std::ostringstream stdOutStream = {};
+
+    const static size_t bufferSize = 1024u;
+    CHAR buffer[bufferSize];
+    DWORD numberOfBytesRead = {};
+
+    while (true) {
+        BOOL retVal = ReadFile(processDataWindows->processStdOut.read, buffer, bufferSize, &numberOfBytesRead, NULL);
+
+        if (retVal == 0) {
+            break;
+        }
+        if (numberOfBytesRead == 0) {
+            break;
+        }
+
+        stdOutStream << std::string{buffer, numberOfBytesRead};
+    }
+
+    processDataWindows->stdOut = stdOutStream.str();
+}
 
 void Process::run() {
     auto processDataWindows = std::make_unique<ProcessDataWindows>();
@@ -82,7 +107,10 @@ void Process::run() {
     }
 
     // Prepare exeName (.exe extension is Windows-specific)
-    const auto exeNameWithExtension = this->exeName + ".exe";
+    std::string exeNameWithExtension = this->exeName;
+    if (!endsWith(exeNameWithExtension, ".exe")) {
+        exeNameWithExtension += ".exe";
+    }
 
     // Start child process
     STARTUPINFOA startupInfo{};
@@ -104,6 +132,11 @@ void Process::run() {
                                        &startupInfo,
                                        &processDataWindows->processInfo),
                                    "creating process");
+
+    // Create an asynchronous thread for reading stdout/stderr pipes. This is needed for cases when
+    // process outputs a substantial amount of data exceeding internal system buffer. This causes
+    // a deadlock, because WaitForSingleProcess will block inifinitely.
+    processDataWindows->asyncReadThread = std::make_unique<std::thread>(asyncReadThreadBody, processDataWindows.get());
 
     // Set process data
     this->osSpecificData = processDataWindows.release();
@@ -138,6 +171,11 @@ void Process::waitForFinish() {
 
     FATAL_ERROR_IF_SYS_CALL_FAILED(CloseHandle(processDataWindows->processStdOut.write), "closing stdout.write handle");
     FATAL_ERROR_IF_SYS_CALL_FAILED(CloseHandle(processDataWindows->processStdIn.read), "closing stdin.read handle");
+
+    if (processDataWindows->asyncReadThread->joinable()) {
+        processDataWindows->asyncReadThread->join();
+    }
+
     processDataWindows->ended = true;
 }
 
@@ -157,29 +195,7 @@ TestResult Process::getResult() {
 
 const std::string &Process::getStdout() {
     ProcessDataWindows *processDataWindows = static_cast<ProcessDataWindows *>(this->osSpecificData);
-    if (!processDataWindows->hasStdOut) {
-        waitForFinish();
-
-        std::ostringstream output = {};
-        const static size_t bufferSize = 1024u;
-        CHAR buffer[bufferSize];
-        while (true) {
-            DWORD numberOfBytesRead = {};
-            BOOL retVal = ReadFile(processDataWindows->processStdOut.read, buffer, bufferSize, &numberOfBytesRead, NULL);
-
-            if (retVal == 0) {
-                break;
-            }
-            if (numberOfBytesRead == 0) {
-                break;
-            }
-
-            output << std::string{buffer, numberOfBytesRead};
-        }
-
-        processDataWindows->hasStdOut = true;
-        processDataWindows->stdOut = output.str();
-    }
+    waitForFinish();
     return processDataWindows->stdOut;
 }
 

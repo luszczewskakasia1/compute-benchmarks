@@ -55,6 +55,26 @@ inline std::vector<std::string> splitString(const std::string &string) {
     return result;
 }
 
+inline bool endsWith(const std::string &string, const std::string &ending) {
+    if (string.length() < ending.length()) {
+        return false;
+    }
+
+    return (0 == string.compare(string.length() - ending.length(), ending.length(), ending));
+}
+
+inline size_t cutLeadingSpaces(std::string &string) {
+    size_t result = {};
+    for (char c : string) {
+        if (c != ' ') {
+            break;
+        }
+        result++;
+    }
+    string = string.substr(result);
+    return result;
+}
+
 template <typename T>
 using ToStringConverter = std::string (*)(T);
 
