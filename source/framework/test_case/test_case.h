@@ -18,8 +18,38 @@
 #include <sstream>
 #include <type_traits>
 
+class TestCaseBase : public TestCaseInterface {
+  protected:
+    bool matchesWithTestFilter() const {
+        for (const std::string &testFilter : Configuration::get().testFilter.get()) {
+            const auto testCaseName = getTestCaseName();
+            const auto [filter, isFilterNegated] = handleFilterNegation(testFilter);
+            const auto requirementMet = (testCaseName == filter) != isFilterNegated;
+            if (!requirementMet) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    bool matchesWithArgFilter(const ArgumentContainer &arguments) const {
+        for (const std::string &argFilter : Configuration::get().argFilter.get()) {
+            const std::vector<Argument *> &args = arguments.getArguments();
+            const auto [filter, isFilterNegated] = handleFilterNegation(argFilter);
+            const auto matches = [&](Argument *arg) { return (arg->toString() == filter); };
+            const bool requirementMet = isFilterNegated
+                                            ? std::none_of(args.begin(), args.end(), matches)
+                                            : std::any_of(args.begin(), args.end(), matches);
+            if (!requirementMet) {
+                return false;
+            }
+        }
+        return true;
+    }
+};
+
 template <typename _ArgumentContainer>
-class TestCase : public TestCaseInterface {
+class TestCase : public TestCaseBase {
   public:
     using ArgumentContainerT = _ArgumentContainer;
     static_assert(std::is_base_of_v<TestCaseArgumentContainer, ArgumentContainerT>, "Arguments class should derive from TestCaseArgumentContainer");
@@ -150,24 +180,12 @@ class TestCase : public TestCaseInterface {
             printTestMapWarning();
         }
 
-        // Check test filters
-        if (auto testFilters = Configuration::get().testFilter.get(); testFilters.size() > 0) {
-            const auto testCaseName = getTestCaseName();
-            const auto matches = [&](const std::string &testFilter) { return testFilter == testCaseName; };
-            const auto requirementMet = std::any_of(testFilters.begin(), testFilters.end(), matches);
-            if (!requirementMet) {
-                return TestResult::FilteredOut;
-            }
+        // Check test filters and arg filters
+        if (!matchesWithTestFilter()) {
+            return TestResult::FilteredOut;
         }
-
-        // Check arg filters
-        for (const std::string &argFilter : Configuration::get().argFilter.get()) {
-            const std::vector<Argument *> &args = arguments.getArguments();
-            const auto matches = [&](Argument *arg) { return arg->toString() == argFilter; };
-            const bool requirementMet = std::any_of(args.begin(), args.end(), matches);
-            if (!requirementMet) {
-                return TestResult::FilteredOut;
-            }
+        if (!matchesWithArgFilter(arguments)) {
+            return TestResult::FilteredOut;
         }
 
         // Check if test case name with config is not too long

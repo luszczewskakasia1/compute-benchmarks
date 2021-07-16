@@ -4,6 +4,7 @@
 #include <cctype>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <vector>
 
 inline bool parseArgumentToKeyValue(const std::string &argument, std::string &outKey, std::string &outValue) {
@@ -53,6 +54,15 @@ inline std::vector<std::string> splitString(const std::string &string) {
     }
 
     return result;
+}
+
+inline std::pair<std::string_view, bool> handleFilterNegation(std::string_view string) {
+    bool negated = false;
+    while (!string.empty() && string.front() == '^') {
+        string.remove_prefix(1);
+        negated = !negated;
+    }
+    return {string, negated};
 }
 
 inline bool endsWith(const std::string &string, const std::string &ending) {
