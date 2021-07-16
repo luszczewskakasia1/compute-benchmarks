@@ -1,10 +1,8 @@
 #pragma once
-#include "framework/test_case/test_case_base.h"
-
-
 #include "framework/benchmark_info.h"
 #include "framework/supported_apis.h"
 #include "framework/test_case/test_case_argument_container.h"
+#include "framework/test_case/test_case_base.h"
 #include "framework/test_case/test_case_statistics.h"
 #include "framework/test_case/test_result.h"
 #include "framework/test_map.h"
@@ -16,7 +14,6 @@
 #include <iostream>
 #include <sstream>
 #include <type_traits>
-
 
 // This is a base class for every test case written for any compute benchmark. Its template
 // parameter represents a concrete class containing actual arguments from a given test case.
