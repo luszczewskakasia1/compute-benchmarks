@@ -48,6 +48,8 @@ static TestResult run(const KernelSwitchLatencyArguments &arguments, Statistics 
     cl_ulong start{}, end{};
     std::vector<cl_event> profilingEvents;
 
+    profilingEvents.resize(arguments.kernelCount);
+
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
         timer.measureStart();
@@ -59,14 +61,15 @@ static TestResult run(const KernelSwitchLatencyArguments &arguments, Statistics 
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
 
+        auto switchTime = std::chrono::nanoseconds(0u);
         for (int j = 1; j < arguments.kernelCount; j++) {
 
             ASSERT_CL_SUCCESS(clGetEventProfilingInfo(profilingEvents[j], CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, nullptr));
-            ASSERT_CL_SUCCESS(clGetEventProfilingInfo(profilingEvents[j - 1], CL_PROFILING_COMMAND_QUEUED, sizeof(cl_ulong), &end, nullptr));
+            ASSERT_CL_SUCCESS(clGetEventProfilingInfo(profilingEvents[j - 1], CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, nullptr));
+            switchTime += std::chrono::nanoseconds(start - end);
         }
 
-        const auto switchTime = std::chrono::nanoseconds(start - end);
-        statistics.pushValue(switchTime);
+        statistics.pushValue(switchTime / arguments.kernelCount);
 
         for (int j = 0; j < arguments.kernelCount; j++) {
             ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvents[j]));
