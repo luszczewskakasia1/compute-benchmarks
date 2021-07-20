@@ -46,7 +46,23 @@ bool MathOperationHelper::isSupportedAsNormal(MathOperation operation, DataType 
     case MathOperation::Xchg:
     case MathOperation::CmpXchg:
         return false;
+    case MathOperation::And:
+    case MathOperation::Or:
+    case MathOperation::Xor:
+        return type != DataType::Float;
     default:
-        return false;
+        return true;
+    }
+}
+
+MathOperationTestData MathOperationHelper::generateTestData(DataType dataType, MathOperation operation, size_t loopIterations,
+                                                            size_t operationsPerLoop, size_t totalThreadsCount) {
+    switch (dataType) {
+    case DataType::Float:
+        return MathOperationHelper::generateTestData<float>(operation, loopIterations, operationsPerLoop, totalThreadsCount);
+    case DataType::Int32:
+        return MathOperationHelper::generateTestData<int32_t>(operation, loopIterations, operationsPerLoop, totalThreadsCount);
+    default:
+        FATAL_ERROR("Invalid data type");
     }
 }

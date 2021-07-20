@@ -11,7 +11,7 @@ struct MathOperationArgument : EnumArgument<MathOperationArgument, MathOperation
         return *this;
     }
 
-    const static inline std::string enumName = "atomic operation";
+    const static inline std::string enumName = "math operation";
     const static inline EnumType invalidEnumValue = EnumType::Unknown;
     const static inline EnumType enumValues[11] = {EnumType::Add, EnumType::Sub,
                                                    EnumType::Xchg, EnumType::CmpXchg,

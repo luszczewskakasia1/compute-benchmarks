@@ -10,15 +10,7 @@ MathOperationTestData KernelHelper::getDataForKernel(DataType dataType,
                                                      size_t totalThreadsCount) {
     const size_t loopIterations = 100u;                   // Kernel performs some number of loop iterations
     const size_t operatorApplicationsPerIteration = 128u; // Each iteration performs some number of atomic operations
-
-    switch (dataType) {
-    case DataType::Float:
-        return MathOperationHelper::generateTestData<float>(operation, loopIterations, operatorApplicationsPerIteration, totalThreadsCount);
-    case DataType::Int32:
-        return MathOperationHelper::generateTestData<int32_t>(operation, loopIterations, operatorApplicationsPerIteration, totalThreadsCount);
-    default:
-        FATAL_ERROR("Invalid data type");
-    }
+    return MathOperationHelper::generateTestData(dataType, operation, loopIterations, operatorApplicationsPerIteration, totalThreadsCount);
 }
 
 std::string KernelHelper::getCompilerOptions(DataType dataType, MathOperation operation, size_t otherArgumentBufferSize) {

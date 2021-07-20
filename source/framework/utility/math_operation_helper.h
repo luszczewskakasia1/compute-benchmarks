@@ -16,6 +16,8 @@ struct MathOperationHelper {
     static bool isSupportedAsNormal(MathOperation operation, DataType type);
     static size_t getArgumentsCount(MathOperation operation);
 
+    static MathOperationTestData generateTestData(DataType dataType, MathOperation operation, size_t loopIterations,
+                                                  size_t operationsPerLoop, size_t totalThreadsCount = 1);
     template <typename DataTypeT>
     static MathOperationTestData generateTestData(MathOperation operation, size_t loopIterations, size_t operationsPerLoop, size_t totalThreadsCount = 1);
 };
