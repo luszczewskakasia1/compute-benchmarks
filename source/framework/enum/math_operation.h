@@ -16,4 +16,6 @@ enum class MathOperation {
     And,
     Or,
     Xor,
+    Div,
+    Modulo,
 };

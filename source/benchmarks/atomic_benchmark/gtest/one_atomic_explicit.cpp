@@ -29,7 +29,7 @@ INSTANTIATE_TEST_SUITE_P(
     OneAtomicExplicitTest,
     ::testing::Combine(
         ::testing::Values(DataType::Float, DataType::Int32),
-        ::CommonGtestArgs::allMathOperations(),
+        ::CommonGtestArgs::allAtomicMathOperations(),
         ::testing::ValuesIn(AtomicScopeHelper::allValues),
         ::testing::ValuesIn(AtomicMemoryOrderHelper::allValues),
         ::CommonGtestArgs::enqueueSizesForAtomics()));

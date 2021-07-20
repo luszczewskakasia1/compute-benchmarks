@@ -1,16 +1,16 @@
 #pragma once
 
 #include "framework/argument/basic_argument.h"
+#include "framework/argument/enum/atomic_math_operation_argument.h"
 #include "framework/argument/enum/atomic_memory_order_argument.h"
 #include "framework/argument/enum/atomic_scope_argument.h"
 #include "framework/argument/enum/data_type_argument.h"
-#include "framework/argument/enum/math_operation_argument.h"
 #include "framework/test_case/test_case.h"
 #include "framework/utility/common_help_message.h"
 
 struct OneAtomicExplicitArguments : TestCaseArgumentContainer {
     DataTypeArgument dataType;
-    MathOperationArgument atomicOperation;
+    AtomicMathOperationArgument atomicOperation;
     AtomicScopeArgument scope;
     AtomicMemoryOrderArgument memoryOrder;
     PositiveIntegerArgument workgroupCount;

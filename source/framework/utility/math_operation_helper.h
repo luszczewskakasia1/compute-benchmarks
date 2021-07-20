@@ -44,6 +44,11 @@ inline MathOperationTestData MathOperationHelper::generateTestData(MathOperation
         otherArgument = 3;
         expectedValue = initialValue - otherArgument * static_cast<DataTypeT>(operationsCount);
         break;
+    case MathOperation::Div:
+        initialValue = std::numeric_limits<DataTypeT>::max() - 1;
+        otherArgument = 2;
+        expectedValue = 0; // technically only for big enough numbers
+        break;
     case MathOperation::Xchg:
         initialValue = 7;
         otherArgument = 3;
@@ -77,6 +82,11 @@ inline MathOperationTestData MathOperationHelper::generateTestData(MathOperation
     default:
         if constexpr (std::is_integral_v<DataTypeT>) {
             switch (operation) {
+            case MathOperation::Modulo:
+                initialValue = 123;
+                otherArgument = 100;
+                expectedValue = 23;
+                break;
             case MathOperation::And:
                 initialValue = 0b1111001111001101;
                 otherArgument = 0b1101100100101010;

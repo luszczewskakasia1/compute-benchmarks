@@ -49,9 +49,18 @@ inline auto usmSharedSelections() {
                              DeviceSelection::Host | DeviceSelection::Tile1); // Shared
 }
 
-inline auto allMathOperations() {
+inline auto allAtomicMathOperations() {
     return ::testing::Values(MathOperation::Add, MathOperation::Sub,
                              MathOperation::Xchg, MathOperation::CmpXchg,
+                             MathOperation::Inc, MathOperation::Dec,
+                             MathOperation::Min, MathOperation::Max,
+                             MathOperation::And, MathOperation::Or,
+                             MathOperation::Xor);
+}
+
+inline auto allNormalMathOperations() {
+    return ::testing::Values(MathOperation::Add, MathOperation::Sub,
+                             MathOperation::Div, MathOperation::Modulo,
                              MathOperation::Inc, MathOperation::Dec,
                              MathOperation::Min, MathOperation::Max,
                              MathOperation::And, MathOperation::Or,

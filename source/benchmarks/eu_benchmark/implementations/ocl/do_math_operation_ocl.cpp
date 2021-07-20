@@ -21,6 +21,12 @@ std::string getCompilerOptions(DataType dataType, MathOperation operation) {
     case MathOperation::Sub:
         options.addMacro("MATH_OPERATION", {"a", "b"}, "a=a-b");
         break;
+    case MathOperation::Div:
+        options.addMacro("MATH_OPERATION", {"a", "b"}, "a=a/b");
+        break;
+    case MathOperation::Modulo:
+        options.addMacro("MATH_OPERATION", {"a", "b"}, "a=a%b");
+        break;
     case MathOperation::Inc:
         options.addMacro("MATH_OPERATION", {"a", "b"}, "a++");
         break;

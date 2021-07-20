@@ -27,5 +27,5 @@ INSTANTIATE_TEST_SUITE_P(
     DoMathOperationTest,
     ::testing::Combine(
         ::testing::Values(DataType::Float, DataType::Int32),
-        ::CommonGtestArgs::allMathOperations(),
+        ::testing::ValuesIn(NormalMathOperationArgument::enumValues),
         ::CommonGtestArgs::enqueueSizesForAtomics()));

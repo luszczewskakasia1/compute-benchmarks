@@ -19,6 +19,10 @@ size_t MathOperationHelper::getArgumentsCount(MathOperation operation) {
 }
 
 bool MathOperationHelper::isSupportedAsAtomic(MathOperation operation, DataType type, bool globalAtomicFloatsSupported) {
+    if (operation == MathOperation::Div || operation == MathOperation::Modulo) {
+        return false;
+    }
+
     switch (type) {
     case DataType::Float:
         switch (operation) {
@@ -49,6 +53,7 @@ bool MathOperationHelper::isSupportedAsNormal(MathOperation operation, DataType 
     case MathOperation::And:
     case MathOperation::Or:
     case MathOperation::Xor:
+    case MathOperation::Modulo:
         return type != DataType::Float;
     default:
         return true;
