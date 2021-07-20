@@ -1,9 +1,9 @@
 #pragma once
 
 #include "framework/argument/abstract/enum_argument.h"
-#include "framework/enum/atomic_operation.h"
+#include "framework/enum/math_operation.h"
 
-struct AtomicOperationArgument : EnumArgument<AtomicOperationArgument, AtomicOperation> {
+struct MathOperationArgument : EnumArgument<MathOperationArgument, MathOperation> {
     using EnumArgument::EnumArgument;
     ThisType &operator=(EnumType value) {
         this->value = value;

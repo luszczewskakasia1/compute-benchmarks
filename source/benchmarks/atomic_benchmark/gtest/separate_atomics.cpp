@@ -7,7 +7,7 @@
 
 static const inline RegisterTestCase<SeparateAtomics> registerTestCase{};
 
-class SeparateAtomicsTest : public ::testing::TestWithParam<std::tuple<DataType, AtomicOperation, size_t, CommonGtestArgs::EnqueueSize>> {
+class SeparateAtomicsTest : public ::testing::TestWithParam<std::tuple<DataType, MathOperation, size_t, CommonGtestArgs::EnqueueSize>> {
 };
 
 TEST_P(SeparateAtomicsTest, Test) {
@@ -32,6 +32,6 @@ INSTANTIATE_TEST_SUITE_P(
     SeparateAtomicsTest,
     ::testing::Combine(
         ::testing::Values(DataType::Float, DataType::Int32),
-        ::CommonGtestArgs::allAtomicOperations(),
+        ::CommonGtestArgs::allMathOperations(),
         ::testing::Values(1, 4),
         ::CommonGtestArgs::enqueueSizesForAtomics()));

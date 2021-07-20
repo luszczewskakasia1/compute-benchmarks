@@ -3,7 +3,7 @@
 #include <sstream>
 #include <string>
 
-enum class AtomicOperation {
+enum class MathOperation {
     Unknown,
     Add,
     Sub,

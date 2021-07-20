@@ -1,15 +1,15 @@
 #pragma once
 
 #include "framework/argument/basic_argument.h"
-#include "framework/argument/enum/atomic_operation_argument.h"
 #include "framework/argument/enum/data_type_argument.h"
+#include "framework/argument/enum/math_operation_argument.h"
 #include "framework/test_case/test_case.h"
 #include "framework/utility/common_help_message.h"
 #include "framework/utility/memory_constants.h"
 
 struct SeparateAtomicsArguments : TestCaseArgumentContainer {
     DataTypeArgument dataType;
-    AtomicOperationArgument atomicOperation;
+    MathOperationArgument atomicOperation;
     PositiveIntegerArgument atomicsPerCacheline;
     PositiveIntegerArgument workgroupCount;
     PositiveIntegerArgument workgroupSize;

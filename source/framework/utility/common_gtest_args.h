@@ -1,8 +1,8 @@
 #pragma once
 
 #include "framework/enum/api.h"
-#include "framework/enum/atomic_operation.h"
 #include "framework/enum/device_selection.h"
+#include "framework/enum/math_operation.h"
 
 #include <gtest/gtest.h>
 
@@ -49,13 +49,13 @@ inline auto usmSharedSelections() {
                              DeviceSelection::Host | DeviceSelection::Tile1); // Shared
 }
 
-inline auto allAtomicOperations() {
-    return ::testing::Values(AtomicOperation::Add, AtomicOperation::Sub,
-                             AtomicOperation::Xchg, AtomicOperation::CmpXchg,
-                             AtomicOperation::Inc, AtomicOperation::Dec,
-                             AtomicOperation::Min, AtomicOperation::Max,
-                             AtomicOperation::And, AtomicOperation::Or,
-                             AtomicOperation::Xor);
+inline auto allMathOperations() {
+    return ::testing::Values(MathOperation::Add, MathOperation::Sub,
+                             MathOperation::Xchg, MathOperation::CmpXchg,
+                             MathOperation::Inc, MathOperation::Dec,
+                             MathOperation::Min, MathOperation::Max,
+                             MathOperation::And, MathOperation::Or,
+                             MathOperation::Xor);
 }
 
 struct EnqueueSize {

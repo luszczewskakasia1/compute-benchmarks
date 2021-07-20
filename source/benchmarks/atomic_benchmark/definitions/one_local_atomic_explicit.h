@@ -2,15 +2,15 @@
 
 #include "framework/argument/basic_argument.h"
 #include "framework/argument/enum/atomic_memory_order_argument.h"
-#include "framework/argument/enum/atomic_operation_argument.h"
 #include "framework/argument/enum/atomic_scope_argument.h"
 #include "framework/argument/enum/data_type_argument.h"
+#include "framework/argument/enum/math_operation_argument.h"
 #include "framework/test_case/test_case.h"
 #include "framework/utility/common_help_message.h"
 
 struct OneLocalAtomicExplicitArguments : TestCaseArgumentContainer {
     DataTypeArgument dataType;
-    AtomicOperationArgument atomicOperation;
+    MathOperationArgument atomicOperation;
     AtomicScopeArgument scope;
     AtomicMemoryOrderArgument memoryOrder;
     PositiveIntegerArgument workgroupSize;

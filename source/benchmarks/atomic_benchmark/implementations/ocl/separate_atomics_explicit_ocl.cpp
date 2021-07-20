@@ -1,7 +1,7 @@
 #include "framework/ocl/opencl.h"
 #include "framework/test_case/register_test_case.h"
-#include "framework/utility/atomic_operation_helper.h"
 #include "framework/utility/file_helper.h"
+#include "framework/utility/math_operation_helper.h"
 #include "framework/utility/timer.h"
 
 #include "definitions/separate_atomic_explicit.h"
@@ -17,7 +17,7 @@ static TestResult run(const SeparateAtomicsExplicitArguments &arguments, Statist
     cl_int retVal{};
 
     // Check support
-    if (!AtomicOperationHelper::isSupported(arguments.atomicOperation, arguments.dataType, opencl.getExtensions().isGlobalFloatAtomicsSupported())) {
+    if (!MathOperationHelper::isSupportedAsAtomic(arguments.atomicOperation, arguments.dataType, opencl.getExtensions().isGlobalFloatAtomicsSupported())) {
         return TestResult::DeviceNotCapable;
     }
 

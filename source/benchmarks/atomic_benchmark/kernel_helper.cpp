@@ -1,12 +1,12 @@
 #include "kernel_helper.h"
 
-#include "framework/utility/atomic_operation_helper.h"
 #include "framework/utility/compiler_options_builder.h"
+#include "framework/utility/math_operation_helper.h"
 
 #include <algorithm>
 
 template <typename T>
-constexpr inline KernelHelper::DataForKernel getDataForKernel(AtomicOperation operation, size_t totalThreadsCount) {
+constexpr inline KernelHelper::DataForKernel getDataForKernel(MathOperation operation, size_t totalThreadsCount) {
     const auto loopIterations = 100u;                   // Kernel performs some number of loop iterations
     const auto operatorApplicationsPerIteration = 128u; // Each iteration performs some number of atomic operations
     const auto totalAtomicOperationsCount = totalThreadsCount * loopIterations * operatorApplicationsPerIteration;
@@ -19,42 +19,42 @@ constexpr inline KernelHelper::DataForKernel getDataForKernel(AtomicOperation op
     T &expectedValue = reinterpret_cast<T &>(result.expectedValue);
 
     switch (operation) {
-    case AtomicOperation::Add:
+    case MathOperation::Add:
         initialValue = 1000;
         otherArgument = 3;
         expectedValue = initialValue + otherArgument * static_cast<T>(totalAtomicOperationsCount);
         break;
-    case AtomicOperation::Sub:
+    case MathOperation::Sub:
         initialValue = 1000;
         otherArgument = 3;
         expectedValue = initialValue - otherArgument * static_cast<T>(totalAtomicOperationsCount);
         break;
-    case AtomicOperation::Xchg:
+    case MathOperation::Xchg:
         initialValue = 7;
         otherArgument = 3;
         expectedValue = otherArgument;
         break;
-    case AtomicOperation::CmpXchg:
+    case MathOperation::CmpXchg:
         initialValue = 7;
         otherArgument = 3;
         expectedValue = initialValue;
         break;
-    case AtomicOperation::Inc:
+    case MathOperation::Inc:
         initialValue = 12;
         otherArgument = 0;
         expectedValue = initialValue + static_cast<T>(totalAtomicOperationsCount);
         break;
-    case AtomicOperation::Dec:
+    case MathOperation::Dec:
         initialValue = 43;
         otherArgument = 0;
         expectedValue = initialValue - static_cast<T>(totalAtomicOperationsCount);
         break;
-    case AtomicOperation::Min:
+    case MathOperation::Min:
         initialValue = 100;
         otherArgument = 33;
         expectedValue = std::min(initialValue, otherArgument);
         break;
-    case AtomicOperation::Max:
+    case MathOperation::Max:
         initialValue = 100;
         otherArgument = 33;
         expectedValue = std::max(initialValue, otherArgument);
@@ -62,17 +62,17 @@ constexpr inline KernelHelper::DataForKernel getDataForKernel(AtomicOperation op
     default:
         if constexpr (std::is_integral_v<T>) {
             switch (operation) {
-            case AtomicOperation::And:
+            case MathOperation::And:
                 initialValue = 0b1111001111001101;
                 otherArgument = 0b1101100100101010;
                 expectedValue = initialValue & otherArgument;
                 break;
-            case AtomicOperation::Or:
+            case MathOperation::Or:
                 initialValue = 0b1111001111001101;
                 otherArgument = 0b1101100100101010;
                 expectedValue = initialValue | otherArgument;
                 break;
-            case AtomicOperation::Xor:
+            case MathOperation::Xor:
                 initialValue = 0b1111001111001101;
                 otherArgument = 0b1101100100101010;
                 expectedValue = (totalAtomicOperationsCount % 2 == 0) ? initialValue : initialValue ^ otherArgument;
@@ -88,7 +88,7 @@ constexpr inline KernelHelper::DataForKernel getDataForKernel(AtomicOperation op
 }
 
 KernelHelper::DataForKernel KernelHelper::getDataForKernel(DataType dataType,
-                                                           AtomicOperation operation,
+                                                           MathOperation operation,
                                                            size_t totalThreadsCount) {
 
     switch (dataType) {
@@ -101,7 +101,7 @@ KernelHelper::DataForKernel KernelHelper::getDataForKernel(DataType dataType,
     }
 }
 
-std::string KernelHelper::getCompilerOptions(DataType dataType, AtomicOperation operation, size_t otherArgumentBufferSize) {
+std::string KernelHelper::getCompilerOptions(DataType dataType, MathOperation operation, size_t otherArgumentBufferSize) {
     CompilerOptionsBuilder options{};
     addAtomicOpMacro(options, operation);
     options.addDefinitionKeyValue("ATOMIC_DATATYPE", DataTypeHelper::toOpenclC(dataType));
@@ -110,7 +110,7 @@ std::string KernelHelper::getCompilerOptions(DataType dataType, AtomicOperation 
     return options.str();
 }
 
-std::string KernelHelper::getCompilerOptionsExplicit(DataType dataType, AtomicOperation operation, AtomicMemoryOrder order,
+std::string KernelHelper::getCompilerOptionsExplicit(DataType dataType, MathOperation operation, AtomicMemoryOrder order,
                                                      AtomicScope scope, size_t otherArgumentBufferSize) {
     CompilerOptionsBuilder options{};
     addExplicitAtomicOpMacro(options, operation, order, scope);
@@ -122,7 +122,7 @@ std::string KernelHelper::getCompilerOptionsExplicit(DataType dataType, AtomicOp
     return options.str();
 }
 
-void KernelHelper::addAtomicOpMacro(CompilerOptionsBuilder &options, AtomicOperation operation) {
+void KernelHelper::addAtomicOpMacro(CompilerOptionsBuilder &options, MathOperation operation) {
     const static char *functionNames[] = {"ERROR",
                                           "atomic_add", "atomic_sub",
                                           "atomic_xchg", "atomic_cmpxchg",
@@ -134,20 +134,20 @@ void KernelHelper::addAtomicOpMacro(CompilerOptionsBuilder &options, AtomicOpera
     std::ostringstream macroBody{};
     macroBody << functionNames[static_cast<int>(operation)] << "(address";
     switch (operation) {
-    case AtomicOperation::Add:
-    case AtomicOperation::Sub:
-    case AtomicOperation::Min:
-    case AtomicOperation::Max:
-    case AtomicOperation::And:
-    case AtomicOperation::Or:
-    case AtomicOperation::Xor:
-    case AtomicOperation::Xchg:
+    case MathOperation::Add:
+    case MathOperation::Sub:
+    case MathOperation::Min:
+    case MathOperation::Max:
+    case MathOperation::And:
+    case MathOperation::Or:
+    case MathOperation::Xor:
+    case MathOperation::Xchg:
         macroBody << ",other";
         break;
-    case AtomicOperation::Inc:
-    case AtomicOperation::Dec:
+    case MathOperation::Inc:
+    case MathOperation::Dec:
         break;
-    case AtomicOperation::CmpXchg:
+    case MathOperation::CmpXchg:
         macroBody << ",other,other";
         break;
     default:
@@ -158,7 +158,7 @@ void KernelHelper::addAtomicOpMacro(CompilerOptionsBuilder &options, AtomicOpera
     options.addMacro("ATOMIC_OP", {"address", "other"}, macroBody.str().c_str());
 }
 
-void KernelHelper::addExplicitAtomicOpMacro(CompilerOptionsBuilder &options, AtomicOperation operation, AtomicMemoryOrder order, AtomicScope scope) {
+void KernelHelper::addExplicitAtomicOpMacro(CompilerOptionsBuilder &options, MathOperation operation, AtomicMemoryOrder order, AtomicScope scope) {
     const static char *functionNames[] = {"ERROR",
                                           "atomic_fetch_add_explicit", "atomic_fetch_sub_explicit",
                                           "atomic_exchange_explicit", "atomic_compare_exchange_strong_explicit",
@@ -170,21 +170,21 @@ void KernelHelper::addExplicitAtomicOpMacro(CompilerOptionsBuilder &options, Ato
     std::ostringstream macroBody{};
     macroBody << functionNames[static_cast<int>(operation)] << "(address";
     switch (operation) {
-    case AtomicOperation::Add:
-    case AtomicOperation::Sub:
-    case AtomicOperation::Min:
-    case AtomicOperation::Max:
-    case AtomicOperation::And:
-    case AtomicOperation::Or:
-    case AtomicOperation::Xor:
-    case AtomicOperation::Xchg:
+    case MathOperation::Add:
+    case MathOperation::Sub:
+    case MathOperation::Min:
+    case MathOperation::Max:
+    case MathOperation::And:
+    case MathOperation::Or:
+    case MathOperation::Xor:
+    case MathOperation::Xchg:
         macroBody << ",other";
         break;
-    case AtomicOperation::Inc:
-    case AtomicOperation::Dec:
+    case MathOperation::Inc:
+    case MathOperation::Dec:
         macroBody << ",1";
         break;
-    case AtomicOperation::CmpXchg:
+    case MathOperation::CmpXchg:
         macroBody << ",&other,other," << AtomicMemoryOrderHelper::toOpenclC(order);
         break;
     default:

@@ -7,7 +7,7 @@
 
 static const inline RegisterTestCase<OneLocalAtomicExplicit> registerTestCase{};
 
-class OneLocalAtomicExplicitTest : public ::testing::TestWithParam<std::tuple<DataType, AtomicOperation, AtomicScope, AtomicMemoryOrder, size_t>> {
+class OneLocalAtomicExplicitTest : public ::testing::TestWithParam<std::tuple<DataType, MathOperation, AtomicScope, AtomicMemoryOrder, size_t>> {
 };
 
 TEST_P(OneLocalAtomicExplicitTest, Test) {
@@ -28,7 +28,7 @@ INSTANTIATE_TEST_SUITE_P(
     OneLocalAtomicExplicitTest,
     ::testing::Combine(
         ::testing::Values(DataType::Float, DataType::Int32),
-        ::CommonGtestArgs::allAtomicOperations(),
+        ::CommonGtestArgs::allMathOperations(),
         ::testing::ValuesIn(AtomicScopeHelper::allValues),
         ::testing::ValuesIn(AtomicMemoryOrderHelper::allValues),
         ::testing::Values(1, 64, 256)));
