@@ -5,97 +5,17 @@
 
 #include <algorithm>
 
-template <typename T>
-constexpr inline KernelHelper::DataForKernel getDataForKernel(MathOperation operation, size_t totalThreadsCount) {
-    const auto loopIterations = 100u;                   // Kernel performs some number of loop iterations
-    const auto operatorApplicationsPerIteration = 128u; // Each iteration performs some number of atomic operations
-    const auto totalAtomicOperationsCount = totalThreadsCount * loopIterations * operatorApplicationsPerIteration;
-
-    KernelHelper::DataForKernel result{};
-    result.sizeOfDataType = sizeof(T);
-    result.loopIterations = loopIterations;
-    T &initialValue = reinterpret_cast<T &>(result.initialValue);
-    T &otherArgument = reinterpret_cast<T &>(result.otherArgument);
-    T &expectedValue = reinterpret_cast<T &>(result.expectedValue);
-
-    switch (operation) {
-    case MathOperation::Add:
-        initialValue = 1000;
-        otherArgument = 3;
-        expectedValue = initialValue + otherArgument * static_cast<T>(totalAtomicOperationsCount);
-        break;
-    case MathOperation::Sub:
-        initialValue = 1000;
-        otherArgument = 3;
-        expectedValue = initialValue - otherArgument * static_cast<T>(totalAtomicOperationsCount);
-        break;
-    case MathOperation::Xchg:
-        initialValue = 7;
-        otherArgument = 3;
-        expectedValue = otherArgument;
-        break;
-    case MathOperation::CmpXchg:
-        initialValue = 7;
-        otherArgument = 3;
-        expectedValue = initialValue;
-        break;
-    case MathOperation::Inc:
-        initialValue = 12;
-        otherArgument = 0;
-        expectedValue = initialValue + static_cast<T>(totalAtomicOperationsCount);
-        break;
-    case MathOperation::Dec:
-        initialValue = 43;
-        otherArgument = 0;
-        expectedValue = initialValue - static_cast<T>(totalAtomicOperationsCount);
-        break;
-    case MathOperation::Min:
-        initialValue = 100;
-        otherArgument = 33;
-        expectedValue = std::min(initialValue, otherArgument);
-        break;
-    case MathOperation::Max:
-        initialValue = 100;
-        otherArgument = 33;
-        expectedValue = std::max(initialValue, otherArgument);
-        break;
-    default:
-        if constexpr (std::is_integral_v<T>) {
-            switch (operation) {
-            case MathOperation::And:
-                initialValue = 0b1111001111001101;
-                otherArgument = 0b1101100100101010;
-                expectedValue = initialValue & otherArgument;
-                break;
-            case MathOperation::Or:
-                initialValue = 0b1111001111001101;
-                otherArgument = 0b1101100100101010;
-                expectedValue = initialValue | otherArgument;
-                break;
-            case MathOperation::Xor:
-                initialValue = 0b1111001111001101;
-                otherArgument = 0b1101100100101010;
-                expectedValue = (totalAtomicOperationsCount % 2 == 0) ? initialValue : initialValue ^ otherArgument;
-                break;
-            default:
-                FATAL_ERROR("Invalid atomic operation");
-            }
-        } else {
-            FATAL_ERROR("Invalid atomic operation");
-        }
-    }
-    return result;
-}
-
-KernelHelper::DataForKernel KernelHelper::getDataForKernel(DataType dataType,
-                                                           MathOperation operation,
-                                                           size_t totalThreadsCount) {
+MathOperationTestData KernelHelper::getDataForKernel(DataType dataType,
+                                                     MathOperation operation,
+                                                     size_t totalThreadsCount) {
+    const size_t loopIterations = 100u;                   // Kernel performs some number of loop iterations
+    const size_t operatorApplicationsPerIteration = 128u; // Each iteration performs some number of atomic operations
 
     switch (dataType) {
     case DataType::Float:
-        return ::getDataForKernel<float>(operation, totalThreadsCount);
+        return MathOperationHelper::generateTestData<float>(operation, loopIterations, operatorApplicationsPerIteration, totalThreadsCount);
     case DataType::Int32:
-        return ::getDataForKernel<int32_t>(operation, totalThreadsCount);
+        return MathOperationHelper::generateTestData<int32_t>(operation, loopIterations, operatorApplicationsPerIteration, totalThreadsCount);
     default:
         FATAL_ERROR("Invalid data type");
     }

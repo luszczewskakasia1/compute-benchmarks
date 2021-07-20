@@ -8,17 +8,10 @@
 #include <cstddef>
 
 class CompilerOptionsBuilder;
+struct MathOperationTestData;
 
 struct KernelHelper {
-    struct DataForKernel {
-        size_t sizeOfDataType;
-        size_t loopIterations;
-        std::byte initialValue[8];
-        std::byte otherArgument[8];
-        std::byte expectedValue[8];
-    };
-
-    static DataForKernel getDataForKernel(DataType dataType, MathOperation operation, size_t totalThreadsCount);
+    static MathOperationTestData getDataForKernel(DataType dataType, MathOperation operation, size_t totalThreadsCount);
     static std::string getCompilerOptions(DataType dataType, MathOperation operation, size_t otherArgumentBufferSize);
     static std::string getCompilerOptionsExplicit(DataType dataType, MathOperation operation, AtomicMemoryOrder order,
                                                   AtomicScope scope, size_t otherArgumentBufferSize);
