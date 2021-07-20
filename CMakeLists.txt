@@ -12,6 +12,7 @@ if (MSVC)
     add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/MP>)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DELAYLOAD:OpenCL.dll")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DELAYLOAD:ze_loader.dll")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ignore:4199")
 endif()
 
 # Load dependencies

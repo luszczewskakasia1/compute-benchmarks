@@ -137,7 +137,7 @@ class QueueFamiliesHelper {
         EXPECT_CL_SUCCESS(clGetCommandQueueInfo(queue, CL_QUEUE_DEVICE, sizeof(device), &device, nullptr));
 
         const auto families = queryQueueFamilies(device);
-        const auto family = families[familyIndex];
+        const auto &family = families[familyIndex];
         return family.capabilitites;
     }
 
