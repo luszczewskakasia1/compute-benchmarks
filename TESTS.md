@@ -27,7 +27,7 @@ SeparateAtomicsExplicit|enqueues kernel performing an atomic operation on differ
 EU Benchmark is a set of tests aimed at measuring performance of calculations performed in kernels.
 | Test name | Description | Params | L0 | OCL |
 |-----------|-------------|--------|----|-----|
-DoMathOperation|enqueues kernel performing a math operation|<ul><li>--op Math operation to perform (Add or Sub or Xchg or CmpXchg or Inc or Dec or Min or Max or And or Or or Xor)</li><li>--type Data type of the atomic. Keep in mind not all operations are supported for floating points (Int32 or Float)</li><li>--wgc Work group count</li><li>--wgs Work group size</li></ul>|:x:|:heavy_check_mark:|
+DoMathOperation|enqueues kernel performing a math operation|<ul><li>--op Math operation to perform (Add or Sub or Div or Modulo or Inc or Dec or Min or Max or And or Or or Xor)</li><li>--type Data type of the atomic. Keep in mind not all operations are supported for floating points (Int32 or Float)</li><li>--wgc Work group count</li><li>--wgs Work group size</li></ul>|:x:|:heavy_check_mark:|
 
 
 
