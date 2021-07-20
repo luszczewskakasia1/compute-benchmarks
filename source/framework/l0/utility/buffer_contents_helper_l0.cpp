@@ -34,7 +34,7 @@ ze_result_t BufferContentsHelperL0::fillBufferWithRandomBytes(ze_device_handle_t
     ZE_RESULT_SUCCESS_OR_RETURN(zeCommandListAppendMemoryCopy(cmdList, buffer, stagingAllocation, bufferSize, nullptr, 0, nullptr));
     ZE_RESULT_SUCCESS_OR_RETURN(zeCommandListClose(cmdList));
     ZE_RESULT_SUCCESS_OR_RETURN(zeCommandQueueExecuteCommandLists(queue, 1, &cmdList, nullptr));
-    ZE_RESULT_SUCCESS_OR_RETURN(zeCommandQueueSynchronize(queue, std::numeric_limits<uint32_t>::max()));
+    ZE_RESULT_SUCCESS_OR_RETURN(zeCommandQueueSynchronize(queue, std::numeric_limits<uint64_t>::max()));
     ZE_RESULT_SUCCESS_OR_RETURN(zeCommandListDestroy(cmdList));
 
     // Destroy staging allocation
@@ -53,7 +53,7 @@ ze_result_t BufferContentsHelperL0::fillBufferWithZeros(ze_device_handle_t devic
     ZE_RESULT_SUCCESS_OR_RETURN(zeCommandListAppendMemoryFill(cmdList, buffer, pattern, sizeof(pattern), bufferSize, nullptr, 0, nullptr));
     ZE_RESULT_SUCCESS_OR_RETURN(zeCommandListClose(cmdList));
     ZE_RESULT_SUCCESS_OR_RETURN(zeCommandQueueExecuteCommandLists(queue, 1, &cmdList, nullptr));
-    ZE_RESULT_SUCCESS_OR_RETURN(zeCommandQueueSynchronize(queue, std::numeric_limits<uint32_t>::max()));
+    ZE_RESULT_SUCCESS_OR_RETURN(zeCommandQueueSynchronize(queue, std::numeric_limits<uint64_t>::max()));
     ZE_RESULT_SUCCESS_OR_RETURN(zeCommandListDestroy(cmdList));
 
     return ZE_RESULT_SUCCESS;

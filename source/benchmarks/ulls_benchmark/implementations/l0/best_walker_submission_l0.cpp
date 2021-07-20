@@ -52,7 +52,7 @@ static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics
 
     // Warmup
     ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
-    ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
 
     // Benchmark
     for (auto i = 0; i < arguments.iterations; i++) {
@@ -65,7 +65,7 @@ static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics
         }
         timer.measureEnd();
 
-        ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
         statistics.pushValue(timer.get());
     }
 

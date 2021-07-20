@@ -49,7 +49,7 @@ static TestResult run(const ExecuteCommandListArguments &arguments, Statistics &
 
     // Warmup
     ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, fence));
-    ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
 
     // Benchmark
     for (auto i = 0; i < arguments.iterations; i++) {
@@ -62,7 +62,7 @@ static TestResult run(const ExecuteCommandListArguments &arguments, Statistics &
         timer.measureEnd();
         statistics.pushValue(timer.get());
 
-        ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
     }
 
     if (arguments.useFence) {

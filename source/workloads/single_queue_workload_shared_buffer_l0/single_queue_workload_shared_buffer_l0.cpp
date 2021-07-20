@@ -87,7 +87,7 @@ TestResult run(const SingleQueueWorkloadSharedBufferArguments &arguments, Statis
 
         timer.measureStart();
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
-        ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
         timer.measureEnd();
 
         statistics.pushValue(timer.get());

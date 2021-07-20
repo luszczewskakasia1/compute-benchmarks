@@ -68,7 +68,7 @@ static TestResult run(const WriteLatencyArguments &arguments, Statistics &statis
     ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
     ASSERT_ZE_RESULT_SUCCESS(zeEventHostSynchronize(hEvent, std::numeric_limits<uint64_t>::max()));
     ASSERT_ZE_RESULT_SUCCESS(zeEventHostSignal(hEvent2));
-    ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
     ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(hEvent2));
 
     // Benchmark
@@ -97,7 +97,7 @@ static TestResult run(const WriteLatencyArguments &arguments, Statistics &statis
 
         statistics.pushValue(timer.get());
 
-        ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
         ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(hEvent2));
     }
 

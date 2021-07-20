@@ -52,7 +52,7 @@ static TestResult run(const UsmSharedFirstGpuAccessArguments &arguments, Statist
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, nullptr, 0, nullptr));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListClose(cmdList));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
-    ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));
     ASSERT_ZE_RESULT_SUCCESS(zeMemFree(levelzero.context, buffer));
 
@@ -69,7 +69,7 @@ static TestResult run(const UsmSharedFirstGpuAccessArguments &arguments, Statist
         timer.measureEnd();
         statistics.pushValue(timer.get());
 
-        ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
         ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));
         ASSERT_ZE_RESULT_SUCCESS(zeMemFree(levelzero.context, buffer));
     }

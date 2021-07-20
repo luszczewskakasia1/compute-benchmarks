@@ -63,7 +63,7 @@ static TestResult run(const BestWalkerSubmissionImmediateArguments &arguments, S
 
     // Warmup
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, event, 0, nullptr));
-    ASSERT_ZE_RESULT_SUCCESS(zeEventHostSynchronize(event, std::numeric_limits<uint32_t>::max()));
+    ASSERT_ZE_RESULT_SUCCESS(zeEventHostSynchronize(event, std::numeric_limits<uint64_t>::max()));
     ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(event));
 
     // Benchmark
@@ -77,7 +77,7 @@ static TestResult run(const BestWalkerSubmissionImmediateArguments &arguments, S
         }
         timer.measureEnd();
 
-        ASSERT_ZE_RESULT_SUCCESS(zeEventHostSynchronize(event, std::numeric_limits<uint32_t>::max()));
+        ASSERT_ZE_RESULT_SUCCESS(zeEventHostSynchronize(event, std::numeric_limits<uint64_t>::max()));
         ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(event));
 
         statistics.pushValue(timer.get());

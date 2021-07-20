@@ -53,7 +53,7 @@ static TestResult run(const UsmSharedMigrateCpuArguments &arguments, Statistics 
 
     // Warmup
     ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
-    ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
     for (auto elementIndex = 0u; elementIndex < elementsCount; elementIndex++) {
         bufferInt[elementIndex] = 0;
     }
@@ -61,7 +61,7 @@ static TestResult run(const UsmSharedMigrateCpuArguments &arguments, Statistics 
     // Benchmark
     for (auto i = 0; i < arguments.iterations; i++) {
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
-        ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint32_t>::max()));
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
 
         timer.measureStart();
         if (arguments.accessAllBytes) {
