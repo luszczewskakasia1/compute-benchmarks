@@ -34,8 +34,8 @@ static TestResult run(const FlushTimeArguments &arguments, Statistics &statistic
     ASSERT_CL_SUCCESS(retVal);
 
     // Warmup, kernel
-    retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, lwsForNdr, 0, nullptr, eventForNdr);
-    retVal |= clFinish(opencl.commandQueue);
+    ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, lwsForNdr, 0, nullptr, eventForNdr));
+    ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
     if (eventForNdr) {
         ASSERT_CL_SUCCESS(clReleaseEvent(event));
     }

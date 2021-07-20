@@ -24,16 +24,16 @@ static TestResult run(const EmptyKernelArguments &arguments, Statistics &statist
     ASSERT_CL_SUCCESS(retVal);
 
     // Warmup, kernel
-    retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr);
-    retVal |= clFinish(opencl.commandQueue);
+    ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
+    ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
     ASSERT_CL_SUCCESS(retVal);
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
         // Enqueue empty kernel and measure it
         timer.measureStart();
-        retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr);
-        retVal |= clFinish(opencl.commandQueue);
+        ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
+        ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
         ASSERT_CL_SUCCESS(retVal);
         statistics.pushValue(timer.get());

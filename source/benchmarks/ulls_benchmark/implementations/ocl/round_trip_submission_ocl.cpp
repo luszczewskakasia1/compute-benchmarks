@@ -30,16 +30,16 @@ static TestResult run(const RoundTripSubmissionArguments &arguments, Statistics 
     // Warmup kernel
     const size_t gws = 1;
     const size_t lws = 1;
-    retVal |= clSetKernelArg(kernel, 0, sizeof(buffer), &buffer);
-    retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr);
-    retVal |= clFinish(opencl.commandQueue);
+    ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 0, sizeof(buffer), &buffer));
+    ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
+    ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
     ASSERT_CL_SUCCESS(retVal);
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
         timer.measureStart();
-        retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr);
-        retVal |= clFinish(opencl.commandQueue);
+        ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
+        ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
 
         ASSERT_CL_SUCCESS(retVal);

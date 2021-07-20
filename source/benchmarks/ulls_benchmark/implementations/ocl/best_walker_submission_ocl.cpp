@@ -41,8 +41,8 @@ static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics
     for (int i = 0; i < arguments.iterations; i++) {
         // Warmup, kernel
         size_t warmupOffset = 8;
-        retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr);
-        retVal |= clFinish(opencl.commandQueue);
+        ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
+        ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         ASSERT_CL_SUCCESS(retVal);
 
         // Reset value
@@ -51,8 +51,8 @@ static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics
 
         // Enqueue write on GPU and poll for update on CPU
         timer.measureStart();
-        retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr);
-        retVal |= clFlush(opencl.commandQueue);
+        ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
+        ASSERT_CL_SUCCESS(clFlush(opencl.commandQueue));
         ASSERT_CL_SUCCESS(retVal);
 
         while (*volatileHostMemory != 1) {

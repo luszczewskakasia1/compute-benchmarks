@@ -33,8 +33,8 @@ static TestResult run(const EnqueueNdrTimeArguments &arguments, Statistics &stat
     ASSERT_CL_SUCCESS(retVal);
 
     // Warmup, kernel
-    retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, eventForNdr);
-    retVal |= clFinish(opencl.commandQueue);
+    ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, eventForNdr));
+    ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
     if (eventForNdr) {
         ASSERT_CL_SUCCESS(clReleaseEvent(event));
     }

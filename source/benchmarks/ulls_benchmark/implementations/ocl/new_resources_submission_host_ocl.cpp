@@ -44,8 +44,8 @@ static TestResult run(const NewResourcesSubmissionHostArguments &arguments, Stat
         timer.measureStart();
         void *hostMemory = clHostMemAllocINTEL(opencl.context, nullptr, sizeInBytes, 0, &retVal);
         ASSERT_CL_SUCCESS(clSetKernelArgSVMPointer(kernel, 0, hostMemory));
-        retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr);
-        retVal |= clFinish(opencl.commandQueue);
+        ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
+        ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
 
         ASSERT_CL_SUCCESS(retVal);

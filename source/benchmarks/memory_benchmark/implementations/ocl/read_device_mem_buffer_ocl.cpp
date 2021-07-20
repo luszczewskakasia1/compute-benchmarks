@@ -117,13 +117,13 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     // Create kernel
     const auto programSrcLen = strlen(programSrc);
     cl_program program = clCreateProgramWithSource(opencl.context, 1, &programSrc, &programSrcLen, &retVal);
-    retVal |= clBuildProgram(program, 1, &opencl.device, buildOptions.c_str(), nullptr, nullptr);
+    ASSERT_CL_SUCCESS(clBuildProgram(program, 1, &opencl.device, buildOptions.c_str(), nullptr, nullptr));
 #if 0
     if (retVal) {
         size_t numBytes = 0;
-        retVal |= clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, 0, NULL, &numBytes);
+        ASSERT_CL_SUCCESS(clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, 0, NULL, &numBytes));
         auto buffer = std::make_unique<char[]>(numBytes);
-        retVal |= clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, numBytes, buffer.get(), &numBytes  );
+        ASSERT_CL_SUCCESS(clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, numBytes, buffer.get(), &numBytes  ));
         std::cout << buffer.get() << std::endl;
     }
 #endif
@@ -137,10 +137,10 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     // Clear L3$ Cache kernel
     const size_t clearGws = 1;
     const size_t buffSizeInInts = clearGpuBuffSize / sizeof(cl_uint);
-    retVal |= clSetKernelArg(clearCacheKernel, 0, sizeof(clearGpuBuff), &clearGpuBuff);
-    retVal |= clSetKernelArg(clearCacheKernel, 1, sizeof(buffSizeInInts), &buffSizeInInts);
-    retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, clearCacheKernel, 1, nullptr, &clearGws, NULL, 0, nullptr, nullptr);
-    retVal |= clFinish(opencl.commandQueue);
+    ASSERT_CL_SUCCESS(clSetKernelArg(clearCacheKernel, 0, sizeof(clearGpuBuff), &clearGpuBuff));
+    ASSERT_CL_SUCCESS(clSetKernelArg(clearCacheKernel, 1, sizeof(buffSizeInInts), &buffSizeInInts));
+    ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, clearCacheKernel, 1, nullptr, &clearGws, NULL, 0, nullptr, nullptr));
+    ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
     ASSERT_CL_SUCCESS(retVal);
 
     cl_uint sliceSize = 0, sliceMask = 1, slotMask = 1;
@@ -169,16 +169,16 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
         slotMask -= 1;
     }
 
-    retVal |= clSetKernelArg(kernel, 0, sizeof(source), &source);
-    retVal |= clSetKernelArg(kernel, 1, sizeof(destination), &destination);
-    retVal |= clSetKernelArg(kernel, 2, sizeof(sliceMask), &sliceMask);
-    retVal |= clSetKernelArg(kernel, 3, sizeof(sliceSize), &sliceSize);
-    retVal |= clSetKernelArg(kernel, 4, sizeof(slotMask), &slotMask);
+    ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 0, sizeof(source), &source));
+    ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 1, sizeof(destination), &destination));
+    ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 2, sizeof(sliceMask), &sliceMask));
+    ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 3, sizeof(sliceSize), &sliceSize));
+    ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 4, sizeof(slotMask), &slotMask));
     ASSERT_CL_SUCCESS(retVal);
 
     //warmup
-    retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr);
-    retVal |= clFinish(opencl.commandQueue);
+    ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
+    ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
     ASSERT_CL_SUCCESS(retVal);
 
     // Benchmark
@@ -187,16 +187,16 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
         cl_ulong enqstart = 0;
         cl_ulong enqend = 0;
 
-        retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, clearCacheKernel, 1, nullptr, &clearGws, NULL, 0, nullptr, nullptr);
-        retVal |= clFinish(opencl.commandQueue);
+        ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, clearCacheKernel, 1, nullptr, &clearGws, NULL, 0, nullptr, nullptr));
+        ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         ASSERT_CL_SUCCESS(retVal);
 
-        retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &evt);
-        retVal |= clWaitForEvents(1, &evt);
+        ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &evt));
+        ASSERT_CL_SUCCESS(clWaitForEvents(1, &evt));
         ASSERT_CL_SUCCESS(retVal);
 
-        retVal |= clGetEventProfilingInfo(evt, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &enqstart, NULL);
-        retVal |= clGetEventProfilingInfo(evt, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &enqend, NULL);
+        ASSERT_CL_SUCCESS(clGetEventProfilingInfo(evt, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &enqstart, NULL));
+        ASSERT_CL_SUCCESS(clGetEventProfilingInfo(evt, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &enqend, NULL));
         ASSERT_CL_SUCCESS(retVal);
 
         const auto time = std::chrono::nanoseconds(enqend - enqstart);

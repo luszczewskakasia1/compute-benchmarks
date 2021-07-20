@@ -42,9 +42,9 @@ TestResult run(const ReductionArguments4 &arguments, Statistics &statistics) {
 
     if (retVal) {
         size_t numBytes = 0;
-        retVal |= clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, 0, NULL, &numBytes);
+        ASSERT_CL_SUCCESS(clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, 0, NULL, &numBytes));
         auto buffer = std::make_unique<char[]>(numBytes);
-        retVal |= clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, numBytes, buffer.get(), &numBytes);
+        ASSERT_CL_SUCCESS(clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, numBytes, buffer.get(), &numBytes));
         std::cout << buffer.get() << std::endl;
     }
 

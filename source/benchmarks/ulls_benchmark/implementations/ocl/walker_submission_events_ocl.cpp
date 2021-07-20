@@ -27,8 +27,8 @@ static TestResult run(const WalkerSubmissionEventsArguments &arguments, Statisti
     // Warmup run
     const size_t gws = 1;
     const size_t lws = 1;
-    retVal |= clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &profilingEvent);
-    retVal |= clFinish(opencl.commandQueue);
+    ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &profilingEvent));
+    ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
     ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
     ASSERT_CL_SUCCESS(retVal);
 
