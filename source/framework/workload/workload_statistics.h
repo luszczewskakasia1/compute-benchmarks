@@ -14,8 +14,8 @@ class WorkloadStatistics : public Statistics {
 
     void printStatistics(WorkloadIo &io);
 
-    void pushValue(Clock::duration time, const std::string &description = "", MeasurementUnit unit = MeasurementUnit::Default) override;
-    void pushValue(Clock::duration time, uint64_t size, const std::string &description = "", MeasurementUnit unit = MeasurementUnit::Default) override;
+    void pushValue(Clock::duration time, MeasurementUnit unit, MeasurementType type, const std::string &description = "") override;
+    void pushValue(Clock::duration time, uint64_t size, MeasurementUnit unit, MeasurementType type, const std::string &description = "") override;
 
     bool isEmpty() const override;
     bool isFull() const override;

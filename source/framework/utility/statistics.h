@@ -1,5 +1,6 @@
 #pragma once
 
+#include "framework/enum/measurement_type.h"
 #include "framework/enum/measurement_unit.h"
 #include "framework/utility/error.h"
 
@@ -11,8 +12,16 @@ class Statistics {
 
     Statistics(size_t maxSamplesCount) : maxSamplesCount(maxSamplesCount) {}
 
-    virtual void pushValue(Clock::duration time, const std::string &description = "", MeasurementUnit unit = MeasurementUnit::Default) = 0;
-    virtual void pushValue(Clock::duration time, uint64_t size, const std::string &description = "", MeasurementUnit unit = MeasurementUnit::Default) = 0;
+    virtual void pushValue(Clock::duration time, MeasurementUnit unit, MeasurementType type, const std::string &description = "") = 0;
+    virtual void pushValue(Clock::duration time, uint64_t size, MeasurementUnit unit, MeasurementType type, const std::string &description = "") = 0;
+
+    // TODO These are legacy overloads. Remove them
+    void pushValue(Clock::duration time, const std::string &description = "", MeasurementUnit unit = MeasurementUnit::Default, MeasurementType type = MeasurementType::Unknown) {
+        return pushValue(time, unit, type, description);
+    }
+    void pushValue(Clock::duration time, uint64_t size, const std::string &description = "", MeasurementUnit unit = MeasurementUnit::Default, MeasurementType type = MeasurementType::Unknown) {
+        return pushValue(time, size, unit, type, description);
+    }
 
     virtual bool isEmpty() const = 0;
     virtual bool isFull() const = 0;

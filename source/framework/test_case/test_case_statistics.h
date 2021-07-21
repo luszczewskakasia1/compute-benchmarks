@@ -13,14 +13,16 @@ class TestCaseStatistics : public Statistics {
     using SamplesVector = std::vector<Value>;
     struct Samples {
         MeasurementUnit unit = MeasurementUnit::Unknown;
+        MeasurementType type = MeasurementType::Unknown;
         SamplesVector vector = {};
     };
     using SamplesMap = std::map<std::string, Samples>;
 
     explicit TestCaseStatistics(size_t maxSamplesCount, Configuration::PrintType printType);
 
-    void pushValue(Clock::duration time, const std::string &description = "", MeasurementUnit unit = MeasurementUnit::Default) override;
-    void pushValue(Clock::duration time, uint64_t size, const std::string &description = "", MeasurementUnit unit = MeasurementUnit::Default) override;
+    // TODO: first two overloads are legacy. Remove them.
+    void pushValue(Clock::duration time, MeasurementUnit unit, MeasurementType type, const std::string &description = "") override;
+    void pushValue(Clock::duration time, uint64_t size, MeasurementUnit unit, MeasurementType type, const std::string &description = "") override;
 
     bool isEmpty() const override;
     bool isFull() const override;
@@ -32,7 +34,7 @@ class TestCaseStatistics : public Statistics {
     void printStatisticsString(const std::string &testCaseName, const std::string &message, char lineEnding = '\n') const;
 
   private:
-    void pushValue(Value value, const std::string &description, MeasurementUnit unit);
+    void pushValue(Value value, const std::string &description, MeasurementUnit unit, MeasurementType type);
     void printStatisticsDefault(const std::string &testCaseName) const;
     void printStatisticsCsv(const std::string &testCaseName) const;
     void printStatisticsVerbose() const;
@@ -69,6 +71,7 @@ struct TestCaseStatistics::MetricsStrings {
     std::string mean;
     std::string median;
     std::string standardDeviation;
+    std::string type;
     std::string label;
 
   private:
