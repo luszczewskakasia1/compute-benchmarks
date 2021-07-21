@@ -33,6 +33,7 @@ class TestCaseStatistics : public Statistics {
     void printStatisticsString(const std::string &testCaseName, const std::string &message, char lineEnding = '\n') const;
 
   private:
+    static void overrideMeasurementUnit(MeasurementUnit &unit);
     void pushValue(Value value, const std::string &description, MeasurementUnit unit, MeasurementType type);
     void printStatisticsDefault(const std::string &testCaseName) const;
     void printStatisticsCsv(const std::string &testCaseName) const;

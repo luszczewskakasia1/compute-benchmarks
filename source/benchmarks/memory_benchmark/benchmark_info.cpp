@@ -1,7 +1,5 @@
 #include "framework/configuration.h"
 
-#include "benchmark_specific_configuration.h"
-
 std::string BenchmarkInfoImpl::getBenchmarkName() {
     return "memory_benchmark";
 }
@@ -15,5 +13,5 @@ int BenchmarkInfoImpl::getTestCaseNameColumnWidth() {
 }
 
 std::unique_ptr<BenchmarkInfoImpl::BenchmarkSpecificConfigurationBase> BenchmarkInfoImpl::createBenchmarkSpecificConfiguration(ArgumentContainer &testCaseArguments) {
-    return std::unique_ptr<BenchmarkInfoImpl::BenchmarkSpecificConfigurationBase>{new BenchmarkSpecificConfiguration(testCaseArguments)};
+    return std::unique_ptr<BenchmarkSpecificConfigurationBase>{};
 }

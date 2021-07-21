@@ -20,6 +20,8 @@ void TestCaseStatistics::pushValue(Clock::duration time, MeasurementUnit unit, M
     static_assert(std::is_floating_point_v<Value>, "Need floating point type for the below cast to work properly");
     const Value timeSeconds = std::chrono::duration_cast<std::chrono::duration<Value>>(time).count();
 
+    overrideMeasurementUnit(unit);
+
     switch (unit) {
     case MeasurementUnit::Microseconds: {
         const Value timeMicroseconds = timeSeconds * 1e6;
@@ -36,6 +38,8 @@ void TestCaseStatistics::pushValue(Clock::duration time, MeasurementUnit unit, M
 void TestCaseStatistics::pushValue(Clock::duration time, uint64_t size, MeasurementUnit unit, MeasurementType type, const std::string &description) {
     static_assert(std::is_floating_point_v<Value>, "Need floating point type for the below cast to work properly");
     const Value timeSeconds = std::chrono::duration_cast<std::chrono::duration<Value>>(time).count();
+
+    overrideMeasurementUnit(unit);
 
     switch (unit) {
     case MeasurementUnit::Microseconds: {
@@ -71,6 +75,12 @@ bool TestCaseStatistics::isFull() const {
         }
     }
     return true;
+}
+
+void TestCaseStatistics::overrideMeasurementUnit(MeasurementUnit &unit) {
+    if (unit == MeasurementUnit::GigabytesPerSecond && Configuration::get().doNotPrintBandwidth) {
+        unit = MeasurementUnit::Microseconds;
+    }
 }
 
 void TestCaseStatistics::pushValue(Value value, const std::string &description, MeasurementUnit unit, MeasurementType type) {

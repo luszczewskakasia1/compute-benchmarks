@@ -13,5 +13,5 @@ int BenchmarkInfoImpl::getTestCaseNameColumnWidth() {
 }
 
 std::unique_ptr<BenchmarkInfoImpl::BenchmarkSpecificConfigurationBase> BenchmarkInfoImpl::createBenchmarkSpecificConfiguration(ArgumentContainer &testCaseArguments) {
-    return std::unique_ptr<BenchmarkInfoImpl::BenchmarkSpecificConfigurationBase>{};
+    return std::unique_ptr<BenchmarkSpecificConfigurationBase>{};
 }

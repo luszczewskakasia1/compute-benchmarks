@@ -26,7 +26,7 @@ Configuration::Configuration()
       dumpCommandLines(*this, "dumpCommandLines", "output commandline arguments to run the each test"),
       noop(*this, "noop", "do not run any tests, only print their names and parameters"),
       noHeaders(*this, "noHeaders", "Do not print any informational messages at the top of the output"),
-
+      doNotPrintBandwidth(*this, "doNotPrintBandwidth", "Make every results that are normally in [GB/s] to be printed in [us]"),
       dumpErrorsImmediately(*this, "dumpErrorsImmediately", "print errors to stdout immediately after they happen, not at the end of the run"),
       argFilter(*this, "argFilter", "filter tests by their arguments"),
       testFilter(*this, "testFilter", "filter tests by their names"),
@@ -61,6 +61,7 @@ Configuration::Configuration()
     subDeviceSelection = DeviceSelection::Root;
     noop = false;
     noHeaders = false;
+    doNotPrintBandwidth = false;
     dumpErrorsImmediately = false;
     argFilter = std::vector<std::string>();
     testFilter = std::vector<std::string>();
