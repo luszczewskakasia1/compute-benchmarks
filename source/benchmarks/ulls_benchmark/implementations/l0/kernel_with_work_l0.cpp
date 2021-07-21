@@ -56,7 +56,7 @@ static TestResult run(const KernelWithWorkArguments &arguments, Statistics &stat
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
         timer.measureEnd();
-        statistics.pushValue(timer.get());
+        statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);
     }
 
     ASSERT_ZE_RESULT_SUCCESS(zeKernelDestroy(kernel));

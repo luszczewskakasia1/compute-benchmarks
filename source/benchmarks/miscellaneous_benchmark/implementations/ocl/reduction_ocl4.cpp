@@ -111,8 +111,8 @@ TestResult run(const ReductionArguments4 &arguments, Statistics &statistics) {
     ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
     ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent2, timeNs2));
     ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent2));
-    statistics.pushValue(std::chrono::nanoseconds{timeNs}, "time", MeasurementUnit::Microseconds);
-    statistics.pushValue(std::chrono::nanoseconds{timeNs}, sizeInBytes, "bw", MeasurementUnit::GigabytesPerSecond);
+    statistics.pushValue(std::chrono::nanoseconds{timeNs}, MeasurementUnit::Microseconds, MeasurementType::Gpu, "time");
+    statistics.pushValue(std::chrono::nanoseconds{timeNs}, sizeInBytes, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu, "bw");
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
@@ -125,8 +125,8 @@ TestResult run(const ReductionArguments4 &arguments, Statistics &statistics) {
         ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
         ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent2));
         if (i + 1 < arguments.iterations) {
-            statistics.pushValue(std::chrono::nanoseconds{timeNs + timeNs2}, "time", MeasurementUnit::Microseconds);
-            statistics.pushValue(std::chrono::nanoseconds{timeNs + timeNs2}, sizeInBytes, "bw", MeasurementUnit::GigabytesPerSecond);
+            statistics.pushValue(std::chrono::nanoseconds{timeNs}, MeasurementUnit::Microseconds, MeasurementType::Gpu, "time");
+            statistics.pushValue(std::chrono::nanoseconds{timeNs}, sizeInBytes, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu, "bw");
         }
     }
 

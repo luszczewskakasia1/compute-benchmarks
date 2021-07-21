@@ -70,7 +70,7 @@ static TestResult run(const KernelSwitchLatencyArguments &arguments, Statistics 
             switchTime += std::chrono::nanoseconds(start - end);
         }
 
-        statistics.pushValue(switchTime / arguments.kernelCount);
+        statistics.pushValue(switchTime / arguments.kernelCount, MeasurementUnit::Microseconds, MeasurementType::Gpu);
 
         for (int j = 0; j < arguments.kernelCount; j++) {
             ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvents[j]));

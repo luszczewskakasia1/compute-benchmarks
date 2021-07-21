@@ -38,7 +38,7 @@ static TestResult run(const UsmSharedFirstCpuAccessArguments &arguments, Statist
         static_cast<uint32_t *>(buffer)[0] = 0;
         timer.measureEnd();
 
-        statistics.pushValue(timer.get());
+        statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);
         ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, buffer));
     }
 

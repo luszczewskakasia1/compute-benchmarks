@@ -58,7 +58,7 @@ static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics
         while (*volatileHostMemory != 1) {
         }
         timer.measureEnd();
-        statistics.pushValue(timer.get());
+        statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);
     }
 
     // Cleanup

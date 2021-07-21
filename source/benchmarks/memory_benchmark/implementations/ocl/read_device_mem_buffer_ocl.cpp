@@ -203,7 +203,7 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
         const size_t groupsExed = gws / subgroupSize;
         const size_t totalAccessedMemory = (groupsExed * threadTileSizeInSubgroup * numOfLoops);
 
-        statistics.pushValue(time, totalAccessedMemory);
+        statistics.pushValue(time, totalAccessedMemory, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu);
         ASSERT_CL_SUCCESS(clReleaseEvent(evt));
     }
 

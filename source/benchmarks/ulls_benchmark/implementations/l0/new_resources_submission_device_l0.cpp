@@ -83,7 +83,7 @@ static TestResult run(const NewResourcesSubmissionDeviceArguments &arguments, St
         ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));
         ASSERT_ZE_RESULT_SUCCESS(zeMemFree(levelzero.context, buffer));
 
-        statistics.pushValue(timer.get());
+        statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);
     }
 
     ASSERT_ZE_RESULT_SUCCESS(zeKernelDestroy(kernel));

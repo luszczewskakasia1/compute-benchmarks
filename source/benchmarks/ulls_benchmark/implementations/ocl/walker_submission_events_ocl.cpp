@@ -42,7 +42,7 @@ static TestResult run(const WalkerSubmissionEventsArguments &arguments, Statisti
         ASSERT_CL_SUCCESS(clGetEventProfilingInfo(profilingEvent, CL_PROFILING_COMMAND_QUEUED, sizeof(cl_ulong), &queued, nullptr));
         ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
         const auto submissionTime = std::chrono::nanoseconds(start - queued);
-        statistics.pushValue(submissionTime);
+        statistics.pushValue(submissionTime, MeasurementUnit::Microseconds, MeasurementType::Gpu);
     }
 
     // Cleanup

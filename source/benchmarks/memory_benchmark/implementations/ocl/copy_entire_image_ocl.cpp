@@ -64,9 +64,9 @@ static TestResult run(const CopyEntireImageArguments &arguments, Statistics &sta
             cl_ulong timeNs{};
             ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
             ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
-            statistics.pushValue(std::chrono::nanoseconds(timeNs), imageSizeInBytes);
+            statistics.pushValue(std::chrono::nanoseconds(timeNs), imageSizeInBytes, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu);
         } else {
-            statistics.pushValue(timer.get(), imageSizeInBytes);
+            statistics.pushValue(timer.get(), imageSizeInBytes, MeasurementUnit::GigabytesPerSecond, MeasurementType::Cpu);
         }
     }
 

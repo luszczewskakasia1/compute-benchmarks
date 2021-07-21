@@ -55,7 +55,7 @@ static TestResult run(const CopyBufferRectArguments &arguments, Statistics &stat
                                                   0, nullptr, nullptr));
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue))
         timer.measureEnd();
-        statistics.pushValue(timer.get(), arguments.size);
+        statistics.pushValue(timer.get(), arguments.size, MeasurementUnit::GigabytesPerSecond, MeasurementType::Cpu);
     }
 
     ASSERT_CL_SUCCESS(clReleaseMemObject(sourceBuffer));

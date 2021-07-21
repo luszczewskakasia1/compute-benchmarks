@@ -57,7 +57,7 @@ static TestResult run(const UsmSharedMigrateCpuArguments &arguments, Statistics 
         }
         timer.measureEnd();
 
-        statistics.pushValue(timer.get(), arguments.bufferSize);
+        statistics.pushValue(timer.get(), arguments.bufferSize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Cpu);
     }
 
     ASSERT_CL_SUCCESS(clReleaseKernel(kernel));

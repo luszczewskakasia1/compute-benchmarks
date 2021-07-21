@@ -95,7 +95,7 @@ static TestResult run(const WriteLatencyArguments &arguments, Statistics &statis
         std::cin.ignore();
 #endif
 
-        statistics.pushValue(timer.get());
+        statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);
 
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
         ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(hEvent2));

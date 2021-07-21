@@ -40,7 +40,7 @@ static TestResult run(const EnqueueNdrNullLwsArguments &arguments, Statistics &s
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, eventForNdr));
         timer.measureEnd();
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
-        statistics.pushValue(timer.get());
+        statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);
         if (eventForNdr) {
             ASSERT_CL_SUCCESS(clReleaseEvent(event));
         }

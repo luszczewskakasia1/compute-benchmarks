@@ -47,7 +47,7 @@ static TestResult run(const NewResourcesSubmissionDeviceArguments &arguments, St
 
         ASSERT_CL_SUCCESS(clReleaseMemObject(buffer));
 
-        statistics.pushValue(timer.get());
+        statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);
     }
 
     // Cleanup

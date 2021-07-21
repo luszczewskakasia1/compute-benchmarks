@@ -48,7 +48,7 @@ static TestResult run(const FlushTimeArguments &arguments, Statistics &statistic
         ASSERT_CL_SUCCESS(clFlush(opencl.commandQueue));
         timer.measureEnd();
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
-        statistics.pushValue(timer.get());
+        statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);
         if (eventForNdr) {
             ASSERT_CL_SUCCESS(clReleaseEvent(event));
         }

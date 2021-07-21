@@ -36,7 +36,7 @@ static TestResult run(const EmptyKernelArguments &arguments, Statistics &statist
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
         ASSERT_CL_SUCCESS(retVal);
-        statistics.pushValue(timer.get());
+        statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);
     }
 
     // Cleanup

@@ -54,7 +54,7 @@ static TestResult run(const NewResourcesWithGpuAccessArguments &arguments, Stati
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
         ASSERT_CL_SUCCESS(retVal);
-        statistics.pushValue(timer.get());
+        statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);
 
         // Store buffer used in this iteration to avoid reuse
         ASSERT_CL_SUCCESS(clReleaseMemObject(previousBuffer));

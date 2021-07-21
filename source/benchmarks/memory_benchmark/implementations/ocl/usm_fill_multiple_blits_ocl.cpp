@@ -100,15 +100,15 @@ static TestResult run(const UsmFillMultipleBlitsArguments &arguments, Statistics
             cl_ulong timeNs = 0ul;
             ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(queue.event, timeNs));
             ASSERT_CL_SUCCESS(clReleaseEvent(queue.event));
-            statistics.pushValue(std::chrono::nanoseconds(timeNs), arguments.size, queue.name);
+            statistics.pushValue(std::chrono::nanoseconds(timeNs), arguments.size, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu, queue.name);
 
             maxGpuTime = std::max(maxGpuTime, std::chrono::nanoseconds(timeNs));
         }
 
         // Report total results
         const uint64_t totalSize = arguments.size * queues.size();
-        statistics.pushValue(maxGpuTime, totalSize, "Total (Gpu)");
-        statistics.pushValue(timer.get(), totalSize, "Total (Cpu)");
+        statistics.pushValue(maxGpuTime, totalSize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu, "Total (Gpu)");
+        statistics.pushValue(timer.get(), totalSize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Cpu, "Total (Cpu)");
     }
 
     ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, dstBuffer));

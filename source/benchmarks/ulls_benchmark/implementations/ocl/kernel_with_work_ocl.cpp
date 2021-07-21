@@ -70,7 +70,7 @@ static TestResult run(const KernelWithWorkArguments &arguments, Statistics &stat
         ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
         printf("\n Queued %lu Start %lu End %lu, delta %lu\n ", queued, start, end, end - start);
 #endif
-        statistics.pushValue(timer.get());
+        statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);
     }
 
     // Cleanup

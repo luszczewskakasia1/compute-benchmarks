@@ -45,7 +45,7 @@ static TestResult run(const WriteTimestampArguments &arguments, Statistics &stat
         auto commandTime = std::chrono::nanoseconds(*endTimestamp - *beginTimestamp);
         commandTime *= timerResolution;
         commandTime /= arguments.measuredCommands;
-        statistics.pushValue(commandTime);
+        statistics.pushValue(commandTime, MeasurementUnit::Microseconds, MeasurementType::Gpu);
     }
 
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));

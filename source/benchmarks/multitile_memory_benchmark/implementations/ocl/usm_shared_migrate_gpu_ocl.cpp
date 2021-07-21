@@ -62,7 +62,7 @@ static TestResult run(const UsmSharedMigrateGpuArguments &arguments, Statistics 
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
 
-        statistics.pushValue(timer.get(), arguments.bufferSize);
+        statistics.pushValue(timer.get(), arguments.bufferSize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Cpu);
     }
 
     ASSERT_CL_SUCCESS(clReleaseKernel(kernel));

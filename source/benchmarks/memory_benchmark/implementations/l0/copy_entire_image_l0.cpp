@@ -101,9 +101,9 @@ static TestResult run(const CopyEntireImageArguments &arguments, Statistics &sta
             ASSERT_ZE_RESULT_SUCCESS(zeEventQueryKernelTimestamp(event, &timestampResult));
             auto commandTime = std::chrono::nanoseconds(timestampResult.global.kernelEnd - timestampResult.global.kernelStart);
             commandTime *= timerResolution;
-            statistics.pushValue(commandTime, imageSizeInBytes);
+            statistics.pushValue(commandTime, imageSizeInBytes, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu);
         } else {
-            statistics.pushValue(timer.get(), imageSizeInBytes);
+            statistics.pushValue(timer.get(), imageSizeInBytes, MeasurementUnit::GigabytesPerSecond, MeasurementType::Cpu);
         }
     }
 

@@ -57,9 +57,9 @@ static TestResult run(const UsmFillArguments &arguments, Statistics &statistics)
             cl_ulong timeNs{};
             ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
             ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
-            statistics.pushValue(std::chrono::nanoseconds(timeNs), arguments.bufferSize);
+            statistics.pushValue(std::chrono::nanoseconds(timeNs), arguments.bufferSize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu);
         } else {
-            statistics.pushValue(timer.get(), arguments.bufferSize);
+            statistics.pushValue(timer.get(), arguments.bufferSize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Cpu);
         }
     }
 
