@@ -138,9 +138,9 @@ TestResult run(const HelloWorldArguments &arguments, Statistics &statistics, Wor
             cl_ulong timeNs{};
             ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(event, timeNs));
             ASSERT_CL_SUCCESS(clReleaseEvent(event));
-            statistics.pushValue(std::chrono::nanoseconds{timeNs});
+            statistics.pushValue(std::chrono::nanoseconds{timeNs}, MeasurementUnit::Microseconds, MeasurementType::Gpu);
         } else {
-            statistics.pushValue(timer.get());
+            statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);
         }
     }
 
