@@ -53,9 +53,10 @@ static TestResult run(const KernelSwitchLatencyArguments &arguments, Statistics 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
         timer.measureStart();
+        ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &profilingEvents[0]));
 
-        for (int j = 0; j < arguments.kernelCount; j++) {
-            ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &profilingEvents[j]));
+        for (int j = 1; j < arguments.kernelCount; j++) {
+            ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 1, &profilingEvents[j - 1], &profilingEvents[j]));
         }
 
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
