@@ -7,6 +7,7 @@
 
 void WorkloadStatistics::pushValue(Clock::duration time, MeasurementUnit unit, MeasurementType type, const std::string &description) {
     FATAL_ERROR_IF(type != MeasurementType::Unknown, "WorkloadStatistics does not support setting measurement type");
+    FATAL_ERROR_IF(unit != MeasurementUnit::Unknown, "WorkloadStatistics does not support setting measurement type");
     FATAL_ERROR_IF(description != "", "WorkloadStatistics does not support multiple statistics groups");
     FATAL_ERROR_IF(samplesCount == maxSamplesCount, "Too many values pushed by the test");
     samplesCount++;

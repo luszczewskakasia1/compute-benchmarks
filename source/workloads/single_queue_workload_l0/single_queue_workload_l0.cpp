@@ -80,7 +80,7 @@ TestResult run(const SingleQueueWorkloadArguments &arguments, Statistics &statis
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
         timer.measureEnd();
 
-        statistics.pushValue(timer.get());
+        statistics.pushValue(timer.get(), MeasurementUnit::Unknown, MeasurementType::Unknown);
     }
 
     // Evict buffer
