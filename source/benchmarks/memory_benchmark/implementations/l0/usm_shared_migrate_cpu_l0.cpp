@@ -73,7 +73,7 @@ static TestResult run(const UsmSharedMigrateCpuArguments &arguments, Statistics 
         }
         timer.measureEnd();
 
-        statistics.pushValue(timer.get(), arguments.bufferSize , MeasurementUnit::GigabytesPerSecond, MeasurementType::Cpu);
+        statistics.pushValue(timer.get(), arguments.bufferSize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Cpu);
     }
 
     ASSERT_ZE_RESULT_SUCCESS(zeKernelDestroy(kernel));
