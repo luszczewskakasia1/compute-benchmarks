@@ -1,5 +1,7 @@
 #pragma once
 
+#include "framework/enum/measurement_type.h"
+#include "framework/enum/measurement_unit.h"
 #include "framework/utility/process.h"
 
 #include <string>
@@ -19,7 +21,12 @@ class ProcessGroup {
     TestResult getResultAll();
 
     // Operations involving all processes
-    void pushMeasurementsToStatistics(size_t expectedCount, Statistics &statistics, bool pushIndividualProcessesMeasurements, bool pushAveragedMeasurements);
+    void pushMeasurementsToStatistics(size_t expectedCount,
+                                      Statistics &statistics,
+                                      MeasurementUnit unit,
+                                      MeasurementType type,
+                                      bool pushIndividualProcessesMeasurements,
+                                      bool pushAveragedMeasurements);
 
     // Container-like methods
     Process &operator[](size_t index);

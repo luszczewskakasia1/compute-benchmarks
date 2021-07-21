@@ -41,7 +41,9 @@ static TestResult run(const MultiProcessComputeArguments &arguments, Statistics 
     if (TestResult result = processes.getResultAll(); result != TestResult::Success) {
         return result;
     }
-    processes.pushMeasurementsToStatistics(arguments.iterations, statistics, (processes.size() > 1), true);
+    const bool pushIndividualProcessesMeasurements = (processes.size() > 1);
+    processes.pushMeasurementsToStatistics(arguments.iterations, statistics, MeasurementUnit::Microseconds,
+                                           MeasurementType::Cpu, pushIndividualProcessesMeasurements, true);
 
     return TestResult::Success;
 }

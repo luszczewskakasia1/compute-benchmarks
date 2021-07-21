@@ -57,8 +57,12 @@ TestResult ProcessGroup::getResultAll() {
     return TestResult::Success;
 }
 
-void ProcessGroup::pushMeasurementsToStatistics(size_t expectedCount, Statistics &statistics,
-                                                bool pushIndividualProcessesMeasurements, bool pushAveragedMeasurements) {
+void ProcessGroup::pushMeasurementsToStatistics(size_t expectedCount,
+                                                Statistics &statistics,
+                                                MeasurementUnit unit,
+                                                MeasurementType type,
+                                                bool pushIndividualProcessesMeasurements,
+                                                bool pushAveragedMeasurements) {
     std::vector<uint64_t> averagedMeasurements(expectedCount);
 
     for (Process &process : processes) {
@@ -68,7 +72,7 @@ void ProcessGroup::pushMeasurementsToStatistics(size_t expectedCount, Statistics
             const auto &measurement = measurementsFromProcesses[measurementIndex];
 
             if (pushIndividualProcessesMeasurements) {
-                statistics.pushValue(std::chrono::nanoseconds(measurement), process.getName());
+                statistics.pushValue(std::chrono::nanoseconds(measurement), unit, type, process.getName());
             }
 
             if (pushAveragedMeasurements) {
@@ -80,7 +84,7 @@ void ProcessGroup::pushMeasurementsToStatistics(size_t expectedCount, Statistics
     if (pushAveragedMeasurements) {
         for (auto &averagedMeasurement : averagedMeasurements) {
             averagedMeasurement /= processes.size();
-            statistics.pushValue(std::chrono::nanoseconds(averagedMeasurement));
+            statistics.pushValue(std::chrono::nanoseconds(averagedMeasurement), unit, type);
         }
     }
 }
