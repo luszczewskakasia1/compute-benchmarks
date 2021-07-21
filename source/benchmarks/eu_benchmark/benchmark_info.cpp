@@ -8,10 +8,6 @@ std::string BenchmarkInfoImpl::getBenchmarkDescription() {
     return "EU Benchmark is a set of tests aimed at measuring performance of calculations performed in kernels.";
 }
 
-MeasurementUnit BenchmarkInfoImpl::getMeasurementUnit() {
-    return MeasurementUnit::Microseconds;
-}
-
 int BenchmarkInfoImpl::getTestCaseNameColumnWidth() {
     return 61;
 }

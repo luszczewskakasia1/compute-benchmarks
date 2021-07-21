@@ -23,9 +23,6 @@ class BenchmarkInfo {
     virtual std::string getBenchmarkName() = 0;
     std::string getBenchmarkFilename();
 
-    // Unit of numbers that are returned by all tests in the given framework
-    virtual MeasurementUnit getMeasurementUnit() = 0;
-
     // Width of the first column containing names of test cases.
     virtual int getTestCaseNameColumnWidth() = 0;
 
@@ -36,7 +33,6 @@ class BenchmarkInfo {
 struct BenchmarkInfoImpl : BenchmarkInfo {
     std::string getBenchmarkDescription() override;
     std::string getBenchmarkName() override;
-    virtual MeasurementUnit getMeasurementUnit() override;
     int getTestCaseNameColumnWidth() override;
     std::unique_ptr<BenchmarkSpecificConfigurationBase> createBenchmarkSpecificConfiguration(ArgumentContainer &testCaseArguments) override;
 };

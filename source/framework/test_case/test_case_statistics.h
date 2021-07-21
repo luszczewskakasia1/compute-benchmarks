@@ -20,7 +20,6 @@ class TestCaseStatistics : public Statistics {
 
     explicit TestCaseStatistics(size_t maxSamplesCount, Configuration::PrintType printType);
 
-    // TODO: first two overloads are legacy. Remove them.
     void pushValue(Clock::duration time, MeasurementUnit unit, MeasurementType type, const std::string &description = "") override;
     void pushValue(Clock::duration time, uint64_t size, MeasurementUnit unit, MeasurementType type, const std::string &description = "") override;
 

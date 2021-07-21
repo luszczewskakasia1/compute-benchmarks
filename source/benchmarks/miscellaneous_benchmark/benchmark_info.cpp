@@ -8,10 +8,6 @@ std::string BenchmarkInfoImpl::getBenchmarkDescription() {
     return "Miscellaneous Benchmark is a set of tests measuring different simple compute scenarios.";
 }
 
-MeasurementUnit BenchmarkInfoImpl::getMeasurementUnit() {
-    return MeasurementUnit::Microseconds;
-}
-
 int BenchmarkInfoImpl::getTestCaseNameColumnWidth() {
     return 90;
 }

@@ -6,7 +6,6 @@
 
 enum class MeasurementUnit {
     Unknown,
-    Default, // each binary has a default unit
     Microseconds,
     GigabytesPerSecond,
 };

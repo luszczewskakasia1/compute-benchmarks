@@ -8,10 +8,6 @@ std::string BenchmarkInfoImpl::getBenchmarkDescription() {
     return "Atomic Benchmark is a set of tests aimed at measuring performance of atomic operations inside kernels.";
 }
 
-MeasurementUnit BenchmarkInfoImpl::getMeasurementUnit() {
-    return MeasurementUnit::Microseconds;
-}
-
 int BenchmarkInfoImpl::getTestCaseNameColumnWidth() {
     return 120;
 }

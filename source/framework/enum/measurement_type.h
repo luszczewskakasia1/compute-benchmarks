@@ -18,7 +18,7 @@ inline std::string to_string(MeasurementType unit) {
     case MeasurementType::Gpu:
         return "[GPU]";
     default:
-        return "";
+        FATAL_ERROR("Unknown measurement unit");
     }
 }
 } // namespace std

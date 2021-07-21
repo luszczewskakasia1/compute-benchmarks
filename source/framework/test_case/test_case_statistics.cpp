@@ -20,10 +20,6 @@ void TestCaseStatistics::pushValue(Clock::duration time, MeasurementUnit unit, M
     static_assert(std::is_floating_point_v<Value>, "Need floating point type for the below cast to work properly");
     const Value timeSeconds = std::chrono::duration_cast<std::chrono::duration<Value>>(time).count();
 
-    if (unit == MeasurementUnit::Default) {
-        unit = BenchmarkInfo::get().getMeasurementUnit();
-    }
-
     switch (unit) {
     case MeasurementUnit::Microseconds: {
         const Value timeMicroseconds = timeSeconds * 1e6;
@@ -31,7 +27,7 @@ void TestCaseStatistics::pushValue(Clock::duration time, MeasurementUnit unit, M
         break;
     }
     case MeasurementUnit::GigabytesPerSecond:
-        FATAL_ERROR("Buffer size needs to be passed in bandwidth mode");
+        FATAL_ERROR("Buffer size needs to be passed when unit is ", std::to_string(unit));
     default:
         FATAL_ERROR("Unknown measurement unit");
     }
@@ -40,10 +36,6 @@ void TestCaseStatistics::pushValue(Clock::duration time, MeasurementUnit unit, M
 void TestCaseStatistics::pushValue(Clock::duration time, uint64_t size, MeasurementUnit unit, MeasurementType type, const std::string &description) {
     static_assert(std::is_floating_point_v<Value>, "Need floating point type for the below cast to work properly");
     const Value timeSeconds = std::chrono::duration_cast<std::chrono::duration<Value>>(time).count();
-
-    if (unit == MeasurementUnit::Default) {
-        unit = BenchmarkInfo::get().getMeasurementUnit();
-    }
 
     switch (unit) {
     case MeasurementUnit::Microseconds: {
@@ -82,7 +74,8 @@ bool TestCaseStatistics::isFull() const {
 }
 
 void TestCaseStatistics::pushValue(Value value, const std::string &description, MeasurementUnit unit, MeasurementType type) {
-    FATAL_ERROR_IF(unit == MeasurementUnit::Unknown || unit == MeasurementUnit::Default, "Concrete unit has to be specified");
+    FATAL_ERROR_IF(unit == MeasurementUnit::Unknown, "Concrete MeasurementUnit has to be specified");
+    FATAL_ERROR_IF(type == MeasurementType::Unknown, "Concrete MeasurementType has to be specified");
 
     auto &samples = this->samplesMap[description];
 
@@ -125,7 +118,6 @@ struct ColumnInfo {
 };
 
 void TestCaseStatistics::printStatisticsHeader(Configuration::PrintType printType) {
-    const std::string unit = std::to_string(BenchmarkInfo::get().getMeasurementUnit());
     const auto columns = ColumnInfo::getColumns();
     const auto columnCount = ColumnInfo::getColumnCount();
     switch (printType) {
