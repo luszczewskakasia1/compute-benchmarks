@@ -1,17 +1,10 @@
 #include "framework/benchmark_info.h"
 
-std::string BenchmarkInfoImpl::getBenchmarkName() {
-    return "miscellaneous_benchmark";
-}
+#include "framework/utility/execute_at_app_init.h"
 
-std::string BenchmarkInfoImpl::getBenchmarkDescription() {
-    return "Miscellaneous Benchmark is a set of tests measuring different simple compute scenarios.";
-}
-
-int BenchmarkInfoImpl::getTestCaseNameColumnWidth() {
-    return 90;
-}
-
-std::unique_ptr<BenchmarkInfoImpl::BenchmarkSpecificConfigurationBase> BenchmarkInfoImpl::createBenchmarkSpecificConfiguration(ArgumentContainer &testCaseArguments) {
-    return std::unique_ptr<BenchmarkSpecificConfigurationBase>{};
-}
+EXECUTE_AT_APP_INIT {
+    const std::string name = "miscellaneous_benchmark";
+    const std::string description = "Miscellaneous Benchmark is a set of tests measuring different simple compute scenarios.";
+    const int testCaseColumnWidth = 90;
+    BenchmarkInfo::initialize(name, description, testCaseColumnWidth);
+};

@@ -11,28 +11,22 @@ struct ArgumentContainer;
 // It is used to configure the behaviour of some framework classes.
 class BenchmarkInfo {
   private:
-    static std::unique_ptr<BenchmarkInfo> instance;
-
   public:
+    // Singleton accessors
     static BenchmarkInfo &get();
-    static bool isSet();
-    static void set(BenchmarkInfo *instance);
+    static void initialize(const std::string &name,
+                           const std::string &description,
+                           int testCaseColumnWidth);
 
-    // General textual data
-    virtual std::string getBenchmarkDescription() = 0;
-    virtual std::string getBenchmarkName() = 0;
-    std::string getBenchmarkFilename();
+    // Getters
+    std::string getBenchmarkName() const;
+    std::string getBenchmarkFilename() const;
+    std::string getBenchmarkDescription() const;
+    int getTestCaseNameColumnWidth() const;
 
-    // Width of the first column containing names of test cases.
-    virtual int getTestCaseNameColumnWidth() = 0;
-
-    struct BenchmarkSpecificConfigurationBase {};
-    virtual std::unique_ptr<BenchmarkSpecificConfigurationBase> createBenchmarkSpecificConfiguration(ArgumentContainer &testCaseArguments) = 0;
-};
-
-struct BenchmarkInfoImpl : BenchmarkInfo {
-    std::string getBenchmarkDescription() override;
-    std::string getBenchmarkName() override;
-    int getTestCaseNameColumnWidth() override;
-    std::unique_ptr<BenchmarkSpecificConfigurationBase> createBenchmarkSpecificConfiguration(ArgumentContainer &testCaseArguments) override;
+  private:
+    static std::unique_ptr<BenchmarkInfo> instance;
+    std::string name;
+    std::string description;
+    int testCaseColumnWidth;
 };

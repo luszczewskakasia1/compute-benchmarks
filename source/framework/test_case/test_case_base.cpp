@@ -1,5 +1,6 @@
 #include "test_case_base.h"
 
+#include "framework/benchmark_info.h"
 #include "framework/configuration.h"
 #include "framework/test_case/test_case_argument_container.h"
 

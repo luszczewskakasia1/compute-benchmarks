@@ -1,17 +1,10 @@
-#include "framework/configuration.h"
+#include "framework/benchmark_info.h"
 
-std::string BenchmarkInfoImpl::getBenchmarkName() {
-    return "memory_benchmark";
-}
+#include "framework/utility/execute_at_app_init.h"
 
-std::string BenchmarkInfoImpl::getBenchmarkDescription() {
-    return "Memory Benchmark is a set of tests aimed at measuring bandwidth of memory transfers.";
-}
-
-int BenchmarkInfoImpl::getTestCaseNameColumnWidth() {
-    return 124;
-}
-
-std::unique_ptr<BenchmarkInfoImpl::BenchmarkSpecificConfigurationBase> BenchmarkInfoImpl::createBenchmarkSpecificConfiguration(ArgumentContainer &testCaseArguments) {
-    return std::unique_ptr<BenchmarkSpecificConfigurationBase>{};
-}
+EXECUTE_AT_APP_INIT {
+    const std::string name = "memory_benchmark";
+    const std::string description = "Memory Benchmark is a set of tests aimed at measuring bandwidth of memory transfers.";
+    const int testCaseColumnWidth = 124;
+    BenchmarkInfo::initialize(name, description, testCaseColumnWidth);
+};

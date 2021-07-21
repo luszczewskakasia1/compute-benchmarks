@@ -7,7 +7,6 @@
 #include "framework/argument/enum/device_selection_argument.h"
 #include "framework/argument/string_argument.h"
 #include "framework/argument/string_list_argument.h"
-#include "framework/benchmark_info.h"
 #include "framework/utility/command_line_argument.h"
 
 #include <memory>
@@ -18,7 +17,6 @@ struct Configuration : ArgumentContainer {
 
   public:
     Configuration();
-    ~Configuration();
 
     enum class PrintType {
         Default,
@@ -65,9 +63,4 @@ struct Configuration : ArgumentContainer {
     StringListArgument argFilter;
     StringListArgument testFilter;
     BooleanFlagArgument returnSubmissionTimeInsteadOfWorkloadTime;
-
-    BenchmarkInfo::BenchmarkSpecificConfigurationBase *benchmarkSpecificConfiguration = nullptr;
-
-  private:
-    BenchmarkInfo::BenchmarkSpecificConfigurationBase *createBenchmarkSpecificConfiguration();
 };

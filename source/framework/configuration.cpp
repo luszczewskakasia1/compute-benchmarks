@@ -30,8 +30,7 @@ Configuration::Configuration()
       dumpErrorsImmediately(*this, "dumpErrorsImmediately", "print errors to stdout immediately after they happen, not at the end of the run"),
       argFilter(*this, "argFilter", "filter tests by their arguments"),
       testFilter(*this, "testFilter", "filter tests by their names"),
-      returnSubmissionTimeInsteadOfWorkloadTime(*this, "forceSubmissionProfiling", "Overrides profiling to return submission time instead of workload time"),
-      benchmarkSpecificConfiguration(createBenchmarkSpecificConfiguration()) {
+      returnSubmissionTimeInsteadOfWorkloadTime(*this, "forceSubmissionProfiling", "Overrides profiling to return submission time instead of workload time") {
 
     // Diagnostic params
     help = false;
@@ -66,10 +65,6 @@ Configuration::Configuration()
     argFilter = std::vector<std::string>();
     testFilter = std::vector<std::string>();
     returnSubmissionTimeInsteadOfWorkloadTime = false;
-}
-
-Configuration::~Configuration() {
-    delete benchmarkSpecificConfiguration;
 }
 
 bool Configuration::parseArgumentsForConfiguration(CommandLineArguments &arguments) {
@@ -111,11 +106,4 @@ bool Configuration::validateArgumentsExtra() const {
         return false;
     }
     return true;
-}
-
-BenchmarkInfo::BenchmarkSpecificConfigurationBase *Configuration::createBenchmarkSpecificConfiguration() {
-    if (BenchmarkInfo::isSet()) {
-        return BenchmarkInfo::get().createBenchmarkSpecificConfiguration(*this).release();
-    }
-    return nullptr;
 }

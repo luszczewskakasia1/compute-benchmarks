@@ -1,17 +1,10 @@
 #include "framework/benchmark_info.h"
 
-std::string BenchmarkInfoImpl::getBenchmarkName() {
-    return "eu_benchmark";
-}
+#include "framework/utility/execute_at_app_init.h"
 
-std::string BenchmarkInfoImpl::getBenchmarkDescription() {
-    return "EU Benchmark is a set of tests aimed at measuring performance of calculations performed in kernels.";
-}
-
-int BenchmarkInfoImpl::getTestCaseNameColumnWidth() {
-    return 61;
-}
-
-std::unique_ptr<BenchmarkInfoImpl::BenchmarkSpecificConfigurationBase> BenchmarkInfoImpl::createBenchmarkSpecificConfiguration(ArgumentContainer &testCaseArguments) {
-    return std::unique_ptr<BenchmarkInfoImpl::BenchmarkSpecificConfigurationBase>{};
-}
+EXECUTE_AT_APP_INIT {
+    const std::string name = "eu_benchmark";
+    const std::string description = "EU Benchmark is a set of tests aimed at measuring performance of calculations performed in kernels.";
+    const int testCaseColumnWidth = 61;
+    BenchmarkInfo::initialize(name, description, testCaseColumnWidth);
+};

@@ -1,17 +1,10 @@
 #include "framework/benchmark_info.h"
 
-std::string BenchmarkInfoImpl::getBenchmarkName() {
-    return "atomic_benchmark";
-}
+#include "framework/utility/execute_at_app_init.h"
 
-std::string BenchmarkInfoImpl::getBenchmarkDescription() {
-    return "Atomic Benchmark is a set of tests aimed at measuring performance of atomic operations inside kernels.";
-}
-
-int BenchmarkInfoImpl::getTestCaseNameColumnWidth() {
-    return 120;
-}
-
-std::unique_ptr<BenchmarkInfoImpl::BenchmarkSpecificConfigurationBase> BenchmarkInfoImpl::createBenchmarkSpecificConfiguration(ArgumentContainer &testCaseArguments) {
-    return std::unique_ptr<BenchmarkInfoImpl::BenchmarkSpecificConfigurationBase>{};
-}
+EXECUTE_AT_APP_INIT {
+    const std::string name = "atomic_benchmark";
+    const std::string description = "Atomic Benchmark is a set of tests aimed at measuring performance of atomic operations inside kernels.";
+    const int testCaseColumnWidth = 120;
+    BenchmarkInfo::initialize(name, description, testCaseColumnWidth);
+};

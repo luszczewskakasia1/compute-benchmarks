@@ -169,10 +169,6 @@ void BenchmarkMain::printHelp() {
 }
 
 int BenchmarkMain::setupEnvironment() {
-    // We need to initialize BenchmarkInfo, which contains information specific to a given benchmark,
-    // e.g ulls_benchmark or memory_benchmark.
-    BenchmarkInfo::set(new BenchmarkInfoImpl());
-
     // Kernels will be loaded from the CWD, so we need to ensure we're in the right directory.
     WorkingDirectoryHelper::changeDirectoryToExeDirectory();
 

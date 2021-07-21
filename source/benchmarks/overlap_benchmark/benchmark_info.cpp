@@ -1,17 +1,10 @@
 #include "framework/benchmark_info.h"
 
-std::string BenchmarkInfoImpl::getBenchmarkName() {
-    return "overlap_benchmark";
-}
+#include "framework/utility/execute_at_app_init.h"
 
-std::string BenchmarkInfoImpl::getBenchmarkDescription() {
-    return "Overlap Benchmark is a set of tests aimed at measuring how different commands benefit for simultaneous execution.";
-}
-
-int BenchmarkInfoImpl::getTestCaseNameColumnWidth() {
-    return 135;
-}
-
-std::unique_ptr<BenchmarkInfoImpl::BenchmarkSpecificConfigurationBase> BenchmarkInfoImpl::createBenchmarkSpecificConfiguration(ArgumentContainer &testCaseArguments) {
-    return std::unique_ptr<BenchmarkSpecificConfigurationBase>{};
-}
+EXECUTE_AT_APP_INIT {
+    const std::string name = "overlap_benchmark";
+    const std::string description = "Overlap Benchmark is a set of tests aimed at measuring how different commands benefit for simultaneous execution.";
+    const int testCaseColumnWidth = 135;
+    BenchmarkInfo::initialize(name, description, testCaseColumnWidth);
+};

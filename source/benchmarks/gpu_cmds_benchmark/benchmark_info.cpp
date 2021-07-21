@@ -1,17 +1,10 @@
 #include "framework/benchmark_info.h"
 
-std::string BenchmarkInfoImpl::getBenchmarkName() {
-    return "gpu_cmds_benchmark";
-}
+#include "framework/utility/execute_at_app_init.h"
 
-std::string BenchmarkInfoImpl::getBenchmarkDescription() {
-    return "Gpu Commands Benchmark is a set of tests aimed at measuring GPU-side execution duration of various commands.";
-}
-
-int BenchmarkInfoImpl::getTestCaseNameColumnWidth() {
-    return 77;
-}
-
-std::unique_ptr<BenchmarkInfoImpl::BenchmarkSpecificConfigurationBase> BenchmarkInfoImpl::createBenchmarkSpecificConfiguration(ArgumentContainer &testCaseArguments) {
-    return std::unique_ptr<BenchmarkInfoImpl::BenchmarkSpecificConfigurationBase>{};
-}
+EXECUTE_AT_APP_INIT {
+    const std::string name = "gpu_cmds_benchmark";
+    const std::string description = "Gpu Commands Benchmark is a set of tests aimed at measuring GPU-side execution duration of various commands.";
+    const int testCaseColumnWidth = 77;
+    BenchmarkInfo::initialize(name, description, testCaseColumnWidth);
+};
