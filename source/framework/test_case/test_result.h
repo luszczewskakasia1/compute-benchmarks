@@ -17,6 +17,7 @@ enum class TestResult {
     Nooped,                  // Test was nooped, only print its name
     FilteredOut,             // Test was skipped because of passed argFilter
     VerificationFail,        // Results where incorrect
+    KernelBuildError         // Kernel could not be compiled
 };
 
 struct TestResultHelper {

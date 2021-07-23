@@ -1,7 +1,6 @@
 #include "framework/ocl/opencl.h"
+#include "framework/ocl/utility/program_helper_ocl.h"
 #include "framework/test_case/register_test_case.h"
-#include "framework/utility/compiler_options_builder.h"
-#include "framework/utility/file_helper.h"
 #include "framework/utility/math_operation_helper.h"
 #include "framework/utility/timer.h"
 
@@ -32,25 +31,13 @@ static TestResult run(const ReadAfterAtomicWriteArguments &arguments, Statistics
     ASSERT_CL_SUCCESS(clEnqueueFillBuffer(opencl.commandQueue, buffer, &initialValue, sizeof(initialValue), 0, gws * sizeof(cl_int), 0, nullptr, nullptr));
 
     // Create kernel
-    const std::vector<uint8_t> kernelSource = FileHelper::loadTextFile("eu_benchmark_read_after_atomic_write.cl");
-    if (kernelSource.size() == 0) {
-        return TestResult::KernelNotFound;
+    cl_program program = nullptr;
+    const char *programName = "eu_benchmark_read_after_atomic_write.cl";
+    const char *kernelName = "read_after_atomic_write";
+    if (auto result = ProgramHelperOcl::buildProgramFromSourceFile(opencl.context, opencl.device, programName, nullptr, program); result != TestResult::Success) {
+        return result;
     }
-    const char *source = reinterpret_cast<const char *>(kernelSource.data());
-    const size_t sourceLength = kernelSource.size();
-    cl_program program = clCreateProgramWithSource(opencl.context, 1, &source, &sourceLength, &retVal);
-    ASSERT_CL_SUCCESS(retVal);
-#if 0
-    auto ret = clBuildProgram(program, 1, &opencl.device, nullptr, nullptr, nullptr);
-    size_t size{};
-    ASSERT_CL_SUCCESS(clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, 0, nullptr, &size));
-    auto b = std::make_unique<char[]>(size);
-    ASSERT_CL_SUCCESS(clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, size, b.get(), nullptr));
-    std::cout << b << '\n';
-    FATAL_ERROR("DEBUG");
-#endif
-    ASSERT_CL_SUCCESS(clBuildProgram(program, 1, &opencl.device, nullptr, nullptr, nullptr));
-    cl_kernel kernel = clCreateKernel(program, "read_after_atomic_write", &retVal);
+    cl_kernel kernel = clCreateKernel(program, kernelName, &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
     // Warmup

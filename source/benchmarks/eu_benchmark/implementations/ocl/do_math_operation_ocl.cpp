@@ -1,7 +1,7 @@
 #include "framework/ocl/opencl.h"
+#include "framework/ocl/utility/program_helper_ocl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/compiler_options_builder.h"
-#include "framework/utility/file_helper.h"
 #include "framework/utility/math_operation_helper.h"
 #include "framework/utility/timer.h"
 
@@ -80,26 +80,14 @@ static TestResult run(const DoMathOperationArguments &arguments, Statistics &sta
     ASSERT_CL_SUCCESS(clEnqueueWriteBuffer(opencl.commandQueue, buffer, CL_FALSE, 0, data.sizeOfDataType, data.initialValue, 0, nullptr, nullptr));
 
     // Create kernel
-    const std::vector<uint8_t> kernelSource = FileHelper::loadTextFile("eu_benchmark_perform_math_operation.cl");
-    if (kernelSource.size() == 0) {
-        return TestResult::KernelNotFound;
-    }
-    const char *source = reinterpret_cast<const char *>(kernelSource.data());
-    const size_t sourceLength = kernelSource.size();
-    cl_program program = clCreateProgramWithSource(opencl.context, 1, &source, &sourceLength, &retVal);
-    ASSERT_CL_SUCCESS(retVal);
+    cl_program program = nullptr;
+    const char *programName = "eu_benchmark_perform_math_operation.cl";
+    const char *kernelName = "do_math_operation";
     const std::string compilerOptions = getCompilerOptions(arguments.dataType, arguments.operation);
-#if 0
-    auto ret = clBuildProgram(program, 1, &opencl.device, compilerOptions.c_str(), nullptr, nullptr);
-    size_t size{};
-    ASSERT_CL_SUCCESS(clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, 0, nullptr, &size));
-    auto b = std::make_unique<char[]>(size);
-    ASSERT_CL_SUCCESS(clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, size, b.get(), nullptr));
-    std::cout << b << '\n';
-    FATAL_ERROR("DEBUG");
-#endif
-    ASSERT_CL_SUCCESS(clBuildProgram(program, 1, &opencl.device, compilerOptions.c_str(), nullptr, nullptr));
-    cl_kernel kernel = clCreateKernel(program, "do_math_operation", &retVal);
+    if (auto result = ProgramHelperOcl::buildProgramFromSourceFile(opencl.context, opencl.device, programName, compilerOptions.c_str(), program); result != TestResult::Success) {
+        return result;
+    }
+    cl_kernel kernel = clCreateKernel(program, kernelName, &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
     // Warmup

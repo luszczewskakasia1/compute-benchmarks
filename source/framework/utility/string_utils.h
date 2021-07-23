@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cctype>
+#include <regex>
 #include <sstream>
 #include <string>
 #include <string_view>
@@ -98,4 +99,9 @@ inline std::string joinStrings(const std::string &separator, const std::vector<T
         }
     }
     return result.str();
+}
+
+inline std::string indentString(const std::string &string, size_t howManySpaces) {
+    const std::string indent = std::string(howManySpaces , ' ');
+    return indent + std::regex_replace(string, std::regex("(\n)[^^]"), std::string("\n") + indent);
 }
