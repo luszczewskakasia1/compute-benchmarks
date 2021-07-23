@@ -102,6 +102,6 @@ inline std::string joinStrings(const std::string &separator, const std::vector<T
 }
 
 inline std::string indentString(const std::string &string, size_t howManySpaces) {
-    const std::string indent = std::string(howManySpaces , ' ');
+    const std::string indent = std::string(howManySpaces, ' ');
     return indent + std::regex_replace(string, std::regex("(\n)[^^]"), std::string("\n") + indent);
 }

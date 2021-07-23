@@ -248,9 +248,8 @@ void TestCaseStatistics::printStatisticsString(const std::string &testCaseName, 
     case Configuration::PrintType::DefaultWithVerbose:
     case Configuration::PrintType::Default: {
         std::cout << std::setw(columns[0].width) << testCaseName;
-        for (int column = 1; column < columnCount; column++) {
-            std::cout << std::setw(columns[column].width) << message;
-        }
+        const size_t maxStringWidth = columns[1].width + columns[2].width + columns[3].width;
+        std::cout << std::setw(maxStringWidth) << message;
         std::cout << lineEnding;
         break;
     }
