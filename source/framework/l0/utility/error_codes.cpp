@@ -77,6 +77,6 @@ const char *l0ErrorToString(ze_result_t retVal) {
     case ZE_RESULT_ERROR_UNKNOWN:
         return "ZE_RESULT_ERROR_UNKNOWN";
     default:
-        return nullptr;
+        return "Unknown LevelZero error";
     }
 }

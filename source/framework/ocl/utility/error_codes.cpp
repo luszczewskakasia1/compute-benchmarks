@@ -1,5 +1,7 @@
 #include "error_codes.h"
 
+#include <CL/cl_ext.h>
+
 const char *oclErrorToString(cl_int retVal) {
     switch (retVal) {
     case CL_SUCCESS:
@@ -126,7 +128,9 @@ const char *oclErrorToString(cl_int retVal) {
         return "CL_INVALID_SPEC_ID";
     case CL_MAX_SIZE_RESTRICTION_EXCEEDED:
         return "CL_MAX_SIZE_RESTRICTION_EXCEEDED";
+    case CL_PLATFORM_NOT_FOUND_KHR:
+        return "CL_PLATFORM_NOT_FOUND_KHR";
     default:
-        return nullptr;
+        return "Unknown OpenCL error";
     }
 }
