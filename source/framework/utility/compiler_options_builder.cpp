@@ -22,6 +22,10 @@ void CompilerOptionsBuilder::addDefinitionKeyValue(const char *key, const std::s
     addDefinitionKeyValue(key, value.c_str());
 }
 
+void CompilerOptionsBuilder::addDefinitionKeyValue(const char *key, size_t value) {
+    options << "-D" << key << '=' << value << ' ';
+}
+
 void CompilerOptionsBuilder::addMacro(const char *name, const std::vector<const char *> &arguments, const char *body) {
     const static auto toString = +[](const char *a) { return std::string(a); };
     options << "-D" << name
