@@ -121,19 +121,10 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
 
     // Create kernel
     const auto programSrcLen = strlen(programSrc);
-    cl_program program = clCreateProgramWithSource(opencl.context, 1, &programSrc, &programSrcLen, &retVal);
-    ASSERT_CL_SUCCESS(clBuildProgram(program, 1, &opencl.device, buildOptions.str().c_str(), nullptr, nullptr));
-#if 0
-    if (retVal) {
-        size_t numBytes = 0;
-        ASSERT_CL_SUCCESS(clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, 0, NULL, &numBytes));
-        auto buffer = std::make_unique<char[]>(numBytes);
-        ASSERT_CL_SUCCESS(clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, numBytes, buffer.get(), &numBytes  ));
-        std::cout << buffer.get() << std::endl;
+    cl_program program{};
+    if (TestResult result = ProgramHelperOcl::buildProgramFromSource(opencl.context, opencl.device, programSrc, programSrcLen, buildOptions.str().c_str(), program); result != TestResult::Success) {
+        return result;
     }
-#endif
-    ASSERT_CL_SUCCESS(retVal);
-
     cl_kernel kernel = clCreateKernel(program, "ReadOnly", &retVal);
     ASSERT_CL_SUCCESS(retVal);
     cl_kernel clearCacheKernel = clCreateKernel(program, "ClearCaches", &retVal);
