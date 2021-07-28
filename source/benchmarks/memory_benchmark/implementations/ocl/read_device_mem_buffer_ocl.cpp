@@ -189,26 +189,18 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
         cl_event evt;
-        cl_ulong enqstart = 0;
-        cl_ulong enqend = 0;
 
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, clearCacheKernel, 1, nullptr, &clearGws, NULL, 0, nullptr, nullptr));
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
-        ASSERT_CL_SUCCESS(retVal);
 
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &evt));
         ASSERT_CL_SUCCESS(clWaitForEvents(1, &evt));
-        ASSERT_CL_SUCCESS(retVal);
 
-        ASSERT_CL_SUCCESS(clGetEventProfilingInfo(evt, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &enqstart, NULL));
-        ASSERT_CL_SUCCESS(clGetEventProfilingInfo(evt, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &enqend, NULL));
-        ASSERT_CL_SUCCESS(retVal);
-
-        const auto time = std::chrono::nanoseconds(enqend - enqstart);
+        cl_ulong timeNs{};
+        ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(evt, timeNs));
         const size_t groupsExed = gws / subgroupSize;
         const size_t totalAccessedMemory = (groupsExed * threadTileSizeInSubgroup * numOfLoops);
-
-        statistics.pushValue(time, totalAccessedMemory, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu);
+        statistics.pushValue(std::chrono::nanoseconds(timeNs), totalAccessedMemory, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu);
         ASSERT_CL_SUCCESS(clReleaseEvent(evt));
     }
 
