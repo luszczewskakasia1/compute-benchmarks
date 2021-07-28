@@ -1,8 +1,10 @@
 #include "framework/ocl/intel_product/get_intel_product_ocl.h"
 #include "framework/ocl/opencl.h"
 #include "framework/ocl/utility/compression_helper.h"
+#include "framework/ocl/utility/profiling_helper.h"
+#include "framework/ocl/utility/program_helper_ocl.h"
 #include "framework/test_case/register_test_case.h"
-#include "framework/utility/file_helper.h"
+#include "framework/utility/compiler_options_builder.h"
 #include "framework/utility/memory_constants.h"
 #include "framework/utility/timer.h"
 
@@ -38,14 +40,17 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     ASSERT_CL_SUCCESS(clGetDeviceInfo(opencl.device, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(euNum), &euNum, nullptr));
 
     const bool useLargeGRF = gpuGen == IntelGen::Gen12hp ? true : false;
-    const std::string largeGrfOpt = useLargeGRF ? " -cl-intel-256-GRF-per-thread " : " ";
-    const std::string buildOptions = std::string("-cl-std=CL2.0 -cl-mad-enable -cl-fast-relaxed-math ") +
-                                     " -D NUM_SENDS=" + std::to_string(numOfSends) +
-                                     " -D KERNEL_LOOP_ITERATIONS=" + std::to_string(numOfLoops) +
-                                     " -D THREAD_TILE_SIZE=" + std::to_string(threadTileSizeInSubgroup) +
-                                     " -D SUBGROUP_SIZE=" + std::to_string(subgroupSize) +
-                                     largeGrfOpt +
-                                     std::string(" ");
+    CompilerOptionsBuilder buildOptions{};
+    if (gpuGen == IntelGen::Gen12hp) {
+        buildOptions.addOption("-cl-intel-256-GRF-per-thread");
+    }
+    buildOptions.addOption("-cl-std=CL2.0");
+    buildOptions.addOption("-cl-mad-enable");
+    buildOptions.addOption("-cl-fast-relaxed-math");
+    buildOptions.addDefinitionKeyValue("NUM_SENDS", numOfSends);
+    buildOptions.addDefinitionKeyValue("KERNEL_LOOP_ITERATIONS", numOfLoops);
+    buildOptions.addDefinitionKeyValue("THREAD_TILE_SIZE", threadTileSizeInSubgroup);
+    buildOptions.addDefinitionKeyValue("SUBGROUP_SIZE", subgroupSize);
 
     // Create buffer
     const cl_mem_flags compressionHint = CompressionHelper::getCompressionFlags(arguments.compressed, arguments.noIntelExtensions);
@@ -117,7 +122,7 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     // Create kernel
     const auto programSrcLen = strlen(programSrc);
     cl_program program = clCreateProgramWithSource(opencl.context, 1, &programSrc, &programSrcLen, &retVal);
-    ASSERT_CL_SUCCESS(clBuildProgram(program, 1, &opencl.device, buildOptions.c_str(), nullptr, nullptr));
+    ASSERT_CL_SUCCESS(clBuildProgram(program, 1, &opencl.device, buildOptions.str().c_str(), nullptr, nullptr));
 #if 0
     if (retVal) {
         size_t numBytes = 0;
