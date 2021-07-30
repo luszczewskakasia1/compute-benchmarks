@@ -39,9 +39,9 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
 
     ASSERT_CL_SUCCESS(clGetDeviceInfo(opencl.device, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(euNum), &euNum, nullptr));
 
-    const bool useLargeGRF = gpuGen == IntelGen::Gen12hp ? true : false;
+    const bool useLargeGRF = gpuGen == IntelGen::XeHpCore;
     CompilerOptionsBuilder buildOptions{};
-    if (gpuGen == IntelGen::Gen12hp) {
+    if (useLargeGRF) {
         buildOptions.addOption("-cl-intel-256-GRF-per-thread");
     }
     buildOptions.addOption("-cl-std=CL2.0");
@@ -140,7 +140,7 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     ASSERT_CL_SUCCESS(retVal);
 
     cl_uint sliceSize = 0, sliceMask = 1, slotMask = 1;
-    const cl_uint numThreadsPerEu = (gpuGen == IntelGen::Gen12hp) ? 8 : 7;
+    const cl_uint numThreadsPerEu = (gpuGen == IntelGen::XeHpCore) ? 8 : 7;
     const cl_uint numHwThreads = (useLargeGRF ? numThreadsPerEu / 2 : 7) * static_cast<cl_uint>(euNum);
 
     const size_t lws = subgroupSize * 2;

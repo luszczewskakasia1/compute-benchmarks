@@ -9,7 +9,7 @@
     INTEL_GEN(Gen9)
     INTEL_GEN(Gen11)
     INTEL_GEN(Gen12lp)
-    INTEL_GEN(Gen12hp)
+    INTEL_GEN(XeHpCore)
     INTEL_GEN(Gen12_7)
     INTEL_GEN(Gen12_8)
     INTEL_GEN(Gen12_9)
@@ -36,7 +36,7 @@
     INTEL_PRODUCT(Rkl,      Gen12lp)
     INTEL_PRODUCT(Tgllp,    Gen12lp)
 
-    INTEL_PRODUCT(Xehp,     Gen12hp)
+    INTEL_PRODUCT(Xehp,     XeHpCore)
 
     INTEL_PRODUCT(Dg2,      Gen12_7)
     INTEL_PRODUCT(Mtl,      Gen12_7)
