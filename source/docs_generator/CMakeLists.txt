@@ -20,13 +20,11 @@ setup_vs_folders(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Setup custom target to run generation on build
 set(RUNNER_TARGET_NAME "run_${TARGET_NAME}")
-add_custom_target(${RUNNER_TARGET_NAME} ALL)
-add_dependencies(${RUNNER_TARGET_NAME} ${TARGET_NAME})
-add_custom_command(
-    TARGET ${RUNNER_TARGET_NAME}
-    POST_BUILD
+add_custom_target(${RUNNER_TARGET_NAME}
+    ALL
     COMMAND ${CMAKE_COMMAND} -E remove ${CMAKE_SOURCE_DIR}/TESTS.md
 )
+add_dependencies(${RUNNER_TARGET_NAME} ${TARGET_NAME})
 add_custom_command(
     TARGET ${RUNNER_TARGET_NAME}
     WORKING_DIRECTORY "$<TARGET_FILE_DIR:${TARGET_NAME}>"
