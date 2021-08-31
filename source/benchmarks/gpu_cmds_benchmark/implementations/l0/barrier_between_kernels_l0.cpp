@@ -36,8 +36,8 @@ static TestResult run(const BarrierBetweenKernelsArguments &arguments, Statistic
         ze_command_list_handle_t cmdListForFill{};
 
         ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.context, levelzero.device, &cmdListDesc, &cmdListForFill));
-        char pattern = 1u;
-        ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendMemoryFill(cmdListForFill, outputBuffer, &pattern, 1, outputBufferSize, nullptr, 0, nullptr));
+        uint32_t pattern = 1u;
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendMemoryFill(cmdListForFill, outputBuffer, &pattern, sizeof(uint32_t), outputBufferSize, nullptr, 0, nullptr));
         ASSERT_ZE_RESULT_SUCCESS(zeCommandListClose(cmdListForFill));
 
         // Warmup
@@ -60,8 +60,10 @@ static TestResult run(const BarrierBetweenKernelsArguments &arguments, Statistic
     ze_kernel_desc_t kernelDesc{ZE_STRUCTURE_TYPE_KERNEL_DESC};
     kernelDesc.pKernelName = "write_one";
     ASSERT_ZE_RESULT_SUCCESS(zeKernelCreate(module, &kernelDesc, &kernel));
-    auto workgroupSize = outputBufferSize > 32 ? 32 : outputBufferSize;
-    auto workgroupCount = outputBufferSize / workgroupSize;
+    auto sizeInDwords = outputBufferSize / sizeof(uint32_t);
+
+    auto workgroupSize = sizeInDwords > 32 ? 32 : sizeInDwords;
+    auto workgroupCount = sizeInDwords / workgroupSize;
 
     ASSERT_ZE_RESULT_SUCCESS(zeKernelSetGroupSize(kernel, static_cast<uint32_t>(workgroupSize), 1u, 1u));
     ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernel, 0, sizeof(outputBuffer), &outputBuffer));
