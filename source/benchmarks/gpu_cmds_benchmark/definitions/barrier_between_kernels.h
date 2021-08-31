@@ -6,15 +6,11 @@
 #include "framework/utility/common_help_message.h"
 
 struct BarrierBetweenKernelsArguments : TestCaseArgumentContainer {
-    WorkItemIdUsageArgument usedIds;
-    PositiveIntegerArgument measuredCommands;
     PositiveIntegerArgument workgroupCount;
     PositiveIntegerArgument workgroupSize;
 
     BarrierBetweenKernelsArguments()
-        : usedIds(*this, "usedIds", "Which of the get_global_id() and get_local_id() calls will be used in the kernel"),
-          measuredCommands(*this, "measuredCommands", CommonHelpMessage::measuredCommandsCount()),
-          workgroupCount(*this, "wgc", "Workgroup count"),
+        : workgroupCount(*this, "wgc", "Workgroup count"),
           workgroupSize(*this, "wgs", "Workgroup size (aka local work size)") {}
 };
 

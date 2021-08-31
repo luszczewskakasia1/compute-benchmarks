@@ -7,19 +7,6 @@
 
 #include <gtest/gtest.h>
 
-static auto selectKernel(WorkItemIdUsage usedIds) {
-    switch (usedIds) {
-    case WorkItemIdUsage::None:
-        return "gpu_cmds_benchmark_write_one.spv";
-    case WorkItemIdUsage::Global:
-        return "gpu_cmds_benchmark_write_one_global_ids.spv";
-    case WorkItemIdUsage::Local:
-        return "gpu_cmds_benchmark_write_one_local_ids.spv";
-    default:
-        FATAL_ERROR("Unknown work item id usage");
-    }
-}
-
 static TestResult run(const BarrierBetweenKernelsArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;
     const uint64_t timerResolution = levelzero.getTimerResoultion(levelzero.device);
@@ -28,11 +15,13 @@ static TestResult run(const BarrierBetweenKernelsArguments &arguments, Statistic
     const ze_host_mem_alloc_desc_t hostAllocationDesc{ZE_STRUCTURE_TYPE_HOST_MEM_ALLOC_DESC};
     const ze_device_mem_alloc_desc_t deviceAllocationDesc{ZE_STRUCTURE_TYPE_DEVICE_MEM_ALLOC_DESC};
     void *timestampBuffer = nullptr;
-    const auto timestampBufferSize = sizeof(uint64_t) * 3;
+    const auto timestampBufferSize = sizeof(uint64_t) * 100;
     ASSERT_ZE_RESULT_SUCCESS(zeMemAllocHost(levelzero.context, &hostAllocationDesc, timestampBufferSize, 0, &timestampBuffer));
     ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, timestampBuffer, timestampBufferSize))
     uint64_t *beginTimestamp = static_cast<uint64_t *>(timestampBuffer);
     uint64_t *endTimestamp = beginTimestamp + 1;
+    uint64_t *meassurmentCostStart = endTimestamp + 1;
+    uint64_t *meassurmentCostEnd = meassurmentCostStart + 1;
 
     // Create output buffer
     void *outputBuffer = nullptr;
@@ -41,7 +30,7 @@ static TestResult run(const BarrierBetweenKernelsArguments &arguments, Statistic
     ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, outputBuffer, outputBufferSize))
 
     // Create kernel
-    auto spirvModule = FileHelper::loadBinaryFile(selectKernel(arguments.usedIds));
+    auto spirvModule = FileHelper::loadBinaryFile("gpu_cmds_benchmark_write_one_global_ids.spv");
     if (spirvModule.size() == 0) {
         return TestResult::KernelNotFound;
     }
@@ -81,6 +70,8 @@ static TestResult run(const BarrierBetweenKernelsArguments &arguments, Statistic
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendWriteGlobalTimestamp(cmdList, beginTimestamp, nullptr, 0, nullptr));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendBarrier(cmdList, event, 0u, nullptr));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendWriteGlobalTimestamp(cmdList, endTimestamp, nullptr, 0, nullptr));
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendWriteGlobalTimestamp(cmdList, meassurmentCostStart, nullptr, 0, nullptr));
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendWriteGlobalTimestamp(cmdList, meassurmentCostEnd, nullptr, 0, nullptr));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListClose(cmdList));
 
     // Warmup
@@ -93,6 +84,11 @@ static TestResult run(const BarrierBetweenKernelsArguments &arguments, Statistic
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
 
         auto commandTime = std::chrono::nanoseconds(*endTimestamp - *beginTimestamp);
+        auto meassureTime = std::chrono::nanoseconds(*meassurmentCostEnd - *meassurmentCostStart);
+        if (commandTime >= meassureTime) {
+            commandTime -= meassureTime;
+        }
+
         commandTime *= timerResolution;
         statistics.pushValue(commandTime, MeasurementUnit::Microseconds, MeasurementType::Gpu);
     }
