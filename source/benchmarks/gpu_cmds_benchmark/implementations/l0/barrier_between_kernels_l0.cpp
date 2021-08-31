@@ -94,7 +94,6 @@ static TestResult run(const BarrierBetweenKernelsArguments &arguments, Statistic
 
         auto commandTime = std::chrono::nanoseconds(*endTimestamp - *beginTimestamp);
         commandTime *= timerResolution;
-        commandTime /= arguments.measuredCommands;
         statistics.pushValue(commandTime, MeasurementUnit::Microseconds, MeasurementType::Gpu);
     }
 
