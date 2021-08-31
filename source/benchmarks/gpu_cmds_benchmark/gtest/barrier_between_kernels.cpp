@@ -7,15 +7,15 @@
 
 static const inline RegisterTestCase<BarrierBetweenKernels> registerTestCase{};
 
-class BarrierBetweenKernelsTest : public ::testing::TestWithParam<std::tuple<size_t, size_t, UsmMemoryPlacement>> {
+class BarrierBetweenKernelsTest : public ::testing::TestWithParam<std::tuple<UsmMemoryPlacement, size_t, size_t>> {
 };
 
 TEST_P(BarrierBetweenKernelsTest, Test) {
     BarrierBetweenKernelsArguments args{};
     args.api = Api::L0;
-    args.bytesToFlush = std::get<0>(GetParam());
+    args.bytesToFlush = std::get<2>(GetParam());
     args.onlyReads = std::get<1>(GetParam());
-    args.flushedMemory = std::get<2>(GetParam());
+    args.flushedMemory = std::get<0>(GetParam());
 
     BarrierBetweenKernels test;
     test.run(args);
@@ -25,6 +25,6 @@ INSTANTIATE_TEST_SUITE_P(
     BarrierBetweenKernelsTest,
     BarrierBetweenKernelsTest,
     ::testing::Combine(
-        ::testing::Values(4, 8, 16, 32, 64, 256, 1024, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432, 67108864, 134217728),
+        ::testing::Values(UsmMemoryPlacement::Device, UsmMemoryPlacement::Host),
         ::testing::Values(0, 1),
-        ::testing::Values(UsmMemoryPlacement::Device, UsmMemoryPlacement::Host)));
+        ::testing::Values(4, 8, 16, 32, 64, 256, 1024, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432, 67108864, 134217728)));
