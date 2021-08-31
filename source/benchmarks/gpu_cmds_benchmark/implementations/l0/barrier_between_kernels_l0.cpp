@@ -26,7 +26,12 @@ static TestResult run(const BarrierBetweenKernelsArguments &arguments, Statistic
     // Create output buffer
     void *outputBuffer = nullptr;
     const auto outputBufferSize = arguments.bytesToFlush;
-    ASSERT_ZE_RESULT_SUCCESS(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, outputBufferSize, 0, levelzero.device, &outputBuffer));
+    if (arguments.flushedMemory == UsmMemoryPlacement::Device) {
+        ASSERT_ZE_RESULT_SUCCESS(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, outputBufferSize, 0, levelzero.device, &outputBuffer));
+    } else {
+        ASSERT_ZE_RESULT_SUCCESS(zeMemAllocHost(levelzero.context, &hostAllocationDesc, outputBufferSize, 0, &outputBuffer));
+    }
+
     ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, outputBuffer, outputBufferSize));
 
     if (arguments.onlyReads == 0) {

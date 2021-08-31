@@ -1,6 +1,7 @@
 #pragma once
 
 #include "framework/argument/basic_argument.h"
+#include "framework/argument/enum/usm_memory_placement_argument.h"
 #include "framework/argument/enum/work_item_id_usage_argument.h"
 #include "framework/test_case/test_case.h"
 #include "framework/utility/common_help_message.h"
@@ -8,10 +9,12 @@
 struct BarrierBetweenKernelsArguments : TestCaseArgumentContainer {
     PositiveIntegerArgument bytesToFlush;
     IntegerArgument onlyReads;
+    UsmMemoryPlacementArgument flushedMemory;
 
     BarrierBetweenKernelsArguments()
         : bytesToFlush(*this, "bytes", "bytes to flush from L3"),
-          onlyReads(*this, "onlyReads", "only reads cached in L3") {}
+          onlyReads(*this, "onlyReads", "only reads cached in L3"),
+          flushedMemory(*this, "memoryType", "memory type cached in L3") {}
 };
 
 struct BarrierBetweenKernels : TestCase<BarrierBetweenKernelsArguments> {
