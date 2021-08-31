@@ -25,7 +25,7 @@ static TestResult run(const BarrierBetweenKernelsArguments &arguments, Statistic
 
     // Create output buffer
     void *outputBuffer = nullptr;
-    const auto outputBufferSize = sizeof(uint32_t) * arguments.workgroupCount * arguments.workgroupSize;
+    const auto outputBufferSize = arguments.bytesToFlush;
     ASSERT_ZE_RESULT_SUCCESS(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, outputBufferSize, 0, levelzero.device, &outputBuffer));
     ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, outputBuffer, outputBufferSize))
 
@@ -44,7 +44,10 @@ static TestResult run(const BarrierBetweenKernelsArguments &arguments, Statistic
     ze_kernel_desc_t kernelDesc{ZE_STRUCTURE_TYPE_KERNEL_DESC};
     kernelDesc.pKernelName = "write_one";
     ASSERT_ZE_RESULT_SUCCESS(zeKernelCreate(module, &kernelDesc, &kernel));
-    ASSERT_ZE_RESULT_SUCCESS(zeKernelSetGroupSize(kernel, static_cast<uint32_t>(arguments.workgroupSize), 1u, 1u));
+    auto workgroupSize = outputBufferSize > 32 ? 32 : outputBufferSize;
+    auto workgroupCount = outputBufferSize / workgroupSize;
+
+    ASSERT_ZE_RESULT_SUCCESS(zeKernelSetGroupSize(kernel, static_cast<uint32_t>(workgroupSize), 1u, 1u));
     ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernel, 0, sizeof(outputBuffer), &outputBuffer));
 
     ze_event_pool_handle_t eventPool{};
@@ -64,7 +67,7 @@ static TestResult run(const BarrierBetweenKernelsArguments &arguments, Statistic
     cmdListDesc.commandQueueGroupOrdinal = levelzero.commandQueueDesc.ordinal;
     ze_command_list_handle_t cmdList{};
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.context, levelzero.device, &cmdListDesc, &cmdList));
-    const ze_group_count_t groupCount{static_cast<uint32_t>(arguments.workgroupCount), 1u, 1u};
+    const ze_group_count_t groupCount{static_cast<uint32_t>(workgroupCount), 1u, 1u};
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, nullptr, 0, nullptr));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendBarrier(cmdList, nullptr, 0u, nullptr));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendWriteGlobalTimestamp(cmdList, beginTimestamp, nullptr, 0, nullptr));

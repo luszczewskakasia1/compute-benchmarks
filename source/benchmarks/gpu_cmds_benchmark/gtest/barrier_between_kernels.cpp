@@ -7,14 +7,13 @@
 
 static const inline RegisterTestCase<BarrierBetweenKernels> registerTestCase{};
 
-class BarrierBetweenKernelsTest : public ::testing::TestWithParam<std::tuple<size_t, size_t>> {
+class BarrierBetweenKernelsTest : public ::testing::TestWithParam<std::tuple<size_t>> {
 };
 
 TEST_P(BarrierBetweenKernelsTest, Test) {
     BarrierBetweenKernelsArguments args{};
     args.api = Api::L0;
-    args.workgroupCount = std::get<0>(GetParam());
-    args.workgroupSize = std::get<1>(GetParam());
+    args.bytesToFlush = std::get<0>(GetParam());
 
     BarrierBetweenKernels test;
     test.run(args);
@@ -24,5 +23,4 @@ INSTANTIATE_TEST_SUITE_P(
     BarrierBetweenKernelsTest,
     BarrierBetweenKernelsTest,
     ::testing::Combine(
-        ::testing::Values(1, 100, 1000, 10000, 20000, 40000, 60000, 80000, 100000),
-        ::CommonGtestArgs::workgroupSize()));
+        ::testing::Values(4, 64, 256, 1024, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432, 67108864, 134217728)));

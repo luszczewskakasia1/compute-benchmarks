@@ -6,12 +6,10 @@
 #include "framework/utility/common_help_message.h"
 
 struct BarrierBetweenKernelsArguments : TestCaseArgumentContainer {
-    PositiveIntegerArgument workgroupCount;
-    PositiveIntegerArgument workgroupSize;
+    PositiveIntegerArgument bytesToFlush;
 
     BarrierBetweenKernelsArguments()
-        : workgroupCount(*this, "wgc", "Workgroup count"),
-          workgroupSize(*this, "wgs", "Workgroup size (aka local work size)") {}
+        : bytesToFlush(*this, "bytes", "bytes to flush from L3") {}
 };
 
 struct BarrierBetweenKernels : TestCase<BarrierBetweenKernelsArguments> {
@@ -23,6 +21,6 @@ struct BarrierBetweenKernels : TestCase<BarrierBetweenKernelsArguments> {
     }
 
     std::string getHelp() const override {
-        return "measures time required to run a barrier command between 2 kernels.";
+        return "measures time required to run a barrier command between 2 kernels, including potential cache flush commands";
     }
 };
