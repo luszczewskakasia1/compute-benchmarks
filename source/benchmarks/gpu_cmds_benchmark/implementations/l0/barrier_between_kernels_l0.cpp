@@ -27,10 +27,26 @@ static TestResult run(const BarrierBetweenKernelsArguments &arguments, Statistic
     void *outputBuffer = nullptr;
     const auto outputBufferSize = arguments.bytesToFlush;
     ASSERT_ZE_RESULT_SUCCESS(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, outputBufferSize, 0, levelzero.device, &outputBuffer));
-    ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, outputBuffer, outputBufferSize))
+    ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, outputBuffer, outputBufferSize));
+
+    if (arguments.onlyReads == 0) {
+        // Create command list
+        ze_command_list_desc_t cmdListDesc{};
+        cmdListDesc.commandQueueGroupOrdinal = levelzero.commandQueueDesc.ordinal;
+        ze_command_list_handle_t cmdListForFill{};
+
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.context, levelzero.device, &cmdListDesc, &cmdListForFill));
+        char pattern = 1u;
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendMemoryFill(cmdListForFill, outputBuffer, &pattern, 1, outputBufferSize, nullptr, 0, nullptr));
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandListClose(cmdListForFill));
+
+        // Warmup
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdListForFill, nullptr));
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
+    }
 
     // Create kernel
-    auto spirvModule = FileHelper::loadBinaryFile("gpu_cmds_benchmark_write_one_global_ids.spv");
+    auto spirvModule = FileHelper::loadBinaryFile("gpu_cmds_benchmark_write_one_global_ids_with_check.spv");
     if (spirvModule.size() == 0) {
         return TestResult::KernelNotFound;
     }
