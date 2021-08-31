@@ -7,7 +7,7 @@
 
 struct BarrierBetweenKernelsArguments : TestCaseArgumentContainer {
     PositiveIntegerArgument bytesToFlush;
-    PositiveIntegerArgument onlyReads;
+    IntegerArgument onlyReads;
 
     BarrierBetweenKernelsArguments()
         : bytesToFlush(*this, "bytes", "bytes to flush from L3"),
