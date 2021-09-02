@@ -98,11 +98,11 @@ struct LevelZero {
 
     void initializeImportHostPointerExtension(const ExtensionProperties &extensionProperties);
 
-  private:
     // Queriers subDevices of the root device and creates them if any. This method is only called when it's necessary, i.e. user
     // specified some subDevices in ContextProperties
     void createSubDevices(bool requireSuccess, bool fakeSubDeviceAllowed);
 
+  private:
     // Internal fields managed by the LevelZero class
     ze_device_handle_t rootDevice{};
     std::vector<ze_device_handle_t> subDevices{};

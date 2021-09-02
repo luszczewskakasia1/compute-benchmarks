@@ -9,11 +9,13 @@
 struct BarrierBetweenKernelsArguments : TestCaseArgumentContainer {
     PositiveIntegerArgument bytesToFlush;
     IntegerArgument onlyReads;
+    IntegerArgument remoteAccess;
     UsmMemoryPlacementArgument flushedMemory;
 
     BarrierBetweenKernelsArguments()
         : bytesToFlush(*this, "bytes", "bytes to flush from L3"),
           onlyReads(*this, "onlyReads", "only reads cached in L3"),
+          remoteAccess(*this, "remoteAccess", "access cached from remote tile"),
           flushedMemory(*this, "memoryType", "memory type cached in L3") {}
 };
 

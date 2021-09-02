@@ -9,7 +9,12 @@
 
 static TestResult run(const BarrierBetweenKernelsArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;
+    levelzero.createSubDevices(true, false);
     const uint64_t timerResolution = levelzero.getTimerResoultion(levelzero.device);
+
+    if (arguments.remoteAccess && levelzero.getSubDevicesCount() == 1) {
+        return TestResult::DeviceNotCapable;
+    }
 
     // Create timestamp buffer
     const ze_host_mem_alloc_desc_t hostAllocationDesc{ZE_STRUCTURE_TYPE_HOST_MEM_ALLOC_DESC};
@@ -27,7 +32,11 @@ static TestResult run(const BarrierBetweenKernelsArguments &arguments, Statistic
     void *outputBuffer = nullptr;
     const auto outputBufferSize = arguments.bytesToFlush;
     if (arguments.flushedMemory == UsmMemoryPlacement::Device) {
-        ASSERT_ZE_RESULT_SUCCESS(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, outputBufferSize, 0, levelzero.device, &outputBuffer));
+        if (arguments.remoteAccess) {
+            ASSERT_ZE_RESULT_SUCCESS(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, outputBufferSize, 0, levelzero.getDevice(DeviceSelection::Tile1), &outputBuffer));
+        } else {
+            ASSERT_ZE_RESULT_SUCCESS(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, outputBufferSize, 0, levelzero.getDevice(DeviceSelection::Tile0), &outputBuffer));
+        }
     } else {
         ASSERT_ZE_RESULT_SUCCESS(zeMemAllocHost(levelzero.context, &hostAllocationDesc, outputBufferSize, 0, &outputBuffer));
     }
