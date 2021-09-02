@@ -15,6 +15,9 @@ static TestResult run(const BarrierBetweenKernelsArguments &arguments, Statistic
     if (arguments.remoteAccess && levelzero.getSubDevicesCount() < 2) {
         return TestResult::DeviceNotCapable;
     }
+    if (arguments.remoteAccess && arguments.flushedMemory == UsmMemoryPlacement::Host) {
+        return TestResult::DeviceNotCapable;
+    }
 
     // Create timestamp buffer
     const ze_host_mem_alloc_desc_t hostAllocationDesc{ZE_STRUCTURE_TYPE_HOST_MEM_ALLOC_DESC};
