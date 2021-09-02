@@ -9,10 +9,10 @@
 
 static TestResult run(const BarrierBetweenKernelsArguments &arguments, Statistics &statistics) {
     LevelZero levelzero;
-    levelzero.createSubDevices(true, false);
+    levelzero.createSubDevices(false, false);
     const uint64_t timerResolution = levelzero.getTimerResoultion(levelzero.device);
 
-    if (arguments.remoteAccess && levelzero.getSubDevicesCount() == 1) {
+    if (arguments.remoteAccess && levelzero.getSubDevicesCount() < 2) {
         return TestResult::DeviceNotCapable;
     }
 
