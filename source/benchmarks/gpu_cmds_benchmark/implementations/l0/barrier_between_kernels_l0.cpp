@@ -75,7 +75,13 @@ static TestResult run(const BarrierBetweenKernelsArguments &arguments, Statistic
     moduleDesc.inputSize = spirvModule.size();
     ASSERT_ZE_RESULT_SUCCESS(zeModuleCreate(levelzero.context, levelzero.device, &moduleDesc, &module, nullptr));
     ze_kernel_desc_t kernelDesc{ZE_STRUCTURE_TYPE_KERNEL_DESC};
-    kernelDesc.pKernelName = "write_one";
+
+    if (arguments.onlyReads) {
+        kernelDesc.pKernelName = "write_one";
+    } else {
+        kernelDesc.pKernelName = "only_write_one";
+    }
+
     ASSERT_ZE_RESULT_SUCCESS(zeKernelCreate(module, &kernelDesc, &kernel));
     auto sizeInDwords = outputBufferSize / sizeof(uint32_t);
 
