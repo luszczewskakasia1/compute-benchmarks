@@ -17,7 +17,7 @@ static TestResult run(const OneAtomicArguments &arguments, Statistics &statistic
     cl_int retVal{};
 
     // Check support
-    if (!MathOperationHelper::isSupportedAsAtomic(arguments.atomicOperation, arguments.dataType, opencl.getExtensions().isGlobalFloatAtomicsSupported())) {
+    if (!MathOperationHelper::isSupportedAsAtomic(arguments.atomicOperation, arguments.dataType, opencl.getExtensions().isGlobalFloatAtomicsSupported(), false)) {
         return TestResult::DeviceNotCapable;
     }
 

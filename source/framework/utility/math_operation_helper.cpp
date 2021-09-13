@@ -18,7 +18,13 @@ size_t MathOperationHelper::getArgumentsCount(MathOperation operation) {
     return operation == MathOperation::Inc || operation == MathOperation::Dec;
 }
 
-bool MathOperationHelper::isSupportedAsAtomic(MathOperation operation, DataType type, bool globalAtomicFloatsSupported) {
+bool MathOperationHelper::requiresIntelGlobalAtomicsExtension(MathOperation operation, DataType type) {
+    const bool isFloat = type == DataType::Float;
+    const bool isAdditionOrSubtraction = operation == MathOperation::Add || operation == MathOperation::Sub;
+    return isFloat && isAdditionOrSubtraction;
+}
+
+bool MathOperationHelper::isSupportedAsAtomic(MathOperation operation, DataType type, bool globalAtomicFloatsSupported, bool usesSlm) {
     if (operation == MathOperation::Div || operation == MathOperation::Modulo) {
         return false;
     }
@@ -32,7 +38,7 @@ bool MathOperationHelper::isSupportedAsAtomic(MathOperation operation, DataType 
             return true;
         case MathOperation::Add:
         case MathOperation::Sub:
-            return globalAtomicFloatsSupported;
+            return !usesSlm && globalAtomicFloatsSupported;
         default:
             return false;
         }

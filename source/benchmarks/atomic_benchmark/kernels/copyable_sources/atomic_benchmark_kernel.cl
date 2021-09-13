@@ -1,3 +1,7 @@
+#ifdef USE_GLOBAL_FLOAT_ATOMICS
+#pragma OPENCL EXTENSION cl_intel_global_float_atomics : enable
+#endif
+
 #ifndef ATOMIC_OP
 #error "Need a definition of ATOMIC_OP"
 #endif
@@ -175,6 +179,7 @@ __kernel void separate_atomics(__global ATOMIC_DATATYPE *buffer, __global DATATY
     }
 }
 
+#ifndef USE_GLOBAL_FLOAT_ATOMICS
 __kernel void one_local_atomic(__global DATATYPE *buffer, const __global DATATYPE *otherArgumentBuffer, const uint iterations, const DATATYPE initialValue) {
     // Define SLM variable
     local ATOMIC_DATATYPE sharedVariable;
@@ -205,3 +210,4 @@ __kernel void one_local_atomic(__global DATATYPE *buffer, const __global DATATYP
 #endif
     }
 }
+#endif

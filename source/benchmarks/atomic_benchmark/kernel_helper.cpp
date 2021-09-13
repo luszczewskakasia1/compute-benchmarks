@@ -16,6 +16,11 @@ MathOperationTestData KernelHelper::getDataForKernel(DataType dataType,
 std::string KernelHelper::getCompilerOptions(DataType dataType, MathOperation operation, size_t otherArgumentBufferSize) {
     CompilerOptionsBuilder options{};
     addAtomicOpMacro(options, operation);
+    if (MathOperationHelper::requiresIntelGlobalAtomicsExtension(operation, dataType)) {
+        options.addOptionOpenCl20();
+        options.addDefinition("cl_intel_global_float_atomics");
+        options.addDefinition("USE_GLOBAL_FLOAT_ATOMICS");
+    }
     options.addDefinitionKeyValue("ATOMIC_DATATYPE", DataTypeHelper::toOpenclC(dataType));
     options.addDefinitionKeyValue("DATATYPE", DataTypeHelper::toOpenclC(dataType));
     options.addDefinitionKeyValue("OTHER_ARGUMENT_BUFFER_SIZE", std::to_string(otherArgumentBufferSize));
@@ -28,6 +33,10 @@ std::string KernelHelper::getCompilerOptionsExplicit(DataType dataType, MathOper
     addExplicitAtomicOpMacro(options, operation, order, scope);
     options.addOptionOpenCl20();
     options.addDefinition("OCL_20");
+    if (MathOperationHelper::requiresIntelGlobalAtomicsExtension(operation, dataType)) {
+        options.addDefinition("cl_intel_global_float_atomics");
+        options.addDefinition("USE_GLOBAL_FLOAT_ATOMICS");
+    }
     options.addDefinitionKeyValue("ATOMIC_DATATYPE", DataTypeHelper::toExplicitAtomicOpenclC(dataType));
     options.addDefinitionKeyValue("DATATYPE", DataTypeHelper::toOpenclC(dataType));
     options.addDefinitionKeyValue("OTHER_ARGUMENT_BUFFER_SIZE", std::to_string(otherArgumentBufferSize));

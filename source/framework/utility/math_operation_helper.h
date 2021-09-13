@@ -12,7 +12,8 @@ struct MathOperationTestData {
 };
 
 struct MathOperationHelper {
-    static bool isSupportedAsAtomic(MathOperation operation, DataType type, bool globalAtomicFloatsSupported);
+    static bool requiresIntelGlobalAtomicsExtension(MathOperation operation, DataType type);
+    static bool isSupportedAsAtomic(MathOperation operation, DataType type, bool globalAtomicFloatsSupported, bool usesSlm);
     static bool isSupportedAsNormal(MathOperation operation, DataType type);
     static size_t getArgumentsCount(MathOperation operation);
 
