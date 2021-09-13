@@ -48,7 +48,8 @@ static TestResult run(const OneLocalAtomicArguments &arguments, Statistics &stat
     cl_program program = clCreateProgramWithSource(opencl.context, 1, &source, &sourceLength, &retVal);
     ASSERT_CL_SUCCESS(retVal);
     const std::string compilerOptions = KernelHelper::getCompilerOptions(arguments.dataType, arguments.atomicOperation, otherArgumentsBufferSize);
-    ASSERT_CL_SUCCESS(clBuildProgram(program, 1, &opencl.device, compilerOptions.c_str(), nullptr, nullptr));
+    ASSERT_CL_COMPILATION_SUCCESS(clBuildProgram(program, 1, &opencl.device, compilerOptions.c_str(), nullptr, nullptr));
+
     cl_kernel kernel = clCreateKernel(program, "one_local_atomic", &retVal);
     ASSERT_CL_SUCCESS(retVal);
 

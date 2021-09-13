@@ -43,6 +43,9 @@ static TestResult run(const OneAtomicExplicitArguments &arguments, Statistics &s
     ASSERT_CL_SUCCESS(retVal);
     const std::string compilerOptions = KernelHelper::getCompilerOptionsExplicit(arguments.dataType, arguments.atomicOperation, arguments.memoryOrder, arguments.scope, otherArguemtnsBufferEntryCount);
     ASSERT_CL_SUCCESS(clBuildProgram(program, 1, &opencl.device, compilerOptions.c_str(), nullptr, nullptr));
+
+    ASSERT_CL_COMPILATION_SUCCESS(clBuildProgram(program, 1, &opencl.device, compilerOptions.c_str(), nullptr, nullptr));
+
     cl_kernel initializeKernel = clCreateKernel(program, "initialize", &retVal);
     ASSERT_CL_SUCCESS(retVal);
     cl_kernel kernel = clCreateKernel(program, "one_atomic", &retVal);

@@ -43,7 +43,8 @@ static TestResult run(const SeparateAtomicsExplicitArguments &arguments, Statist
     cl_program program = clCreateProgramWithSource(opencl.context, 1, &source, &sourceLength, &retVal);
     ASSERT_CL_SUCCESS(retVal);
     const std::string compilerOptions = KernelHelper::getCompilerOptionsExplicit(arguments.dataType, arguments.atomicOperation, arguments.memoryOrder, arguments.scope, otherArgumentsBufferEntryCount);
-    ASSERT_CL_SUCCESS(clBuildProgram(program, 1, &opencl.device, compilerOptions.c_str(), nullptr, nullptr));
+    ASSERT_CL_COMPILATION_SUCCESS(clBuildProgram(program, 1, &opencl.device, compilerOptions.c_str(), nullptr, nullptr));
+
     cl_kernel initializeKernel = clCreateKernel(program, "initialize", &retVal);
     ASSERT_CL_SUCCESS(retVal);
     cl_kernel kernel = clCreateKernel(program, "separate_atomics", &retVal);
