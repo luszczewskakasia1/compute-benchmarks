@@ -21,7 +21,7 @@ done
 
 # Run CMake
 binary_dir="build/bin"
-./build.sh -DBUILD_FOR_PUBLISHING=ON -DVERSION_INDEX=$version_index
+./build.sh -DBUILD_FOR_PUBLISHING=ON -DVERSION_INDEX=$version_index -DBUILD_TOOLS=OFF
 
 # Compile
 pushd $cmake_dir >/dev/null 2>&1
