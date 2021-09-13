@@ -13,8 +13,11 @@ class ExtensionsHelper {
 
     bool isSupported(const char *extension, bool allowPreview = false) const {
         const auto previewExtension = std::string(extension) + "_preview";
+        const bool allowIntelExtensions = !Configuration::get().noIntelExtensions;
         const auto predicate = [&](const std::string &currentExtension) {
-            return currentExtension == extension || (allowPreview && currentExtension == previewExtension);
+            const bool isMatched = currentExtension == extension || (allowPreview && currentExtension == previewExtension);
+            const bool isIntel = currentExtension.find("cl_intel_") == 0u;
+            return isMatched && (allowIntelExtensions || !isIntel);
         };
         return std::any_of(extensions.begin(), extensions.end(), predicate);
     }
