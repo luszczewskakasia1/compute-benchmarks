@@ -1,6 +1,6 @@
 #include "framework/ocl/opencl.h"
+#include "framework/ocl/utility/program_helper_ocl.h"
 #include "framework/test_case/register_test_case.h"
-#include "framework/utility/file_helper.h"
 #include "framework/utility/math_operation_helper.h"
 #include "framework/utility/timer.h"
 
@@ -42,17 +42,12 @@ static TestResult run(const SeparateAtomicsArguments &arguments, Statistics &sta
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
     // Create kernel
-    const std::vector<uint8_t> kernelSource = FileHelper::loadTextFile("atomic_benchmark_kernel.cl");
-    if (kernelSource.size() == 0) {
-        return TestResult::KernelNotFound;
-    }
-    const char *source = reinterpret_cast<const char *>(kernelSource.data());
-    const size_t sourceLength = kernelSource.size();
-    cl_program program = clCreateProgramWithSource(opencl.context, 1, &source, &sourceLength, &retVal);
-    ASSERT_CL_SUCCESS(retVal);
+    cl_program program = nullptr;
+    const char *programName = "atomic_benchmark_kernel.cl";
     const std::string compilerOptions = KernelHelper::getCompilerOptions(arguments.dataType, arguments.atomicOperation, otherArgumentsBufferSize);
-    ASSERT_CL_COMPILATION_SUCCESS(clBuildProgram(program, 1, &opencl.device, compilerOptions.c_str(), nullptr, nullptr));
-
+    if (auto result = ProgramHelperOcl::buildProgramFromSourceFile(opencl.context, opencl.device, programName, compilerOptions.c_str(), program); result != TestResult::Success) {
+        return result;
+    }
     cl_kernel kernel = clCreateKernel(program, "separate_atomics", &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
