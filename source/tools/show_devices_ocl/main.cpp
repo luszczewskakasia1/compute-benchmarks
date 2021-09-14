@@ -145,6 +145,8 @@ void showDeviceAndItsSubDevices(size_t indentLevel, size_t deviceLevel, cl_devic
 // ------------------------------------------------------------------------- Main procedure
 
 int main() {
+    Configuration::loadDefaultConfiguration();
+
     std::vector<cl_platform_id> platforms = getPlatforms();
     for (auto platformIndex = 0u; platformIndex < platforms.size(); platformIndex++) {
         cl_platform_id platform = platforms[platformIndex];
