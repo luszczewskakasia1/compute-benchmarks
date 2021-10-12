@@ -1,8 +1,7 @@
-#=========================== begin_copyright_notice ============================
 #
 # INTEL CONFIDENTIAL
 #
-# Copyright (C) 2020-2021 Intel Corporation
+# Copyright (C) 2019-2021 Intel Corporation
 #
 # This software and the related documents are Intel copyrighted materials,
 # and your use of them is governed by the express license under which they were
@@ -13,7 +12,6 @@
 # This software and the related documents are provided as is, with no express or
 # implied warranties, other than those that are expressly stated in the License.
 #
-#============================ end_copyright_notice =============================
 
 FROM dockerv2-gfx-build.gfx-assets.intel.com/upstream/ubuntu:20.04
 RUN cat /etc/os-release

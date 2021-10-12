@@ -1,10 +1,9 @@
 #!/bin/bash
 
-#=========================== begin_copyright_notice ============================
 #
 # INTEL CONFIDENTIAL
 #
-# Copyright (C) 2020-2021 Intel Corporation
+# Copyright (C) 2019-2021 Intel Corporation
 #
 # This software and the related documents are Intel copyrighted materials,
 # and your use of them is governed by the express license under which they were
@@ -15,12 +14,10 @@
 # This software and the related documents are provided as is, with no express or
 # implied warranties, other than those that are expressly stated in the License.
 #
-#============================ end_copyright_notice =============================
 
 # If user_id/group_id are present as an environmental variables
 # Then we use them to spawn a runner account within docker
 # If not supplied, just run the command
-
 
 if [ -n "$user_id" ]; then
   echo "User ID, with value of [$user_id] has been supplied"
