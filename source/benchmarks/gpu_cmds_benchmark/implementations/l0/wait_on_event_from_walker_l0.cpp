@@ -23,13 +23,13 @@
 #include <gtest/gtest.h>
 
 struct TestResources {
-    TestResources(LevelZero &levelzero, size_t eventsCount, uint64_t *beginTimestamp, uint64_t *endTimestamp)
-        : events(eventsCount) {
+    TestResources(LevelZero &levelzero, size_t meassuredCommands, uint64_t *beginTimestamp, uint64_t *endTimestamp)
+        : events(1u) {
         // Create events and signal them
-        const ze_event_pool_desc_t eventPoolDesc = {ZE_STRUCTURE_TYPE_EVENT_POOL_DESC, nullptr, 0, static_cast<uint32_t>(eventsCount)};
+        const ze_event_pool_desc_t eventPoolDesc = {ZE_STRUCTURE_TYPE_EVENT_POOL_DESC, nullptr, 0, static_cast<uint32_t>(1u)};
         const ze_event_desc_t eventDesc = {ZE_STRUCTURE_TYPE_EVENT_DESC, nullptr, 0, 0, 0};
         ZE_RESULT_SUCCESS_OR_ERROR(zeEventPoolCreate(levelzero.context, &eventPoolDesc, 0, nullptr, &this->eventPool));
-        for (size_t eventIndex = 0u; eventIndex < eventsCount; eventIndex++) {
+        for (size_t eventIndex = 0u; eventIndex < 1u; eventIndex++) {
             auto &event = this->events[eventIndex];
             ZE_RESULT_SUCCESS_OR_ERROR(zeEventCreate(this->eventPool, &eventDesc, &event));
         }
@@ -56,7 +56,7 @@ struct TestResources {
         ZE_RESULT_SUCCESS_OR_ERROR(zeCommandListAppendWaitOnEvents(this->cmdList, 1, &this->events[0]));
 
         ZE_RESULT_SUCCESS_OR_ERROR(zeCommandListAppendWriteGlobalTimestamp(this->cmdList, beginTimestamp, nullptr, 0, nullptr));
-        for (size_t commandIndex = 0u; commandIndex < eventsCount; commandIndex++) {
+        for (size_t commandIndex = 0u; commandIndex < meassuredCommands; commandIndex++) {
             ZE_RESULT_SUCCESS_OR_ERROR(zeCommandListAppendWaitOnEvents(this->cmdList, 1, &this->events[0]));
         }
         ZE_RESULT_SUCCESS_OR_ERROR(zeCommandListAppendWriteGlobalTimestamp(this->cmdList, endTimestamp, nullptr, 0, nullptr));
@@ -97,7 +97,7 @@ static TestResult run(const WaitOnEventFromWalkerArguments &arguments, Statistic
 
     // Benchmark
     for (auto i = 0; i < arguments.iterations; i++) {
-        testResources = std::make_unique<TestResources>(levelzero, 1u, beginTimestamp, endTimestamp);
+        testResources = std::make_unique<TestResources>(levelzero, arguments.measuredCommands, beginTimestamp, endTimestamp);
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &testResources->cmdList, nullptr));
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
         testResources.reset();
