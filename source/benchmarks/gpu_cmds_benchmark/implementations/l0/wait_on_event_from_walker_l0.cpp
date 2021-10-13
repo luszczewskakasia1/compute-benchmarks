@@ -22,8 +22,8 @@
 
 #include <gtest/gtest.h>
 
-struct TestResources {
-    TestResources(LevelZero &levelzero, size_t meassuredCommands, uint64_t *beginTimestamp, uint64_t *endTimestamp)
+struct TestResourcesForWaitOnWalker {
+    TestResourcesForWaitOnWalker(LevelZero &levelzero, size_t meassuredCommands, uint64_t *beginTimestamp, uint64_t *endTimestamp)
         : events(1u) {
         // Create events and signal them
         const ze_event_pool_desc_t eventPoolDesc = {ZE_STRUCTURE_TYPE_EVENT_POOL_DESC, nullptr, 0, static_cast<uint32_t>(1u)};
@@ -35,8 +35,7 @@ struct TestResources {
         }
 
         auto spirvModule = FileHelper::loadBinaryFile("gpu_cmds_benchmark_empty_kernel.spv");
-        ze_module_handle_t module;
-        ze_kernel_handle_t kernel;
+
         ze_module_desc_t moduleDesc{ZE_STRUCTURE_TYPE_MODULE_DESC};
         moduleDesc.format = ZE_MODULE_FORMAT_IL_SPIRV;
         moduleDesc.pInputModule = reinterpret_cast<const uint8_t *>(spirvModule.data());
@@ -63,7 +62,9 @@ struct TestResources {
         ZE_RESULT_SUCCESS_OR_ERROR(zeCommandListClose(this->cmdList));
     }
 
-    ~TestResources() {
+    ~TestResourcesForWaitOnWalker() {
+        EXPECT_ZE_RESULT_SUCCESS(zeKernelDestroy(kernel));
+        EXPECT_ZE_RESULT_SUCCESS(zeModuleDestroy(module));
         EXPECT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));
         for (auto &event : events) {
             EXPECT_ZE_RESULT_SUCCESS(zeEventDestroy(event));
@@ -71,6 +72,8 @@ struct TestResources {
         EXPECT_ZE_RESULT_SUCCESS(zeEventPoolDestroy(eventPool));
     }
 
+    ze_module_handle_t module;
+    ze_kernel_handle_t kernel;
     ze_event_pool_handle_t eventPool{};
     std::vector<ze_event_handle_t> events{};
     ze_command_list_handle_t cmdList{};
@@ -90,14 +93,14 @@ static TestResult run(const WaitOnEventFromWalkerArguments &arguments, Statistic
     uint64_t *endTimestamp = beginTimestamp + 1;
 
     // Warmup
-    auto testResources = std::make_unique<TestResources>(levelzero, 1u, beginTimestamp, endTimestamp);
+    auto testResources = std::make_unique<TestResourcesForWaitOnWalker>(levelzero, 1u, beginTimestamp, endTimestamp);
     ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &testResources->cmdList, nullptr));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
     testResources.reset();
 
     // Benchmark
     for (auto i = 0; i < arguments.iterations; i++) {
-        testResources = std::make_unique<TestResources>(levelzero, arguments.measuredCommands, beginTimestamp, endTimestamp);
+        testResources = std::make_unique<TestResourcesForWaitOnWalker>(levelzero, arguments.measuredCommands, beginTimestamp, endTimestamp);
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &testResources->cmdList, nullptr));
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
         testResources.reset();
