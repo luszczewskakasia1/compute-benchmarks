@@ -4,11 +4,9 @@ Please use ClangFormat to properly format the code.
   - [Visual Studio code extension](https://marketplace.visualstudio.com/items?itemName=xaver.clang-format)
   - Script formatting all files [Windows](scripts/run_clang-format_on_all_files.cmd) [Linux](scripts/run_clang-format_on_all_files.sh)
 
-Submit your changes via pull request. Maintainers are allowed to push to the master branch directly.
+Submit your changes via pull request. One of the maintainers will review your changes and merge them.
 
-Please do not create wrappers for compute API calls, if not absolutely necessary.
-
-If you want to significantly change the underlying test framework, please contact maciej.dziuban@intel.com first. There are many changes planned and it's best not to interfere with each other.
+Remember to add a copyright header at the top of newly created files.
 
 ### Adding new benchmarks
 A good way to add new benchmarks is to mimic the existing ones and tweak them to your needs. General flow of adding a brand new test is:
