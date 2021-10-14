@@ -65,6 +65,12 @@
         CL_SUCCESS_OR_RETURN_VALUE(tempVarForDefine, tempVarForDefine); \
     }
 
+#define CL_SUCCESS_SUCCESS_OR_RETURN(retVal)                            \
+    {                                                                   \
+        const auto tempVarForDefine = (retVal);                         \
+        CL_SUCCESS_OR_RETURN_VALUE(tempVarForDefine, tempVarForDefine); \
+    }
+
 #define CL_SUCCESS_OR_ERROR(retVal, message)                                                                                                \
     {                                                                                                                                       \
         const auto tempVarForDefine = (retVal);                                                                                             \

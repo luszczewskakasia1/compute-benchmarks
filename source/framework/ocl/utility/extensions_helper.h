@@ -21,10 +21,17 @@
 #include <algorithm>
 #include <memory>
 
+struct UsmFunctions {
+    pfn_clMemFreeINTEL clMemFreeINTEL{};
+    pfn_clHostMemAllocINTEL clHostMemAllocINTEL{};
+};
+
 namespace OCL {
 class ExtensionsHelper {
   public:
-    ExtensionsHelper(cl_device_id device) : extensions(queryExtensions(device)) {}
+    ExtensionsHelper(cl_device_id device) : extensions(queryExtensions(device)) {
+        EXPECT_CL_SUCCESS(clGetDeviceInfo(device, CL_DEVICE_PLATFORM, sizeof(platform), &platform, nullptr));
+    }
 
     bool isSupported(const char *extension, bool allowPreview = false) const {
         const auto previewExtension = std::string(extension) + "_preview";
@@ -49,6 +56,15 @@ class ExtensionsHelper {
         return isSupported("cl_intel_unified_shared_memory", true);
     }
 
+    UsmFunctions queryUsmFunctions() const {
+        UsmFunctions result{};
+        if (isUsmSupported()) {
+            result.clMemFreeINTEL = (pfn_clMemFreeINTEL)clGetExtensionFunctionAddressForPlatform(platform, "clMemFreeINTEL");
+            result.clHostMemAllocINTEL = (pfn_clHostMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(platform, "clHostMemAllocINTEL");
+        }
+        return result;
+    }
+
   private:
     static std::vector<std::string> queryExtensions(cl_device_id device) {
         size_t infoSize{};
@@ -64,6 +80,7 @@ class ExtensionsHelper {
         return splitString(extensionString.get());
     }
 
-    const std::vector<std::string> extensions;
+    cl_platform_id platform{};
+    const std::vector<std::string> extensions{};
 };
 } // namespace OCL
