@@ -28,5 +28,5 @@ struct CommonHelpMessage {
     static std::string useEvents();
     static std::string measuredCommandsCount();
     static std::string atomicDataType();
-    static std::string useUsmHostPointer();
+    static std::string hostptrBufferReuse();
 };

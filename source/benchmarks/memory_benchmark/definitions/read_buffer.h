@@ -17,6 +17,7 @@
 
 #include "framework/argument/compression_argument.h"
 #include "framework/argument/enum/buffer_contents_argument.h"
+#include "framework/argument/enum/hostptr_reuse_mode_argument.h"
 #include "framework/test_case/test_case.h"
 #include "framework/utility/common_help_message.h"
 
@@ -25,14 +26,14 @@ struct ReadBufferArguments : TestCaseArgumentContainer {
     BufferContentsArgument contents;
     CompressionBooleanArgument compressed;
     BooleanArgument useEvents;
-    BooleanArgument usmHostPointer;
+    HostptrBufferReuseModeArgument reuse;
 
     ReadBufferArguments()
         : size(*this, "size", "Size of the buffer"),
           contents(*this, "contents", "Contents of the buffer"),
           compressed(*this, "compressed", CommonHelpMessage::compression("buffer")),
           useEvents(*this, "useEvents", CommonHelpMessage::useEvents()),
-          usmHostPointer(*this, "usmHostPointer", CommonHelpMessage::useUsmHostPointer()) {}
+          reuse(*this, "reuse", CommonHelpMessage::hostptrBufferReuse()) {}
 };
 
 struct ReadBuffer : TestCase<ReadBufferArguments> {
