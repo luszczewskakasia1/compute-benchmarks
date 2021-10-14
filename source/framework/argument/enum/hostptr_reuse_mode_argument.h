@@ -40,8 +40,8 @@ struct HostptrImageReuseModeArgument : EnumArgument<HostptrImageReuseModeArgumen
         return *this;
     }
 
-    const static inline std::string enumName = "Buffer hostptr reuse mode";
+    const static inline std::string enumName = "Image hostptr reuse mode";
     const static inline EnumType invalidEnumValue = EnumType::Unknown;
-    const static inline EnumType enumValues[3] = {EnumType::None, EnumType::Map};
-    const static inline std::string enumValuesNames[3] = {"None", "Map"};
+    const static inline EnumType enumValues[2] = {EnumType::None, EnumType::Map};
+    const static inline std::string enumValuesNames[2] = {"None", "Map"};
 };
