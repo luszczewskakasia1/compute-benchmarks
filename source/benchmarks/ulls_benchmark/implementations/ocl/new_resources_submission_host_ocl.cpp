@@ -55,7 +55,7 @@ static TestResult run(const NewResourcesSubmissionHostArguments &arguments, Stat
     ASSERT_CL_SUCCESS(retVal);
 
     // Benchmark
-    for (int i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         timer.measureStart();
         hostMemory = clHostMemAllocINTEL(opencl.context, nullptr, sizeInBytes, 0, &retVal);
         ASSERT_CL_SUCCESS(clSetKernelArgSVMPointer(kernel, 0, hostMemory));

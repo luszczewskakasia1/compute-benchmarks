@@ -56,7 +56,7 @@ static TestResult run(const MapBufferArguments &arguments, Statistics &statistic
     clFinish(opencl.commandQueue);
 
     // Benchmark
-    for (int i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillBuffer(opencl.commandQueue, buffer, arguments.size, arguments.contents));
 
         cl_event profilingEvent{};

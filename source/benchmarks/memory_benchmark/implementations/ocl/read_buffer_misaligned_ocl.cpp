@@ -43,7 +43,7 @@ static TestResult run(const ReadBufferMisalignedArguments &arguments, Statistics
     ASSERT_CL_SUCCESS(clEnqueueReadBuffer(opencl.commandQueue, buffer, CL_BLOCKING, 0, arguments.size, cpuBuffer.get(), 0, nullptr, nullptr));
 
     // Benchmark
-    for (int i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         cl_event profilingEvent{};
         cl_event *eventForEnqueue = arguments.useEvents ? &profilingEvent : nullptr;
 

@@ -45,7 +45,7 @@ static TestResult run(const UsmSharedFirstCpuAccessArguments &arguments, Statist
     ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, buffer));
 
     // Benchmark
-    for (int i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         buffer = clSharedMemAllocINTEL(opencl.context, opencl.device, properties, arguments.bufferSize, 0u, &retVal);
         ASSERT_CL_SUCCESS(retVal);
 

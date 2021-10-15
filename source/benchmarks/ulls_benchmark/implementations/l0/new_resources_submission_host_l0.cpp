@@ -74,7 +74,7 @@ static TestResult run(const NewResourcesSubmissionHostArguments &arguments, Stat
     ASSERT_ZE_RESULT_SUCCESS(zeMemFree(levelzero.context, buffer));
 
     // Benchmark
-    for (auto i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         timer.measureStart();
 
         // Create buffer

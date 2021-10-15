@@ -21,7 +21,7 @@
 
 std::string TestCaseArgumentContainer::getCurrentConfig(bool commandLine) const {
     std::ostringstream result;
-    for (auto i = 0; i < arguments.size(); i++) {
+    for (auto i = 0u; i < arguments.size(); i++) {
         if (commandLine) {
             result << "--";
         }

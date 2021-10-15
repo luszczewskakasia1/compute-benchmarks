@@ -57,7 +57,7 @@ static TestResult run(const UnmapBufferArguments &arguments, Statistics &statist
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
     // Benchmark
-    for (int i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         ptr = clEnqueueMapBuffer(opencl.commandQueue, buffer, CL_BLOCKING, mapFlags, 0, arguments.size, 0, nullptr, nullptr, &retVal);
         ASSERT_CL_SUCCESS(retVal);
 

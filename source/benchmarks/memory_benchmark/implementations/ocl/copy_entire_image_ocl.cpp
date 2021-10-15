@@ -66,7 +66,7 @@ static TestResult run(const CopyEntireImageArguments &arguments, Statistics &sta
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
     // Benchmark
-    for (int i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         cl_event profilingEvent{};
         cl_event *eventForEnqueue = arguments.useEvents ? &profilingEvent : nullptr;
 

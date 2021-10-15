@@ -58,7 +58,7 @@ static TestResult run(const WalkerCompletionLatencyArguments &arguments, Statist
     ASSERT_CL_SUCCESS(retVal);
 
     // Benchmark
-    for (int i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         *volatileHostMemory = 0;
         _mm_clflush(hostMemory);
 

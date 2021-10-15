@@ -169,7 +169,7 @@ static TestResult run(const UsmCopyMultipleBlitsArguments &arguments, Statistics
     // Benchmark
     Timer timer;
     const uint64_t timerResolution = levelzero.getTimerResoultion(levelzero.device);
-    for (int i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         timer.measureStart();
         for (PerQueueData &queue : queues) {
             ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(queue.queue,

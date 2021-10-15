@@ -103,7 +103,7 @@ static TestResult run(const KernelAndCopyArguments &arguments, Statistics &stati
     }
 
     // Benchmark
-    for (int i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         // Enqueue
         if (arguments.runKernel) {
             ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(queueForKernel, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));

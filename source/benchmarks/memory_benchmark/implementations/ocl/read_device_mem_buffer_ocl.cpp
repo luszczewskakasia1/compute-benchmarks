@@ -193,7 +193,7 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     ASSERT_CL_SUCCESS(retVal);
 
     // Benchmark
-    for (int i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         cl_event evt;
 
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, clearCacheKernel, 1, nullptr, &clearGws, NULL, 0, nullptr, nullptr));

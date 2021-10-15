@@ -82,7 +82,7 @@ static TestResult run(const BestWalkerSubmissionImmediateArguments &arguments, S
     ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(event));
 
     // Benchmark
-    for (auto i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         *volatileBuffer = 0;
         _mm_clflush(buffer);
 

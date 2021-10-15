@@ -57,7 +57,7 @@ static TestResult run(const FlushTimeArguments &arguments, Statistics &statistic
     ASSERT_CL_SUCCESS(retVal);
 
     // Benchmark
-    for (int i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, lwsForNdr, 0, nullptr, eventForNdr));
         timer.measureStart();
         ASSERT_CL_SUCCESS(clFlush(opencl.commandQueue));

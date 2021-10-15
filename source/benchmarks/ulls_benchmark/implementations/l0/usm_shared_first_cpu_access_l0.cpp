@@ -42,7 +42,7 @@ static TestResult run(const UsmSharedFirstCpuAccessArguments &arguments, Statist
     ASSERT_ZE_RESULT_SUCCESS(zeMemFree(levelzero.context, buffer));
 
     // Benchmark
-    for (auto i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         ASSERT_ZE_RESULT_SUCCESS(zeMemAllocShared(levelzero.context, &deviceAllocationDesc, &hostAllocationDesc, arguments.bufferSize, 0, levelzero.device, &buffer));
 
         timer.measureStart();

@@ -129,7 +129,7 @@ TestResult run(const ReductionArguments4 &arguments, Statistics &statistics) {
     statistics.pushValue(std::chrono::nanoseconds{timeNs}, sizeInBytes, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu, "bw");
 
     // Benchmark
-    for (int i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &profilingEvent));
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, finalKernel, 1, nullptr, &dispatchOne, &dispatchOne, 0, nullptr, &profilingEvent2));
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));

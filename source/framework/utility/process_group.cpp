@@ -21,7 +21,7 @@
 
 ProcessGroup::ProcessGroup(const std::string &binaryName, size_t count)
     : binaryName(binaryName) {
-    for (auto processIndex = 0; processIndex < count; processIndex++) {
+    for (auto processIndex = 0u; processIndex < count; processIndex++) {
         processes.emplace_back(binaryName);
     }
 }

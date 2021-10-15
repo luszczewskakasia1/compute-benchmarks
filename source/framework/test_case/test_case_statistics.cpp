@@ -155,7 +155,7 @@ void TestCaseStatistics::printStatisticsHeader(Configuration::PrintType printTyp
         break;
     }
     case Configuration::PrintType::Csv:
-        for (int columnIndex = 0; columnIndex < columnCount; columnIndex++) {
+        for (auto columnIndex = 0u; columnIndex < columnCount; columnIndex++) {
             const ColumnInfo &column = columns[columnIndex];
             std::cout << column.label;
             if (columnIndex != columnCount - 1) {
@@ -270,7 +270,7 @@ void TestCaseStatistics::printStatisticsString(const std::string &testCaseName, 
     }
     case Configuration::PrintType::Csv: {
         std::cout << testCaseName << ",";
-        for (int column = 1; column < columnCount; column++) {
+        for (auto column = 1u; column < columnCount; column++) {
             std::cout << message;
             if (column != columnCount - 1) {
                 std::cout << ",";
@@ -320,7 +320,7 @@ TestCaseStatistics::Value TestCaseStatistics::Metrics::calculateMedian(const Sam
 TestCaseStatistics::Value TestCaseStatistics::Metrics::calculateStandardDeviation(const SamplesVector &samples, Value mean) {
     const auto samplesCount = samples.size();
     Value diffSum = 0;
-    for (int i = 0; i < samplesCount; i++) {
+    for (auto i = 0u; i < samplesCount; i++) {
         const auto difference = samples[i] - mean;
         diffSum += difference * difference;
     }

@@ -51,7 +51,7 @@ static TestResult run(const NewResourcesSubmissionDeviceArguments &arguments, St
     ASSERT_CL_SUCCESS(retVal);
 
     // Benchmark
-    for (int i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         timer.measureStart();
         buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, sizeInBytes, nullptr, &retVal);
         ASSERT_CL_SUCCESS(retVal);

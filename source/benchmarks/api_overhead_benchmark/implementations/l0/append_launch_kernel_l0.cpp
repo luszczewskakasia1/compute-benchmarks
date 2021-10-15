@@ -67,7 +67,7 @@ static TestResult run(const AppendLaunchKernelArguments &arguments, Statistics &
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));
 
     // Benchmark
-    for (auto i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.context, levelzero.device, &cmdListDesc, &cmdList));
 
         timer.measureStart();

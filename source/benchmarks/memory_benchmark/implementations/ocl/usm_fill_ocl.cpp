@@ -57,7 +57,7 @@ static TestResult run(const UsmFillArguments &arguments, Statistics &statistics)
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
     // Benchmark
-    for (int i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillUsmBuffer(opencl.commandQueue, buffer, arguments.bufferSize, arguments.contents))
 
         cl_event profilingEvent{};

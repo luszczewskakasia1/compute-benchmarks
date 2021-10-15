@@ -57,7 +57,7 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
     // Benchmark
-    for (int i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         if (arguments.sourcePlacement == UsmMemoryPlacement::NonUsm) {
             std::memset(source, 0, arguments.size);
         } else {

@@ -138,7 +138,7 @@ TestResult run(const HelloWorldArguments &arguments, Statistics &statistics, Wor
     // arguments.iterations. Each iteration must call statistics.pushValue to provide the
     // result measured in nanoseconds. The framework will validate that and print a message if
     // we do not comply.
-    for (int i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         cl_event event{};
         cl_event *eventForEnqueue = arguments.useEvents ? &event : nullptr;
 

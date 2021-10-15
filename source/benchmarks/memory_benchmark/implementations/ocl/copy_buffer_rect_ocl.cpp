@@ -61,7 +61,7 @@ static TestResult run(const CopyBufferRectArguments &arguments, Statistics &stat
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
     // Benchmark
-    for (int i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         timer.measureStart();
         ASSERT_CL_SUCCESS(clEnqueueCopyBufferRect(opencl.commandQueue, sourceBuffer, destinationBuffer,
                                                   arguments.origin, arguments.origin, arguments.region,

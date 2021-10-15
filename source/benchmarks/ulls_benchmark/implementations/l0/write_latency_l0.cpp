@@ -87,7 +87,7 @@ static TestResult run(const WriteLatencyArguments &arguments, Statistics &statis
     ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(hEvent2));
 
     // Benchmark
-    for (auto i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         *volatileBuffer = timestampInitial;
         _mm_clflush(buffer);
 

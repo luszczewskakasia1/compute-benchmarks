@@ -96,7 +96,7 @@ static TestResult run(const UsmFillMultipleBlitsArguments &arguments, Statistics
     }
 
     // Benchmark
-    for (int i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         timer.measureStart();
         for (PerQueueData &queue : queues) {
             ASSERT_CL_SUCCESS(clEnqueueMemFillINTEL(queue.queue, queue.fillDst, pattern.get(), arguments.patternSize, queue.fillSize, 0, nullptr, nullptr));

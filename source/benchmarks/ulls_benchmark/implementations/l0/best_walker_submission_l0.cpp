@@ -70,7 +70,7 @@ static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics
     ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
 
     // Benchmark
-    for (auto i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         *volatileBuffer = 0;
         _mm_clflush(buffer);
 

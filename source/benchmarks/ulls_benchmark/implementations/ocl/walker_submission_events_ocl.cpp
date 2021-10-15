@@ -47,7 +47,7 @@ static TestResult run(const WalkerSubmissionEventsArguments &arguments, Statisti
     ASSERT_CL_SUCCESS(retVal);
 
     // Benchmark
-    for (int i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &profilingEvent));
         ASSERT_CL_SUCCESS(clWaitForEvents(1, &profilingEvent));
 

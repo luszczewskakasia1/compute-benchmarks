@@ -95,7 +95,7 @@ static TestResult run(const UsmCopyMultipleBlitsArguments &arguments, Statistics
     }
 
     // Benchmark
-    for (int i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         timer.measureStart();
         for (PerQueueData &queue : queues) {
             ASSERT_CL_SUCCESS(clEnqueueMemcpyINTEL(queue.queue, CL_FALSE, queue.copyDst, queue.copySrc, queue.copySize, 0, nullptr, &queue.event));

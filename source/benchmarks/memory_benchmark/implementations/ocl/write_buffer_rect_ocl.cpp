@@ -58,7 +58,7 @@ static TestResult run(const WriteBufferRectArguments &arguments, Statistics &sta
                                                cpuBuffer.get(), 0, nullptr, nullptr));
 
     // Benchmark
-    for (int i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         timer.measureStart();
         ASSERT_CL_SUCCESS(clEnqueueWriteBufferRect(opencl.commandQueue, buffer, CL_NON_BLOCKING,
                                                    bufferOffset, arguments.origin, arguments.region,

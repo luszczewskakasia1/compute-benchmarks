@@ -97,7 +97,7 @@ TestResult run(const SingleQueueWorkloadSharedBufferArguments &arguments, Statis
     ZE_RESULT_SUCCESS_OR_RETURN_ERROR(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
 
     // Benchmark
-    for (auto i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         synchronization.synchronize(io);
 
         timer.measureStart();

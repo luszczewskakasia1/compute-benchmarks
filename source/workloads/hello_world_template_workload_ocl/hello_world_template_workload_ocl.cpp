@@ -70,7 +70,7 @@ TestResult run(const HelloWorldArguments &arguments, Statistics &statistics, Wor
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
     // Workload
-    for (int i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         cl_event event{};
         cl_event *eventForEnqueue = arguments.useEvents ? &event : nullptr;
 

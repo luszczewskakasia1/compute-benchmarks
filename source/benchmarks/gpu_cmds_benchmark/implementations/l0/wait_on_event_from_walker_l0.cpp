@@ -99,7 +99,7 @@ static TestResult run(const WaitOnEventFromWalkerArguments &arguments, Statistic
     testResources.reset();
 
     // Benchmark
-    for (auto i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         testResources = std::make_unique<TestResourcesForWaitOnWalker>(levelzero, arguments.measuredCommands, beginTimestamp, endTimestamp);
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &testResources->cmdList, nullptr));
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));

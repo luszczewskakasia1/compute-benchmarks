@@ -79,7 +79,7 @@ static TestResult run(const UsmSharedMigrateGpuArguments &arguments, Statistics 
     ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
 
     // Benchmark
-    for (auto i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         for (auto elementIndex = 0u; elementIndex < elementsCount; elementIndex++) {
             buffer[elementIndex] = 0;
         }

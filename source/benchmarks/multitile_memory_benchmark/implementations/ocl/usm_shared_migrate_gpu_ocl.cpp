@@ -65,7 +65,7 @@ static TestResult run(const UsmSharedMigrateGpuArguments &arguments, Statistics 
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
     // Benchmark
-    for (int i = 0; i < arguments.iterations; i++) {
+    for (auto i = 0u; i < arguments.iterations; i++) {
         // Migrate whole resource to CPU
         for (auto elementIndex = 0u; elementIndex < elementsCount; elementIndex++) {
             buffer[elementIndex] = 0;
