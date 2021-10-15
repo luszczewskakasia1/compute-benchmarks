@@ -54,7 +54,7 @@ cl_int HostptrReuseHelper::allocateBufferHostptr(Opencl &opencl,
 cl_int HostptrReuseHelper::deallocateBufferHostptr(Alloc alloc) {
     switch (alloc.reuseMode) {
     case HostptrReuseMode::None:
-        delete[](alloc.ptr);
+        delete[](static_cast<uint8_t *>(alloc.ptr));
         break;
     case HostptrReuseMode::Usm:
         CL_SUCCESS_OR_RETURN(alloc.clMemFreeINTEL(alloc.context, alloc.ptr));
