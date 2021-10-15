@@ -110,8 +110,9 @@ function (add_benchmark_for_api BASE_TARGET_NAME APPEND_API_TO_TARGET_NAME REGIS
     # Ensure kernels reside inside benchmark's working directory
     copy_kernels_to_bin_directory(${TARGET_NAME})
 
-    # Create directory structure in Visual Studio
+    # Additional setup
     setup_vs_folders(${TARGET_NAME} ${BENCHMARKS_SOURCE_ROOT})
+    setup_warning_options(${TARGET_NAME})
 endfunction()
 
 function(add_benchmark_dependency_on_workload BENCHMARK_BASE_NAME WORKLOAD API)

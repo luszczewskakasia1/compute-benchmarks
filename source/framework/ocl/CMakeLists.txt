@@ -48,6 +48,7 @@ target_include_directories(${TARGET_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/third_party
 set_target_properties(${TARGET_NAME} PROPERTIES FOLDER framework)
 add_subdirectories()
 setup_vs_folders(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
+setup_warning_options(${TARGET_NAME})
 if (MSVC)
     set_target_properties(${TARGET_NAME} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif()

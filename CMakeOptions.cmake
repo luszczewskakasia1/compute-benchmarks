@@ -51,6 +51,7 @@ benchmark_option(BUILD_HELLO_WORLD OFF)
 benchmark_option(GENERATE_DOCS ON)
 benchmark_option(BUILD_TOOLS ON)
 benchmark_option(LOG_BENCHMARK_TARGETS OFF)
+benchmark_option(ALLOW_WARNINGS ON)
 
 # Additional checks
 if (NOT BUILD_L0 AND NOT BUILD_OCL)

@@ -33,5 +33,6 @@ if (MSVC)
     set_target_properties(${TARGET_NAME} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif()
 
-# Create directory structure in Visual Studio
+# Additional setup
 setup_vs_folders(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
+setup_warning_options(${TARGET_NAME})

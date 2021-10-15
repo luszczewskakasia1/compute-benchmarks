@@ -41,6 +41,20 @@ function(setup_vs_folders TARGET_NAME BASE_DIR)
     endif()
 endfunction()
 
+function(setup_warning_options TARGET_NAME)
+    target_compile_options(${TARGET_NAME} PRIVATE
+      $<$<CXX_COMPILER_ID:MSVC>:/W4>
+      $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
+    )
+
+    if(NOT ALLOW_WARNINGS)
+        target_compile_options(${TARGET_NAME} PRIVATE
+          $<$<CXX_COMPILER_ID:MSVC>:/WX>
+          $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Werror>
+        )
+    endif()
+endfunction(setup_warning_options)
+
 function(negate_flag INPUT OUTPUT)
     if(INPUT)
         set(${OUTPUT} OFF PARENT_SCOPE)
