@@ -36,7 +36,7 @@ struct EnumArgument : Argument {
 
     bool validate() const override {
         const auto valuesCount = sizeof(DerivedType::enumValues) / sizeof(DerivedType::enumValues[0]);
-        for (auto valueIndex = 0; valueIndex < valuesCount; valueIndex++) {
+        for (auto valueIndex = 0u; valueIndex < valuesCount; valueIndex++) {
             if (this->value == DerivedType::enumValues[valueIndex]) {
                 return true;
             }
@@ -47,7 +47,7 @@ struct EnumArgument : Argument {
   protected:
     std::string toStringValue() const override {
         const auto valuesCount = sizeof(DerivedType::enumValues) / sizeof(DerivedType::enumValues[0]);
-        for (auto valueIndex = 0; valueIndex < valuesCount; valueIndex++) {
+        for (auto valueIndex = 0u; valueIndex < valuesCount; valueIndex++) {
             if (this->value == DerivedType::enumValues[valueIndex]) {
                 return DerivedType::enumValuesNames[valueIndex];
             }
@@ -58,7 +58,7 @@ struct EnumArgument : Argument {
     void parseImpl(const std::string &value) override {
         const std::string valueLower = toLower(value);
         const auto valuesCount = sizeof(DerivedType::enumValues) / sizeof(DerivedType::enumValues[0]);
-        for (auto valueIndex = 0; valueIndex < valuesCount; valueIndex++) {
+        for (auto valueIndex = 0u; valueIndex < valuesCount; valueIndex++) {
             if (valueLower == toLower(DerivedType::enumValuesNames[valueIndex])) {
                 this->value = DerivedType::enumValues[valueIndex];
                 return;
