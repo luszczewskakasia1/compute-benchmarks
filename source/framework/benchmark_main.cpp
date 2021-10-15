@@ -41,7 +41,7 @@ int BenchmarkMain::printVersion(bool enableWarning, const char *prefix) {
     return 0;
 }
 
-int BenchmarkMain::generateDocs(const std::string &docsFileName) {
+int BenchmarkMain::generateDocs() {
     const std::string illegalCharacters = " -:='\"<>|{}[]/.,?\\+$";
 
     // Print benchmark name and description
@@ -213,7 +213,7 @@ int BenchmarkMain::main() {
     // Run diagnostic activities
     const Configuration &configuration = Configuration::get();
     if (configuration.generateDocs) {
-        return generateDocs(configuration.generateDocsPath);
+        return generateDocs();
     }
     if (configuration.hwInfo) {
         DeviceInfo::printAvailableDevices();

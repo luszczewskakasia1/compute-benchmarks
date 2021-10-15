@@ -50,7 +50,6 @@ struct Configuration : ArgumentContainer {
     BooleanFlagArgument version;
     BooleanFlagArgument hwInfo;
     BooleanFlagArgument generateDocs;
-    StringArgument generateDocsPath;
 
     // OCL params
     IntegerArgument oclPlatformIndex;

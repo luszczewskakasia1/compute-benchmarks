@@ -34,7 +34,7 @@ class BenchmarkMain {
 
     int printVersion(bool enableWarning, const char *prefix = "");
     void printHelp();
-    int generateDocs(const std::string &docsFileName);
+    int generateDocs();
 
     int executeSingleTest(const std::string &testName, CommandLineArguments &commandLineArguments);
     int executeAllTests(CommandLineArguments &commandLineArguments);
