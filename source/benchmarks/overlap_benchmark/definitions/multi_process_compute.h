@@ -23,8 +23,8 @@ struct MultiProcessComputeArguments : TestCaseArgumentContainer {
     MultipleTilesSelectionArgument deviceSelection;
     PositiveIntegerArgument processesPerTile;
     PositiveIntegerArgument workgroupsPerProcess;
-    PositiveIntegerArgument operationsPerKernelCount;
     BooleanArgument synchronize;
+    PositiveIntegerArgument operationsPerKernelCount;
 
     MultiProcessComputeArguments()
         : deviceSelection(*this, "tiles", "Tiles for execution"),
