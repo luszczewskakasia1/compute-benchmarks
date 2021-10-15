@@ -44,7 +44,7 @@ endfunction()
 function(setup_warning_options TARGET_NAME)
     target_compile_options(${TARGET_NAME} PRIVATE
       $<$<CXX_COMPILER_ID:MSVC>:/W4>
-      $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
+      $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Wno-missing-field-initializers>
     )
 
     if(NOT ALLOW_WARNINGS)
