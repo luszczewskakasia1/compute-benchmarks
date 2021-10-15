@@ -18,24 +18,14 @@
 #include "framework/argument/abstract/argument.h"
 #include "framework/utility/string_utils.h"
 
-struct IntegerArgument : Argument {
+struct IntegerArgumentBase : Argument {
     using Argument::Argument;
 
-    operator size_t() const {
-        return value;
-    }
-
-    IntegerArgument &operator=(size_t newValue) {
-        this->value = newValue;
-        markAsParsed();
-        return *this;
-    }
-
-    size_t getSizeOf() const {
+    int64_t getSizeOf() const {
         return sizeof(value);
     }
 
-    const size_t *getAddressOf() const {
+    const int64_t *getAddressOf() const {
         return &value;
     }
 
@@ -48,14 +38,28 @@ struct IntegerArgument : Argument {
         this->value = std::atoi(valueToParse.c_str());
     }
 
-    size_t value = 0u;
+    int64_t value = 0u;
 };
 
-struct PositiveIntegerArgument : IntegerArgument {
-    using IntegerArgument::IntegerArgument;
+struct IntegerArgument : IntegerArgumentBase {
+    using IntegerArgumentBase::IntegerArgumentBase;
+
+    operator int64_t() const {
+        return value;
+    }
+
+    IntegerArgument &operator=(int64_t newValue) {
+        this->value = newValue;
+        markAsParsed();
+        return *this;
+    }
+};
+
+struct PositiveIntegerArgument : IntegerArgumentBase {
+    using IntegerArgumentBase::IntegerArgumentBase;
 
     operator size_t() const {
-        return value;
+        return static_cast<size_t>(value);
     }
 
     PositiveIntegerArgument &operator=(size_t newValue) {
@@ -69,11 +73,11 @@ struct PositiveIntegerArgument : IntegerArgument {
     }
 };
 
-struct NonNegativeIntegerArgument : IntegerArgument {
-    using IntegerArgument::IntegerArgument;
+struct NonNegativeIntegerArgument : IntegerArgumentBase {
+    using IntegerArgumentBase::IntegerArgumentBase;
 
     operator size_t() const {
-        return value;
+        return static_cast<size_t>(value);
     }
 
     NonNegativeIntegerArgument &operator=(size_t newValue) {
@@ -83,7 +87,7 @@ struct NonNegativeIntegerArgument : IntegerArgument {
     }
 
     bool validate() const override {
-        return true;
+        return this->value >= 0;
     }
 };
 
