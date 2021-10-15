@@ -83,7 +83,7 @@ struct NonNegativeIntegerArgument : IntegerArgument {
     }
 
     bool validate() const override {
-        return this->value >= 0;
+        return true;
     }
 };
 
