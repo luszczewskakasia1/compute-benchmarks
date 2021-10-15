@@ -34,7 +34,6 @@ static TestResult run(const EmptyKernelArguments &arguments, Statistics &statist
     ASSERT_ZE_RESULT_SUCCESS(zeContextMakeMemoryResident(levelzero.context, levelzero.device, buffer, bufferSize))
     uint64_t *beginTimestamp = static_cast<uint64_t *>(buffer);
     uint64_t *endTimestamp = beginTimestamp + 1;
-    uint64_t *addressForWrite = beginTimestamp + 2;
 
     // Create kernel
     auto spirvModule = FileHelper::loadBinaryFile("gpu_cmds_benchmark_empty_kernel.spv");

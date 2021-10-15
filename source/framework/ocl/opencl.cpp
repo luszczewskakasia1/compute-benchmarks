@@ -27,7 +27,6 @@ Opencl::Opencl(const QueueProperties &queueProperties, const ContextProperties &
 
     auto platformIndex = Configuration::get().oclPlatformIndex;
     cl_uint numDevices;
-    cl_int retVal = CL_SUCCESS;
 
     if (platformIndex == -1) {
         for (uint32_t localPlatformIndex = 0u; localPlatformIndex < numPlatforms; localPlatformIndex++) {

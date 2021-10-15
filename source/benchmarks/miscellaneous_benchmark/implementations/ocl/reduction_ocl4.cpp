@@ -70,7 +70,6 @@ TestResult run(const ReductionArguments4 &arguments, Statistics &statistics) {
 
     // Prepare data
     const size_t sizeInBytes = (arguments.numberOfElements + 1) * sizeof(int);
-    auto lastIndexOffset = arguments.numberOfElements * sizeof(int);
     auto data = std::make_unique<int[]>(arguments.numberOfElements + 1);
     size_t expectedSum = 0u;
     size_t value = 0u;

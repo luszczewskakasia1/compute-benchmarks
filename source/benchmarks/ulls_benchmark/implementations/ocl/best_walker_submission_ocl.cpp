@@ -55,7 +55,6 @@ static TestResult run(const BestWalkerSubmissionArguments &arguments, Statistics
     const size_t lws = 1;
     for (int i = 0; i < arguments.iterations; i++) {
         // Warmup, kernel
-        size_t warmupOffset = 8;
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         ASSERT_CL_SUCCESS(retVal);

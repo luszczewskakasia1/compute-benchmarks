@@ -54,7 +54,6 @@ static TestResult run(const CopyBufferRectArguments &arguments, Statistics &stat
     }
 
     // Warmup
-    size_t bufferOffset[3] = {};
     ASSERT_CL_SUCCESS(clEnqueueCopyBufferRect(opencl.commandQueue, sourceBuffer, destinationBuffer,
                                               arguments.origin, arguments.origin, arguments.region,
                                               arguments.rPitch, arguments.sPitch, arguments.rPitch, arguments.sPitch,

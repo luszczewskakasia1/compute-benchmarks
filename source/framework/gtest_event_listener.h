@@ -29,7 +29,7 @@ class AllTestsGtestListener : public ::testing::EmptyTestEventListener {
         std::ostringstream errorMessage;
     } currentTestCaseErrorInfo{};
 
-    void OnTestProgramStart(const ::testing::UnitTest &unitTest) override {
+    void OnTestProgramStart([[maybe_unused]] const ::testing::UnitTest &unitTest) override {
         if (!Configuration::get().noHeaders && Configuration::get().printType != Configuration::PrintType::Csv) {
             std::cout << "Running " << Configuration::get().iterations << " iterations of each benchmark\n\n";
         }
@@ -37,11 +37,11 @@ class AllTestsGtestListener : public ::testing::EmptyTestEventListener {
             TestCaseStatistics::printStatisticsHeader(Configuration::get().printType);
         }
     }
-    void OnTestProgramEnd(const ::testing::UnitTest &unitTest) override {
+    void OnTestProgramEnd([[maybe_unused]] const ::testing::UnitTest &unitTest) override {
         dumpErrors();
     }
 
-    void OnTestStart(const ::testing::TestInfo &testCase) override {
+    void OnTestStart([[maybe_unused]] const ::testing::TestInfo &testCase) override {
         currentTestCaseErrorInfo = {};
     }
     void OnTestPartResult(const ::testing::TestPartResult &testPartResult) override {

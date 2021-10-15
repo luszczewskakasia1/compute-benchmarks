@@ -31,7 +31,11 @@ void WorkloadStatistics::pushValue(Clock::duration time, MeasurementUnit unit, M
     result << timeNanoseconds << ' ';
 }
 
-void WorkloadStatistics::pushValue(Clock::duration time, uint64_t size, MeasurementUnit unit, MeasurementType type, const std::string &description) {
+void WorkloadStatistics::pushValue([[maybe_unused]] Clock::duration time,
+                                   [[maybe_unused]] uint64_t size,
+                                   [[maybe_unused]] MeasurementUnit unit,
+                                   MeasurementType type,
+                                   const std::string &description) {
     FATAL_ERROR_IF(type != MeasurementType::Unknown, "WorkloadStatistics does not support setting measurement type");
     FATAL_ERROR_IF(description != "", "WorkloadStatistics does not support multiple statistics groups");
     FATAL_ERROR("Not implemented");

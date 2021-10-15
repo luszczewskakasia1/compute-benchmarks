@@ -29,8 +29,6 @@ size_t MathOperationHelper::getArgumentsCount(MathOperation operation) {
     case MathOperation::CmpXchg:
         return 3;
     }
-
-    return operation == MathOperation::Inc || operation == MathOperation::Dec;
 }
 
 bool MathOperationHelper::requiresIntelGlobalAtomicsExtension(MathOperation operation, DataType type) {

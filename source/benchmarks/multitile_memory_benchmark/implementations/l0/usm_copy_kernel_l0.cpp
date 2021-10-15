@@ -57,7 +57,7 @@ static TestResult run(const UsmCopyKernelArguments &arguments, Statistics &stati
 
     // Configure dispath parameters
     uint32_t wgsX{}, wgsY{}, wgsZ{};
-    const uint32_t elementsCount = arguments.size / sizeof(int);
+    const uint32_t elementsCount = static_cast<uint32_t>(arguments.size) / sizeof(int);
     ASSERT_ZE_RESULT_SUCCESS(zeKernelSuggestGroupSize(kernel, elementsCount, 1u, 1u, &wgsX, &wgsY, &wgsZ));
     const uint32_t wgc = elementsCount / wgsX;
     ASSERT_ZE_RESULT_SUCCESS(zeKernelSetGroupSize(kernel, wgsX, wgsY, wgsZ));

@@ -36,6 +36,6 @@ class WorkloadIoWindows : public WorkloadIo {
     }
 };
 
-std::unique_ptr<WorkloadIo> WorkloadIo::create(const WorkloadArgumentContainer &arguments) {
+std::unique_ptr<WorkloadIo> WorkloadIo::create([[maybe_unused]] const WorkloadArgumentContainer &arguments) {
     return std::unique_ptr<WorkloadIo>(new WorkloadIoWindows());
 }
