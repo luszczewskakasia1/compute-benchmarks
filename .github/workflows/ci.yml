@@ -33,6 +33,7 @@ jobs:
           cmake ..                                                  \
             -DCMAKE_BUILD_TYPE=Release                              \
             -DGENERATE_DOCS=ON                                      \
+            -DALLOW_WARNINGS=OFF                                    \
             -DBUILD_HELLO_WORLD=ON                                  \
             -DBUILD_SINGLE_API_BINARIES=ON                          \
             -DBUILD_ALL_API_BINARIES=ON                             \
