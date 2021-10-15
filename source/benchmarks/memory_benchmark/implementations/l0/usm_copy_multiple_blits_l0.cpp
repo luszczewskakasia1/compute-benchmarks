@@ -77,7 +77,6 @@ static TestResult run(const UsmCopyMultipleBlitsArguments &arguments, Statistics
 
     // Create event
     ze_event_pool_handle_t eventPool{};
-    ze_event_handle_t event{};
     ze_event_pool_desc_t eventPoolDesc{ZE_STRUCTURE_TYPE_EVENT_POOL_DESC};
     eventPoolDesc.flags = ZE_EVENT_POOL_FLAG_KERNEL_TIMESTAMP | ZE_EVENT_POOL_FLAG_HOST_VISIBLE;
     eventPoolDesc.count = maxNumberOfEngines;
