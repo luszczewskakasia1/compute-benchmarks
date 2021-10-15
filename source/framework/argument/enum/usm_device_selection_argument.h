@@ -30,8 +30,8 @@ template <bool allowHost, bool allowDevice, bool allowShared>
 struct UsmDeviceSelectionArgumentBase : BitfieldEnumArgument<DeviceSelectionArgumentBaseTraits, DeviceSelection> {
     using BitfieldEnumArgument::BitfieldEnumArgument;
 
-    UsmDeviceSelectionArgumentBase &operator=(EnumType value) {
-        this->value = value;
+    UsmDeviceSelectionArgumentBase &operator=(EnumType newValue) {
+        this->value = newValue;
         markAsParsed();
         return *this;
     }

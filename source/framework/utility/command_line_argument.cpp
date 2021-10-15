@@ -67,9 +67,9 @@ void CommandLineArgument::markAsProcessed() {
     this->processed = true;
 }
 
-bool CommandLineArgument::isKeyEqualTo(const std::string &key) const {
+bool CommandLineArgument::isKeyEqualTo(const std::string &otherKey) const {
     if (!valid) {
         return false;
     }
-    return this->key == key;
+    return this->key == otherKey;
 }

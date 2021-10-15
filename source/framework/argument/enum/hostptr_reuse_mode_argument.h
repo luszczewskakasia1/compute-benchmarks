@@ -20,8 +20,8 @@
 
 struct HostptrBufferReuseModeArgument : EnumArgument<HostptrBufferReuseModeArgument, HostptrReuseMode> {
     using EnumArgument::EnumArgument;
-    ThisType &operator=(EnumType value) {
-        this->value = value;
+    ThisType &operator=(EnumType newValue) {
+        this->value = newValue;
         markAsParsed();
         return *this;
     }
@@ -34,8 +34,8 @@ struct HostptrBufferReuseModeArgument : EnumArgument<HostptrBufferReuseModeArgum
 
 struct HostptrImageReuseModeArgument : EnumArgument<HostptrImageReuseModeArgument, HostptrReuseMode> {
     using EnumArgument::EnumArgument;
-    ThisType &operator=(EnumType value) {
-        this->value = value;
+    ThisType &operator=(EnumType newValue) {
+        this->value = newValue;
         markAsParsed();
         return *this;
     }

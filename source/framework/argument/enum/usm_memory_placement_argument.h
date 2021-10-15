@@ -20,8 +20,8 @@
 
 struct UsmMemoryPlacementArgument : EnumArgument<UsmMemoryPlacementArgument, UsmMemoryPlacement> {
     using EnumArgument::EnumArgument;
-    ThisType &operator=(EnumType value) {
-        this->value = value;
+    ThisType &operator=(EnumType newValue) {
+        this->value = newValue;
         markAsParsed();
         return *this;
     }

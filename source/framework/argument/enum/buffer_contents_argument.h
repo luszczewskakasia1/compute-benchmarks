@@ -20,8 +20,8 @@
 
 struct BufferContentsArgument : EnumArgument<BufferContentsArgument, BufferContents> {
     using EnumArgument::EnumArgument;
-    ThisType &operator=(EnumType value) {
-        this->value = value;
+    ThisType &operator=(EnumType newValue) {
+        this->value = newValue;
         markAsParsed();
         return *this;
     }

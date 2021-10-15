@@ -28,8 +28,8 @@ struct BitmaskArgument : Argument {
         return value;
     }
 
-    BitmaskArgument &operator=(Bitset value) {
-        this->value = value;
+    BitmaskArgument &operator=(Bitset newValue) {
+        this->value = newValue;
         markAsParsed();
         return *this;
     }
@@ -54,21 +54,21 @@ struct BitmaskArgument : Argument {
         return value.to_string();
     }
 
-    void parseImpl(const std::string &value) override {
+    void parseImpl(const std::string &valueToParse) override {
         this->valid = false;
 
-        if (value.size() > bitsCount) {
+        if (valueToParse.size() > bitsCount) {
             return;
         }
-        if (value.size() == 0) {
+        if (valueToParse.size() == 0) {
             return;
         }
         const auto isInvalidCharacter = [](char c) { return c != '0' && c != '1'; };
-        if (std::any_of(value.begin(), value.end(), isInvalidCharacter)) {
+        if (std::any_of(valueToParse.begin(), valueToParse.end(), isInvalidCharacter)) {
             return;
         }
 
-        this->value = Bitset(value);
+        this->value = Bitset(valueToParse);
         if (!canBeAllZeros && this->value.none()) {
             return;
         }

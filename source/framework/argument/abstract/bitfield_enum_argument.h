@@ -85,16 +85,16 @@ struct BitfieldEnumArgument : Argument {
         return result.str();
     }
 
-    void parseImpl(const std::string &value) override {
-        const std::string valueLower = toLower(value);
+    void parseImpl(const std::string &valueToParse) override {
+        const std::string valueLower = toLower(valueToParse);
 
         size_t startIndex = 0;
         size_t endIndex = std::string::npos;
         this->value = DerivedType::zeroEnumValue;
-        while (startIndex <= value.size()) {
-            endIndex = value.find(separator, startIndex);
+        while (startIndex <= valueToParse.size()) {
+            endIndex = valueToParse.find(separator, startIndex);
             if (endIndex == std::string::npos) {
-                endIndex = value.size();
+                endIndex = valueToParse.size();
             }
 
             const std::string singleValue = valueLower.substr(startIndex, endIndex - startIndex);

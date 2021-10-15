@@ -51,10 +51,10 @@ class BlitSizeAssigner {
     }
 
     std::pair<size_t, size_t> getSpaceForBlit(bool isMainCopyEngine) {
-        const size_t offset = this->offset;
-        const size_t size = getCopySizeForEngine(isMainCopyEngine);
-        this->offset += size;
-        return {offset, size};
+        const size_t offsetForBlit = this->offset;
+        const size_t sizeForBlit = getCopySizeForEngine(isMainCopyEngine);
+        this->offset += sizeForBlit;
+        return {offsetForBlit, sizeForBlit};
     }
 
     void validate() const {

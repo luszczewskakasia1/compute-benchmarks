@@ -24,8 +24,8 @@ struct BooleanFlagArgument : Argument {
         return value;
     }
 
-    BooleanFlagArgument &operator=(bool value) {
-        this->value = value;
+    BooleanFlagArgument &operator=(bool newValue) {
+        this->value = newValue;
         markAsParsed();
         return *this;
     }
@@ -39,13 +39,13 @@ struct BooleanFlagArgument : Argument {
         return std::to_string(this->value);
     }
 
-    void parseImpl(const std::string &value) override {
+    void parseImpl(const std::string &valueToParse) override {
         this->value = true;
-        this->isValid = value.empty();
+        this->isValid = valueToParse.empty();
     }
 
-    std::string getHelpEntry(const std::string &key) const override {
-        return std::string("--") + key;
+    std::string getHelpEntry(const std::string &argumentKey) const override {
+        return std::string("--") + argumentKey;
     }
 
     bool value = false;

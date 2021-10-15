@@ -116,9 +116,9 @@ ze_context_handle_t LevelZero::createContext(const ContextProperties &contextPro
     }
 
     const ze_context_desc_t contextDesc{ZE_STRUCTURE_TYPE_CONTEXT_DESC};
-    ze_context_handle_t context;
-    EXPECT_ZE_RESULT_SUCCESS(zeContextCreate(driver, &contextDesc, &context));
-    return context;
+    ze_context_handle_t contextHandle;
+    EXPECT_ZE_RESULT_SUCCESS(zeContextCreate(driver, &contextDesc, &contextHandle));
+    return contextHandle;
 }
 
 QueueFamiliesHelper::QueueDesc LevelZero::createQueue(const QueueProperties &queueProperties) {
@@ -141,9 +141,9 @@ QueueFamiliesHelper::QueueDesc LevelZero::createQueue(const QueueProperties &que
     return *queueDesc;
 }
 
-ze_command_queue_handle_t LevelZero::createQueue(ze_device_handle_t device, ze_command_queue_desc_t desc) {
+ze_command_queue_handle_t LevelZero::createQueue(ze_device_handle_t deviceHandle, ze_command_queue_desc_t desc) {
     ze_command_queue_handle_t queue = {};
-    EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueCreate(this->context, device, &desc, &queue));
+    EXPECT_ZE_RESULT_SUCCESS(zeCommandQueueCreate(this->context, deviceHandle, &desc, &queue));
     this->commandQueues.push_back(queue);
     return queue;
 }

@@ -36,8 +36,8 @@ struct QueueProperties {
             .setDeviceSelection(Configuration::get().subDeviceSelection);
     }
 
-    QueueProperties &setProfiling(bool profiling) {
-        this->profiling = profiling;
+    QueueProperties &setProfiling(bool newValue) {
+        this->profiling = newValue;
         return *this;
     }
 
@@ -56,8 +56,8 @@ struct QueueProperties {
         return *this;
     }
 
-    QueueProperties &setOoq(bool ooq) {
-        this->ooq = ooq;
+    QueueProperties &setOoq(bool newValue) {
+        this->ooq = newValue;
         return *this;
     }
 
@@ -71,9 +71,9 @@ struct QueueProperties {
         return *this;
     }
 
-    QueueProperties &setDeviceSelection(DeviceSelection deviceSelection) {
-        FATAL_ERROR_UNLESS(DeviceSelectionHelper::hasSingleDevice(deviceSelection), "Queue can be created only on a single device");
-        this->deviceSelection = deviceSelection;
+    QueueProperties &setDeviceSelection(DeviceSelection newValue) {
+        FATAL_ERROR_UNLESS(DeviceSelectionHelper::hasSingleDevice(newValue), "Queue can be created only on a single device");
+        this->deviceSelection = newValue;
         return *this;
     }
 

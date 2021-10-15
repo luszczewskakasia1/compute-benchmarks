@@ -25,8 +25,8 @@ struct IntegerArgument : Argument {
         return value;
     }
 
-    IntegerArgument &operator=(size_t value) {
-        this->value = value;
+    IntegerArgument &operator=(size_t newValue) {
+        this->value = newValue;
         markAsParsed();
         return *this;
     }
@@ -44,8 +44,8 @@ struct IntegerArgument : Argument {
         return std::to_string(this->value);
     }
 
-    void parseImpl(const std::string &value) override {
-        this->value = std::atoi(value.c_str());
+    void parseImpl(const std::string &valueToParse) override {
+        this->value = std::atoi(valueToParse.c_str());
     }
 
     size_t value = 0u;
@@ -58,8 +58,8 @@ struct PositiveIntegerArgument : IntegerArgument {
         return value;
     }
 
-    PositiveIntegerArgument &operator=(size_t value) {
-        this->value = value;
+    PositiveIntegerArgument &operator=(size_t newValue) {
+        this->value = newValue;
         markAsParsed();
         return *this;
     }
@@ -76,8 +76,8 @@ struct NonNegativeIntegerArgument : IntegerArgument {
         return value;
     }
 
-    NonNegativeIntegerArgument &operator=(size_t value) {
-        this->value = value;
+    NonNegativeIntegerArgument &operator=(size_t newValue) {
+        this->value = newValue;
         markAsParsed();
         return *this;
     }
@@ -90,8 +90,8 @@ struct NonNegativeIntegerArgument : IntegerArgument {
 struct ByteSizeArgument : PositiveIntegerArgument {
     using PositiveIntegerArgument::PositiveIntegerArgument;
 
-    ByteSizeArgument &operator=(size_t value) {
-        this->value = value;
+    ByteSizeArgument &operator=(size_t newValue) {
+        this->value = newValue;
         markAsParsed();
         return *this;
     }
@@ -116,24 +116,24 @@ struct ByteSizeArgument : PositiveIntegerArgument {
         return std::to_string(currentValue) + units[currentUnit];
     }
 
-    void parseImpl(const std::string &value) override {
+    void parseImpl(const std::string &valueToParse) override {
         const std::string units[] = {"kb", "mb", "gb", "b", ""};
         const size_t unitMultipliers[] = {1024, 1024 * 1024, 1024 * 1024 * 1024, 1, 1};
         const auto unitCount = sizeof(units) / sizeof(units[0]);
         static_assert(unitCount == sizeof(unitMultipliers) / sizeof(unitMultipliers[0]));
 
-        const std::string valueLower = toLower(value);
+        const std::string valueToParseLower = toLower(valueToParse);
         std::string valueWithoutUnit{};
         auto currentUnit = 0u;
         for (; currentUnit < unitCount; currentUnit++) {
-            if (valueLower.length() < units[currentUnit].length()) {
+            if (valueToParseLower.length() < units[currentUnit].length()) {
                 continue;
             }
 
-            const auto unitPosition = valueLower.rfind(units[currentUnit]);
-            const auto expectedUnitPosition = valueLower.length() - units[currentUnit].length();
+            const auto unitPosition = valueToParseLower.rfind(units[currentUnit]);
+            const auto expectedUnitPosition = valueToParseLower.length() - units[currentUnit].length();
             if (unitPosition == expectedUnitPosition) {
-                valueWithoutUnit = valueLower.substr(0, unitPosition);
+                valueWithoutUnit = valueToParseLower.substr(0, unitPosition);
                 break;
             }
         }
@@ -153,8 +153,8 @@ struct BooleanArgument : Argument {
         return value != 0;
     }
 
-    BooleanArgument &operator=(bool value) {
-        this->value = value;
+    BooleanArgument &operator=(bool newValue) {
+        this->value = newValue;
         markAsParsed();
         return *this;
     }
@@ -168,8 +168,8 @@ struct BooleanArgument : Argument {
         return std::to_string(this->value);
     }
 
-    void parseImpl(const std::string &value) override {
-        this->value = std::atoi(value.c_str());
+    void parseImpl(const std::string &valueToParse) override {
+        this->value = std::atoi(valueToParse.c_str());
     }
 
     int value = -1;

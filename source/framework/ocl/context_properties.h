@@ -29,8 +29,8 @@ struct ContextProperties {
             .setDeviceSelection(Configuration::get().subDeviceSelection);
     }
 
-    ContextProperties &setDeviceSelection(DeviceSelection deviceSelection) {
-        this->deviceSelection = deviceSelection;
+    ContextProperties &setDeviceSelection(DeviceSelection newValue) {
+        this->deviceSelection = newValue;
         return *this;
     }
 

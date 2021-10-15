@@ -31,8 +31,8 @@ struct StringListArgument : Argument {
         return value;
     }
 
-    StringListArgument &operator=(const std::vector<std::string> &value) {
-        this->value = value;
+    StringListArgument &operator=(const std::vector<std::string> &newValue) {
+        this->value = newValue;
         this->isValid = true;
         markAsParsed();
         return *this;
@@ -47,8 +47,8 @@ struct StringListArgument : Argument {
         FATAL_ERROR("ArgFilterArgument should not be printed");
     }
 
-    void parseImpl(const std::string &value) override {
-        for (const auto &filter : splitString(value)) {
+    void parseImpl(const std::string &valueToParse) override {
+        for (const auto &filter : splitString(valueToParse)) {
             this->value.push_back(filter);
         }
     }

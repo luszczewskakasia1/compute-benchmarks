@@ -27,8 +27,8 @@ struct StringArgument : Argument {
         return value;
     }
 
-    StringArgument &operator=(const std::string &value) {
-        this->value = value;
+    StringArgument &operator=(const std::string &newValue) {
+        this->value = newValue;
         this->isValid = true;
         markAsParsed();
         return *this;
@@ -43,8 +43,8 @@ struct StringArgument : Argument {
         return value;
     }
 
-    void parseImpl(const std::string &value) override {
-        this->value = value;
+    void parseImpl(const std::string &valueToParse) override {
+        this->value = valueToParse;
     }
 
     std::string value = {};

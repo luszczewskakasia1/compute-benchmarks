@@ -82,13 +82,13 @@ struct LevelZero {
     }
     ze_device_properties_t getDeviceProperties() const { return getDeviceProperties(this->device); }
     ze_device_properties_t getDeviceProperties(DeviceSelection deviceSelection) const { return getDeviceProperties(getDevice(deviceSelection)); }
-    ze_device_properties_t getDeviceProperties(ze_device_handle_t device) const {
+    ze_device_properties_t getDeviceProperties(ze_device_handle_t deviceHandle) const {
         ze_device_properties_t deviceProperties{ZE_STRUCTURE_TYPE_DEVICE_PROPERTIES};
-        EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetProperties(device, &deviceProperties));
+        EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetProperties(deviceHandle, &deviceProperties));
         return deviceProperties;
     }
     uint64_t getTimerResoultion(DeviceSelection deviceSelection) const { return getDeviceProperties(deviceSelection).timerResolution; }
-    uint64_t getTimerResoultion(ze_device_handle_t device) const { return getDeviceProperties(device).timerResolution; }
+    uint64_t getTimerResoultion(ze_device_handle_t deviceHandle) const { return getDeviceProperties(deviceHandle).timerResolution; }
 
     void initializeImportHostPointerExtension(const ExtensionProperties &extensionProperties);
 

@@ -46,7 +46,7 @@ static TestResult run(const UsmSharedFirstCpuAccessArguments &arguments, Statist
 
     // Benchmark
     for (int i = 0; i < arguments.iterations; i++) {
-        auto buffer = clSharedMemAllocINTEL(opencl.context, opencl.device, properties, arguments.bufferSize, 0u, &retVal);
+        buffer = clSharedMemAllocINTEL(opencl.context, opencl.device, properties, arguments.bufferSize, 0u, &retVal);
         ASSERT_CL_SUCCESS(retVal);
 
         timer.measureStart();

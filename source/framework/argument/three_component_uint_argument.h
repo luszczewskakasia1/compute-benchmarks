@@ -27,17 +27,17 @@ struct ThreeComponentUintArgument : Argument {
         return value;
     }
 
-    ThreeComponentUintArgument &operator=(TupleType value) {
-        assign(value);
+    ThreeComponentUintArgument &operator=(TupleType newValue) {
+        assign(newValue);
         markAsParsed();
         return *this;
     }
 
   protected:
-    void assign(TupleType value) {
-        this->value[0] = std::get<0>(value);
-        this->value[1] = std::get<1>(value);
-        this->value[2] = std::get<2>(value);
+    void assign(TupleType newValue) {
+        this->value[0] = std::get<0>(newValue);
+        this->value[1] = std::get<1>(newValue);
+        this->value[2] = std::get<2>(newValue);
     }
 
     std::string toStringValue() const override {
@@ -48,18 +48,18 @@ struct ThreeComponentUintArgument : Argument {
         return result.str();
     }
 
-    void parseImpl(const std::string &value) override {
-        const auto colonPos1 = value.find(":");
-        const auto colonPos2 = value.find(":", colonPos1 + 1);
-        const auto colonPos3 = value.find(":", colonPos2 + 1);
+    void parseImpl(const std::string &valueToParse) override {
+        const auto colonPos1 = valueToParse.find(":");
+        const auto colonPos2 = valueToParse.find(":", colonPos1 + 1);
+        const auto colonPos3 = valueToParse.find(":", colonPos2 + 1);
         FATAL_ERROR_IF(colonPos1 == std::string::npos, "Too few colons specified for a 3-component vector");
         FATAL_ERROR_IF(colonPos2 == std::string::npos, "Too few colons specified for a 3-component vector");
         FATAL_ERROR_IF(colonPos3 != std::string::npos, "Too many colons specified for a 3-component vector");
 
         const std::string componentsString[3] = {
-            value.substr(0, colonPos1),
-            value.substr(colonPos1 + 1, colonPos2 - colonPos1 - 1),
-            value.substr(colonPos2 + 1),
+            valueToParse.substr(0, colonPos1),
+            valueToParse.substr(colonPos1 + 1, colonPos2 - colonPos1 - 1),
+            valueToParse.substr(colonPos2 + 1),
         };
 
         this->value[0] = std::atoi(componentsString[0].c_str());
@@ -73,8 +73,8 @@ struct ThreeComponentUintArgument : Argument {
 struct ThreeComponentOffsetArgument : ThreeComponentUintArgument {
     using ThreeComponentUintArgument::ThreeComponentUintArgument;
 
-    ThreeComponentOffsetArgument &operator=(TupleType value) {
-        assign(value);
+    ThreeComponentOffsetArgument &operator=(TupleType newValue) {
+        assign(newValue);
         return *this;
     }
 };
@@ -82,8 +82,8 @@ struct ThreeComponentOffsetArgument : ThreeComponentUintArgument {
 struct ThreeComponentSizeArgument : ThreeComponentUintArgument {
     using ThreeComponentUintArgument::ThreeComponentUintArgument;
 
-    ThreeComponentSizeArgument &operator=(TupleType value) {
-        assign(value);
+    ThreeComponentSizeArgument &operator=(TupleType newValue) {
+        assign(newValue);
         return *this;
     }
 

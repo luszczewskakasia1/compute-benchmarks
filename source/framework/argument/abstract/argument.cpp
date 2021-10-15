@@ -60,6 +60,6 @@ void Argument::markAsParsed() {
     this->parsed = true;
 }
 
-std::string Argument::getHelpEntry(const std::string &key) const {
-    return std::string("--") + key + "=X ";
+std::string Argument::getHelpEntry(const std::string &argumentKey) const {
+    return std::string("--") + argumentKey + "=X ";
 }

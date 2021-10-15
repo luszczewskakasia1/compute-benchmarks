@@ -55,11 +55,11 @@ struct EnumArgument : Argument {
         FATAL_ERROR((std::string("Unknown ") + DerivedType::enumName));
     }
 
-    void parseImpl(const std::string &value) override {
-        const std::string valueLower = toLower(value);
+    void parseImpl(const std::string &valueToParse) override {
+        const std::string valueToParseLower = toLower(valueToParse);
         const auto valuesCount = sizeof(DerivedType::enumValues) / sizeof(DerivedType::enumValues[0]);
         for (auto valueIndex = 0u; valueIndex < valuesCount; valueIndex++) {
-            if (valueLower == toLower(DerivedType::enumValuesNames[valueIndex])) {
+            if (valueToParseLower == toLower(DerivedType::enumValuesNames[valueIndex])) {
                 this->value = DerivedType::enumValues[valueIndex];
                 return;
             }

@@ -51,10 +51,10 @@ struct QueueProperties {
         return *this;
     }
 
-    QueueProperties &setDeviceSelection(DeviceSelection deviceSelection) {
-        FATAL_ERROR_IF(DeviceSelectionHelper::hasHost(deviceSelection), "Canno create queue on host device");
-        FATAL_ERROR_UNLESS(DeviceSelectionHelper::hasSingleDevice(deviceSelection), "Queue can be created only on a single device");
-        this->deviceSelection = deviceSelection;
+    QueueProperties &setDeviceSelection(DeviceSelection newValue) {
+        FATAL_ERROR_IF(DeviceSelectionHelper::hasHost(newValue), "Canno create queue on host device");
+        FATAL_ERROR_UNLESS(DeviceSelectionHelper::hasSingleDevice(newValue), "Queue can be created only on a single device");
+        this->deviceSelection = newValue;
         return *this;
     }
 };

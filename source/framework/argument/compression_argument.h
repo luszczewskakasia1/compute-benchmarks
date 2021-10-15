@@ -21,8 +21,8 @@
 struct CompressionBooleanArgument : BooleanArgument {
     using BooleanArgument::BooleanArgument;
 
-    CompressionBooleanArgument &operator=(bool value) {
-        this->value = value;
+    CompressionBooleanArgument &operator=(bool newValue) {
+        this->value = newValue;
         markAsParsed();
         return *this;
     }

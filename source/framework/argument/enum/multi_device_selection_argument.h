@@ -20,8 +20,8 @@
 
 struct MultiDeviceSelectionArgument : BitfieldEnumArgument<MultiDeviceSelectionArgument, DeviceSelection> {
     using BitfieldEnumArgument::BitfieldEnumArgument;
-    ThisType &operator=(EnumType value) {
-        this->value = value;
+    ThisType &operator=(EnumType newValue) {
+        this->value = newValue;
         markAsParsed();
         return *this;
     }
@@ -34,8 +34,8 @@ struct MultiDeviceSelectionArgument : BitfieldEnumArgument<MultiDeviceSelectionA
 
 struct MultipleTilesSelectionArgument : BitfieldEnumArgument<MultipleTilesSelectionArgument, DeviceSelection> {
     using BitfieldEnumArgument::BitfieldEnumArgument;
-    ThisType &operator=(EnumType value) {
-        this->value = value;
+    ThisType &operator=(EnumType newValue) {
+        this->value = newValue;
         return *this;
     }
 

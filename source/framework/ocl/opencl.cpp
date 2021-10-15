@@ -78,14 +78,14 @@ Opencl::Opencl(const QueueProperties &queueProperties, const ContextProperties &
 }
 
 Opencl::~Opencl() {
-    for (auto &commandQueue : commandQueues) {
-        EXPECT_CL_SUCCESS(clReleaseCommandQueue(commandQueue));
+    for (auto &queueToRelease : commandQueues) {
+        EXPECT_CL_SUCCESS(clReleaseCommandQueue(queueToRelease));
     }
-    for (auto &contexts : contexts) {
-        EXPECT_CL_SUCCESS(clReleaseContext(context));
+    for (auto &contextToRelease : contexts) {
+        EXPECT_CL_SUCCESS(clReleaseContext(contextToRelease));
     }
-    for (auto &subDevice : subDevices) {
-        EXPECT_CL_SUCCESS(clReleaseDevice(subDevice));
+    for (auto &subDeviceToRelease : subDevices) {
+        EXPECT_CL_SUCCESS(clReleaseDevice(subDeviceToRelease));
     }
 }
 
@@ -140,15 +140,15 @@ cl_context Opencl::createContext(const ContextProperties &contextProperties) {
     }
 
     cl_int retVal{};
-    cl_context context = clCreateContext(nullptr, static_cast<cl_uint>(devicesForContext.size()), devicesForContext.data(), nullptr, nullptr, &retVal);
+    cl_context createdContext = clCreateContext(nullptr, static_cast<cl_uint>(devicesForContext.size()), devicesForContext.data(), nullptr, nullptr, &retVal);
     if (contextProperties.requireCreationSuccess) {
         CL_SUCCESS_OR_ERROR(retVal, "Context creation failed");
     }
 
-    if (context) {
-        this->contexts.push_back(context);
+    if (createdContext) {
+        this->contexts.push_back(createdContext);
     }
-    return context;
+    return createdContext;
 }
 
 cl_device_id Opencl::getDevice(DeviceSelection deviceSelection) {
