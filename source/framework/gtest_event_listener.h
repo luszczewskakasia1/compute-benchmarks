@@ -22,23 +22,7 @@
 #include <gtest/gtest.h>
 #include <sstream>
 
-struct GtestListener : ::testing::TestEventListener {
-    void OnTestProgramStart(const ::testing::UnitTest &unitTest) override {}
-    void OnTestProgramEnd(const ::testing::UnitTest &unitTest) override {}
-    void OnTestIterationStart(const ::testing::UnitTest &unitTest, int iteration) override {}
-    void OnTestIterationEnd(const ::testing::UnitTest &unitTest, int iteration) override {}
-    void OnEnvironmentsSetUpStart(const ::testing::UnitTest &unitTest) override {}
-    void OnEnvironmentsSetUpEnd(const ::testing::UnitTest &unitTest) override {}
-    void OnEnvironmentsTearDownStart(const ::testing::UnitTest &testCase) override {}
-    void OnEnvironmentsTearDownEnd(const ::testing::UnitTest &testCase) override {}
-    void OnTestCaseStart(const ::testing::TestCase &testCase) override {}
-    void OnTestCaseEnd(const ::testing::TestCase &testCase) override {}
-    void OnTestStart(const ::testing::TestInfo &testCase) override {}
-    void OnTestPartResult(const ::testing::TestPartResult &testPartResult) override {}
-    void OnTestEnd(const ::testing::TestInfo &testCase) override {}
-};
-
-class AllTestsGtestListener : public GtestListener {
+class AllTestsGtestListener : public ::testing::EmptyTestEventListener {
     struct ErrorInfo {
         ErrorInfo() : name(), errorMessage() {}
         std::ostringstream name;
@@ -89,7 +73,7 @@ class AllTestsGtestListener : public GtestListener {
     std::vector<ErrorInfo> errorInfos = {};
 };
 
-class SingleTestGtestListener : public GtestListener {
+class SingleTestGtestListener : public ::testing::EmptyTestEventListener {
     void OnTestPartResult(const ::testing::TestPartResult &testPartResult) override {
         if (testPartResult.failed()) {
             std::cout << "\n"
