@@ -74,6 +74,7 @@ taking a couple of arguments described below:
 3. synchronization - an object encapsulating synchronization. For workloads meant to be run from
         the command line this is unused. This object is used by multiprocess benchmarks, which run
         several workloads as child processes and insert synchronization points inside of them.
+        Synchronization should be called at the beginning of each test iteration.
 4. io - an object encapsulating printing and reading during execution. Just like synchronization,
         for workloads meant to be run from the command line this is unused. It is required for
         workloads that are run by other processes, because different communication channels are
@@ -139,6 +140,8 @@ TestResult run(const HelloWorldArguments &arguments, Statistics &statistics, Wor
     // result measured in nanoseconds. The framework will validate that and print a message if
     // we do not comply.
     for (auto i = 0u; i < arguments.iterations; i++) {
+        synchronization.synchronize(io);
+
         cl_event event{};
         cl_event *eventForEnqueue = arguments.useEvents ? &event : nullptr;
 

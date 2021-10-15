@@ -71,6 +71,8 @@ TestResult run(const HelloWorldArguments &arguments, Statistics &statistics, Wor
 
     // Workload
     for (auto i = 0u; i < arguments.iterations; i++) {
+        synchronization.synchronize(io);
+
         cl_event event{};
         cl_event *eventForEnqueue = arguments.useEvents ? &event : nullptr;
 
