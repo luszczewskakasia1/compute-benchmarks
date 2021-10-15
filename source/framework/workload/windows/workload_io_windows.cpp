@@ -32,7 +32,7 @@ class WorkloadIoWindows : public WorkloadIo {
     }
 
     char readSynchronizationChar() override {
-        return std::cin.get();
+        return static_cast<char>(std::cin.get());
     }
 };
 

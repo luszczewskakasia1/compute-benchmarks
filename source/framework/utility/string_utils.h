@@ -49,7 +49,7 @@ inline bool parseArgumentToKeyValue(const std::string &argument, std::string &ou
 inline std::string toLower(const std::string &arg) {
     std::string result = arg;
     std::transform(arg.begin(), arg.end(), result.begin(),
-                   [](unsigned char c) { return std::tolower(c); });
+                   [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     return result;
 }
 

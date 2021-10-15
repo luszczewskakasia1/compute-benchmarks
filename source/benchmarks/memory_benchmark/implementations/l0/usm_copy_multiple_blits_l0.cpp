@@ -97,7 +97,7 @@ static TestResult run(const UsmCopyMultipleBlitsArguments &arguments, Statistics
             blitSizeAssigner.addMainCopyEngine();
         } else {
             cmdQueueDesc.ordinal = linkCopyOrdinal;
-            cmdQueueDesc.index = blitterIndex - queueProperties[mainCopyOrdinal].numQueues;
+            cmdQueueDesc.index = static_cast<uint32_t>(blitterIndex - queueProperties[mainCopyOrdinal].numQueues);
             blitSizeAssigner.addLinkCopyEngine();
         }
 
