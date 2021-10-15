@@ -98,7 +98,7 @@ class QueueFamiliesHelper {
     }
 
     template <typename... Args>
-    static bool validateCapabilities(cl_command_queue queue, Args &&...args) {
+    static bool validateCapabilities(cl_command_queue queue, Args &&... args) {
         return validateCapabilities(getQueueCapabilities(queue), std::forward<Args>(args)...);
     }
 
@@ -161,7 +161,7 @@ class QueueFamiliesHelper {
     }
 
     template <typename... Args>
-    static bool validateCapabilities(cl_command_queue_capabilities_intel queueCapabilities, cl_command_queue_capabilities_intel capability, Args &&...args) {
+    static bool validateCapabilities(cl_command_queue_capabilities_intel queueCapabilities, cl_command_queue_capabilities_intel capability, Args &&... args) {
         if (!validateCapability(queueCapabilities, capability)) {
             return false;
         }
