@@ -53,9 +53,9 @@ static TestResult run(const MatrixMultiplyArguments &arguments, Statistics &stat
 
     int counter = 0u;
 
-    for (int z = 0u; z < gws[2]; z++) {
-        for (int y = 0u; y < gws[1]; y++) {
-            for (int x = 0u; x < gws[0]; x++) {
+    for (auto z = 0u; z < gws[2]; z++) {
+        for (auto y = 0u; y < gws[1]; y++) {
+            for (auto x = 0u; x < gws[0]; x++) {
                 auto index = x + y * gws[0] + z * gws[0] * gws[1];
                 dataX[index] = counter++;
                 dataY[index] = counter++;

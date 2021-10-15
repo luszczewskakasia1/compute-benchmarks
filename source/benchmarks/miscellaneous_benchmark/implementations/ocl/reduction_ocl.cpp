@@ -45,7 +45,7 @@ static TestResult run(const ReductionArguments &arguments, Statistics &statistic
     auto data = std::make_unique<int[]>(arguments.numberOfElements);
     size_t expectedSum = 0u;
     size_t value = 0u;
-    for (int i = 0; i < arguments.numberOfElements; i++) {
+    for (auto i = 0u; i < arguments.numberOfElements; i++) {
         value++;
         if (value > 4)
             value = 0;
@@ -58,13 +58,12 @@ static TestResult run(const ReductionArguments &arguments, Statistics &statistic
     ASSERT_CL_SUCCESS(retVal);
 
     // Validate results
-    int actualSum;
+    size_t actualSum;
     cl_event profilingEvent{};
     cl_ulong timeNs{};
 
     // Warmup kernel
     const size_t gws = arguments.numberOfElements;
-    const size_t lws = 1;
     ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 0, sizeof(buffer), &buffer));
     ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, &profilingEvent));
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));

@@ -39,7 +39,7 @@ struct BitfieldEnumArgument : Argument {
         size_t enabledValuesCount = 0u;
 
         const auto valuesCount = sizeof(DerivedType::enumValues) / sizeof(DerivedType::enumValues[0]);
-        for (auto valueIndex = 0; valueIndex < valuesCount; valueIndex++) {
+        for (auto valueIndex = 0u; valueIndex < valuesCount; valueIndex++) {
             const auto currentValue = DerivedType::enumValues[valueIndex];
             if ((this->value & currentValue) == currentValue) {
                 enabledValuesCount++;
@@ -70,7 +70,7 @@ struct BitfieldEnumArgument : Argument {
 
         bool hasValue = false;
         const auto valuesCount = sizeof(DerivedType::enumValues) / sizeof(DerivedType::enumValues[0]);
-        for (auto valueIndex = 0; valueIndex < valuesCount; valueIndex++) {
+        for (auto valueIndex = 0u; valueIndex < valuesCount; valueIndex++) {
             const auto currentValue = DerivedType::enumValues[valueIndex];
             if ((this->value & currentValue) == currentValue) {
                 if (hasValue) {
@@ -116,7 +116,7 @@ struct BitfieldEnumArgument : Argument {
   private:
     static EnumType parseSingleValue(const std::string &singleValueLower) {
         const auto valuesCount = sizeof(DerivedType::enumValues) / sizeof(DerivedType::enumValues[0]);
-        for (auto valueIndex = 0; valueIndex < valuesCount; valueIndex++) {
+        for (auto valueIndex = 0u; valueIndex < valuesCount; valueIndex++) {
             if (singleValueLower == toLower(DerivedType::enumValuesNames[valueIndex])) {
                 return DerivedType::enumValues[valueIndex];
             }
@@ -127,7 +127,7 @@ struct BitfieldEnumArgument : Argument {
     static EnumType getAllValuesSum() {
         EnumType sum = DerivedType::zeroEnumValue;
         const auto valuesCount = sizeof(DerivedType::enumValues) / sizeof(DerivedType::enumValues[0]);
-        for (auto valueIndex = 0; valueIndex < valuesCount; valueIndex++) {
+        for (auto valueIndex = 0u; valueIndex < valuesCount; valueIndex++) {
             const auto currentValue = DerivedType::enumValues[valueIndex];
             sum = sum | currentValue;
         }
@@ -143,7 +143,7 @@ struct BitfieldEnumArgument : Argument {
 
         out << "(";
         const auto enumValuesNamesCount = sizeof(DerivedType::enumValuesNames) / sizeof(DerivedType::enumValuesNames[0]);
-        for (int i = 0; i < enumValuesNamesCount; i++) {
+        for (auto i = 0u; i < enumValuesNamesCount; i++) {
             out << DerivedType::enumValuesNames[i];
 
             if (i != enumValuesNamesCount - 1) {

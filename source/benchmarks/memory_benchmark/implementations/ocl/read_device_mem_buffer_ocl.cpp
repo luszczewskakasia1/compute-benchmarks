@@ -161,7 +161,6 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     const size_t lws = subgroupSize * 2;
     size_t gws = numHwThreads * subgroupSize;
 
-    const cl_uint atsThreasLargeGRFMode = 4;
     // check if surface can be covered with more than one slice
     if ((2 * numHwThreads * threadTileSizeInSubgroup) < static_cast<cl_uint>(arguments.size)) {
         slotMask = numHwThreads;

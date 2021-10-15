@@ -70,7 +70,7 @@ static TestResult run(const KernelSwitchLatencyArguments &arguments, Statistics 
         timer.measureStart();
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &profilingEvents[0]));
 
-        for (int j = 1; j < arguments.kernelCount; j++) {
+        for (auto j = 1u; j < arguments.kernelCount; j++) {
             ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 1, &profilingEvents[j - 1], &profilingEvents[j]));
         }
 
@@ -78,7 +78,7 @@ static TestResult run(const KernelSwitchLatencyArguments &arguments, Statistics 
         timer.measureEnd();
 
         auto switchTime = std::chrono::nanoseconds(0u);
-        for (int j = 1; j < arguments.kernelCount; j++) {
+        for (auto j = 1u; j < arguments.kernelCount; j++) {
 
             ASSERT_CL_SUCCESS(clGetEventProfilingInfo(profilingEvents[j], CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, nullptr));
             ASSERT_CL_SUCCESS(clGetEventProfilingInfo(profilingEvents[j - 1], CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, nullptr));
@@ -87,7 +87,7 @@ static TestResult run(const KernelSwitchLatencyArguments &arguments, Statistics 
 
         statistics.pushValue(switchTime / arguments.kernelCount, MeasurementUnit::Microseconds, MeasurementType::Gpu);
 
-        for (int j = 0; j < arguments.kernelCount; j++) {
+        for (auto j = 0u; j < arguments.kernelCount; j++) {
             ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvents[j]));
         }
     }
