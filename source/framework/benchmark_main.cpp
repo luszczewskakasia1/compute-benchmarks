@@ -102,7 +102,7 @@ BenchmarkMain::BenchmarkMain(int argc, char **argv, const std::string benchmarkV
       argv(argv),
       benchmarkVersion(benchmarkVersion) {}
 
-int BenchmarkMain::executeSingleTest(const std::string &testName, CommandLineArguments &commandLineArguments) {
+int BenchmarkMain::executeSingleTest(const std::string &testName) {
     const auto &testMap = TestMap::get();
     auto it = testMap.find(testName);
     if (it == testMap.end()) {
@@ -119,7 +119,7 @@ int BenchmarkMain::executeSingleTest(const std::string &testName, CommandLineArg
     return 0;
 }
 
-int BenchmarkMain::executeAllTests(CommandLineArguments &commandLineArguments) {
+int BenchmarkMain::executeAllTests() {
     for (auto &commandLineArgument : commandLineArguments) {
         if (commandLineArgument.getKey().find("gtest_") == 0) {
             commandLineArgument.markAsProcessed();
@@ -233,9 +233,9 @@ int BenchmarkMain::main() {
         printVersion(false, "Benchmark version: ");
     }
     if (std::string test = configuration.test; test != "") {
-        return executeSingleTest(test, commandLineArguments);
+        return executeSingleTest(test);
     } else {
         ::testing::InitGoogleTest(&argc, argv);
-        return executeAllTests(commandLineArguments);
+        return executeAllTests();
     }
 }

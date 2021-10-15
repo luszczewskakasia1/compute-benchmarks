@@ -36,6 +36,6 @@ class BenchmarkMain {
     void printHelp();
     int generateDocs();
 
-    int executeSingleTest(const std::string &testName, CommandLineArguments &commandLineArguments);
-    int executeAllTests(CommandLineArguments &commandLineArguments);
+    int executeSingleTest(const std::string &testName);
+    int executeAllTests();
 };

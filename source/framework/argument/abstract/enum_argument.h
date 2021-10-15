@@ -79,7 +79,7 @@ struct EnumArgument : Argument {
 
         out << "(";
         const auto enumValuesNamesCount = sizeof(DerivedType::enumValuesNames) / sizeof(DerivedType::enumValuesNames[0]);
-        for (int i = 0; i < enumValuesNamesCount; i++) {
+        for (auto i = 0u; i < enumValuesNamesCount; i++) {
             out << DerivedType::enumValuesNames[i];
 
             if (i != enumValuesNamesCount - 1) {
