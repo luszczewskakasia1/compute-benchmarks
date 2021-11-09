@@ -23,7 +23,7 @@
 class BufferContentsHelper {
   public:
     static void fill(uint8_t *buffer, size_t size, BufferContents contents);
-    static void fillWithZeros(void *buffer, size_t size);
+    static void fillWithZeros(uint8_t *buffer, size_t size);
     static void fillWithRandomBytes(uint8_t *buffer, size_t size);
     static void fillWithIncreasingBytes(uint8_t *buffer, size_t size);
 

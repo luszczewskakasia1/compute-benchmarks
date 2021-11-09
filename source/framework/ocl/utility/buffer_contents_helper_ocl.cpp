@@ -33,14 +33,16 @@ cl_int BufferContentsHelperOcl::fillBuffer(cl_command_queue queue, cl_mem buffer
     }
 }
 
-cl_int BufferContentsHelperOcl::fillUsmBuffer(cl_command_queue queue, void *usmBuffer, size_t bufferSize, BufferContents contents) {
-    switch (contents) {
-    case BufferContents::Zeros:
-        return fillUsmBufferWithZeros(queue, usmBuffer, bufferSize);
-    case BufferContents::Random:
-        return fillUsmBufferWithRandomBytes(queue, usmBuffer, bufferSize);
+cl_int BufferContentsHelperOcl::fillUsmBufferOrHostPtr(cl_command_queue queue, void *ptr, size_t ptrSize, UsmMemoryPlacement placement, BufferContents contents) {
+    switch (placement) {
+    case UsmMemoryPlacement::Device:
+    case UsmMemoryPlacement::Host:
+    case UsmMemoryPlacement::Shared:
+        return fillUsmBuffer(queue, ptr, ptrSize, contents);
+    case UsmMemoryPlacement::NonUsm:
+        fill(static_cast<uint8_t *>(ptr), ptrSize, contents);
     default:
-        FATAL_ERROR("Unknown buffer contents");
+        FATAL_ERROR("Unknown usm memory placement");
     }
 }
 
@@ -63,6 +65,17 @@ cl_int BufferContentsHelperOcl::fillBufferWithIncreasingBytes(cl_command_queue q
     BufferContentsHelper::fillWithIncreasingBytes(cpuBuffer.get(), bufferSize);
     CL_SUCCESS_OR_RETURN(clEnqueueWriteBuffer(queue, buffer, CL_BLOCKING, 0, bufferSize, cpuBuffer.get(), 0, nullptr, nullptr));
     return CL_SUCCESS;
+}
+
+cl_int BufferContentsHelperOcl::fillUsmBuffer(cl_command_queue queue, void *usmBuffer, size_t bufferSize, BufferContents contents) {
+    switch (contents) {
+    case BufferContents::Zeros:
+        return fillUsmBufferWithZeros(queue, usmBuffer, bufferSize);
+    case BufferContents::Random:
+        return fillUsmBufferWithRandomBytes(queue, usmBuffer, bufferSize);
+    default:
+        FATAL_ERROR("Unknown buffer contents");
+    }
 }
 
 cl_int BufferContentsHelperOcl::fillUsmBufferWithRandomBytes(cl_command_queue queue, void *usmBuffer, size_t bufferSize) {

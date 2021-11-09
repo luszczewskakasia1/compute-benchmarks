@@ -58,16 +58,8 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
 
     // Benchmark
     for (auto i = 0u; i < arguments.iterations; i++) {
-        if (arguments.sourcePlacement == UsmMemoryPlacement::NonUsm) {
-            BufferContentsHelperOcl::fillWithZeros(srcAlloc.ptr, arguments.size);
-        } else {
-            ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillUsmBuffer(opencl.commandQueue, srcAlloc.ptr, arguments.size, arguments.contents));
-        }
-        if (arguments.destinationPlacement == UsmMemoryPlacement::NonUsm) {
-            BufferContentsHelperOcl::fillWithZeros(dstAlloc.ptr, arguments.size);
-        } else {
-            ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillUsmBuffer(opencl.commandQueue, dstAlloc.ptr, arguments.size, arguments.contents));
-        }
+        ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillUsmBufferOrHostPtr(opencl.commandQueue, srcAlloc.ptr, arguments.size, srcAlloc.placement, arguments.contents));
+        ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillUsmBufferOrHostPtr(opencl.commandQueue, dstAlloc.ptr, arguments.size, dstAlloc.placement, arguments.contents));
 
         cl_event profilingEvent{};
         cl_event *eventForEnqueue = arguments.useEvents ? &profilingEvent : nullptr;

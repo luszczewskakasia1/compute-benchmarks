@@ -51,7 +51,7 @@ static TestResult run(const UsmFillSpecificPatternArguments &arguments, Statisti
 
     // Benchmark
     for (auto i = 0u; i < arguments.iterations; i++) {
-        ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillUsmBuffer(opencl.commandQueue, dstAlloc.ptr, arguments.bufferSize, arguments.contents))
+        ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillUsmBufferOrHostPtr(opencl.commandQueue, dstAlloc.ptr, arguments.bufferSize, dstAlloc.placement, arguments.contents));
 
         cl_event profilingEvent{};
         cl_event *eventForEnqueue = arguments.useEvents ? &profilingEvent : nullptr;
