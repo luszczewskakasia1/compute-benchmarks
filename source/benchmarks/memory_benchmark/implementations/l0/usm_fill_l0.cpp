@@ -24,6 +24,10 @@
 #include <gtest/gtest.h>
 
 static TestResult run(const UsmFillArguments &arguments, Statistics &statistics) {
+    if (arguments.usmMemoryPlacement == UsmMemoryPlacement::NonUsmMapped) {
+        return TestResult::ApiNotCapable;
+    }
+
     QueueProperties queueProperties = QueueProperties::create().setForceBlitter(arguments.forceBlitter).allowCreationFail();
     ContextProperties contextProperties = ContextProperties::create();
     ExtensionProperties extensionProperties = ExtensionProperties::create().setImportHostPointerFunctions(

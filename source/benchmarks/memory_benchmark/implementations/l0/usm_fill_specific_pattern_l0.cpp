@@ -24,6 +24,10 @@
 #include <gtest/gtest.h>
 
 static TestResult run(const UsmFillSpecificPatternArguments &arguments, Statistics &statistics) {
+    if (arguments.usmMemoryPlacement == UsmMemoryPlacement::NonUsmMapped) {
+        return TestResult::ApiNotCapable;
+    }
+
     const std::vector<uint8_t> &pattern = arguments.pattern;
     uint8_t *patternAddress = const_cast<uint8_t *>(pattern.data());
     QueueProperties queueProperties = QueueProperties::create().setForceBlitter(arguments.forceBlitter).allowCreationFail();

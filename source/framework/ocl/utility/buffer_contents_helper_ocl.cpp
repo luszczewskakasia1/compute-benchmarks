@@ -40,7 +40,9 @@ cl_int BufferContentsHelperOcl::fillUsmBufferOrHostPtr(cl_command_queue queue, v
     case UsmMemoryPlacement::Shared:
         return fillUsmBuffer(queue, ptr, ptrSize, contents);
     case UsmMemoryPlacement::NonUsm:
+    case UsmMemoryPlacement::NonUsmMapped:
         fill(static_cast<uint8_t *>(ptr), ptrSize, contents);
+        return CL_SUCCESS;
     default:
         FATAL_ERROR("Unknown usm memory placement");
     }

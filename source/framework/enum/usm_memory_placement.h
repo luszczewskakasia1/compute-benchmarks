@@ -23,5 +23,6 @@ enum class UsmMemoryPlacement {
     Device,
     Shared,
     NonUsm,
-    NonUsmImported
+    NonUsmImported,
+    NonUsmMapped,
 };

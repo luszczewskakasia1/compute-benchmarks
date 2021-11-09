@@ -23,6 +23,14 @@ cl_int UsmHelperOcl::allocate(Opencl &opencl,
     case UsmMemoryPlacement::NonUsm:
         outAlloc.ptr = new uint8_t[bufferSize];
         break;
+    case UsmMemoryPlacement::NonUsmMapped:
+        outAlloc.mappedData.queue = opencl.commandQueue;
+        outAlloc.mappedData.memObject = clCreateBuffer(outAlloc.context, CL_MEM_READ_WRITE, bufferSize, nullptr, &retVal);
+        CL_SUCCESS_OR_RETURN(retVal);
+        outAlloc.ptr = clEnqueueMapBuffer(outAlloc.mappedData.queue, outAlloc.mappedData.memObject, CL_BLOCKING,
+                                          CL_MAP_READ | CL_MAP_WRITE, 0, bufferSize, 0u, nullptr, nullptr, &retVal);
+        CL_SUCCESS_OR_RETURN(retVal);
+        break;
     default:
         FATAL_ERROR("Unknown placement");
     }
@@ -42,6 +50,11 @@ cl_int UsmHelperOcl::deallocate(Alloc &alloc) {
         break;
     case UsmMemoryPlacement::NonUsm:
         delete[](static_cast<uint8_t *>(alloc.ptr));
+        break;
+    case UsmMemoryPlacement::NonUsmMapped:
+        CL_SUCCESS_OR_RETURN(clEnqueueUnmapMemObject(alloc.mappedData.queue, alloc.mappedData.memObject, alloc.ptr, 0, nullptr, nullptr));
+        CL_SUCCESS_OR_RETURN(clReleaseMemObject(alloc.mappedData.memObject));
+        CL_SUCCESS_OR_RETURN(clFinish(alloc.mappedData.queue));
         break;
     default:
         FATAL_ERROR("Unknown placement");

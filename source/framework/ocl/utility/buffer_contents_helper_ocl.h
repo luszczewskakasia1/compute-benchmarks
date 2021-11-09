@@ -15,9 +15,9 @@
 
 #pragma once
 
+#include "framework/enum/usm_memory_placement.h"
 #include "framework/ocl/cl.h"
 #include "framework/utility/buffer_contents_helper.h"
-#include "framework/enum/usm_memory_placement.h"
 
 class BufferContentsHelperOcl : public BufferContentsHelper {
   public:

@@ -26,6 +26,11 @@ struct UsmHelperOcl {
         UsmMemoryPlacement placement = UsmMemoryPlacement::Unknown;
         UsmFunctions usm = {};
         cl_context context = {};
+
+        struct MappedData {
+            cl_mem memObject = {};
+            cl_command_queue queue = {};
+        } mappedData;
     };
 
     static cl_int allocate(Opencl &opencl,

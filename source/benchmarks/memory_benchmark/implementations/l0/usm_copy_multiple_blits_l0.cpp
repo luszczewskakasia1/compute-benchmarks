@@ -24,6 +24,11 @@
 #include <gtest/gtest.h>
 
 static TestResult run(const UsmCopyMultipleBlitsArguments &arguments, Statistics &statistics) {
+    if (arguments.sourcePlacement == UsmMemoryPlacement::NonUsmMapped ||
+        arguments.destinationPlacement == UsmMemoryPlacement::NonUsmMapped) {
+        return TestResult::ApiNotCapable;
+    }
+
     ExtensionProperties extensionProperties = ExtensionProperties::create().setImportHostPointerFunctions(
         (arguments.sourcePlacement == UsmMemoryPlacement::NonUsmImported ||
          arguments.destinationPlacement == UsmMemoryPlacement::NonUsmImported));
