@@ -113,6 +113,7 @@ function (add_benchmark_for_api BASE_TARGET_NAME APPEND_API_TO_TARGET_NAME REGIS
     # Additional setup
     setup_vs_folders(${TARGET_NAME} ${BENCHMARKS_SOURCE_ROOT})
     setup_warning_options(${TARGET_NAME})
+    setup_output_directory(${TARGET_NAME})
 endfunction()
 
 function(add_benchmark_dependency_on_workload BENCHMARK_BASE_NAME WORKLOAD API)

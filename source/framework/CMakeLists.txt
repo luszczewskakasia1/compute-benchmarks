@@ -36,3 +36,4 @@ endif()
 # Additional setup
 setup_vs_folders(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
 setup_warning_options(${TARGET_NAME})
+setup_output_directory(${TARGET_NAME})

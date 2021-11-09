@@ -26,8 +26,11 @@ function(add_workload TARGET_NAME API)
     add_sources_to_benchmark(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
     add_kernels_to_benchmark(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/kernels)
     copy_kernels_to_bin_directory(${TARGET_NAME})
+
+    # Additional config
     setup_vs_folders(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
     setup_warning_options(${TARGET_NAME})
+    setup_output_directory(${TARGET_NAME})
 endfunction()
 
 add_subdirectory(single_queue_workload_l0)

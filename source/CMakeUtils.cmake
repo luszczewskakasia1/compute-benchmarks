@@ -55,6 +55,12 @@ function(setup_warning_options TARGET_NAME)
     endif()
 endfunction(setup_warning_options)
 
+function(setup_output_directory TARGET_NAME)
+    set_target_properties(${TARGET_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIR}")
+    set_target_properties(${TARGET_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${OUTPUT_DIR}")
+    set_target_properties(${TARGET_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+endfunction()
+
 function(negate_flag INPUT OUTPUT)
     if(INPUT)
         set(${OUTPUT} OFF PARENT_SCOPE)
