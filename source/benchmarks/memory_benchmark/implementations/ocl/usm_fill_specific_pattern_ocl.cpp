@@ -16,7 +16,7 @@
 #include "framework/ocl/opencl.h"
 #include "framework/ocl/utility/buffer_contents_helper_ocl.h"
 #include "framework/ocl/utility/profiling_helper.h"
-#include "framework/ocl/utility/usm_helper.h"
+#include "framework/ocl/utility/usm_helper_ocl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
 
@@ -26,7 +26,6 @@
 
 static TestResult run(const UsmFillSpecificPatternArguments &arguments, Statistics &statistics) {
     // Setup
-    cl_int retVal{};
     QueueProperties queueProperties = QueueProperties::create().setProfiling(arguments.useEvents).setForceBlitter(arguments.forceBlitter).allowCreationFail();
     Opencl opencl(queueProperties);
     if (opencl.commandQueue == nullptr) {
@@ -36,30 +35,29 @@ static TestResult run(const UsmFillSpecificPatternArguments &arguments, Statisti
         return TestResult::DeviceNotCapable;
     }
     Timer timer;
-    auto clMemFreeINTEL = (pfn_clMemFreeINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clMemFreeINTEL");
     auto clEnqueueMemFillINTEL = (pfn_clEnqueueMemFillINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clEnqueueMemFillINTEL");
     if (!opencl.getExtensions().isUsmSupported()) {
         return TestResult::DriverFunctionNotFound;
     }
 
     // Create buffer
-    void *buffer = UsmHelper::allocate(arguments.usmMemoryPlacement, opencl.platform, opencl.context, opencl.device, arguments.bufferSize, &retVal);
-    ASSERT_CL_SUCCESS(retVal);
+    UsmHelperOcl::Alloc dstAlloc{};
+    ASSERT_CL_SUCCESS(UsmHelperOcl::allocate(opencl, arguments.usmMemoryPlacement, arguments.bufferSize, dstAlloc));
 
     // Warmup
     const std::vector<uint8_t> &pattern = arguments.pattern;
-    ASSERT_CL_SUCCESS(clEnqueueMemFillINTEL(opencl.commandQueue, buffer, pattern.data(), pattern.size(), arguments.bufferSize, 0, nullptr, nullptr));
+    ASSERT_CL_SUCCESS(clEnqueueMemFillINTEL(opencl.commandQueue, dstAlloc.ptr, pattern.data(), pattern.size(), arguments.bufferSize, 0, nullptr, nullptr));
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
     // Benchmark
     for (auto i = 0u; i < arguments.iterations; i++) {
-        ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillUsmBuffer(opencl.commandQueue, buffer, arguments.bufferSize, arguments.contents))
+        ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillUsmBuffer(opencl.commandQueue, dstAlloc.ptr, arguments.bufferSize, arguments.contents))
 
         cl_event profilingEvent{};
         cl_event *eventForEnqueue = arguments.useEvents ? &profilingEvent : nullptr;
 
         timer.measureStart();
-        ASSERT_CL_SUCCESS(clEnqueueMemFillINTEL(opencl.commandQueue, buffer, pattern.data(), pattern.size(), arguments.bufferSize, 0, nullptr, eventForEnqueue));
+        ASSERT_CL_SUCCESS(clEnqueueMemFillINTEL(opencl.commandQueue, dstAlloc.ptr, pattern.data(), pattern.size(), arguments.bufferSize, 0, nullptr, eventForEnqueue));
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
 
@@ -73,7 +71,7 @@ static TestResult run(const UsmFillSpecificPatternArguments &arguments, Statisti
         }
     }
 
-    ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, buffer));
+    ASSERT_CL_SUCCESS(UsmHelperOcl::deallocate(dstAlloc));
     return TestResult::Success;
 }
 

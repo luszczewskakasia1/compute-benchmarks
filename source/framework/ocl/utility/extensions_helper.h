@@ -24,6 +24,8 @@
 struct UsmFunctions {
     pfn_clMemFreeINTEL clMemFreeINTEL{};
     pfn_clHostMemAllocINTEL clHostMemAllocINTEL{};
+    pfn_clDeviceMemAllocINTEL clDeviceMemAllocINTEL{};
+    pfn_clSharedMemAllocINTEL clSharedMemAllocINTEL{};
 };
 
 namespace OCL {
@@ -61,6 +63,8 @@ class ExtensionsHelper {
         if (isUsmSupported()) {
             result.clMemFreeINTEL = (pfn_clMemFreeINTEL)clGetExtensionFunctionAddressForPlatform(platform, "clMemFreeINTEL");
             result.clHostMemAllocINTEL = (pfn_clHostMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(platform, "clHostMemAllocINTEL");
+            result.clDeviceMemAllocINTEL = (pfn_clDeviceMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(platform, "clDeviceMemAllocINTEL");
+            result.clSharedMemAllocINTEL = (pfn_clSharedMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(platform, "clSharedMemAllocINTEL");
         }
         return result;
     }

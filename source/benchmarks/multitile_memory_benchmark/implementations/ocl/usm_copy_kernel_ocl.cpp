@@ -16,7 +16,7 @@
 #include "framework/ocl/opencl.h"
 #include "framework/ocl/utility/compression_helper.h"
 #include "framework/ocl/utility/profiling_helper.h"
-#include "framework/ocl/utility/usm_helper.h"
+#include "framework/ocl/utility/usm_helper_ocl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
 
@@ -41,9 +41,9 @@ static TestResult run(const UsmCopyKernelArguments &arguments, Statistics &stati
     Timer timer;
 
     // Create buffer
-    void *src = UsmHelper::allocate(arguments.srcPlacement, opencl, arguments.size, &retVal);
+    void *src = UsmHelperOcl::allocate(arguments.srcPlacement, opencl, arguments.size, &retVal);
     ASSERT_CL_SUCCESS(retVal);
-    void *dst = UsmHelper::allocate(arguments.dstPlacement, opencl, arguments.size, &retVal);
+    void *dst = UsmHelperOcl::allocate(arguments.dstPlacement, opencl, arguments.size, &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
     // Create kernel

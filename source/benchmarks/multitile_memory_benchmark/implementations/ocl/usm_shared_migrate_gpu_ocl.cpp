@@ -16,7 +16,7 @@
 #include "framework/ocl/opencl.h"
 #include "framework/ocl/utility/compression_helper.h"
 #include "framework/ocl/utility/profiling_helper.h"
-#include "framework/ocl/utility/usm_helper.h"
+#include "framework/ocl/utility/usm_helper_ocl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
 
@@ -42,7 +42,7 @@ static TestResult run(const UsmSharedMigrateGpuArguments &arguments, Statistics 
     cl_int retVal;
 
     // Create buffer
-    cl_int *buffer = static_cast<cl_int *>(UsmHelper::allocate(arguments.bufferPlacement, opencl, arguments.bufferSize, &retVal));
+    cl_int *buffer = static_cast<cl_int *>(UsmHelperOcl::allocate(arguments.bufferPlacement, opencl, arguments.bufferSize, &retVal));
     ASSERT_CL_SUCCESS(retVal);
     const size_t elementsCount = arguments.bufferSize / sizeof(cl_int);
 

@@ -35,7 +35,7 @@ void BufferContentsHelper::fill(uint8_t *buffer, size_t size, BufferContents con
     }
 }
 
-void BufferContentsHelper::fillWithZeros(uint8_t *buffer, size_t size) {
+void BufferContentsHelper::fillWithZeros(void *buffer, size_t size) {
     std::memset(buffer, 0, size);
 }
 

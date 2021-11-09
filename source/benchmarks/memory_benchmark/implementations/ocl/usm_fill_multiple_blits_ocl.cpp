@@ -16,7 +16,7 @@
 #include "framework/ocl/opencl.h"
 #include "framework/ocl/utility/buffer_contents_helper_ocl.h"
 #include "framework/ocl/utility/profiling_helper.h"
-#include "framework/ocl/utility/usm_helper.h"
+#include "framework/ocl/utility/usm_helper_ocl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
 
@@ -27,11 +27,9 @@
 
 static TestResult run(const UsmFillMultipleBlitsArguments &arguments, Statistics &statistics) {
     // Setup
-    cl_int retVal{};
     QueueProperties queueProperties = QueueProperties::create().disable();
     Opencl opencl(queueProperties);
     Timer timer;
-    auto clMemFreeINTEL = (pfn_clMemFreeINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clMemFreeINTEL");
     auto clEnqueueMemFillINTEL = (pfn_clEnqueueMemFillINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clEnqueueMemFillINTEL");
     if (!opencl.getExtensions().isUsmSupported()) {
         return TestResult::DriverFunctionNotFound;
@@ -71,13 +69,13 @@ static TestResult run(const UsmFillMultipleBlitsArguments &arguments, Statistics
     }
 
     // Create buffer
-    void *dstBuffer = UsmHelper::allocate(arguments.memoryPlacement, opencl.platform, opencl.context, opencl.device, arguments.size, &retVal);
-    ASSERT_CL_SUCCESS(retVal);
+    UsmHelperOcl::Alloc dstAlloc{};
+    ASSERT_CL_SUCCESS(UsmHelperOcl::allocate(opencl, arguments.memoryPlacement, arguments.size, dstAlloc));
 
     // Calculate copyOffset and copySize for each copy engine
     for (auto i = 0u; i < queues.size(); i++) {
         const auto [offset, size] = blitSizeAssigner.getSpaceForBlit(queues[i].isMainCopyEngine);
-        queues[i].fillDst = static_cast<char *>(dstBuffer) + offset;
+        queues[i].fillDst = static_cast<char *>(dstAlloc.ptr) + offset;
         queues[i].fillSize = size;
     }
     blitSizeAssigner.validate();
@@ -126,7 +124,7 @@ static TestResult run(const UsmFillMultipleBlitsArguments &arguments, Statistics
         statistics.pushValue(timer.get(), totalSize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Cpu, "Total (Cpu)");
     }
 
-    ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, dstBuffer));
+    ASSERT_CL_SUCCESS(UsmHelperOcl::deallocate(dstAlloc));
     return TestResult::Success;
 }
 

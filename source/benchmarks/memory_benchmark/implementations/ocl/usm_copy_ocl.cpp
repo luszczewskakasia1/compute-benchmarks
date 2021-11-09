@@ -16,7 +16,7 @@
 #include "framework/ocl/opencl.h"
 #include "framework/ocl/utility/buffer_contents_helper_ocl.h"
 #include "framework/ocl/utility/profiling_helper.h"
-#include "framework/ocl/utility/usm_helper.h"
+#include "framework/ocl/utility/usm_helper_ocl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
 
@@ -32,7 +32,6 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
     }
 
     // Setup
-    cl_int retVal{};
     QueueProperties queueProperties = QueueProperties::create().setProfiling(arguments.useEvents).setForceBlitter(arguments.forceBlitter).allowCreationFail();
     Opencl opencl(queueProperties);
     if (opencl.commandQueue == nullptr) {
@@ -42,40 +41,39 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
         return TestResult::DeviceNotCapable;
     }
     Timer timer;
-    auto clMemFreeINTEL = (pfn_clMemFreeINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clMemFreeINTEL");
     auto clEnqueueMemcpyINTEL = (pfn_clEnqueueMemcpyINTEL)clGetExtensionFunctionAddressForPlatform(opencl.platform, "clEnqueueMemcpyINTEL");
     if (!opencl.getExtensions().isUsmSupported()) {
         return TestResult::DriverFunctionNotFound;
     }
 
     // Create buffers
-    void *source = UsmHelper::allocate(arguments.sourcePlacement, opencl.platform, opencl.context, opencl.device, arguments.size, &retVal);
-    ASSERT_CL_SUCCESS(retVal);
-    void *destination = UsmHelper::allocate(arguments.destinationPlacement, opencl.platform, opencl.context, opencl.device, arguments.size, &retVal);
-    ASSERT_CL_SUCCESS(retVal);
+    UsmHelperOcl::Alloc srcAlloc{};
+    UsmHelperOcl::Alloc dstAlloc{};
+    ASSERT_CL_SUCCESS(UsmHelperOcl::allocate(opencl, arguments.sourcePlacement, arguments.size, srcAlloc));
+    ASSERT_CL_SUCCESS(UsmHelperOcl::allocate(opencl, arguments.destinationPlacement, arguments.size, dstAlloc));
 
     // Warmup
-    ASSERT_CL_SUCCESS(clEnqueueMemcpyINTEL(opencl.commandQueue, CL_FALSE, destination, source, arguments.size, 0, nullptr, nullptr));
+    ASSERT_CL_SUCCESS(clEnqueueMemcpyINTEL(opencl.commandQueue, CL_FALSE, dstAlloc.ptr, srcAlloc.ptr, arguments.size, 0, nullptr, nullptr));
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
     // Benchmark
     for (auto i = 0u; i < arguments.iterations; i++) {
         if (arguments.sourcePlacement == UsmMemoryPlacement::NonUsm) {
-            std::memset(source, 0, arguments.size);
+            BufferContentsHelperOcl::fillWithZeros(srcAlloc.ptr, arguments.size);
         } else {
-            ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillUsmBuffer(opencl.commandQueue, source, arguments.size, arguments.contents));
+            ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillUsmBuffer(opencl.commandQueue, srcAlloc.ptr, arguments.size, arguments.contents));
         }
         if (arguments.destinationPlacement == UsmMemoryPlacement::NonUsm) {
-            std::memset(destination, 0, arguments.size);
+            BufferContentsHelperOcl::fillWithZeros(dstAlloc.ptr, arguments.size);
         } else {
-            ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillUsmBuffer(opencl.commandQueue, destination, arguments.size, arguments.contents));
+            ASSERT_CL_SUCCESS(BufferContentsHelperOcl::fillUsmBuffer(opencl.commandQueue, dstAlloc.ptr, arguments.size, arguments.contents));
         }
 
         cl_event profilingEvent{};
         cl_event *eventForEnqueue = arguments.useEvents ? &profilingEvent : nullptr;
 
         timer.measureStart();
-        ASSERT_CL_SUCCESS(clEnqueueMemcpyINTEL(opencl.commandQueue, CL_FALSE, destination, source, arguments.size, 0, nullptr, eventForEnqueue));
+        ASSERT_CL_SUCCESS(clEnqueueMemcpyINTEL(opencl.commandQueue, CL_FALSE, dstAlloc.ptr, srcAlloc.ptr, arguments.size, 0, nullptr, eventForEnqueue));
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
 
@@ -88,17 +86,9 @@ static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics)
             statistics.pushValue(timer.get(), arguments.size, MeasurementUnit::GigabytesPerSecond, MeasurementType::Cpu);
         }
     }
-    if (arguments.sourcePlacement == UsmMemoryPlacement::NonUsm) {
-        free(source);
-    } else {
-        ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, source));
-    }
-    if (arguments.destinationPlacement == UsmMemoryPlacement::NonUsm) {
-        free(destination);
-    } else {
-        ASSERT_CL_SUCCESS(clMemFreeINTEL(opencl.context, destination));
-    }
 
+    ASSERT_CL_SUCCESS(UsmHelperOcl::deallocate(srcAlloc));
+    ASSERT_CL_SUCCESS(UsmHelperOcl::deallocate(dstAlloc));
     return TestResult::Success;
 }
 

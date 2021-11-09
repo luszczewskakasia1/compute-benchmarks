@@ -14,7 +14,7 @@
  */
 
 #include "framework/ocl/opencl.h"
-#include "framework/ocl/utility/usm_helper.h"
+#include "framework/ocl/utility/usm_helper_ocl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
 
@@ -36,7 +36,7 @@ static TestResult run(const UsmSharedFirstCpuAccessArguments &arguments, Statist
     // Warmup
     const cl_mem_properties_intel properties[] = {
         CL_MEM_ALLOC_FLAGS_INTEL,
-        UsmHelper::getInitialPlacementFlag(arguments.initialPlacement),
+        UsmHelperOcl::getInitialPlacementFlag(arguments.initialPlacement),
         0,
     };
     auto buffer = clSharedMemAllocINTEL(opencl.context, opencl.device, properties, arguments.bufferSize, 0u, &retVal);
