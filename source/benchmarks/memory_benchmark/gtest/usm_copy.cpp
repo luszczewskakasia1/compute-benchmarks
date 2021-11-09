@@ -46,8 +46,8 @@ INSTANTIATE_TEST_SUITE_P(
     UsmCopyTest,
     ::testing::Combine(
         ::CommonGtestArgs::allApis(),
-        ::testing::Values(UsmMemoryPlacement::Device, UsmMemoryPlacement::Host, UsmMemoryPlacement::Shared, UsmMemoryPlacement::NonUsm, UsmMemoryPlacement::NonUsmImported),
-        ::testing::Values(UsmMemoryPlacement::Device, UsmMemoryPlacement::Host, UsmMemoryPlacement::Shared, UsmMemoryPlacement::NonUsm, UsmMemoryPlacement::NonUsmImported),
+        ::testing::ValuesIn(UsmMemoryPlacementArgument::enumValues),
+        ::testing::ValuesIn(UsmMemoryPlacementArgument::enumValues),
         ::testing::Values(128 * megaByte, 512 * megaByte),
         ::testing::Values(BufferContents::Zeros),
         ::testing::Values(false, true),
