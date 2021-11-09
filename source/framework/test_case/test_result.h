@@ -23,6 +23,7 @@ enum class TestResult {
     Error,                   // an error was returned by the compute API
     DriverFunctionNotFound,  // extension function was not found and test is skipped
     DeviceNotCapable,        // device does not support some functionality needed in test (e.g. compression)
+    ApiNotCapable,           // current graphics API doesn't have support for given parameters
     KernelNotFound,          // binary kernel was not found in working directory
     SkippedApi,              // selected API should not be run, because of user has disabled it with a command-line argument
     UnsupportedApi,          // selected API should not be run, because it is not built in current binary

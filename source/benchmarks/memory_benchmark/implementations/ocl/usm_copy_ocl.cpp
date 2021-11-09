@@ -25,8 +25,10 @@
 #include <gtest/gtest.h>
 
 static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics) {
-    if (arguments.reuseCommandList == true || arguments.sourcePlacement == UsmMemoryPlacement::NonUsmImported || arguments.destinationPlacement == UsmMemoryPlacement::NonUsmImported) {
-        return TestResult::DeviceNotCapable;
+    if (arguments.reuseCommandList == true ||
+        arguments.sourcePlacement == UsmMemoryPlacement::NonUsmImported ||
+        arguments.destinationPlacement == UsmMemoryPlacement::NonUsmImported) {
+        return TestResult::ApiNotCapable;
     }
 
     // Setup
