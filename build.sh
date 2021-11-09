@@ -20,5 +20,5 @@ export https_proxy="http://proxy-dmz.intel.com:912/"
 
 mkdir build -p
 cd build
-cmake .. $@
+cmake .. "$@"
 cd ..
