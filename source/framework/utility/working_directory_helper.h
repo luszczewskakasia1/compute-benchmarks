@@ -15,19 +15,27 @@
 
 #pragma once
 
+#if __has_include(<filesystem>)
+#include <filesystem>
+namespace FileSystem = std::filesystem;
+#else
+#include <experimental/filesystem>
+namespace FileSystem = std::experimental::filesystem;
+#endif
+
 #include <filesystem>
 #include <string>
 
 struct WorkingDirectoryHelper {
-    static std::filesystem::path getExeLocation(); // OS-specific implementation
+    static FileSystem::path getExeLocation(); // OS-specific implementation
 
-    static void changeDirectory(const std::filesystem::path &directory) {
-        std::filesystem::current_path(directory);
+    static void changeDirectory(const FileSystem::path &directory) {
+        FileSystem::current_path(directory);
     }
 
     static void changeDirectoryToExeDirectory() {
-        const std::filesystem::path exeLocation = getExeLocation();
-        const std::filesystem::path exeDirectory = exeLocation.parent_path();
+        const FileSystem::path exeLocation = getExeLocation();
+        const FileSystem::path exeDirectory = exeLocation.parent_path();
         changeDirectory(exeDirectory);
     }
 };

@@ -19,8 +19,8 @@
 
 #include <unistd.h>
 
-std::filesystem::path WorkingDirectoryHelper::getExeLocation() {
+FileSystem::path WorkingDirectoryHelper::getExeLocation() {
     char buffer[4096];
     FATAL_ERROR_IF_SYS_CALL_FAILED(readlink("/proc/self/exe", buffer, sizeof(buffer)), "retrieving .exe location");
-    return std::filesystem::path{buffer};
+    return FileSystem::path{buffer};
 }

@@ -17,7 +17,7 @@
 file(GLOB SOURCES *.cpp *.h)
 set(TARGET_NAME compute_benchmarks_framework)
 add_library(${TARGET_NAME} STATIC ${SOURCES})
-target_link_libraries(${TARGET_NAME} PUBLIC gtest)
+target_link_libraries(${TARGET_NAME} PUBLIC gtest stdc++fs)
 target_include_directories(${TARGET_NAME} PUBLIC ${SOURCE_ROOT})
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_17)
 set_target_properties(${TARGET_NAME} PROPERTIES FOLDER framework)
