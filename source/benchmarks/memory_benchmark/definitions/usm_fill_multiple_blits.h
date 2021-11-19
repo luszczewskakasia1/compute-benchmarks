@@ -22,7 +22,9 @@
 #include "framework/test_case/test_case.h"
 #include "framework/utility/common_help_message.h"
 
-using BcsBitmaskArgument = BitmaskArgument<9, false>;
+constexpr uint32_t maxNumberOfEngines = 9;
+
+using BcsBitmaskArgument = BitmaskArgument<maxNumberOfEngines, false>;
 
 struct UsmFillMultipleBlitsArguments : TestCaseArgumentContainer {
     UsmMemoryPlacementArgument memoryPlacement;

@@ -48,5 +48,5 @@ INSTANTIATE_TEST_SUITE_P(
         ::testing::Values(UsmMemoryPlacement::Device),
         ::testing::Values(512 * megaByte),
         ::testing::Values(16),
-        ::testing::Values(BufferContents::Zeros),
-        ::testing::Values("000000111", "111111111")));
+        ::testing::Values(BufferContents::Zeros, BufferContents::Random),
+        ::testing::Values("000000001", "000000010", "000000111", "111111111")));
