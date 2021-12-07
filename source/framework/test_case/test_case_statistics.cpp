@@ -43,6 +43,11 @@ void TestCaseStatistics::pushValue(Clock::duration time, MeasurementUnit unit, M
         this->pushValue(timeMicroseconds, description, unit, type);
         break;
     }
+    case MeasurementUnit::Latency: {
+        const Value latencyVal = timeSeconds * 1e9;
+        this->pushValue(latencyVal, description, unit, type);
+        break;
+    }
     case MeasurementUnit::GigabytesPerSecond:
         FATAL_ERROR("Buffer size needs to be passed when unit is ", std::to_string(unit));
     default:

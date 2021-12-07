@@ -23,6 +23,7 @@ enum class MeasurementUnit {
     Unknown,
     Microseconds,
     GigabytesPerSecond,
+    Latency,
 };
 
 namespace std {
@@ -32,6 +33,8 @@ inline std::string to_string(MeasurementUnit unit) {
         return "[us]";
     case MeasurementUnit::GigabytesPerSecond:
         return "[GB/s]";
+    case MeasurementUnit::Latency:
+        return "[clk]";
     default:
         FATAL_ERROR("Unknown measurement unit");
     }
