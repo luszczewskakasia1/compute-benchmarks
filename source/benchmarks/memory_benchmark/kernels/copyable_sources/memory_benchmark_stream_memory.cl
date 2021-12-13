@@ -27,7 +27,6 @@ __kernel void read(const __global STREAM_TYPE *restrict x, __global STREAM_TYPE 
 
     // A trick to ensure compiler won't optimize away the read
     if (value < scalar) {
-        printf("WARNING: writing memory in read-only kernel. This should never happen.\n");
         *dummyOutput = value;
     }
 }
