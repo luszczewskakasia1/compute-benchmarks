@@ -26,7 +26,7 @@ __kernel void read(const __global STREAM_TYPE *restrict x, __global STREAM_TYPE 
     STREAM_TYPE value = x[i];
 
     // A trick to ensure compiler won't optimize away the read
-    if (value < scalar) {
+    if (value == 0.37221) {
         *dummyOutput = value;
     }
 }

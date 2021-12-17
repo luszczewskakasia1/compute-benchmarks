@@ -46,6 +46,10 @@ class ExtensionsHelper {
         return std::any_of(extensions.begin(), extensions.end(), predicate);
     }
 
+    bool areDoublesSupported() const {
+        return isSupported("cl_khr_fp64");
+    }
+
     bool isGlobalFloatAtomicsSupported() const {
         return isSupported("cl_intel_global_float_atomics");
     }

@@ -31,7 +31,9 @@ static TestResult run(const StreamMemoryArguments &arguments, Statistics &statis
     QueueProperties queueProperties = QueueProperties::create().setProfiling(true).setOoq(0);
     Opencl opencl(queueProperties);
     Timer timer;
-    const size_t elementSize = 4u; // TODO this is dependent on datatype
+    bool useDoubles = opencl.getExtensions().areDoublesSupported();
+
+    const size_t elementSize = useDoubles ? 8u : 4u;
     const size_t fillValue = 313u;
     const int32_t scalarValue = -999;
 
@@ -66,7 +68,7 @@ static TestResult run(const StreamMemoryArguments &arguments, Statistics &statis
 
     // Create kernel
     CompilerOptionsBuilder compilerOptions;
-    compilerOptions.addDefinitionKeyValue("STREAM_TYPE", "float");
+    compilerOptions.addDefinitionKeyValue("STREAM_TYPE", useDoubles ? "double" : "float");
     const char *programName = "memory_benchmark_stream_memory.cl";
     cl_program program{};
     if (auto result = ProgramHelperOcl::buildProgramFromSourceFile(opencl.context, opencl.device, programName, compilerOptions.str().c_str(), program); result != TestResult::Success) {
@@ -99,13 +101,22 @@ static TestResult run(const StreamMemoryArguments &arguments, Statistics &statis
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
 
+        size_t tranfserSize = arguments.size;
+        if (arguments.type == StreamMemoryType::Scale) {
+            tranfserSize *= 2;
+        }
+        if (arguments.type == StreamMemoryType::Triad) {
+            tranfserSize *= 3;
+        }
+
         if (eventForEnqueue) {
             cl_ulong timeNs{};
             ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
             ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
-            statistics.pushValue(std::chrono::nanoseconds(timeNs), arguments.size, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu);
+
+            statistics.pushValue(std::chrono::nanoseconds(timeNs), tranfserSize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu);
         } else {
-            statistics.pushValue(timer.get(), arguments.size, MeasurementUnit::GigabytesPerSecond, MeasurementType::Cpu);
+            statistics.pushValue(timer.get(), tranfserSize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Cpu);
         }
     }
 
