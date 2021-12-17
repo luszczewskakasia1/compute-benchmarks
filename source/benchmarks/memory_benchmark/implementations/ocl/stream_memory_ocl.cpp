@@ -95,6 +95,7 @@ static TestResult run(const StreamMemoryArguments &arguments, Statistics &statis
         for (size_t j = 0; j < buffersCount; j++) {
             ASSERT_CL_SUCCESS(clEnqueueFillBuffer(opencl.commandQueue, buffers[j], &fillValue, sizeof(fillValue), 0, arguments.size, 0, nullptr, nullptr));
         }
+        ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
         timer.measureStart();
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, eventForEnqueue));
