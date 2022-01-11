@@ -35,7 +35,7 @@ static TestResult run(const CopySubmissionEventsArguments &arguments, Statistics
         return TestResult::DriverFunctionNotFound;
     }
 
-    size_t transferSize = 4u;
+    size_t transferSize = 2097152u;
 
     void *hostMemory = clHostMemAllocINTEL(opencl.context, nullptr, transferSize, 0, &retVal);
     const cl_mem destination = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, transferSize, nullptr, &retVal);
