@@ -20,6 +20,6 @@
 EXECUTE_AT_APP_INIT {
     const std::string name = "api_overhead_benchmark";
     const std::string description = "Api Overhead Benchmark is a set of tests aimed at measuring CPU-side execution duration of compute API calls.";
-    const int testCaseColumnWidth = 68;
+    const int testCaseColumnWidth = 82;
     BenchmarkInfo::initialize(name, description, testCaseColumnWidth);
 };
