@@ -19,7 +19,7 @@
 #include "framework/test_case/test_case.h"
 
 struct ExecuteCommandListWithIndirectArguments : TestCaseArgumentContainer {
-    PositiveIntegerArgument IndirectAllocationsAmount;
+    IntegerArgument IndirectAllocationsAmount;
 
     ExecuteCommandListWithIndirectArguments()
         : IndirectAllocationsAmount(*this, "AmountOfIndirectAllocations", "Amount of indirect allocations that are present in system") {}

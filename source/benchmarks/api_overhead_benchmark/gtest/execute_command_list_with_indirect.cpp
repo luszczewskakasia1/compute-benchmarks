@@ -36,4 +36,4 @@ TEST_P(ExecuteCommandListTestWithIndirectTest, Test) {
 INSTANTIATE_TEST_SUITE_P(
     ExecuteCommandListTestWithIndirectTest,
     ExecuteCommandListTestWithIndirectTest,
-    ::testing::Values(0u, 100u, 1000u, 10000u, 100000u));
+    ::testing::Values(0u, 10u, 100u, 1000u, 10000u));

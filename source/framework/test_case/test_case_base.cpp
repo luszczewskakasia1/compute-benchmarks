@@ -103,7 +103,7 @@ void TestCaseBase::printTestCaseNameLengthWarning(const std::string &testCaseNam
     static size_t maxWidth = columnWidth;
 
     const size_t currentWidth = testCaseNameWithConfig.length();
-    if (currentWidth > maxWidth) {
+    if (currentWidth > maxWidth && Configuration::get().verbose) {
         maxWidth = currentWidth;
         std::cerr << "WARNING: current TestCase column width of " << columnWidth << " is too small. Consider changing it to " << maxWidth << ". "
                   << "This is an issue in the benchmark which may cause the output to appear weird, but does not break any functionality.\n";
