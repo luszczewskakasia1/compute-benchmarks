@@ -6,6 +6,7 @@ AppendLaunchKernel|measures time spent in zeCommandListAppendLaunchKernel on CPU
 EnqueueNdrNullLws|measures time spent in clEnqueueNDRangeKernel on CPU. Null LWS is provided, which causes driver to calculate it|<ul><li>--event Pass output event to the enqueue call (0 or 1)</li><li>--gws Blobal work size</li><li>--ooq Use out of order queue (0 or 1)</li><li>--profiling Creating a profiling queue (0 or 1)</li></ul>|:x:|:heavy_check_mark:|
 EnqueueNdrTime|measures time spent in clEnqueueNDRangeKernel on CPU.|<ul><li>--event Pass output event to the enqueue call (0 or 1)</li><li>--ooq Use out of order queue (0 or 1)</li><li>--profiling Creating a profiling queue (0 or 1)</li><li>--wgc Workgroup count</li><li>--wgs Workgroup size</li></ul>|:x:|:heavy_check_mark:|
 ExecuteCommandList|measures time spent in zeCommandQueueExecuteCommandLists on CPU.|<ul><li>--UseFence Pass a non-null ze_fence_handle_t to the API call (0 or 1)</li></ul>|:heavy_check_mark:|:x:|
+ExecuteCommandListWithInidrectArguments|measures time spent in zeCommandQueueExecuteCommandLists on CPU when indirect allocations are used.|<ul><li>--AmountOfIndirectAllocations Amount of indirect allocations that are present in system</li></ul>|:heavy_check_mark:|:x:|
 FlushTime|measures time spent in clEnqueueNDRangeKernel on CPU.|<ul><li>--event Pass output event to the enqueue call (0 or 1)</li><li>--ooq Use out of order queue (0 or 1)</li><li>--wgc Workgroup count</li><li>--wgs Workgroup size, pass 0 to make the driver calculate it during enqueue</li></ul>|:x:|:heavy_check_mark:|
 
 
