@@ -28,6 +28,6 @@ struct StreamMemoryTypeArgument : EnumArgument<StreamMemoryTypeArgument, StreamM
 
     const static inline std::string enumName = "stream memory type";
     const static inline EnumType invalidEnumValue = EnumType::Unknown;
-    const static inline EnumType enumValues[4] = {EnumType::Read, EnumType::Write, EnumType::Scale, EnumType::Triad};
-    const static inline std::string enumValuesNames[4] = {"Read", "Write", "Scale", "Triad"};
+    const static inline EnumType enumValues[] = {EnumType::Read, EnumType::Write, EnumType::Scale, EnumType::Triad, EnumType::Stream_3BytesRGBtoY, EnumType::Stream_3BytesAlignedRGBtoY};
+    const static inline std::string enumValuesNames[] = {"Read", "Write", "Scale", "Triad", "stream_3bytesRGBtoY", "stream_3BytesAlignedRGBtoY"};
 };

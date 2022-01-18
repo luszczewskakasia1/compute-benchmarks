@@ -19,11 +19,14 @@
 #include "framework/ocl/utility/program_helper_ocl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/compiler_options_builder.h"
+#include "framework/utility/memory_constants.h"
 #include "framework/utility/timer.h"
 
 #include "definitions/stream_memory.h"
 
 #include <gtest/gtest.h>
+
+using namespace MemoryConstants;
 
 static TestResult run(const StreamMemoryArguments &arguments, Statistics &statistics) {
     // Setup
@@ -36,31 +39,48 @@ static TestResult run(const StreamMemoryArguments &arguments, Statistics &statis
     const size_t elementSize = useDoubles ? 8u : 4u;
     const size_t fillValue = 313u;
     const int32_t scalarValue = -999;
+    const bool printBuildInfo = true;
 
     // Create kernel-specific buffers
     const char *kernelName = {};
+    size_t bufferSize = arguments.size;
     cl_mem buffers[3] = {};
     size_t buffersCount = {};
+    size_t bufferSizes[3] = {bufferSize, bufferSize, bufferSize};
+
+    const size_t reduction = 4;
     switch (arguments.type) {
     case StreamMemoryType::Read:
         kernelName = "read";
-        buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, arguments.size, nullptr, &retVal);
+        buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, bufferSize, nullptr, &retVal);
+        bufferSizes[buffersCount] = 16u;
         buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, 16u, nullptr, &retVal);
+        break;
+    case StreamMemoryType::Stream_3BytesRGBtoY:
+    case StreamMemoryType::Stream_3BytesAlignedRGBtoY:
+        buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, bufferSize, nullptr, &retVal);
+        bufferSizes[buffersCount] = bufferSize / reduction;
+        buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, bufferSize / reduction, nullptr, &retVal);
+        if (arguments.type == StreamMemoryType::Stream_3BytesRGBtoY) {
+            kernelName = "stream_3bytesRGBtoY";
+        } else {
+            kernelName = "stream_3BytesAlignedRGBtoY";
+        }
         break;
     case StreamMemoryType::Write:
         kernelName = "write";
-        buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, arguments.size, nullptr, &retVal);
+        buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, bufferSize, nullptr, &retVal);
         break;
     case StreamMemoryType::Scale:
         kernelName = "scale";
-        buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, arguments.size, nullptr, &retVal);
-        buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, arguments.size, nullptr, &retVal);
+        buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, bufferSize, nullptr, &retVal);
+        buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, bufferSize, nullptr, &retVal);
         break;
     case StreamMemoryType::Triad:
         kernelName = "triad";
-        buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, arguments.size, nullptr, &retVal);
-        buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, arguments.size, nullptr, &retVal);
-        buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, arguments.size, nullptr, &retVal);
+        buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, bufferSize, nullptr, &retVal);
+        buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, bufferSize, nullptr, &retVal);
+        buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, bufferSize, nullptr, &retVal);
         break;
     default:
         FATAL_ERROR("Unknown StreamMemoryType");
@@ -72,17 +92,24 @@ static TestResult run(const StreamMemoryArguments &arguments, Statistics &statis
     const char *programName = "memory_benchmark_stream_memory.cl";
     cl_program program{};
     if (auto result = ProgramHelperOcl::buildProgramFromSourceFile(opencl.context, opencl.device, programName, compilerOptions.str().c_str(), program); result != TestResult::Success) {
+        if (result != TestResult::Success && printBuildInfo) {
+            size_t numBytes = 0;
+            retVal |= clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, 0, NULL, &numBytes);
+            auto buffer = std::make_unique<char[]>(numBytes);
+            retVal |= clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, numBytes, buffer.get(), &numBytes);
+            std::cout << buffer.get() << std::endl;
+        }
         return result;
     }
     cl_kernel kernel = clCreateKernel(program, kernelName, &retVal);
     ASSERT_CL_SUCCESS(retVal);
     for (auto i = 0u; i < buffersCount; i++) {
-        ASSERT_CL_SUCCESS(clEnqueueFillBuffer(opencl.commandQueue, buffers[i], &fillValue, sizeof(fillValue), 0, arguments.size, 0, nullptr, nullptr));
+        ASSERT_CL_SUCCESS(clEnqueueFillBuffer(opencl.commandQueue, buffers[i], &fillValue, sizeof(fillValue), 0, bufferSizes[i], 0, nullptr, nullptr));
         ASSERT_CL_SUCCESS(clSetKernelArg(kernel, static_cast<cl_uint>(i), sizeof(buffers[i]), &buffers[i]))
     }
     ASSERT_CL_SUCCESS(clSetKernelArg(kernel, static_cast<cl_uint>(buffersCount), sizeof(scalarValue), &scalarValue));
 
-    // Warmup
+    // Warm up
     const size_t gws = arguments.size / elementSize;
     ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, nullptr, 0, nullptr, nullptr));
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
@@ -97,11 +124,19 @@ static TestResult run(const StreamMemoryArguments &arguments, Statistics &statis
         timer.measureEnd();
 
         size_t tranfserSize = arguments.size;
-        if (arguments.type == StreamMemoryType::Scale) {
+        switch (arguments.type) {
+        case StreamMemoryType::Scale:
             tranfserSize *= 2;
-        }
-        if (arguments.type == StreamMemoryType::Triad) {
+            break;
+        case StreamMemoryType::Triad:
             tranfserSize *= 3;
+            break;
+        case StreamMemoryType::Stream_3BytesRGBtoY:
+        case StreamMemoryType::Stream_3BytesAlignedRGBtoY:
+            tranfserSize = (tranfserSize / reduction) + (3 * tranfserSize / 4); // 3B Read + 1B Write
+            break;
+        default:
+            break;
         }
 
         if (eventForEnqueue) {

@@ -25,4 +25,6 @@ enum class StreamMemoryType {
     Write,
     Scale,
     Triad,
+    Stream_3BytesRGBtoY,
+    Stream_3BytesAlignedRGBtoY,
 };

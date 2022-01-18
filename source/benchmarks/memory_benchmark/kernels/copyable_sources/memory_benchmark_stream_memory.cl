@@ -46,3 +46,16 @@ __kernel void triad(const __global STREAM_TYPE *restrict x, const __global STREA
     const int i = get_global_id(0);
     z[i] = x[i] + y[i] * scalar;
 }
+
+__kernel void stream_3bytesRGBtoY(const __global uchar *restrict x, __global uchar *restrict luminance, float scalar) {
+    const int i = get_global_id(0) * 3;
+    const int y = get_global_id(0);
+    luminance[y] = (uchar)( (x[i]*0.2126f) + (x[i+1]*0.7152f) + (x[i+2]*0.0722f) );
+}
+
+__kernel void stream_3BytesAlignedRGBtoY(const __global uchar4 *restrict x, __global uchar *restrict luminance, float scalar) {
+    const int i = get_global_id(0);
+    luminance[i] = (uchar)( (x[i].x *0.2126f) + (x[i].y * 0.7152f) + (x[i].z * 0.0722f) );
+}
+
+
