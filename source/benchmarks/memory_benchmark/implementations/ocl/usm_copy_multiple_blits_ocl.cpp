@@ -106,19 +106,26 @@ static TestResult run(const UsmCopyMultipleBlitsArguments &arguments, Statistics
         }
         timer.measureEnd();
 
-        // Report individual engines results and get time of the slowest engine
-        std::chrono::nanoseconds maxGpuTime{};
+        // Report individual engines results and get time delta
+        std::chrono::nanoseconds endGpuTime{};
+        std::chrono::nanoseconds startGpuTime = std::chrono::nanoseconds::duration::max();
+
         for (PerQueueData &queue : queues) {
             cl_ulong timeNs = 0ul;
-            ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(queue.event, timeNs));
+            cl_ulong start, end;
+            ASSERT_CL_SUCCESS(clGetEventProfilingInfo(queue.event, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, nullptr));
+            ASSERT_CL_SUCCESS(clGetEventProfilingInfo(queue.event, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &start, nullptr));
+
             ASSERT_CL_SUCCESS(clReleaseEvent(queue.event));
+
             statistics.pushValue(std::chrono::nanoseconds(timeNs), queue.copySize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu, queue.name);
 
-            maxGpuTime = std::max(maxGpuTime, std::chrono::nanoseconds(timeNs));
+            startGpuTime = std::min(std::chrono::nanoseconds(start), startGpuTime);
+            endGpuTime = std::max(std::chrono::nanoseconds(end), endGpuTime);
         }
 
         // Report total results
-        statistics.pushValue(maxGpuTime, arguments.size, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu, "Total (Gpu)");
+        statistics.pushValue(endGpuTime - startGpuTime, arguments.size, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu, "Total (Gpu)");
         statistics.pushValue(timer.get(), arguments.size, MeasurementUnit::GigabytesPerSecond, MeasurementType::Cpu, "Total (Cpu)");
     }
 
