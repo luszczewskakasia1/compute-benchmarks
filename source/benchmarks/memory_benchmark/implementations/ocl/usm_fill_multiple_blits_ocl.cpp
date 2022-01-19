@@ -118,7 +118,7 @@ static TestResult run(const UsmFillMultipleBlitsArguments &arguments, Statistics
             ASSERT_CL_SUCCESS(clGetEventProfilingInfo(queue.event, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, nullptr));
 
             ASSERT_CL_SUCCESS(clReleaseEvent(queue.event));
-
+            timeNs = end - start;
             statistics.pushValue(std::chrono::nanoseconds(timeNs), arguments.size, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu, queue.name);
 
             startGpuTime = std::min(std::chrono::nanoseconds(start), startGpuTime);
