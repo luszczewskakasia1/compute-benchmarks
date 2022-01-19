@@ -189,7 +189,7 @@ static TestResult run(const UsmCopyMultipleBlitsArguments &arguments, Statistics
 
         // Report individual engines results and get time delta
         std::chrono::nanoseconds endGpuTime{};
-        std::chrono::nanoseconds startGpuTime = std::numeric_limits<std::chrono::nanoseconds>::max();
+        std::chrono::nanoseconds startGpuTime = std::chrono::nanoseconds::duration::max();
 
         for (PerQueueData &queue : queues) {
             ze_kernel_timestamp_result_t timestampResult{};
