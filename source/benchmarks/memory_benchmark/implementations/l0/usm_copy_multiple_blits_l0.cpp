@@ -187,20 +187,23 @@ static TestResult run(const UsmCopyMultipleBlitsArguments &arguments, Statistics
         }
         timer.measureEnd();
 
-        // Report individual engines results and get time of the slowest engine
-        std::chrono::nanoseconds maxGpuTime{};
+        // Report individual engines results and get time delta
+        std::chrono::nanoseconds endGpuTime{};
+        std::chrono::nanoseconds startGpuTime = std::numeric_limits<std::chrono::nanoseconds>::max();
+
         for (PerQueueData &queue : queues) {
             ze_kernel_timestamp_result_t timestampResult{};
             ASSERT_ZE_RESULT_SUCCESS(zeEventQueryKernelTimestamp(queue.event, &timestampResult));
-            auto commandTime = std::chrono::nanoseconds(timestampResult.global.kernelEnd - timestampResult.global.kernelStart);
-            commandTime *= timerResolution;
+            auto startTime = std::chrono::nanoseconds(timestampResult.global.kernelStart * timerResolution);
+            auto endTime = std::chrono::nanoseconds(timestampResult.global.kernelEnd * timerResolution);
+            auto commandTime = endTime - startTime;
+            startGpuTime = std::min(startTime, startGpuTime);
+            endGpuTime = std::max(endTime, endGpuTime);
             statistics.pushValue(commandTime, queue.copySize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu, queue.name);
-
-            maxGpuTime = std::max(maxGpuTime, commandTime);
         }
 
         // Report total results
-        statistics.pushValue(maxGpuTime, arguments.size, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu, "Total (Gpu)");
+        statistics.pushValue(endGpuTime - startGpuTime, arguments.size, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu, "Total (Gpu)");
         statistics.pushValue(timer.get(), arguments.size, MeasurementUnit::GigabytesPerSecond, MeasurementType::Cpu, "Total (Cpu)");
     }
 
