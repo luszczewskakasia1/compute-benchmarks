@@ -114,7 +114,7 @@ static TestResult run(const UsmCopyMultipleBlitsArguments &arguments, Statistics
             cl_ulong timeNs = 0ul;
             cl_ulong start, end;
             ASSERT_CL_SUCCESS(clGetEventProfilingInfo(queue.event, CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, nullptr));
-            ASSERT_CL_SUCCESS(clGetEventProfilingInfo(queue.event, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &start, nullptr));
+            ASSERT_CL_SUCCESS(clGetEventProfilingInfo(queue.event, CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, nullptr));
 
             ASSERT_CL_SUCCESS(clReleaseEvent(queue.event));
 
