@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -40,9 +40,9 @@ class QueueFamiliesHelper {
     };
 
     static std::unique_ptr<QueueDesc> getPropertiesForSelectingEngine(ze_device_handle_t device, Engine engine);
+    static std::vector<QueueFamilyDesc> queryQueueFamilies(ze_device_handle_t device);
 
   private:
-    static std::vector<QueueFamilyDesc> queryQueueFamilies(ze_device_handle_t device);
     static EngineGroup getEngineGroup(ze_command_queue_group_properties_t family);
 };
 } // namespace L0
