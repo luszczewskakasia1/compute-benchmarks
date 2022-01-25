@@ -1,0 +1,58 @@
+/*
+ * INTEL CONFIDENTIAL
+ *
+ * Copyright (C) 2021 Intel Corporation
+ *
+ * This software and the related documents are Intel copyrighted materials,
+ * and your use of them is governed by the express license under which they were
+ * provided to you ("License"). Unless the License provides otherwise,
+ * you may not use, modify, copy, publish, distribute, disclose or transmit this
+ * software or the related documents without Intel's prior written permission.
+ *
+ * This software and the related documents are provided as is, with no express or
+ * implied warranties, other than those that are expressly stated in the License.
+ */
+
+#include "framework/l0/levelzero.h"
+#include "framework/test_case/register_test_case.h"
+#include "framework/utility/file_helper.h"
+#include "framework/utility/timer.h"
+
+#include "definitions/event_time.h"
+
+#include <gtest/gtest.h>
+
+static TestResult run(const EventTimeArguments &arguments, Statistics &statistics) {
+    // Setup
+    LevelZero levelzero;
+    Timer timer;
+
+    // Create event if necessary
+    ze_event_pool_desc_t eventPoolDesc = {ZE_STRUCTURE_TYPE_EVENT_POOL_DESC, nullptr, 0, 256u};
+    auto eventPoolFlags = arguments.hostVisible * ZE_EVENT_POOL_FLAG_HOST_VISIBLE | arguments.useProfiling * ZE_EVENT_POOL_FLAG_KERNEL_TIMESTAMP;
+    eventPoolDesc.flags = eventPoolFlags;
+
+    const ze_event_desc_t eventDesc = {ZE_STRUCTURE_TYPE_EVENT_DESC, nullptr, 0, ZE_EVENT_SCOPE_FLAG_DEVICE, ZE_EVENT_SCOPE_FLAG_DEVICE};
+    ze_event_pool_handle_t eventPool{};
+    ze_event_handle_t event{};
+    ASSERT_ZE_RESULT_SUCCESS(zeEventPoolCreate(levelzero.context, &eventPoolDesc, 0, nullptr, &eventPool));
+
+    //warmup
+    ASSERT_ZE_RESULT_SUCCESS(zeEventCreate(eventPool, &eventDesc, &event));
+    ASSERT_ZE_RESULT_SUCCESS(zeEventDestroy(event));
+
+    // Benchmark
+    for (auto i = 0u; i < arguments.iterations; i++) {
+
+        timer.measureStart();
+        ASSERT_ZE_RESULT_SUCCESS(zeEventCreate(eventPool, &eventDesc, &event));
+        timer.measureEnd();
+        ASSERT_ZE_RESULT_SUCCESS(zeEventDestroy(event));
+        statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);
+    }
+
+    ASSERT_ZE_RESULT_SUCCESS(zeEventPoolDestroy(eventPool));
+    return TestResult::Success;
+}
+
+static RegisterTestCaseImplementation<EventTime> registerTestCase(run, Api::L0);
