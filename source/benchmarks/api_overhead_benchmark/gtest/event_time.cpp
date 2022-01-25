@@ -26,7 +26,7 @@ class EventTimeTest : public ::testing::TestWithParam<std::tuple<bool, bool>> {
 
 TEST_P(EventTimeTest, Test) {
     EventTimeArguments args{};
-    args.api = Api::OpenCL;
+    args.api = Api::L0;
     args.useProfiling = std::get<0>(GetParam());
     args.hostVisible = std::get<1>(GetParam());
 
