@@ -18,21 +18,21 @@
 #include "framework/argument/basic_argument.h"
 #include "framework/test_case/test_case.h"
 
-struct ExecuteCommandListWithIndirectArguments : TestCaseArgumentContainer {
+struct ExecuteCommandListWithIndirectAccessArguments : TestCaseArgumentContainer {
     IntegerArgument IndirectAllocationsAmount;
 
-    ExecuteCommandListWithIndirectArguments()
+    ExecuteCommandListWithIndirectAccessArguments()
         : IndirectAllocationsAmount(*this, "AmountOfIndirectAllocations", "Amount of indirect allocations that are present in system") {}
 };
 
-struct ExecuteCommandListWithInidrect : TestCase<ExecuteCommandListWithIndirectArguments> {
-    using TestCase<ExecuteCommandListWithIndirectArguments>::TestCase;
+struct ExecuteCommandListWithIndirectAccess : TestCase<ExecuteCommandListWithIndirectAccessArguments> {
+    using TestCase<ExecuteCommandListWithIndirectAccessArguments>::TestCase;
 
     std::string getTestCaseName() const override {
-        return "ExecuteCommandListWithIndirectArguments";
+        return "ExecuteCommandListWithIndirectAccess";
     }
 
     std::string getHelp() const override {
-        return "measures time spent in zeCommandQueueExecuteCommandLists on CPU when indirect allocations are used.";
+        return "measures time spent in zeCommandQueueExecuteCommandLists on CPU when indirect allocations are accessed.";
     }
 };

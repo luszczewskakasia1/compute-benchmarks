@@ -7,7 +7,8 @@ EnqueueNdrNullLws|measures time spent in clEnqueueNDRangeKernel on CPU. Null LWS
 EnqueueNdrTime|measures time spent in clEnqueueNDRangeKernel on CPU.|<ul><li>--event Pass output event to the enqueue call (0 or 1)</li><li>--ooq Use out of order queue (0 or 1)</li><li>--profiling Creating a profiling queue (0 or 1)</li><li>--wgc Workgroup count</li><li>--wgs Workgroup size</li></ul>|:x:|:heavy_check_mark:|
 EventCreation|measures time spent to create event|<ul><li>--hostVisible Event will set host visible flag (0 or 1)</li><li>--useProfiling Event will use profiling (0 or 1)</li></ul>|:heavy_check_mark:|:x:|
 ExecuteCommandList|measures time spent in zeCommandQueueExecuteCommandLists on CPU.|<ul><li>--UseFence Pass a non-null ze_fence_handle_t to the API call (0 or 1)</li></ul>|:heavy_check_mark:|:x:|
-ExecuteCommandListWithInidrectArguments|measures time spent in zeCommandQueueExecuteCommandLists on CPU when indirect allocations are used.|<ul><li>--AmountOfIndirectAllocations Amount of indirect allocations that are present in system</li></ul>|:heavy_check_mark:|:x:|
+ExecuteCommandListWithIndirectAccess|measures time spent in zeCommandQueueExecuteCommandLists on CPU when indirect allocations are accessed.|<ul><li>--AmountOfIndirectAllocations Amount of indirect allocations that are present in system</li></ul>|:heavy_check_mark:|:x:|
+ExecuteCommandListWithIndirectArguments|measures time spent in zeCommandQueueExecuteCommandLists on CPU when indirect allocations are used.|<ul><li>--AmountOfIndirectAllocations Amount of indirect allocations that are present in system</li></ul>|:heavy_check_mark:|:x:|
 FlushTime|measures time spent in clEnqueueNDRangeKernel on CPU.|<ul><li>--event Pass output event to the enqueue call (0 or 1)</li><li>--ooq Use out of order queue (0 or 1)</li><li>--wgc Workgroup count</li><li>--wgs Workgroup size, pass 0 to make the driver calculate it during enqueue</li></ul>|:x:|:heavy_check_mark:|
 
 
