@@ -23,9 +23,11 @@
 
 struct KernelSwitchLatencyArguments : TestCaseArgumentContainer {
     PositiveIntegerArgument kernelCount;
+    BooleanArgument flushBetweenEnqueues;
 
     KernelSwitchLatencyArguments()
-        : kernelCount(*this, "kernelCount", "Count of kernels") {}
+        : kernelCount(*this, "kernelCount", "Count of kernels"),
+          flushBetweenEnqueues(*this, "flush", "Flush between kernels") {}
 };
 
 struct KernelSwitchLatency : TestCase<KernelSwitchLatencyArguments> {

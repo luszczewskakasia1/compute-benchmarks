@@ -22,13 +22,14 @@
 
 static const inline RegisterTestCase<KernelSwitchLatency> registerTestCase{};
 
-class KernelSwitchLatencyTest : public ::testing::TestWithParam<std::tuple<Api, size_t>> {
+class KernelSwitchLatencyTest : public ::testing::TestWithParam<std::tuple<Api, size_t, bool>> {
 };
 
 TEST_P(KernelSwitchLatencyTest, Test) {
     KernelSwitchLatencyArguments args;
     args.api = std::get<0>(GetParam());
     args.kernelCount = std::get<1>(GetParam());
+    args.flushBetweenEnqueues = std::get<2>(GetParam());
 
     KernelSwitchLatency test;
     test.run(args);
@@ -39,4 +40,5 @@ INSTANTIATE_TEST_SUITE_P(
     KernelSwitchLatencyTest,
     ::testing::Combine(
         ::CommonGtestArgs::allApis(),
-        ::testing::Values(16, 32, 64, 128)));
+        ::testing::Values(16, 32, 64, 128),
+        ::testing::Values(false, true)));
