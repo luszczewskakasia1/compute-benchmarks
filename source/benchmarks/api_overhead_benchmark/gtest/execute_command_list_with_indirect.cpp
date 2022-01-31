@@ -21,13 +21,14 @@
 
 static const inline RegisterTestCase<ExecuteCommandListWithInidrect> registerTestCase{};
 
-class ExecuteCommandListTestWithIndirectTest : public ::testing::TestWithParam<size_t> {
+class ExecuteCommandListTestWithIndirectTest : public ::testing::TestWithParam<std::tuple<size_t, UsmMemoryPlacement>> {
 };
 
 TEST_P(ExecuteCommandListTestWithIndirectTest, Test) {
     ExecuteCommandListWithIndirectArguments args{};
     args.api = Api::L0;
-    args.IndirectAllocationsAmount = GetParam();
+    args.IndirectAllocationsAmount = std::get<0>(GetParam());
+    args.placement = std::get<1>(GetParam());
 
     ExecuteCommandListWithInidrect test;
     test.run(args);
@@ -36,4 +37,6 @@ TEST_P(ExecuteCommandListTestWithIndirectTest, Test) {
 INSTANTIATE_TEST_SUITE_P(
     ExecuteCommandListTestWithIndirectTest,
     ExecuteCommandListTestWithIndirectTest,
-    ::testing::Values(0u, 10u, 100u, 1000u, 10000u));
+    ::testing::Combine(
+        ::testing::Values(0u, 10u, 100u, 1000u, 10000u),
+        ::testing::Values(UsmMemoryPlacement::Shared, UsmMemoryPlacement::Host)));

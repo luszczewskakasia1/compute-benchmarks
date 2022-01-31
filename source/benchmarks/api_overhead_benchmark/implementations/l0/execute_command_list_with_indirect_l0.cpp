@@ -14,6 +14,7 @@
  */
 
 #include "framework/l0/levelzero.h"
+#include "framework/l0/utility/usm_helper.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/file_helper.h"
 #include "framework/utility/timer.h"
@@ -22,7 +23,8 @@
 
 #include <gtest/gtest.h>
 
-static TestResult run(const ExecuteCommandListWithIndirectArguments &arguments, Statistics &statistics) {
+static TestResult
+run(const ExecuteCommandListWithIndirectArguments &arguments, Statistics &statistics) {
     // Setup
     LevelZero levelzero;
     Timer timer;
@@ -51,9 +53,8 @@ static TestResult run(const ExecuteCommandListWithIndirectArguments &arguments, 
     std::vector<void *> indirectAllocations;
 
     for (uint32_t i = 0; i < arguments.IndirectAllocationsAmount; i++) {
-        const ze_host_mem_alloc_desc_t hostAllocationDesc{ZE_STRUCTURE_TYPE_HOST_MEM_ALLOC_DESC};
         void *ptr = nullptr;
-        ASSERT_ZE_RESULT_SUCCESS(zeMemAllocHost(levelzero.context, &hostAllocationDesc, 4096u, 4u, &ptr));
+        ASSERT_ZE_RESULT_SUCCESS(L0::UsmHelper::allocate(arguments.placement, levelzero, 4096u, &ptr));
         indirectAllocations.push_back(ptr);
     }
 

@@ -16,13 +16,16 @@
 #pragma once
 
 #include "framework/argument/basic_argument.h"
+#include "framework/argument/enum/usm_memory_placement_argument.h"
 #include "framework/test_case/test_case.h"
 
 struct ExecuteCommandListWithIndirectArguments : TestCaseArgumentContainer {
     IntegerArgument IndirectAllocationsAmount;
+    UsmMemoryPlacementArgument placement;
 
     ExecuteCommandListWithIndirectArguments()
-        : IndirectAllocationsAmount(*this, "AmountOfIndirectAllocations", "Amount of indirect allocations that are present in system") {}
+        : IndirectAllocationsAmount(*this, "AmountOfIndirectAllocations", "Amount of indirect allocations that are present in system"),
+          placement(*this, "placement", "Placement of the indirect allocations") {}
 };
 
 struct ExecuteCommandListWithInidrect : TestCase<ExecuteCommandListWithIndirectArguments> {
