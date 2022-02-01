@@ -69,7 +69,8 @@ static TestResult run(const KernelWithWorkArguments &arguments, Statistics &stat
     // Benchmark
     for (auto i = 0u; i < arguments.iterations; i++) {
         if (arguments.usedIds == WorkItemIdUsage::AtomicPerWorkgroup) {
-            clEnqueueWriteBuffer(opencl.commandQueue, buffer, true, 0u, 4u, &arguments.workgroupCount, 0u, nullptr, nullptr);
+            uint32_t workgroupCount = arguments.workgroupCount;
+            clEnqueueWriteBuffer(opencl.commandQueue, buffer, true, 0u, 4u, &workgroupCount, 0u, nullptr, nullptr);
         }
 
         timer.measureStart();
@@ -94,7 +95,7 @@ static TestResult run(const KernelWithWorkArguments &arguments, Statistics &stat
             uint32_t returnedValue[2] = {0u};
             clEnqueueReadBuffer(opencl.commandQueue, buffer, true, 0u, 8u, &returnedValue, 0u, nullptr, nullptr);
             EXPECT_EQ(0u, returnedValue[0]);
-            EXPECT_EQ(1337u, returnedValue[0]);
+            EXPECT_EQ(1337u, returnedValue[1]);
         }
     }
 
