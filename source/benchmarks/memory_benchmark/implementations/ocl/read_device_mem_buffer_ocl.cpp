@@ -26,6 +26,7 @@
 #include "definitions/read_device_mem_buffer.h"
 
 #include <gtest/gtest.h>
+using namespace MemoryConstants;
 
 static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics &statistics) {
     if (arguments.compressed && arguments.noIntelExtensions) {
@@ -41,31 +42,29 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     IntelProduct intelProduct = getIntelProduct(opencl);
     IntelGen gpuGen = getIntelGen(intelProduct);
     if (gpuGen == IntelGen::Unknown) {
-        return TestResult::DeviceNotCapable; //tbd for comp
+        return TestResult::NoImplementation;
     }
-    const size_t multiplier = gpuGen == IntelGen::Gen12_8 ? 2 : 1;
 
-    const size_t singleSendSizeInBytes = 128U;
-    const size_t numOfSends = 16U; // per 128Byte in send, 2k-4k tiles in one loop iteration
+    const size_t subgroupSize = 16;
+    const size_t vectorSize = 4;
+    const size_t singleSendSizeInBytes = subgroupSize * vectorSize * sizeof(float);
+    const size_t numOfSends = 16U; // per 2k-4k tiles in one loop iteration
     const size_t numOfLoops = 500U;
     const auto threadTileSizeInSubgroup = singleSendSizeInBytes * numOfSends;
-    const size_t subgroupSize = 8 * multiplier;
     size_t euNum = 0;
 
     ASSERT_CL_SUCCESS(clGetDeviceInfo(opencl.device, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(euNum), &euNum, nullptr));
 
-    const bool useLargeGRF = gpuGen == IntelGen::XeHpCore;
-    CompilerOptionsBuilder buildOptions{};
-    if (useLargeGRF) {
-        buildOptions.addOption("-cl-intel-256-GRF-per-thread");
-    }
-    buildOptions.addOption("-cl-std=CL2.0");
-    buildOptions.addOption("-cl-mad-enable");
-    buildOptions.addOption("-cl-fast-relaxed-math");
-    buildOptions.addDefinitionKeyValue("NUM_SENDS", numOfSends);
-    buildOptions.addDefinitionKeyValue("KERNEL_LOOP_ITERATIONS", numOfLoops);
-    buildOptions.addDefinitionKeyValue("THREAD_TILE_SIZE", threadTileSizeInSubgroup);
-    buildOptions.addDefinitionKeyValue("SUBGROUP_SIZE", subgroupSize);
+    const bool useLargeGRF = gpuGen > IntelGen::Gen12lp ? true : false;
+    const std::string largeGrfOpt = useLargeGRF ? " -cl-intel-256-GRF-per-thread " : " ";
+    const std::string buildOptions = std::string("-cl-std=CL2.0 -cl-mad-enable -cl-fast-relaxed-math ") +
+                                     " -D NUM_SENDS=" + std::to_string(numOfSends) +
+                                     " -D KERNEL_LOOP_ITERATIONS=" + std::to_string(numOfLoops) +
+                                     " -D THREAD_TILE_SIZE=" + std::to_string(threadTileSizeInSubgroup) +
+                                     " -D SUBGROUP_SIZE=" + std::to_string(subgroupSize) +
+                                     " -D VECTOR_SIZE=" + std::to_string(vectorSize) +
+                                     largeGrfOpt +
+                                     std::string(" ");
 
     // Create buffer
     const cl_mem_flags compressionHint = CompressionHelper::getCompressionFlags(arguments.compressed, arguments.noIntelExtensions);
@@ -86,7 +85,7 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     const cl_mem destination = clCreateBuffer(opencl.context, memFlags, arguments.size, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
-    const uint32_t clearGpuBuffSize = 16 * MemoryConstants::megaByte;
+    const uint32_t clearGpuBuffSize = 64 * megaByte;
     const cl_mem clearGpuBuff = clCreateBuffer(opencl.context, memFlags, clearGpuBuffSize, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
@@ -105,13 +104,10 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
 
     const char *programSrc =
         "__kernel void ClearCaches(__global unsigned int *pBuffer, unsigned int buffSize) {"
-        "   unsigned int i = 0;"
-        "   while (i++ < buffSize) {"
-        "   *(pBuffer++) = 0xDEADBEAF;"
-        "   }"
+        "   const uint gid = get_global_id(0);"
+        "   pBuffer[gid] += 0xDEADBEAF;"
         "}"
-        "\n#define VECTOR_SIZE 4"
-        "\n#define SEND_SIZE (sizeof(float) * VECTOR_SIZE)"
+        "\n#define SEND_SIZE (VECTOR_SIZE * sizeof(float))"
         "\n__attribute__((intel_reqd_sub_group_size(SUBGROUP_SIZE)))"
         "\n__kernel void ReadOnly(__global float4 *const pSrcBuffer, __global float4 *pDstBuffer,"
         "        unsigned int sliceMask, unsigned int sliceSize, unsigned int slotMask) {"
@@ -137,16 +133,17 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     // Create kernel
     const auto programSrcLen = strlen(programSrc);
     cl_program program{};
-    if (TestResult result = ProgramHelperOcl::buildProgramFromSource(opencl.context, opencl.device, programSrc, programSrcLen, buildOptions.str().c_str(), program); result != TestResult::Success) {
+    if (TestResult result = ProgramHelperOcl::buildProgramFromSource(opencl.context, opencl.device, programSrc, programSrcLen, buildOptions.c_str(), program); result != TestResult::Success) {
         return result;
     }
+
     cl_kernel kernel = clCreateKernel(program, "ReadOnly", &retVal);
     ASSERT_CL_SUCCESS(retVal);
     cl_kernel clearCacheKernel = clCreateKernel(program, "ClearCaches", &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
     // Clear L3$ Cache kernel
-    const size_t clearGws = 1;
+    const size_t clearGws = clearGpuBuffSize / sizeof(cl_uint);
     const size_t buffSizeInInts = clearGpuBuffSize / sizeof(cl_uint);
     ASSERT_CL_SUCCESS(clSetKernelArg(clearCacheKernel, 0, sizeof(clearGpuBuff), &clearGpuBuff));
     ASSERT_CL_SUCCESS(clSetKernelArg(clearCacheKernel, 1, sizeof(buffSizeInInts), &buffSizeInInts));
@@ -155,7 +152,7 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     ASSERT_CL_SUCCESS(retVal);
 
     cl_uint sliceSize = 0, sliceMask = 1, slotMask = 1;
-    const cl_uint numThreadsPerEu = (gpuGen == IntelGen::XeHpCore) ? 8 : 7;
+    const cl_uint numThreadsPerEu = (gpuGen >= IntelGen::XeHpCore) ? 8 : 7;
     const cl_uint numHwThreads = (useLargeGRF ? numThreadsPerEu / 2 : 7) * static_cast<cl_uint>(euNum);
 
     const size_t lws = subgroupSize * 2;
@@ -174,9 +171,13 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
 
         sliceMask /= 2;
         sliceMask -= 1;
+    } else if (arguments.size > 256 * kiloByte && arguments.size <= 32 * megaByte) {
+        // hit cache
+        sliceSize = 256 * kiloByte;
+        sliceMask = (static_cast<cl_uint>(arguments.size) / sliceSize) - 1;
+        slotMask = sliceSize / threadTileSizeInSubgroup;
     } else {
         slotMask = static_cast<cl_uint>(arguments.size) / threadTileSizeInSubgroup;
-        slotMask -= 1;
     }
 
     ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 0, sizeof(source), &source));
@@ -203,8 +204,7 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
 
         cl_ulong timeNs{};
         ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(evt, timeNs));
-        const size_t groupsExed = gws / subgroupSize;
-        const size_t totalAccessedMemory = (groupsExed * threadTileSizeInSubgroup * numOfLoops);
+        const size_t totalAccessedMemory = (numHwThreads * threadTileSizeInSubgroup * numOfLoops);
         statistics.pushValue(std::chrono::nanoseconds(timeNs), totalAccessedMemory, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu);
         ASSERT_CL_SUCCESS(clReleaseEvent(evt));
     }

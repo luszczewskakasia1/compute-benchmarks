@@ -40,5 +40,5 @@ INSTANTIATE_TEST_SUITE_P(
     ReadDeviceMemBufferTest,
     ReadDeviceMemBufferTest,
     ::testing::Combine(
-        ::testing::Values(64 * kiloByte, 128 * kiloByte, 512 * kiloByte, 1 * megaByte, 4 * megaByte, 32 * megaByte, 64 * megaByte, 128 * megaByte, 256 * megaByte),
+        ::testing::Values(64 * kiloByte, 128 * kiloByte, 512 * kiloByte, 1 * megaByte, 4 * megaByte, 16 * megaByte, 32 * megaByte, 64 * megaByte, 128 * megaByte, 256 * megaByte),
         ::testing::Values(false, true)));
