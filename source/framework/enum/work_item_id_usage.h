@@ -20,4 +20,5 @@ enum class WorkItemIdUsage {
     None,
     Global,
     Local,
+    AtomicPerWorkgroup
 };

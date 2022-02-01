@@ -57,6 +57,9 @@ inline auto selectKernel(WorkItemIdUsage usedIds, const char *extension) {
     case WorkItemIdUsage::Local:
         result << "ulls_benchmark_write_one_local_ids";
         break;
+    case WorkItemIdUsage::AtomicPerWorkgroup:
+        result << "ulls_benchmark_write_one_atomic_per_workgroup";
+        break;
     default:
         FATAL_ERROR("Unknown work item id usage");
     }

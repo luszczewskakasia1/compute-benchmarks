@@ -68,6 +68,10 @@ static TestResult run(const KernelWithWorkArguments &arguments, Statistics &stat
 
     // Benchmark
     for (auto i = 0u; i < arguments.iterations; i++) {
+        if (arguments.usedIds == WorkItemIdUsage::AtomicPerWorkgroup) {
+            clEnqueueWriteBuffer(opencl.commandQueue, buffer, true, 0u, 4u, &arguments.workgroupCount, 0u, nullptr, nullptr);
+        }
+
         timer.measureStart();
 #if PROVIDE_PROFLING_DETAILS == 1
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, &profilingEvent));
@@ -86,6 +90,12 @@ static TestResult run(const KernelWithWorkArguments &arguments, Statistics &stat
         printf("\n Queued %lu Start %lu End %lu, delta %lu\n ", queued, start, end, end - start);
 #endif
         statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);
+        if (arguments.usedIds == WorkItemIdUsage::AtomicPerWorkgroup) {
+            uint32_t returnedValue[2] = {0u};
+            clEnqueueReadBuffer(opencl.commandQueue, buffer, true, 0u, 8u, &returnedValue, 0u, nullptr, nullptr);
+            EXPECT_EQ(0u, returnedValue[0]);
+            EXPECT_EQ(1337u, returnedValue[0]);
+        }
     }
 
     // Cleanup

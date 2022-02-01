@@ -41,6 +41,6 @@ INSTANTIATE_TEST_SUITE_P(
     KernelWithWorkSubmissionTest,
     ::testing::Combine(
         ::CommonGtestArgs::allApis(),
-        ::testing::Values(WorkItemIdUsage::None, WorkItemIdUsage::Global, WorkItemIdUsage::Local),
+        ::testing::Values(WorkItemIdUsage::None, WorkItemIdUsage::Global, WorkItemIdUsage::Local, WorkItemIdUsage::AtomicPerWorkgroup),
         ::CommonGtestArgs::workgroupCount(),
         ::CommonGtestArgs::workgroupSize()));
