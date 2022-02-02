@@ -82,9 +82,8 @@ static TestResult run(const KernelSwitchLatencyArguments &arguments, Statistics 
 
         auto switchTime = std::chrono::nanoseconds(0u);
         for (auto j = 1u; j < arguments.kernelCount; j++) {
-
-            ASSERT_CL_SUCCESS(clGetEventProfilingInfo(profilingEvents[j], CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, nullptr));
             ASSERT_CL_SUCCESS(clGetEventProfilingInfo(profilingEvents[j - 1], CL_PROFILING_COMMAND_END, sizeof(cl_ulong), &end, nullptr));
+            ASSERT_CL_SUCCESS(clGetEventProfilingInfo(profilingEvents[j], CL_PROFILING_COMMAND_START, sizeof(cl_ulong), &start, nullptr));
             switchTime += std::chrono::nanoseconds(start - end);
         }
 
