@@ -7,6 +7,7 @@ EnqueueNdrNullLws|measures time spent in clEnqueueNDRangeKernel on CPU. Null LWS
 EnqueueNdrTime|measures time spent in clEnqueueNDRangeKernel on CPU.|<ul><li>--event Pass output event to the enqueue call (0 or 1)</li><li>--ooq Use out of order queue (0 or 1)</li><li>--profiling Creating a profiling queue (0 or 1)</li><li>--wgc Workgroup count</li><li>--wgs Workgroup size</li></ul>|:x:|:heavy_check_mark:|
 EventCreation|measures time spent to create event|<ul><li>--hostVisible Event will set host visible flag (0 or 1)</li><li>--useProfiling Event will use profiling (0 or 1)</li></ul>|:heavy_check_mark:|:x:|
 ExecuteCommandList|measures time spent in zeCommandQueueExecuteCommandLists on CPU.|<ul><li>--UseFence Pass a non-null ze_fence_handle_t to the API call (0 or 1)</li></ul>|:heavy_check_mark:|:x:|
+ExecuteCommandListImmediate|measures time spent in appending launch kernel for immediate command list on CPU.|<ul><li>--CallsCount amount of calls that is being meassured</li><li>--UseProfiling Pass a profiling ze_event_t to the API call (0 or 1)</li></ul>|:heavy_check_mark:|:x:|
 ExecuteCommandListWithFenceCreate|measures time spent in zeFenceCreate on CPU when fences are used.|<ul></ul>|:heavy_check_mark:|:x:|
 ExecuteCommandListWithFenceDestroy|measures time spent in zeFenceDestroy on CPU when fences are used.|<ul></ul>|:heavy_check_mark:|:x:|
 ExecuteCommandListWithFenceUsage|measures time spent in zeCommandQueueExecuteCommandLists and zeFenceSynchronize on CPU when fences are used.|<ul></ul>|:heavy_check_mark:|:x:|
