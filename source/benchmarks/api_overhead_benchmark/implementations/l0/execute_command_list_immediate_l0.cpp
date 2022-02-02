@@ -79,12 +79,13 @@ static TestResult run(const ExecuteCommandListImmediateArguments &arguments, Sta
     for (auto i = 0u; i < arguments.iterations; i++) {
         timer.measureStart();
         for (uint32_t callId = 0u; callId < arguments.amountOfCalls - 1; callId++) {
-            ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, event, 0, nullptr));
+            ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, nullptr, 0, nullptr));
         }
         //last call synchronizes
         ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, event, 0, nullptr));
         ASSERT_ZE_RESULT_SUCCESS(zeEventHostSynchronize(event, std::numeric_limits<uint64_t>::max()));
         timer.measureEnd();
+        ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(event));
         statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);
     }
     ASSERT_ZE_RESULT_SUCCESS(zeEventDestroy(event));
