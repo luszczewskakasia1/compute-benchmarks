@@ -23,6 +23,9 @@
 #include <gtest/gtest.h>
 
 static TestResult run(const KernelWithWorkArguments &arguments, Statistics &statistics) {
+    if (arguments.usedIds == WorkItemIdUsage::AtomicPerWorkgroup) {
+        return TestResult::NoImplementation;
+    }
     // Setup
     LevelZero levelzero;
     Timer timer;
