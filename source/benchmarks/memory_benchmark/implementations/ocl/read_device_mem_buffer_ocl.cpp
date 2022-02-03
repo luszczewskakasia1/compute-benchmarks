@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -187,7 +187,7 @@ static TestResult run(const ReadDeviceMemBufferArguments &arguments, Statistics 
     ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 4, sizeof(slotMask), &slotMask));
     ASSERT_CL_SUCCESS(retVal);
 
-    //warmup
+    // warmup
     ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
     ASSERT_CL_SUCCESS(retVal);

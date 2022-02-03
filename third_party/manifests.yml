@@ -1,0 +1,13 @@
+components:
+  infra:
+    branch: master
+    dest_dir: infra
+    revision: 084327bfda7abca8e80268f54c11c7f6c196df02
+    type: git
+  clang-format:
+    branch: clang-format
+    dest_dir: tools/clang-format
+    revision: 10.0.0-2
+    type: git
+converter: 1
+version: '1'

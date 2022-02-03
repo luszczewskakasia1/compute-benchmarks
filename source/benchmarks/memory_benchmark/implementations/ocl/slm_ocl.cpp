@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -43,7 +43,7 @@ static TestResult run(const SlmTrafficArguments &arguments, Statistics &statisti
     IntelProduct intelProduct = getIntelProduct(opencl);
     IntelGen gpuGen = getIntelGen(intelProduct);
     if (gpuGen == IntelGen::Unknown) {
-        return TestResult::DeviceNotCapable; //tbd for comp
+        return TestResult::DeviceNotCapable; // tbd for comp
     }
     const cl_uint numThreadsPerEu = (gpuGen >= IntelGen::XeHpCore) ? 8 : 7;
 
@@ -221,10 +221,10 @@ static TestResult run(const SlmTrafficArguments &arguments, Statistics &statisti
     cl_uint nRounds = numOfSends;
     size_t gws = workSize / arguments.occupancyDivider;
 
-    //std::cout << "SLM Read latency test (SLM size " << arguments.size/1024 << "kB)" << std::endl;
+    // std::cout << "SLM Read latency test (SLM size " << arguments.size/1024 << "kB)" << std::endl;
     {
 
-        //std::cout << "\nGWS " << gws << " LWS "<< lws <<" H/W utilization: totalEUs/" << arguments.occupancyDivider << std::endl;
+        // std::cout << "\nGWS " << gws << " LWS "<< lws <<" H/W utilization: totalEUs/" << arguments.occupancyDivider << std::endl;
 
         ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 0, sizeof(source), &source));
         ASSERT_CL_SUCCESS(clSetKernelArg(kernel, 1, sizeof(destination), &destination));
