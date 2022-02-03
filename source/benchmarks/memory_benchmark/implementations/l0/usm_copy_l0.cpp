@@ -24,8 +24,7 @@
 #include <gtest/gtest.h>
 
 static TestResult run(const UsmCopyArguments &arguments, Statistics &statistics) {
-    if (arguments.reuseCommandList == true ||
-        arguments.sourcePlacement == UsmMemoryPlacement::NonUsmMapped ||
+    if (arguments.sourcePlacement == UsmMemoryPlacement::NonUsmMapped ||
         arguments.destinationPlacement == UsmMemoryPlacement::NonUsmMapped) {
         return TestResult::ApiNotCapable;
     }
