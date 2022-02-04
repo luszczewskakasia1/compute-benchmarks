@@ -16,15 +16,20 @@
 #pragma once
 
 #include "framework/argument/basic_argument.h"
+#include "framework/argument/enum/event_scope_argument.h"
 #include "framework/test_case/test_case.h"
 
 struct EventTimeArguments : TestCaseArgumentContainer {
     BooleanArgument useProfiling;
     BooleanArgument hostVisible;
+    EventScopeArgument signalScope;
+    EventScopeArgument waitScope;
 
     EventTimeArguments()
         : useProfiling(*this, "useProfiling", "Event will use profiling"),
-          hostVisible(*this, "hostVisible", "Event will set host visible flag") {}
+          hostVisible(*this, "hostVisible", "Event will set host visible flag"),
+          signalScope(*this, "signal", "Type of signal scope"),
+          waitScope(*this, "wait", "Type of wait scope") {}
 };
 
 struct EventTime : TestCase<EventTimeArguments> {

@@ -32,7 +32,23 @@ static TestResult run(const EventTimeArguments &arguments, Statistics &statistic
     auto eventPoolFlags = arguments.hostVisible * ZE_EVENT_POOL_FLAG_HOST_VISIBLE | arguments.useProfiling * ZE_EVENT_POOL_FLAG_KERNEL_TIMESTAMP;
     eventPoolDesc.flags = eventPoolFlags;
 
-    const ze_event_desc_t eventDesc = {ZE_STRUCTURE_TYPE_EVENT_DESC, nullptr, 0, ZE_EVENT_SCOPE_FLAG_DEVICE, ZE_EVENT_SCOPE_FLAG_DEVICE};
+    ze_event_desc_t eventDesc = {ZE_STRUCTURE_TYPE_EVENT_DESC, nullptr, 0, 0, 0};
+    if (arguments.signalScope == EventScope::scopeSubDevice) {
+        eventDesc.signal = ZE_EVENT_SCOPE_FLAG_SUBDEVICE;
+    } else if (arguments.signalScope == EventScope::scopeDevice) {
+        eventDesc.signal = ZE_EVENT_SCOPE_FLAG_DEVICE;
+    } else if (arguments.signalScope == EventScope::scopeHost) {
+        eventDesc.signal = ZE_EVENT_SCOPE_FLAG_HOST;
+    }
+
+    if (arguments.waitScope == EventScope::scopeSubDevice) {
+        eventDesc.wait = ZE_EVENT_SCOPE_FLAG_SUBDEVICE;
+    } else if (arguments.signalScope == EventScope::scopeDevice) {
+        eventDesc.wait = ZE_EVENT_SCOPE_FLAG_DEVICE;
+    } else if (arguments.signalScope == EventScope::scopeHost) {
+        eventDesc.wait = ZE_EVENT_SCOPE_FLAG_HOST;
+    }
+
     ze_event_pool_handle_t eventPool{};
     ze_event_handle_t event{};
     ASSERT_ZE_RESULT_SUCCESS(zeEventPoolCreate(levelzero.context, &eventPoolDesc, 0, nullptr, &eventPool));
