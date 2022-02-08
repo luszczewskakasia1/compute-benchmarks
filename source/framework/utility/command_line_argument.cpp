@@ -39,6 +39,7 @@ bool CommandLineArgument::parseArguments(int argc, char **argv, CommandLineArgum
 
         // Check for duplicates
         const auto [iterator, inserted] = allKeys.insert(arg.getKey());
+        (void)iterator;
         if (!inserted) {
             outErrorMessage = std::string("Argument with a key \"") + arg.getKey() + "\" is provided more than once";
             outArguments.clear();
