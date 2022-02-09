@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -22,15 +22,15 @@
 
 static const inline RegisterTestCase<MultiQueueSubmission> registerTestCase{};
 
-class MultiQueueSubmissionTest : public ::testing::TestWithParam<std::tuple<size_t, size_t, size_t>> {
+class MultiQueueSubmissionTest : public ::testing::TestWithParam<std::tuple<Api, size_t, size_t, size_t>> {
 };
 
 TEST_P(MultiQueueSubmissionTest, Test) {
     MultiQueueSubmissionArguments args{};
-    args.api = Api::OpenCL;
-    args.queueCount = std::get<0>(GetParam());
-    args.workgroupCount = std::get<1>(GetParam());
-    args.workgroupSize = std::get<2>(GetParam());
+    args.api = std::get<0>(GetParam());
+    args.queueCount = std::get<1>(GetParam());
+    args.workgroupCount = std::get<2>(GetParam());
+    args.workgroupSize = std::get<3>(GetParam());
 
     MultiQueueSubmission test;
     test.run(args);
@@ -40,6 +40,7 @@ INSTANTIATE_TEST_SUITE_P(
     MultiQueueSubmissionTest,
     MultiQueueSubmissionTest,
     ::testing::Combine(
+        ::CommonGtestArgs::allApis(),
         ::testing::Values(2, 4, 8, 16, 32, 64, 128),
         CommonGtestArgs::workgroupCount(),
         CommonGtestArgs::workgroupSize()));
