@@ -27,21 +27,18 @@ using Clock = std::chrono::high_resolution_clock;
 
 static TestResult run(const CopySubmissionEventsArguments &arguments, Statistics &statistics) {
     // Setup
-    LevelZero levelzero;
+    QueueProperties queueProperties;
+    queueProperties.disable();
+    LevelZero levelzero(queueProperties);
     constexpr static auto bufferSize = 2097152u;
 
     auto queueFamiliesDesc = QueueFamiliesHelper::queryQueueFamilies(levelzero.device);
-    bool copyEngineFound = false;
-    ze_command_queue_desc_t commandQueueDesc{ZE_STRUCTURE_TYPE_COMMAND_QUEUE_DESC};
-    for (auto &queueDesc : queueFamiliesDesc) {
-        if (queueDesc.type == EngineGroup::Copy || queueDesc.type == EngineGroup::LinkCopy) {
-            copyEngineFound = true;
-            commandQueueDesc.ordinal = queueDesc.ordinal;
-        }
-    }
-    if (!copyEngineFound) {
+    auto queueDesc = QueueFamiliesHelper::getPropertiesForSelectingEngine(levelzero.device, arguments.engine);
+    if (nullptr == queueDesc) {
         return TestResult::DeviceNotCapable;
     }
+    levelzero.commandQueue = levelzero.createQueue(levelzero.device, queueDesc->desc);
+    levelzero.commandQueueDesc = queueDesc->desc;
 
     const uint64_t timerResolution = levelzero.getTimerResoultion(levelzero.device);
 
@@ -54,7 +51,7 @@ static TestResult run(const CopySubmissionEventsArguments &arguments, Statistics
     ASSERT_ZE_RESULT_SUCCESS(zeMemAllocDevice(levelzero.context, &allocationDescDevice, bufferSize, 0, levelzero.device, &destination));
 
     // Create event for profiling
-    const ze_event_pool_desc_t eventPoolDesc{ZE_STRUCTURE_TYPE_EVENT_POOL_DESC, nullptr, ZE_EVENT_POOL_FLAG_KERNEL_TIMESTAMP};
+    const ze_event_pool_desc_t eventPoolDesc{ZE_STRUCTURE_TYPE_EVENT_POOL_DESC, nullptr, ZE_EVENT_POOL_FLAG_KERNEL_TIMESTAMP, 1};
     uint32_t numDevices = 1;
     ze_event_pool_handle_t hEventPool;
     ASSERT_ZE_RESULT_SUCCESS(zeEventPoolCreate(levelzero.context, &eventPoolDesc, numDevices, &levelzero.device, &hEventPool));
@@ -65,15 +62,20 @@ static TestResult run(const CopySubmissionEventsArguments &arguments, Statistics
 
     // Create immediate command list
     ze_command_list_handle_t cmdList;
-    ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreateImmediate(levelzero.context, levelzero.device, &commandQueueDesc, &cmdList));
+    ze_command_list_desc_t cmdListDesc{};
+    cmdListDesc.commandQueueGroupOrdinal = levelzero.commandQueueDesc.ordinal;
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.context, levelzero.device, &cmdListDesc, &cmdList));
     uint32_t numWaitEvents = 0;
     ze_event_handle_t hWaitEvents = nullptr;
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendMemoryCopy(cmdList, destination, hostMemory, bufferSize, hEvent, numWaitEvents, &hWaitEvents));
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandListClose(cmdList));
 
     // Warmup
     uint64_t hostEnqueueTimestamp = 0;
     uint64_t deviceEnqueueTimestamp = 0;
     ASSERT_ZE_RESULT_SUCCESS(zeDeviceGetGlobalTimestamps(levelzero.device, &hostEnqueueTimestamp, &deviceEnqueueTimestamp));
-    ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendMemoryCopy(cmdList, destination, hostMemory, bufferSize, hEvent, numWaitEvents, &hWaitEvents));
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
+
     ASSERT_ZE_RESULT_SUCCESS(zeEventHostSynchronize(hEvent, std::numeric_limits<uint64_t>::max()));
 
     ze_kernel_timestamp_result_t deviceStartTimestamp;
@@ -84,9 +86,10 @@ static TestResult run(const CopySubmissionEventsArguments &arguments, Statistics
 
     // Benchmark
     for (auto i = 0u; i < arguments.iterations; i++) {
+        ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(hEvent));
         ASSERT_ZE_RESULT_SUCCESS(zeDeviceGetGlobalTimestamps(levelzero.device, &hostEnqueueTimestamp, &deviceEnqueueTimestamp));
 
-        ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendMemoryCopy(cmdList, destination, hostMemory, bufferSize, hEvent, numWaitEvents, &hWaitEvents));
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
         ASSERT_ZE_RESULT_SUCCESS(zeEventHostSynchronize(hEvent, std::numeric_limits<uint64_t>::max()));
 
         ASSERT_ZE_RESULT_SUCCESS(zeEventQueryKernelTimestamp(hEvent, &deviceStartTimestamp));

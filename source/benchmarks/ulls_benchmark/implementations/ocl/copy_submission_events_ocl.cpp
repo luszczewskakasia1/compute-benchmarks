@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -24,8 +24,11 @@
 
 static TestResult run(const CopySubmissionEventsArguments &arguments, Statistics &statistics) {
     // Setup
-    QueueProperties queueProperties = QueueProperties::create().setProfiling(true);
+    QueueProperties queueProperties = QueueProperties::create().setProfiling(true).setForceEngine(arguments.engine).allowCreationFail();
     Opencl opencl(queueProperties);
+    if (nullptr == opencl.commandQueue) {
+        return TestResult::DeviceNotCapable;
+    }
     cl_int retVal{};
     cl_event profilingEvent{};
 

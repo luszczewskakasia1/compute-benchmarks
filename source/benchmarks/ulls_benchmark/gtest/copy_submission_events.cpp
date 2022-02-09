@@ -22,12 +22,13 @@
 
 static const inline RegisterTestCase<CopySubmissionEvents> registerTestCase{};
 
-class CopySubmissionEventsTest : public ::testing::TestWithParam<Api> {
+class CopySubmissionEventsTest : public ::testing::TestWithParam<std::tuple<Api, Engine>> {
 };
 
 TEST_P(CopySubmissionEventsTest, Test) {
     CopySubmissionEventsArguments args{};
-    args.api = GetParam();
+    args.api = std::get<0>(GetParam());
+    args.engine = std::get<1>(GetParam());
 
     CopySubmissionEvents test;
     test.run(args);
@@ -36,4 +37,6 @@ TEST_P(CopySubmissionEventsTest, Test) {
 INSTANTIATE_TEST_SUITE_P(
     CopySubmissionEventsTest,
     CopySubmissionEventsTest,
-    ::CommonGtestArgs::allApis());
+    ::testing::Combine(
+        ::CommonGtestArgs::allApis(),
+        ::testing::Values(Engine::Bcs, Engine::Bcs1, Engine::Bcs2, Engine::Bcs3, Engine::Bcs4, Engine::Bcs5, Engine::Bcs6, Engine::Bcs7, Engine::Bcs8)));

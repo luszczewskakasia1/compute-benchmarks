@@ -15,9 +15,14 @@
 
 #pragma once
 
+#include "framework/argument/enum/engine_argument.h"
 #include "framework/test_case/test_case.h"
 
-struct CopySubmissionEventsArguments : TestCaseArgumentContainer {};
+struct CopySubmissionEventsArguments : TestCaseArgumentContainer {
+    EngineArgument engine;
+
+    CopySubmissionEventsArguments() : engine(*this, "engine", "Engine used for copying") {}
+};
 
 struct CopySubmissionEvents : TestCase<CopySubmissionEventsArguments> {
     using TestCase<CopySubmissionEventsArguments>::TestCase;
