@@ -27,7 +27,14 @@ void printDeviceInfo() {
 
     ze_driver_properties_t driverProperties{ZE_STRUCTURE_TYPE_DRIVER_PROPERTIES};
     ZE_RESULT_SUCCESS_OR_ERROR(zeDriverGetProperties(levelzero.driver, &driverProperties));
-    std::cout << "LevelZero driver version: 0x" << std::hex << driverProperties.driverVersion << std::endl;
+    // Version recorded by L0 GPU driver in following format:
+    // 31 - 24: Major
+    // 23 - 16: Minor
+    // 15 - 0: Build
+    std::string driverVersion = std::to_string((driverProperties.driverVersion & 0xFF000000) >> 24) + "." +
+                                std::to_string((driverProperties.driverVersion & 0x00FF0000) >> 16) + "." +
+                                std::to_string(driverProperties.driverVersion & 0x0000FFFF);
+    std::cout << "LevelZero driver version: " << driverVersion << std::endl;
 
     ze_device_properties_t deviceProperties{ZE_STRUCTURE_TYPE_DEVICE_PROPERTIES};
     ZE_RESULT_SUCCESS_OR_ERROR(zeDeviceGetProperties(levelzero.device, &deviceProperties));
