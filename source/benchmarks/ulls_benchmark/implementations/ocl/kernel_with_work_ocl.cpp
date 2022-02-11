@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -37,12 +37,10 @@ static TestResult run(const KernelWithWorkArguments &arguments, Statistics &stat
     const size_t gws = arguments.workgroupCount * arguments.workgroupSize;
     const size_t lws = arguments.workgroupSize;
 
-    // Create buffer
     const auto bufferSize = sizeof(cl_int) * arguments.workgroupCount * arguments.workgroupSize;
     cl_mem buffer = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, bufferSize, nullptr, &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
-    // Create kernel
     const std::vector<uint8_t> kernelSource = FileHelper::loadTextFile(selectKernel(arguments.usedIds, "cl"));
     if (kernelSource.size() == 0) {
         return TestResult::KernelNotFound;
