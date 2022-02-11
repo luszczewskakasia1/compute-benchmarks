@@ -1,7 +1,7 @@
 #
 # INTEL CONFIDENTIAL
 #
-# Copyright (C) 2019-2021 Intel Corporation
+# Copyright (C) 2019-2022 Intel Corporation
 #
 # This software and the related documents are Intel copyrighted materials,
 # and your use of them is governed by the express license under which they were
@@ -54,6 +54,15 @@ if(BUILD_FOR_PUBLISHING)
 
     file(WRITE ${OUTPUT_DIR}/version.txt ${BENCHMARK_VERSION})
     message(STATUS "Version ${BENCHMARK_VERSION} written to version.txt")
+endif()
+
+# ccache
+option(CCACHE_ALLOWED "allow use of ccache" TRUE)
+find_program(CCACHE_EXE_FOUND ccache)
+if(CCACHE_EXE_FOUND AND CCACHE_ALLOWED)
+    message(STATUS "Found ccache: ${CCACHE_EXE_FOUND}")
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
 endif()
 
 # Gtest
