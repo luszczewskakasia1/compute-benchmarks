@@ -70,7 +70,12 @@ int printDeviceProperties(ze_device_handle_t device, uint32_t numberOfTabs) {
               << tabDelimiter << "\tdeviceId:    0x"
               << std::setw(4) << std::hex << std::setfill('0')
               << deviceProperties.deviceId << "\n"
-              << tabDelimiter << "\tsubdeviceId: " << deviceProperties.subdeviceId << "\n";
+              << tabDelimiter << "\tsubdeviceId: " << deviceProperties.subdeviceId << "\n"
+              << tabDelimiter << "\tUUID: ";
+    for (uint32_t i = 0; i < ZE_MAX_DEVICE_UUID_SIZE; i++) {
+        std::cout << static_cast<uint32_t>(deviceProperties.uuid.id[i]) << " ";
+    }
+    std::cout << "\n";
 
     return 0;
 }
