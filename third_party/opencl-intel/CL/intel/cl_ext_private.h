@@ -7,6 +7,7 @@
 
 #pragma once
 #include "CL/cl.h"
+#include <CL/cl_ext.h>
 
 /**********************************
  * Internal only queue properties *
@@ -153,6 +154,8 @@ using cl_unified_shared_memory_capabilities_intel = cl_bitfield;
 /* cl_queue_properties */
 #define CL_QUEUE_SLICE_COUNT_INTEL 0x10021
 
+#ifndef cl_intel_command_queue_families
+#define cl_intel_command_queue_families 1
 /******************************
 *   QUEUE FAMILY SELECTING    *
 *******************************/
@@ -192,6 +195,7 @@ typedef struct _cl_queue_family_properties_intel {
     cl_uint count;
     char name[CL_QUEUE_FAMILY_MAX_NAME_SIZE_INTEL];
 } cl_queue_family_properties_intel;
+#endif /* cl_intel_command_queue_families */
 
 /******************************
 *   DEVICE ATTRIBUTE QUERY    *
