@@ -236,10 +236,11 @@ typedef struct _cl_resource_barrier_descriptor_intel {
 } cl_resource_barrier_descriptor_intel;
 #pragma pack(pop)
 
+#ifndef cl_khr_pci_bus_info
+#define cl_khr_pci_bus_info 1
 /****************************************
  * cl_khr_pci_bus_info extension *
  ***************************************/
-#define cl_khr_pci_bus_info 1
 
 // New queries for clGetDeviceInfo:
 #define CL_DEVICE_PCI_BUS_INFO_KHR 0x410F
@@ -250,3 +251,5 @@ typedef struct _cl_device_pci_bus_info_khr {
     cl_uint pci_device;
     cl_uint pci_function;
 } cl_device_pci_bus_info_khr;
+
+#endif /* cl_khr_pci_bus_info */
