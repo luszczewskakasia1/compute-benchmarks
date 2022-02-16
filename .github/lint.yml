@@ -69,3 +69,6 @@ lint:
 
   ults-needed:
     disabled: true
+
+  binary_files:
+    disabled: true
