@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -21,10 +21,12 @@
 struct ExecuteCommandListImmediateArguments : TestCaseArgumentContainer {
     BooleanArgument useProfiling;
     PositiveIntegerArgument amountOfCalls;
+    BooleanArgument measureCompletionTime;
 
     ExecuteCommandListImmediateArguments()
         : useProfiling(*this, "UseProfiling", "Pass a profiling ze_event_t to the API call"),
-          amountOfCalls(*this, "CallsCount", "amount of calls that is being meassured") {}
+          amountOfCalls(*this, "CallsCount", "amount of calls that is being meassured"),
+          measureCompletionTime(*this, "measureCompletionTime", "Measures time taken to complete the submission (default is to measure only Immediate call)") {}
 };
 
 struct ExecuteCommandListImmediate : TestCase<ExecuteCommandListImmediateArguments> {

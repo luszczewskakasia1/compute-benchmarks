@@ -83,10 +83,16 @@ static TestResult run(const ExecuteCommandListImmediateArguments &arguments, Sta
         }
         // last call synchronizes
         ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, event, 0, nullptr));
+        if (!arguments.measureCompletionTime) {
+            timer.measureEnd();
+            statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);
+        }
         ASSERT_ZE_RESULT_SUCCESS(zeEventHostSynchronize(event, std::numeric_limits<uint64_t>::max()));
-        timer.measureEnd();
+        if (arguments.measureCompletionTime) {
+            timer.measureEnd();
+            statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);
+        }
         ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(event));
-        statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);
     }
     ASSERT_ZE_RESULT_SUCCESS(zeEventDestroy(event));
     ASSERT_ZE_RESULT_SUCCESS(zeEventPoolDestroy(eventPool));

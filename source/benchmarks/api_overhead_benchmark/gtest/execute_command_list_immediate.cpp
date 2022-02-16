@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -21,7 +21,7 @@
 
 static const inline RegisterTestCase<ExecuteCommandListImmediate> registerTestCase{};
 
-class ExecuteCommandListImmediateTest : public ::testing::TestWithParam<std::tuple<bool, size_t>> {
+class ExecuteCommandListImmediateTest : public ::testing::TestWithParam<std::tuple<bool, size_t, bool>> {
 };
 
 TEST_P(ExecuteCommandListImmediateTest, Test) {
@@ -29,6 +29,7 @@ TEST_P(ExecuteCommandListImmediateTest, Test) {
     args.api = Api::L0;
     args.useProfiling = std::get<0>(GetParam());
     args.amountOfCalls = std::get<1>(GetParam());
+    args.measureCompletionTime = std::get<2>(GetParam());
 
     ExecuteCommandListImmediate test;
     test.run(args);
@@ -39,4 +40,5 @@ INSTANTIATE_TEST_SUITE_P(
     ExecuteCommandListImmediateTest,
     ::testing::Combine(
         ::testing::Values(false, true),
-        ::testing::Values(1u, 10u)));
+        ::testing::Values(1u, 10u),
+        ::testing::Values(false, true)));

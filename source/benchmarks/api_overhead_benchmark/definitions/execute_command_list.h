@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -20,9 +20,11 @@
 
 struct ExecuteCommandListArguments : TestCaseArgumentContainer {
     BooleanArgument useFence;
+    BooleanArgument measureCompletionTime;
 
     ExecuteCommandListArguments()
-        : useFence(*this, "UseFence", "Pass a non-null ze_fence_handle_t to the API call") {}
+        : useFence(*this, "UseFence", "Pass a non-null ze_fence_handle_t to the API call"),
+          measureCompletionTime(*this, "measureCompletionTime", "Measures time taken to complete the submission (default is to measure only Execute call)") {}
 };
 
 struct ExecuteCommandList : TestCase<ExecuteCommandListArguments> {

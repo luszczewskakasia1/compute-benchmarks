@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -28,6 +28,7 @@ TEST_P(ExecuteCommandListTest, Test) {
     ExecuteCommandListArguments args{};
     args.api = Api::L0;
     args.useFence = GetParam();
+    args.measureCompletionTime = GetParam();
 
     ExecuteCommandList test;
     test.run(args);
@@ -36,4 +37,4 @@ TEST_P(ExecuteCommandListTest, Test) {
 INSTANTIATE_TEST_SUITE_P(
     ExecuteCommandListTest,
     ExecuteCommandListTest,
-    ::testing::Values(false, true));
+    ::testing::Values(false, true, false));
