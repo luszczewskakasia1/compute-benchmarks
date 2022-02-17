@@ -28,7 +28,7 @@ static TestResult run(const ExecuteCommandListImmediateArguments &arguments, Sta
     Timer timer;
 
     // Create kernel
-    auto spirvModule = FileHelper::loadBinaryFile("api_overhead_benchmark_empty_kernel.spv");
+    auto spirvModule = FileHelper::loadBinaryFile("api_overhead_benchmark_eat_time.spv");
     if (spirvModule.size() == 0) {
         return TestResult::KernelNotFound;
     }
@@ -40,7 +40,7 @@ static TestResult run(const ExecuteCommandListImmediateArguments &arguments, Sta
     moduleDesc.inputSize = spirvModule.size();
     ASSERT_ZE_RESULT_SUCCESS(zeModuleCreate(levelzero.context, levelzero.device, &moduleDesc, &module, nullptr));
     ze_kernel_desc_t kernelDesc{ZE_STRUCTURE_TYPE_KERNEL_DESC};
-    kernelDesc.pKernelName = "empty";
+    kernelDesc.pKernelName = "eat_time";
     ASSERT_ZE_RESULT_SUCCESS(zeKernelCreate(module, &kernelDesc, &kernel));
 
     // Create event
@@ -62,6 +62,8 @@ static TestResult run(const ExecuteCommandListImmediateArguments &arguments, Sta
 
     // Configure kernel
     ASSERT_ZE_RESULT_SUCCESS(zeKernelSetGroupSize(kernel, 1u, 1u, 1u));
+    int kernelOperationsCount = arguments.kernelExecutionTime * 4;
+    ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernel, 0, sizeof(int), &kernelOperationsCount));
 
     // Create an immediate command list
     const ze_group_count_t groupCount{1, 1, 1};

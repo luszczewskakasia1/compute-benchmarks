@@ -22,11 +22,13 @@ struct ExecuteCommandListImmediateArguments : TestCaseArgumentContainer {
     BooleanArgument useProfiling;
     PositiveIntegerArgument amountOfCalls;
     BooleanArgument measureCompletionTime;
+    PositiveIntegerArgument kernelExecutionTime;
 
     ExecuteCommandListImmediateArguments()
         : useProfiling(*this, "UseProfiling", "Pass a profiling ze_event_t to the API call"),
           amountOfCalls(*this, "CallsCount", "amount of calls that is being meassured"),
-          measureCompletionTime(*this, "measureCompletionTime", "Measures time taken to complete the submission (default is to measure only Immediate call)") {}
+          measureCompletionTime(*this, "MeasureCompletionTime", "Measures time taken to complete the submission (default is to measure only Immediate call)"),
+          kernelExecutionTime(*this, "KernelExecutionTime", "How long a single kernel executes, in us") {}
 };
 
 struct ExecuteCommandListImmediate : TestCase<ExecuteCommandListImmediateArguments> {
