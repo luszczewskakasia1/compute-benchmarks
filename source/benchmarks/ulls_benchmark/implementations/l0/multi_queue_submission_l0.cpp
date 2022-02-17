@@ -28,9 +28,6 @@ static TestResult run(const MultiQueueSubmissionArguments &arguments, Statistics
     LevelZero levelzero(queueProperties);
     Timer timer;
 
-    std::vector<ze_command_queue_handle_t> queues;
-    std::vector<void *> buffers;
-
     // Create kernel
     auto spirvModule = FileHelper::loadBinaryFile("ulls_benchmark_write_one_global_ids.spv");
     if (spirvModule.size() == 0) {
@@ -57,30 +54,49 @@ static TestResult run(const MultiQueueSubmissionArguments &arguments, Statistics
     dispatchTraits.groupCountY = 1u;
     dispatchTraits.groupCountZ = 1u;
 
-    // Create command queues and buffers
+    // Check how many compute queues we can run
+    auto queueFamilies = QueueFamiliesHelper::queryQueueFamilies(levelzero.device);
+    size_t computeQueuesCount = 0;
+    for (const auto &queueFamily : queueFamilies) {
+        if (queueFamily.type == EngineGroup::Compute) {
+            computeQueuesCount = queueFamily.queueCount;
+            break;
+        }
+    }
+    if (0 == computeQueuesCount) {
+        return TestResult::DeviceNotCapable;
+    }
+
+    // Create command queues, command lists and buffers
     size_t gws = arguments.workgroupCount * arguments.workgroupSize;
     size_t size = gws * sizeof(int);
     ze_command_queue_desc_t commandQueueDesc{ZE_STRUCTURE_TYPE_COMMAND_QUEUE_DESC};
+    std::vector<ze_command_queue_handle_t> queues(arguments.queueCount);
+    std::vector<ze_command_list_handle_t> cmdLists(arguments.queueCount);
+    std::vector<void *> buffers(arguments.queueCount);
     for (size_t i = 0; i < arguments.queueCount; i++) {
-        queues.push_back(levelzero.createQueue(levelzero.device, commandQueueDesc));
+        commandQueueDesc.index = i % computeQueuesCount;
+        queues[i] = levelzero.createQueue(levelzero.device, commandQueueDesc);
+
+        ze_command_list_desc_t cmdListDesc{};
+        cmdListDesc.commandQueueGroupOrdinal = commandQueueDesc.ordinal;
+        ze_command_list_handle_t cmdList;
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.context, levelzero.device, &cmdListDesc, &cmdList));
+        cmdLists[i] = cmdList;
 
         const ze_device_mem_alloc_desc_t deviceAllocDesc{ZE_STRUCTURE_TYPE_DEVICE_MEM_ALLOC_DESC};
         void *pBuffer = nullptr;
         ASSERT_ZE_RESULT_SUCCESS(zeMemAllocDevice(levelzero.context, &deviceAllocDesc, size, 0, levelzero.device, &pBuffer));
-        buffers.push_back(pBuffer);
+        buffers[i] = pBuffer;
+
+        ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernel, 0, sizeof(void *), &pBuffer));
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &dispatchTraits, nullptr, 0, nullptr));
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandListClose(cmdList));
     }
 
     // Warmup
-    ze_command_list_desc_t cmdListDesc{};
-    cmdListDesc.commandQueueGroupOrdinal = levelzero.commandQueueDesc.ordinal;
-    ze_command_list_handle_t cmdList;
-    ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.context, levelzero.device, &cmdListDesc, &cmdList));
     for (size_t i = 0; i < arguments.queueCount; i++) {
-        ASSERT_ZE_RESULT_SUCCESS(zeCommandListReset(cmdList));
-        ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernel, 0, sizeof(void *), &buffers[i]));
-        ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &dispatchTraits, nullptr, 0, nullptr));
-        ASSERT_ZE_RESULT_SUCCESS(zeCommandListClose(cmdList));
-        ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(queues[i], 1, &cmdList, nullptr));
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(queues[i], 1, &cmdLists[i], nullptr));
     }
     for (size_t i = 0; i < arguments.queueCount; i++) {
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(queues[i], std::numeric_limits<uint64_t>::max()));
@@ -90,11 +106,7 @@ static TestResult run(const MultiQueueSubmissionArguments &arguments, Statistics
     for (auto i = 0u; i < arguments.iterations; i++) {
         timer.measureStart();
         for (size_t i = 0; i < arguments.queueCount; i++) {
-            ASSERT_ZE_RESULT_SUCCESS(zeCommandListReset(cmdList));
-            ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernel, 0, sizeof(void *), &buffers[i]))
-            ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &dispatchTraits, nullptr, 0, nullptr));
-            ASSERT_ZE_RESULT_SUCCESS(zeCommandListClose(cmdList));
-            ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(queues[i], 1, &cmdList, nullptr));
+            ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(queues[i], 1, &cmdLists[i], nullptr));
         }
         for (size_t i = 0; i < arguments.queueCount; i++) {
             ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(queues[i], std::numeric_limits<uint64_t>::max()));
@@ -105,8 +117,8 @@ static TestResult run(const MultiQueueSubmissionArguments &arguments, Statistics
 
     ASSERT_ZE_RESULT_SUCCESS(zeKernelDestroy(kernel));
     ASSERT_ZE_RESULT_SUCCESS(zeModuleDestroy(module));
-    ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));
     for (size_t i = 0; i < arguments.queueCount; i++) {
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdLists[i]));
         ASSERT_ZE_RESULT_SUCCESS(zeMemFree(levelzero.context, buffers[i]));
     }
     return TestResult::Success;
