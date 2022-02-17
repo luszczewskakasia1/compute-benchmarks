@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -89,6 +89,12 @@ struct LevelZero {
     }
     uint64_t getTimerResoultion(DeviceSelection deviceSelection) const { return getDeviceProperties(deviceSelection).timerResolution; }
     uint64_t getTimerResoultion(ze_device_handle_t deviceHandle) const { return getDeviceProperties(deviceHandle).timerResolution; }
+
+    uint32_t getTimestampValidBits(DeviceSelection deviceSelection) const { return getDeviceProperties(deviceSelection).timestampValidBits; }
+    uint32_t getTimestampValidBits(ze_device_handle_t deviceHandle) const { return getDeviceProperties(deviceHandle).timestampValidBits; }
+
+    uint32_t getKernelTimestampValidBits(DeviceSelection deviceSelection) const { return getDeviceProperties(deviceSelection).kernelTimestampValidBits; }
+    uint32_t getKernelTimestampValidBits(ze_device_handle_t deviceHandle) const { return getDeviceProperties(deviceHandle).kernelTimestampValidBits; }
 
     void initializeImportHostPointerExtension(const ExtensionProperties &extensionProperties);
 
