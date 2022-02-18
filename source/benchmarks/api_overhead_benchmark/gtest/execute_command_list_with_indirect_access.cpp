@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -36,4 +36,4 @@ TEST_P(ExecuteCommandListTestWithIndirectAccessTest, Test) {
 INSTANTIATE_TEST_SUITE_P(
     ExecuteCommandListTestWithIndirectAccessTest,
     ExecuteCommandListTestWithIndirectAccessTest,
-    ::testing::Values(10u, 100u, 1000u, 10000u));
+    ::testing::Values(10u, 100u, 1000u));
