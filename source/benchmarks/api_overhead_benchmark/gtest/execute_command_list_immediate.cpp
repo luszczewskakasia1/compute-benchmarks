@@ -21,7 +21,7 @@
 
 static const inline RegisterTestCase<ExecuteCommandListImmediate> registerTestCase{};
 
-class ExecuteCommandListImmediateTest : public ::testing::TestWithParam<std::tuple<bool, size_t, bool, size_t>> {
+class ExecuteCommandListImmediateTest : public ::testing::TestWithParam<std::tuple<bool, size_t, bool, size_t, bool>> {
 };
 
 TEST_P(ExecuteCommandListImmediateTest, Test) {
@@ -31,7 +31,7 @@ TEST_P(ExecuteCommandListImmediateTest, Test) {
     args.amountOfCalls = std::get<1>(GetParam());
     args.measureCompletionTime = std::get<2>(GetParam());
     args.kernelExecutionTime = std::get<3>(GetParam());
-
+    args.useBarrierSynchronization = std::get<4>(GetParam());
     ExecuteCommandListImmediate test;
     test.run(args);
 }
@@ -43,4 +43,5 @@ INSTANTIATE_TEST_SUITE_P(
         ::testing::Values(false, true),
         ::testing::Values(1u, 10u),
         ::testing::Values(false, true),
-        ::testing::Values(1u, 10u, 100u)));
+        ::testing::Values(1u, 10u, 100u),
+        ::testing::Values(false, true)));

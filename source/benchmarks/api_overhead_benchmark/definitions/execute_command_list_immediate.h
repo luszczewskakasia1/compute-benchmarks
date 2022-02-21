@@ -22,12 +22,14 @@ struct ExecuteCommandListImmediateArguments : TestCaseArgumentContainer {
     BooleanArgument useProfiling;
     PositiveIntegerArgument amountOfCalls;
     BooleanArgument measureCompletionTime;
+    BooleanArgument useBarrierSynchronization;
     PositiveIntegerArgument kernelExecutionTime;
 
     ExecuteCommandListImmediateArguments()
         : useProfiling(*this, "UseProfiling", "Pass a profiling ze_event_t to the API call"),
           amountOfCalls(*this, "CallsCount", "amount of calls that is being meassured"),
           measureCompletionTime(*this, "MeasureCompletionTime", "Measures time taken to complete the submission (default is to measure only Immediate call)"),
+          useBarrierSynchronization(*this, "useBarrierSynchronization", "Uses barrier synchronization instead of waiting for event from last kernel"),
           kernelExecutionTime(*this, "KernelExecutionTime", "How long a single kernel executes, in us") {}
 };
 

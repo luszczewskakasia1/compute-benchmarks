@@ -84,7 +84,12 @@ static TestResult run(const ExecuteCommandListImmediateArguments &arguments, Sta
             ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, nullptr, 0, nullptr));
         }
         // last call synchronizes
-        ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, event, 0, nullptr));
+        if (!arguments.useBarrierSynchronization) {
+            ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, event, 0, nullptr));
+        } else {
+            ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendBarrier(cmdList, event, 1u, nullptr));
+        }
+
         if (!arguments.measureCompletionTime) {
             timer.measureEnd();
             statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);
