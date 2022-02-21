@@ -80,7 +80,9 @@ static TestResult run(const ExecuteCommandListImmediateArguments &arguments, Sta
     // Benchmark
     for (auto i = 0u; i < arguments.iterations; i++) {
         timer.measureStart();
-        for (uint32_t callId = 0u; callId < arguments.amountOfCalls - 1; callId++) {
+        auto limit = arguments.useBarrierSynchronization ? arguments.amountOfCalls : arguments.amountOfCalls - 1;
+
+        for (uint32_t callId = 0u; callId < limit; callId++) {
             ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, nullptr, 0, nullptr));
         }
         // last call synchronizes
