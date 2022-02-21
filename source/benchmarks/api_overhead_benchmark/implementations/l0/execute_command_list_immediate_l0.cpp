@@ -87,7 +87,7 @@ static TestResult run(const ExecuteCommandListImmediateArguments &arguments, Sta
         if (!arguments.useBarrierSynchronization) {
             ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, event, 0, nullptr));
         } else {
-            ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendBarrier(cmdList, event, 1u, nullptr));
+            ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendBarrier(cmdList, event, 0u, nullptr));
         }
 
         if (!arguments.measureCompletionTime) {
