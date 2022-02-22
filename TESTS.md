@@ -103,6 +103,14 @@ VectorSum|Performs matrix multiplication|<ul><li>--numberOfElementsX Number of e
 
 
 
+# multithread_benchmark
+Multithread Benchmark is a set of tests aimed at measuring how different commands benefit from multithreaded execution.
+| Test name | Description | Params | L0 | OCL |
+|-----------|-------------|--------|----|-----|
+SvmCopy|enqueues multiple svm copies on multiple threads concurrently.|<ul><li>--numberOfThreads Number of threads that will run concurrently</li></ul>|:x:|:heavy_check_mark:|
+
+
+
 # multitile_memory_benchmark
 Multi-tile Memory Benchmark is a set of tests aimed at measuring bandwidth of memory transfers performed on a multi-tile device.
 | Test name | Description | Params | L0 | OCL |
