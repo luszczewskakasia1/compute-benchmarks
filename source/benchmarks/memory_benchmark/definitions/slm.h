@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -34,10 +34,10 @@ struct SlmTraffic : TestCase<SlmTrafficArguments> {
     using TestCase<SlmTrafficArguments>::TestCase;
 
     std::string getTestCaseName() const override {
-        return "SLM_SharedLocalMem_DataAccessLatency";
+        return "SLM_DataAccessLatency";
     }
 
     std::string getHelp() const override {
-        return "stimulates SLM local memory access inside thread group to measure latency and tpt";
+        return "generates SLM local memory transactions inside thread group to measure latency between reads (uses Intel only private intel_get_cycle_counter() )";
     }
 };
