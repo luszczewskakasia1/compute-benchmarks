@@ -1,7 +1,7 @@
 #
 # INTEL CONFIDENTIAL
 #
-# Copyright (C) 2019-2021 Intel Corporation
+# Copyright (C) 2019-2022 Intel Corporation
 #
 # This software and the related documents are Intel copyrighted materials,
 # and your use of them is governed by the express license under which they were
@@ -94,6 +94,6 @@ function (add_kernels_to_benchmark TARGET_NAME DIR)
     file(GLOB_RECURSE SOURCE_KERNELS ${DIR}/*.cl)
     target_sources(${TARGET_NAME} PRIVATE ${SOURCE_KERNELS})
 
-    file(GLOB KERNELS ${DIR}/*.spv ${DIR}/copyable_sources/*.cl)
+    file(GLOB KERNELS ${DIR}/*.spv ${DIR}/copyable_sources/*.cl ${DIR}/copyable_sources/*.spv)
     set_property(TARGET ${TARGET_NAME} APPEND PROPERTY KERNELS ${KERNELS})
 endfunction()
