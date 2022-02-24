@@ -107,7 +107,7 @@ VectorSum|Performs matrix multiplication|<ul><li>--numberOfElementsX Number of e
 Multithread Benchmark is a set of tests aimed at measuring how different commands benefit from multithreaded execution.
 | Test name | Description | Params | L0 | OCL |
 |-----------|-------------|--------|----|-----|
-SvmCopy|enqueues multiple svm copies on multiple threads concurrently.|<ul><li>--numberOfThreads Number of threads that will run concurrently</li></ul>|:x:|:heavy_check_mark:|
+SvmCopy|enqueues multiple svm copies on multiple threads concurrently.|<ul><li>--numberOfThreads Number of threads that will run concurrently</li></ul>|:heavy_check_mark:|:heavy_check_mark:|
 
 
 

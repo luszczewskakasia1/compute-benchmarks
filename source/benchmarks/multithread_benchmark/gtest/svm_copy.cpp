@@ -22,13 +22,13 @@
 
 static const inline RegisterTestCase<SvmCopy> registerTestCase{};
 
-class SvmCopyTest : public ::testing::TestWithParam<size_t> {
+class SvmCopyTest : public ::testing::TestWithParam<std::tuple<Api, size_t>> {
 };
 
 TEST_P(SvmCopyTest, Test) {
     SvmCopyArguments args{};
-    args.api = Api::OpenCL;
-    args.numberOfThreads = GetParam();
+    args.api = std::get<0>(GetParam());
+    args.numberOfThreads = std::get<1>(GetParam());
 
     SvmCopy test;
     test.run(args);
@@ -37,4 +37,6 @@ TEST_P(SvmCopyTest, Test) {
 INSTANTIATE_TEST_SUITE_P(
     SvmCopyTest,
     SvmCopyTest,
-    ::testing::Values(1, 2, 4, 8, 16));
+    ::testing::Combine(
+        ::CommonGtestArgs::allApis(),
+        ::testing::Values(1, 2, 4, 8, 16)));

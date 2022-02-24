@@ -13,4 +13,4 @@
 # implied warranties, other than those that are expressly stated in the License.
 #
 
-add_benchmark(multithread_benchmark ocl all)
+add_benchmark(multithread_benchmark ocl l0 all)

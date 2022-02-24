@@ -32,7 +32,6 @@ static TestResult run(const CopySubmissionEventsArguments &arguments, Statistics
     LevelZero levelzero(queueProperties);
     constexpr static auto bufferSize = 2097152u;
 
-    auto queueFamiliesDesc = QueueFamiliesHelper::queryQueueFamilies(levelzero.device);
     auto queueDesc = QueueFamiliesHelper::getPropertiesForSelectingEngine(levelzero.device, arguments.engine);
     if (nullptr == queueDesc) {
         return TestResult::DeviceNotCapable;
