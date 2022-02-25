@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -25,7 +25,7 @@ struct EnqueueNdrNullLwsArguments : TestCaseArgumentContainer {
     BooleanArgument useEvent;
 
     EnqueueNdrNullLwsArguments()
-        : gws(*this, "gws", "Blobal work size"),
+        : gws(*this, "gws", "Global work size"),
           useOoq(*this, "ooq", "Use out of order queue"),
           useProfiling(*this, "profiling", "Creating a profiling queue"),
           useEvent(*this, "event", "Pass output event to the enqueue call") {}

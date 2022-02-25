@@ -43,7 +43,8 @@ static TestResult run(const SvmCopyArguments &arguments, Statistics &statistics)
     std::vector<cl_command_queue> commandQueues;
     QueueProperties queueProperties = QueueProperties::create();
     for (auto i = 0u; i < arguments.numberOfThreads; i++) {
-        Engine copyEngine = static_cast<Engine>(static_cast<size_t>(Engine::Bcs1) + (i % 8));
+        //Try to use engines BCS1 to BCS8
+        Engine copyEngine = EngineHelper::getBlitterEngineFromIndex((i + 1) % 9);
         queueProperties.setForceEngine(copyEngine);
         cl_command_queue queue = opencl.createQueue(queueProperties);
         if (queue) {
