@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -39,4 +39,4 @@ INSTANTIATE_TEST_SUITE_P(
     CopySubmissionEventsTest,
     ::testing::Combine(
         ::CommonGtestArgs::allApis(),
-        ::testing::Values(Engine::Bcs, Engine::Bcs1, Engine::Bcs2, Engine::Bcs3, Engine::Bcs4, Engine::Bcs5, Engine::Bcs6, Engine::Bcs7, Engine::Bcs8)));
+        ::testing::Values(Engine::Ccs0, Engine::Ccs1, Engine::Ccs2, Engine::Ccs3, Engine::Bcs, Engine::Bcs1, Engine::Bcs2, Engine::Bcs3, Engine::Bcs4, Engine::Bcs5, Engine::Bcs6, Engine::Bcs7, Engine::Bcs8)));
