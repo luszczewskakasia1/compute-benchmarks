@@ -37,14 +37,20 @@ static TestResult run(const StreamMemoryArguments &arguments, Statistics &statis
     }
     Timer timer;
 
-    const size_t elementSize = 4u;
+    // Query double support
+    ze_device_module_properties_t moduleProperties{};
+    ASSERT_ZE_RESULT_SUCCESS(zeDeviceGetModuleProperties(levelzero.device, &moduleProperties));
+
+    const bool useDoubles = moduleProperties.fp64flags != 0u;
+    const size_t elementSize = useDoubles ? sizeof(double) : sizeof(float);
     const size_t fillValue = 313u;
     const int32_t scalarValue = -999;
     const uint32_t gws = arguments.size / elementSize;
     const uint64_t timerResolution = levelzero.getTimerResoultion(levelzero.device);
 
     // Create module
-    auto spirvModule = FileHelper::loadBinaryFile("memory_benchmark_stream_memory.spv");
+    const char *kernelFile = useDoubles ? "memory_benchmark_stream_memory_fp64.spv" : "memory_benchmark_stream_memory.spv";
+    auto spirvModule = FileHelper::loadBinaryFile(kernelFile);
     if (spirvModule.size() == 0) {
         return TestResult::KernelNotFound;
     }
