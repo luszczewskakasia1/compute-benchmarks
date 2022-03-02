@@ -1,7 +1,7 @@
 #
 # INTEL CONFIDENTIAL
 #
-# Copyright (C) 2019-2022 Intel Corporation
+# Copyright (C) 2022 Intel Corporation
 #
 # This software and the related documents are Intel copyrighted materials,
 # and your use of them is governed by the express license under which they were
@@ -13,10 +13,15 @@
 # implied warranties, other than those that are expressly stated in the License.
 #
 
-if (NOT BUILD_TOOLS)
-    return()
+set(TARGET_NAME mutex_comparison)
+add_executable(${TARGET_NAME} CMakeLists.txt)
+set_target_properties(${TARGET_NAME} PROPERTIES FOLDER tools)
+add_sources_to_benchmark(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
+target_compile_features(${TARGET_NAME} PRIVATE cxx_std_17)
+if(UNIX)
+target_link_libraries(${TARGET_NAME} pthread)
 endif()
 
-add_subdirectory(mutex_comparison)
-add_subdirectory(show_devices_ocl)
-add_subdirectory(show_devices_l0)
+# Additional config
+setup_vs_folders(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
+setup_output_directory(${TARGET_NAME})
