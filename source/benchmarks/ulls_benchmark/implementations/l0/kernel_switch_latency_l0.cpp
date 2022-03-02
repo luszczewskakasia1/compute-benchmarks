@@ -112,6 +112,9 @@ static TestResult run(const KernelSwitchLatencyArguments &arguments, Statistics 
             switchTime += std::chrono::nanoseconds((laterKernelTimestamp.global.kernelStart - earlierKernelTimestamp.global.kernelEnd) * timerResolution);
         }
         statistics.pushValue(switchTime / arguments.kernelCount, MeasurementUnit::Microseconds, MeasurementType::Gpu);
+        for (auto j = 0u; j < arguments.kernelCount; j++) {
+            ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(profilingEvents[j]));
+        }
     }
 
     ASSERT_ZE_RESULT_SUCCESS(zeKernelDestroy(kernel));
