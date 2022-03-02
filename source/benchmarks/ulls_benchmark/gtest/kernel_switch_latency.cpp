@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -22,7 +22,7 @@
 
 static const inline RegisterTestCase<KernelSwitchLatency> registerTestCase{};
 
-class KernelSwitchLatencyTest : public ::testing::TestWithParam<std::tuple<Api, size_t, bool>> {
+class KernelSwitchLatencyTest : public ::testing::TestWithParam<std::tuple<Api, size_t, bool, bool, bool>> {
 };
 
 TEST_P(KernelSwitchLatencyTest, Test) {
@@ -30,6 +30,8 @@ TEST_P(KernelSwitchLatencyTest, Test) {
     args.api = std::get<0>(GetParam());
     args.kernelCount = std::get<1>(GetParam());
     args.flushBetweenEnqueues = std::get<2>(GetParam());
+    args.barrier = std::get<3>(GetParam());
+    args.hostVisible = std::get<4>(GetParam());
 
     KernelSwitchLatency test;
     test.run(args);
@@ -41,4 +43,6 @@ INSTANTIATE_TEST_SUITE_P(
     ::testing::Combine(
         ::CommonGtestArgs::allApis(),
         ::testing::Values(16, 32, 64, 128),
+        ::testing::Values(false, true),
+        ::testing::Values(false, true),
         ::testing::Values(false, true)));

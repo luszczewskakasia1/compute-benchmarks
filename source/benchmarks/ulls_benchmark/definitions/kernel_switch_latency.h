@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -24,10 +24,14 @@
 struct KernelSwitchLatencyArguments : TestCaseArgumentContainer {
     PositiveIntegerArgument kernelCount;
     BooleanArgument flushBetweenEnqueues;
+    BooleanArgument barrier;
+    BooleanArgument hostVisible;
 
     KernelSwitchLatencyArguments()
         : kernelCount(*this, "kernelCount", "Count of kernels"),
-          flushBetweenEnqueues(*this, "flush", "Flush between kernels") {}
+          flushBetweenEnqueues(*this, "flush", "Flush between kernels"),
+          barrier(*this, "barrier", "synchronization with barrier instead of events"),
+          hostVisible(*this, "hostVisible", "events are with host visible flag") {}
 };
 
 struct KernelSwitchLatency : TestCase<KernelSwitchLatencyArguments> {

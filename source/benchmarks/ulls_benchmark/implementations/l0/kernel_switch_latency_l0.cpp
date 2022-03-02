@@ -70,7 +70,12 @@ static TestResult run(const KernelSwitchLatencyArguments &arguments, Statistics 
     ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
 
     // Create events for profiling
-    const ze_event_pool_desc_t eventPoolDesc{ZE_STRUCTURE_TYPE_EVENT_POOL_DESC, nullptr, ZE_EVENT_POOL_FLAG_KERNEL_TIMESTAMP, static_cast<uint32_t>(arguments.kernelCount)};
+    ze_event_pool_flags_t flags = ZE_EVENT_POOL_FLAG_KERNEL_TIMESTAMP;
+    if (arguments.hostVisible) {
+        flags |= ZE_EVENT_POOL_FLAG_HOST_VISIBLE;
+    }
+
+    const ze_event_pool_desc_t eventPoolDesc{ZE_STRUCTURE_TYPE_EVENT_POOL_DESC, nullptr, flags, static_cast<uint32_t>(arguments.kernelCount)};
     uint32_t numDevices = 1;
     ze_event_pool_handle_t hEventPool;
     ASSERT_ZE_RESULT_SUCCESS(zeEventPoolCreate(levelzero.context, &eventPoolDesc, numDevices, &levelzero.device, &hEventPool));
@@ -86,7 +91,12 @@ static TestResult run(const KernelSwitchLatencyArguments &arguments, Statistics 
         ASSERT_ZE_RESULT_SUCCESS(zeCommandListReset(cmdList));
         ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, profilingEvents[0], 0, nullptr));
         for (auto j = 1u; j < arguments.kernelCount; j++) {
-            ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, profilingEvents[j], 1, &profilingEvents[j - 1]));
+            if (arguments.barrier) {
+                ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendBarrier(cmdList, nullptr, 0u, nullptr));
+                ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, profilingEvents[j], 0, nullptr));
+            } else {
+                ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, profilingEvents[j], 1, &profilingEvents[j - 1]));
+            }
         }
         ASSERT_ZE_RESULT_SUCCESS(zeCommandListClose(cmdList));
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));

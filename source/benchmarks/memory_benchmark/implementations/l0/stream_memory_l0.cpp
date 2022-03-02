@@ -130,7 +130,7 @@ static TestResult run(const StreamMemoryArguments &arguments, Statistics &statis
         ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendMemoryFill(cmdListFillMemory, buffers[i], &fillValue, sizeof(fillValue), bufferSizes[i], 0, 0, nullptr));
         ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernel, static_cast<int>(i), sizeof(buffers[i]), &buffers[i]));
     }
-    ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernel, static_cast<uint>(buffersCount), sizeof(scalarValue), &scalarValue));
+    ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernel, static_cast<uint32_t>(buffersCount), sizeof(scalarValue), &scalarValue));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListClose(cmdListFillMemory));
 
     // Create event
