@@ -20,6 +20,7 @@
 #include <CL/sycl.hpp>
 
 namespace SYCL {
+namespace sycl = cl::sycl;
 } // namespace SYCL
 
 using namespace SYCL;

@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -114,8 +114,8 @@ int main(int argc, char **argv) {
 
         outputFile << "# " << benchmark.baseName << '\n';
         outputFile << benchmark.description << '\n';
-        outputFile << "| Test name | Description | Params | L0 | OCL |\n";
-        outputFile << "|-----------|-------------|--------|----|-----|\n";
+        outputFile << "| Test name | Description | Params | L0 | OCL | SYCL |\n";
+        outputFile << "|-----------|-------------|--------|----|-----|------|\n";
         for (const auto &entry : benchmark.testCases) {
             const TestCase &testCase = entry.second;
 
@@ -130,6 +130,7 @@ int main(int argc, char **argv) {
             outputFile << "</ul>|";
             outputFile << (testCase.apis.find(Api::L0) != testCase.apis.end() ? ":heavy_check_mark:" : ":x:") << '|';
             outputFile << (testCase.apis.find(Api::OpenCL) != testCase.apis.end() ? ":heavy_check_mark:" : ":x:") << '|';
+            outputFile << (testCase.apis.find(Api::SYCL) != testCase.apis.end() ? ":heavy_check_mark:" : ":x:") << '|';
             outputFile << '\n';
         }
         outputFile << "\n\n\n";

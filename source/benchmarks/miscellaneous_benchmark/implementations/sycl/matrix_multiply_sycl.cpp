@@ -13,62 +13,56 @@
  * implied warranties, other than those that are expressly stated in the License.
  */
 
-// #include <CL/sycl.hpp>
-
-// #include "framework/ocl/opencl.h"
-// #include "framework/ocl/utility/profiling_helper.h"
-
 #include "framework/sycl/sycl.h"
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
 
 #include "definitions/matrix_multiply.h"
 
-using namespace cl::sycl;
-using namespace cl::sycl::access;
-using sycl_buffer_t = cl::sycl::buffer<float, 1>;
-
 static TestResult run(const MatrixMultiplyArguments &arguments, Statistics &statistics) {
-    size_t buf_count = 2;
-    size_t elem_count = 4;
-    cl::sycl::queue q;
-    std::vector<void *> send_bufs;
-    std::vector<void *> recv_bufs;
-    std::vector<float *> host_buf;
-    send_bufs.resize(buf_count);
-    recv_bufs.resize(buf_count);
-    host_buf.resize(buf_count);
+    // Prepare data
+    const size_t sizeInElements = arguments.numberOfElementsX * arguments.numberOfElementsY * arguments.numberOfElementsZ;
+    const size_t sizeInBytes = sizeInElements * sizeof(int);
 
-    for (size_t idx = 0; idx < buf_count; idx++) {
-        send_bufs[idx] = new cl::sycl::buffer<float, 1>(elem_count);
-        recv_bufs[idx] = new cl::sycl::buffer<float, 1>(elem_count);
-        host_buf[idx] = new float[elem_count];
+    std::vector<int32_t> dataX(sizeInElements, 0);
+    std::vector<int32_t> dataY(sizeInElements, 0);
+    std::vector<int32_t> results(sizeInElements, 0);
+
+    const size_t gws[] = {arguments.numberOfElementsX, arguments.numberOfElementsY, arguments.numberOfElementsZ};
+
+    int counter = 0u;
+
+    for (auto z = 0u; z < gws[2]; z++) {
+        for (auto y = 0u; y < gws[1]; y++) {
+            for (auto x = 0u; x < gws[0]; x++) {
+                auto index = x + y * gws[0] + z * gws[0] * gws[1];
+                dataX[index] = counter++;
+                dataY[index] = counter++;
+                results[index] = dataX[index] + dataY[index];
+            }
+        }
     }
 
-    for (size_t b_idx = 0; b_idx < buf_count; b_idx++) {
-        q.submit([&](handler &cgh) {
-            auto send_buf = (static_cast<sycl_buffer_t *>(send_bufs[b_idx]));
-            auto recv_buf = (static_cast<sycl_buffer_t *>(recv_bufs[b_idx]));
-            auto send_buf_acc = send_buf->get_access<mode::write>(cgh);
-            auto recv_buf_acc = recv_buf->get_access<mode::write>(cgh);
-            cgh.parallel_for<class reduce_buf_fill>(range<1>{elem_count}, [=](item<1> e_idx) {
-                send_buf_acc[e_idx] = 1;
-                recv_buf_acc[e_idx] = 0;
-            });
-        });
-    }
+    sycl::default_selector device_selector;
+    sycl::queue queue(device_selector);
+    {
+        sycl::buffer<int32_t, 3> dataXBuf(dataX.data(), sycl::range<3>{gws[0], gws[1], gws[2]});
+        sycl::buffer<int32_t, 3> dataYBuf(dataY.data(), sycl::range<3>{gws[0], gws[1], gws[2]});
+        sycl::buffer<int32_t, 3> resultsBuf(results.data(), sycl::range<3>{gws[0], gws[1], gws[2]});
 
-    for (size_t b_idx = 0; b_idx < buf_count; b_idx++) {
-        auto send_buf = (static_cast<sycl_buffer_t *>(send_bufs[b_idx]));
-        auto recv_buf = (static_cast<sycl_buffer_t *>(recv_bufs[b_idx]));
-        auto send_buf_acc = send_buf->get_access<mode::read>();
-        auto recv_buf_acc = recv_buf->get_access<mode::write>();
-        printf("1 memcopy start host_buf ptr %p, send_buf ptr %p\n", host_buf[b_idx], (void *)send_buf_acc.get_pointer());
-        fflush(stdout);
-        memcpy(host_buf[b_idx], send_buf_acc.get_pointer(), elem_count * sizeof(float));
-        printf("2 memcopy start\n");
-        fflush(stdout);
-        memcpy(recv_buf_acc.get_pointer(), host_buf[b_idx], elem_count * sizeof(float));
+        queue.submit(
+                 [&](sycl::handler &cgh) {
+                     auto dataXDev = dataXBuf.get_access<sycl::access_mode::read>(cgh);
+                     auto dataYDev = dataYBuf.get_access<sycl::access_mode::read>(cgh);
+                     auto resultsDev = resultsBuf.get_access<sycl::access_mode::discard_write>(cgh);
+
+                     cgh.parallel_for<class MatrixMultiplyKernel>(
+                         sycl::nd_range<3>{sycl::range<3>{gws[0], gws[1], gws[2]}, sycl::range<3>{1u, 1u, 1u}},
+                         [=](sycl::nd_item<3> item) {
+                             resultsDev[item.get_offset()] = dataXDev[item.get_offset()] + dataYDev[item.get_offset()];
+                         });
+                 })
+            .wait();
     }
 
     return TestResult::Success;
