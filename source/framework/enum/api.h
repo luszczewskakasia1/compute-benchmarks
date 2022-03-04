@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -26,6 +26,7 @@ enum class Api {
     // Supported APIs
     OpenCL,
     L0,
+    SYCL,
 
     // Special values
     COUNT,
@@ -41,6 +42,8 @@ inline std::string to_string(Api api) {
         return "ocl";
     case Api::L0:
         return "l0";
+    case Api::SYCL:
+        return "sycl";
     default:
         FATAL_ERROR("Unknown API");
     }
@@ -53,6 +56,8 @@ inline std::string getUserFriendlyApiName(Api api) {
         return "OpenCL";
     case Api::L0:
         return "LevelZero";
+    case Api::SYCL:
+        return "SYCL";
     default:
         FATAL_ERROR("Unknown API");
     }
@@ -65,6 +70,8 @@ inline Api parseApi(const std::string &value) {
         return Api::L0;
     } else if (value == "all") {
         return Api::All;
+    } else if (value == "sycl") {
+        return Api::SYCL;
     } else {
         return Api::Unknown;
     }
@@ -74,6 +81,7 @@ inline bool validateApi(Api api) {
     switch (api) {
     case Api::OpenCL:
     case Api::L0:
+    case Api::SYCL:
         return true;
     default:
         return false;

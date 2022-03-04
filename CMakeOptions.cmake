@@ -1,7 +1,7 @@
 #
 # INTEL CONFIDENTIAL
 #
-# Copyright (C) 2019-2021 Intel Corporation
+# Copyright (C) 2019-2022 Intel Corporation
 #
 # This software and the related documents are Intel copyrighted materials,
 # and your use of them is governed by the express license under which they were
@@ -31,7 +31,8 @@ message(STATUS "Build options:")
 benchmark_option_group("Flags for selecting targets to be built")
 benchmark_option(BUILD_L0 ON)
 benchmark_option(BUILD_OCL ON)
-if (NOT BUILD_L0 OR NOT BUILD_OCL)
+benchmark_option(BUILD_SYCL ON)
+if (NOT BUILD_L0 OR NOT BUILD_OCL OR NOT BUILD_SYCL)
     set(BUILD_ALL_API_BINARIES OFF)
     set(BUILD_ALL_API_BINARIES_COMMENT "(Disabled due to not all APIs being enabled)")
 endif()
@@ -57,6 +58,6 @@ benchmark_option(LOG_BENCHMARK_TARGETS OFF)
 benchmark_option(ALLOW_WARNINGS ON)
 
 # Additional checks
-if (NOT BUILD_L0 AND NOT BUILD_OCL)
+if (NOT BUILD_L0 AND NOT BUILD_OCL OR NOT BUILD_SYCL)
     message(FATAL_ERROR "No API was selected for testing. No benchmarks will be produced")
 endif()
