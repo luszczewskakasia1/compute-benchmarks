@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -32,6 +32,8 @@ struct ArgumentContainer {
     virtual bool validateArguments() const;
     std::string getHelp(size_t indent) const;
     std::vector<const Argument *> getUnparsedArguments() const;
+
+    virtual ~ArgumentContainer() = default;
 
   protected:
     std::vector<Argument *> arguments;

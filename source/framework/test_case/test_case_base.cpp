@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -77,7 +77,7 @@ bool TestCaseBase::matchesWithArgFilter(const ArgumentContainer &arguments) cons
     for (const std::string &argFilter : Configuration::get().argFilter.get()) {
         const std::vector<Argument *> &args = arguments.getArguments();
         const auto [filter, isFilterNegated] = handleFilterNegation(argFilter);
-        const auto matches = [&](Argument *arg) { return (arg->toString() == filter); };
+        const auto matches = [&filter = filter](Argument *arg) { return (arg->toString() == filter); };
         const bool requirementMet = isFilterNegated
                                         ? std::none_of(args.begin(), args.end(), matches)
                                         : std::any_of(args.begin(), args.end(), matches);

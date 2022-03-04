@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -64,7 +64,7 @@ std::vector<uint64_t> Process::getMeasurements(size_t expectedCount) {
     FATAL_ERROR_IF(dataSplit.size() != expectedCount, "Child process returned an invalid number of measurements");
 
     std::vector<uint64_t> measurementsFromProcess = {};
-    for (const auto measurementString : dataSplit) {
+    for (const auto &measurementString : dataSplit) {
         const auto measurement = std::atoll(measurementString.c_str());
         measurementsFromProcess.push_back(measurement);
     }
