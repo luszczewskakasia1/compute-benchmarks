@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -44,7 +44,7 @@ std::unique_ptr<QueueFamiliesHelper::QueueDesc> QueueFamiliesHelper::getProperti
     return nullptr;
 }
 
-inline std::vector<QueueFamiliesHelper::QueueFamilyDesc> QueueFamiliesHelper::queryQueueFamilies(ze_device_handle_t device) {
+std::vector<QueueFamiliesHelper::QueueFamilyDesc> QueueFamiliesHelper::queryQueueFamilies(ze_device_handle_t device) {
     // Get queue ordinals
     uint32_t familiesCount = 0;
     EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetCommandQueueGroupProperties(device, &familiesCount, nullptr));
