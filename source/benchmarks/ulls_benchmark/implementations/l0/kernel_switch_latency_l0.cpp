@@ -118,8 +118,8 @@ static TestResult run(const KernelSwitchLatencyArguments &arguments, Statistics 
         }
 
         //benchmark
-        for (auto i = 0u; i < arguments.iterations; i++) {
-            for (uint32_t j = 0u; i < arguments.kernelCount; i++) {
+        for (auto iteartion = 0u; iteartion < arguments.iterations; iteartion++) {
+            for (uint32_t j = 0u; j < arguments.kernelCount; j++) {
                 ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdLists[j], nullptr));
             }
             ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
@@ -137,8 +137,11 @@ static TestResult run(const KernelSwitchLatencyArguments &arguments, Statistics 
                 ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(profilingEvents[j]));
             }
         }
+        for (uint32_t j = 0u; j < arguments.kernelCount; j++) {
+            ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdLists[j]));
+        }
     } else {
-        for (auto i = 0u; i < arguments.iterations; i++) {
+        for (auto iteartion = 0u; iteartion < arguments.iterations; iteartion++) {
             ASSERT_ZE_RESULT_SUCCESS(zeCommandListReset(cmdList));
             ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, profilingEvents[0], 0, nullptr));
             for (auto j = 1u; j < arguments.kernelCount; j++) {
