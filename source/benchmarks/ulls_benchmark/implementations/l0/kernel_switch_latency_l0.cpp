@@ -86,34 +86,86 @@ static TestResult run(const KernelSwitchLatencyArguments &arguments, Statistics 
         ASSERT_ZE_RESULT_SUCCESS(zeEventCreate(hEventPool, &eventDesc, &profilingEvents[i]));
     }
 
-    // Benchmark
-    for (auto i = 0u; i < arguments.iterations; i++) {
-        ASSERT_ZE_RESULT_SUCCESS(zeCommandListReset(cmdList));
-        ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, profilingEvents[0], 0, nullptr));
+    if (arguments.flushBetweenEnqueues) {
+        //warmup
+        std::vector<ze_command_list_handle_t> cmdLists;
+
+        for (uint32_t i = 0u; i < arguments.kernelCount; i++) {
+            ze_command_list_handle_t newCmdList;
+            ASSERT_ZE_RESULT_SUCCESS(zeCommandListCreate(levelzero.context, levelzero.device, &cmdListDesc, &newCmdList));
+            cmdLists.push_back(newCmdList);
+        }
+
+        ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdLists[0], kernel, &groupCount, profilingEvents[0], 0, nullptr));
+
         for (auto j = 1u; j < arguments.kernelCount; j++) {
             if (arguments.barrier) {
-                ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendBarrier(cmdList, nullptr, 0u, nullptr));
-                ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, profilingEvents[j], 0, nullptr));
+                ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendBarrier(cmdLists[j], nullptr, 0u, nullptr));
+                ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdLists[j], kernel, &groupCount, profilingEvents[j], 0, nullptr));
             } else {
-                ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, profilingEvents[j], 1, &profilingEvents[j - 1]));
+                ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdLists[j], kernel, &groupCount, profilingEvents[j], 1, &profilingEvents[j - 1]));
             }
         }
-        ASSERT_ZE_RESULT_SUCCESS(zeCommandListClose(cmdList));
-        ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
+        for (uint32_t i = 0u; i < arguments.kernelCount; i++) {
+            ASSERT_ZE_RESULT_SUCCESS(zeCommandListClose(cmdLists[i]));
+            ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdLists[i], nullptr));
+        }
+
         ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
 
-        auto switchTime = std::chrono::nanoseconds(0u);
-        for (auto j = 1u; j < arguments.kernelCount; j++) {
-            ze_kernel_timestamp_result_t earlierKernelTimestamp;
-            ASSERT_ZE_RESULT_SUCCESS(zeEventQueryKernelTimestamp(profilingEvents[j - 1], &earlierKernelTimestamp));
-            ze_kernel_timestamp_result_t laterKernelTimestamp;
-            ASSERT_ZE_RESULT_SUCCESS(zeEventQueryKernelTimestamp(profilingEvents[j], &laterKernelTimestamp));
-
-            switchTime += std::chrono::nanoseconds((laterKernelTimestamp.global.kernelStart - earlierKernelTimestamp.global.kernelEnd) * timerResolution);
-        }
-        statistics.pushValue(switchTime / arguments.kernelCount, MeasurementUnit::Microseconds, MeasurementType::Gpu);
         for (auto j = 0u; j < arguments.kernelCount; j++) {
             ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(profilingEvents[j]));
+        }
+
+        //benchmark
+        for (auto i = 0u; i < arguments.iterations; i++) {
+            for (uint32_t j = 0u; i < arguments.kernelCount; i++) {
+                ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdLists[j], nullptr));
+            }
+            ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
+            auto switchTime = std::chrono::nanoseconds(0u);
+            for (auto j = 1u; j < arguments.kernelCount; j++) {
+                ze_kernel_timestamp_result_t earlierKernelTimestamp;
+                ASSERT_ZE_RESULT_SUCCESS(zeEventQueryKernelTimestamp(profilingEvents[j - 1], &earlierKernelTimestamp));
+                ze_kernel_timestamp_result_t laterKernelTimestamp;
+                ASSERT_ZE_RESULT_SUCCESS(zeEventQueryKernelTimestamp(profilingEvents[j], &laterKernelTimestamp));
+
+                switchTime += std::chrono::nanoseconds((laterKernelTimestamp.global.kernelStart - earlierKernelTimestamp.global.kernelEnd) * timerResolution);
+            }
+            statistics.pushValue(switchTime / arguments.kernelCount, MeasurementUnit::Microseconds, MeasurementType::Gpu);
+            for (auto j = 0u; j < arguments.kernelCount; j++) {
+                ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(profilingEvents[j]));
+            }
+        }
+    } else {
+        for (auto i = 0u; i < arguments.iterations; i++) {
+            ASSERT_ZE_RESULT_SUCCESS(zeCommandListReset(cmdList));
+            ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, profilingEvents[0], 0, nullptr));
+            for (auto j = 1u; j < arguments.kernelCount; j++) {
+                if (arguments.barrier) {
+                    ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendBarrier(cmdList, nullptr, 0u, nullptr));
+                    ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, profilingEvents[j], 0, nullptr));
+                } else {
+                    ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, profilingEvents[j], 1, &profilingEvents[j - 1]));
+                }
+            }
+            ASSERT_ZE_RESULT_SUCCESS(zeCommandListClose(cmdList));
+            ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
+            ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
+
+            auto switchTime = std::chrono::nanoseconds(0u);
+            for (auto j = 1u; j < arguments.kernelCount; j++) {
+                ze_kernel_timestamp_result_t earlierKernelTimestamp;
+                ASSERT_ZE_RESULT_SUCCESS(zeEventQueryKernelTimestamp(profilingEvents[j - 1], &earlierKernelTimestamp));
+                ze_kernel_timestamp_result_t laterKernelTimestamp;
+                ASSERT_ZE_RESULT_SUCCESS(zeEventQueryKernelTimestamp(profilingEvents[j], &laterKernelTimestamp));
+
+                switchTime += std::chrono::nanoseconds((laterKernelTimestamp.global.kernelStart - earlierKernelTimestamp.global.kernelEnd) * timerResolution);
+            }
+            statistics.pushValue(switchTime / arguments.kernelCount, MeasurementUnit::Microseconds, MeasurementType::Gpu);
+            for (auto j = 0u; j < arguments.kernelCount; j++) {
+                ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(profilingEvents[j]));
+            }
         }
     }
 
