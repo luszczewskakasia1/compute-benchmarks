@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -32,6 +32,9 @@ cl_int HostptrReuseHelper::allocateBufferHostptr(Opencl &opencl,
         break;
     case HostptrReuseMode::Usm: {
         const auto usmFunctions = opencl.getExtensions().queryUsmFunctions();
+        if (!opencl.getExtensions().areUsmPointersNotNull(usmFunctions)) {
+            FATAL_ERROR("USM extension not found");
+        }
         outAlloc.ptr = usmFunctions.clHostMemAllocINTEL(outAlloc.context, nullptr, size, 0llu, &retVal);
         outAlloc.clMemFreeINTEL = usmFunctions.clMemFreeINTEL;
         break;

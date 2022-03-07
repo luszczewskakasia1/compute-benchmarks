@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -71,6 +71,13 @@ class ExtensionsHelper {
             result.clSharedMemAllocINTEL = (pfn_clSharedMemAllocINTEL)clGetExtensionFunctionAddressForPlatform(platform, "clSharedMemAllocINTEL");
         }
         return result;
+    }
+
+    bool areUsmPointersNotNull(const UsmFunctions &usmFunctions) const {
+        return usmFunctions.clMemFreeINTEL != nullptr &&
+               usmFunctions.clHostMemAllocINTEL != nullptr &&
+               usmFunctions.clDeviceMemAllocINTEL != nullptr &&
+               usmFunctions.clSharedMemAllocINTEL != nullptr;
     }
 
   private:

@@ -137,4 +137,6 @@ int main(int argc, char **argv) {
     }
 
     std::cerr << "Done\n";
+
+    return 0;
 }

@@ -21,6 +21,9 @@ cl_int UsmHelperOcl::allocate(Opencl &opencl,
                               Alloc &outAlloc) {
     outAlloc.placement = placement;
     outAlloc.usm = opencl.getExtensions().queryUsmFunctions();
+    if (!opencl.getExtensions().areUsmPointersNotNull(outAlloc.usm)) {
+        FATAL_ERROR("USM extension not found");
+    }
     outAlloc.context = opencl.context;
 
     cl_int retVal = CL_SUCCESS;

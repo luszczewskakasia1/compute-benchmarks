@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -173,4 +173,6 @@ int main() {
             showDeviceAndItsSubDevices(1u, 0u, device, deviceIndex);
         }
     }
+
+    return 0;
 }
