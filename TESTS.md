@@ -19,7 +19,7 @@ ExecuteCommandListWithIndirectAccess|measures time spent in zeCommandQueueExecut
 ExecuteCommandListWithIndirectArguments|measures time spent in zeCommandQueueExecuteCommandLists on CPU when indirect allocations are used.|<ul><li>--AmountOfIndirectAllocations Amount of indirect allocations that are present in system</li><li>--placement Placement of the indirect allocations (Device or Host or Shared or non-USM or non-USM-imported or non-USM-mapped)</li></ul>|:heavy_check_mark:|:x:|:x:|
 FlushTime|measures time spent in clEnqueueNDRangeKernel on CPU.|<ul><li>--event Pass output event to the enqueue call (0 or 1)</li><li>--ooq Use out of order queue (0 or 1)</li><li>--wgc Workgroup count</li><li>--wgs Workgroup size, pass 0 to make the driver calculate it during enqueue</li></ul>|:x:|:heavy_check_mark:|:x:|
 KernelSetArgumentValueImmediate|measures time spent in zeKernelSetArgumentValue for immediate arguments on CPU.|<ul><li>--argSize Kernel argument size in bytes</li></ul>|:heavy_check_mark:|:x:|:x:|
-SetKernelArgSvmPointer|measures time spent in clSetKernelArgSVMPointer on CPU.|<ul><li>--allocationSize Size of svm allocations, in bytes</li><li>--allocationsCount Number of allocations</li><li>--reallocate Allocations will be freed and allocated again between setKernelArgs (0 or 1)</li></ul>|:x:|:heavy_check_mark:|:x:|
+SetKernelArgSvmPointer|measures time spent in clSetKernelArgSVMPointer on CPU.|<ul><li>--allocationSize Size of svm allocations, in bytes</li><li>--allocationsCount Number of allocations</li><li>--reallocate Allocations will be freed and allocated again between setKernelArgs (0 or 1)</li></ul>|:heavy_check_mark:|:heavy_check_mark:|:x:|
 
 
 
