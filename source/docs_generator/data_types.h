@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -28,12 +28,14 @@ struct LexicographicalLess {
 };
 
 struct BenchmarkInstance {
+    const std::string location;
     const std::string baseName;
     const std::string path;
     const Api api;
 
-    BenchmarkInstance(const std::string &name, const std::string &path)
-        : baseName(deduceBaseName(name)),
+    BenchmarkInstance(const std::string &location, const std::string &name, const std::string &path)
+        : location(location),
+          baseName(deduceBaseName(name)),
           path(path),
           api(deduceApi(name)) {}
 
@@ -68,6 +70,7 @@ struct TestCase {
 using TestCases = std::map<std::string, TestCase, LexicographicalLess>;
 
 struct Benchmark {
+    std::string location = {};
     std::string baseName = {};
     std::vector<const BenchmarkInstance *> instances = {};
     std::string description = {};

@@ -22,6 +22,8 @@
 #include "data_types.h"
 #include "helpers.h"
 
+#include <filesystem>
+
 int main(int argc, char **argv) {
     // Parse command-line arguments
     CommandLineArguments commandLineArguments = {};
@@ -32,6 +34,7 @@ int main(int argc, char **argv) {
     }
     ArgumentContainer arguments = {};
     StringArgument path{arguments, "path"};
+    StringArgument fileName{arguments, "fileName"};
     arguments.parseArguments(commandLineArguments);
 
     // Full names and paths of benchmarks are known by CMake and passed via a preprocessor definition.
@@ -39,9 +42,13 @@ int main(int argc, char **argv) {
 
     // Group BenchmarkInstances by base name
     Benchmarks benchmarks = {};
+    // And collect list of locations
+    std::set<std::string> locations = {};
     for (const BenchmarkInstance &benchmarkInstance : benchmarkInstances) {
         Benchmark &benchmark = benchmarks[benchmarkInstance.baseName];
+        locations.insert(benchmarkInstance.location);
         assignAndValidate(benchmark.baseName, benchmarkInstance.baseName, " setting base name from benchmark instance");
+        assignAndValidate(benchmark.location, benchmarkInstance.location, " setting location from benchmark instance");
         benchmark.instances.push_back(&benchmarkInstance);
     }
 
@@ -107,33 +114,47 @@ int main(int argc, char **argv) {
 
     // Generate Markdown code (with embedded HTML)
     std::cerr << "Outputting documentation in Markdown format\n";
-    FileHelper::FileOrConsole outputFileWrapper{path, std::ios::out, std::cout};
-    std::ostream &outputFile = outputFileWrapper.get();
-    for (const auto &entry : benchmarks) {
-        const Benchmark &benchmark = entry.second;
-
-        outputFile << "# " << benchmark.baseName << '\n';
-        outputFile << benchmark.description << '\n';
-        outputFile << "| Test name | Description | Params | L0 | OCL | SYCL |\n";
-        outputFile << "|-----------|-------------|--------|----|-----|------|\n";
-        for (const auto &entry : benchmark.testCases) {
-            const TestCase &testCase = entry.second;
-
-            outputFile << testCase.name << '|';
-            outputFile << testCase.help << '|';
-            outputFile << "<ul>";
-            for (const auto &entry : testCase.arguments) {
-                const TestCaseArgument &argument = entry.second;
-                outputFile << "<li>--" << argument.name << " " << argument.help << "</li>";
-            }
-
-            outputFile << "</ul>|";
-            outputFile << (testCase.apis.find(Api::L0) != testCase.apis.end() ? ":heavy_check_mark:" : ":x:") << '|';
-            outputFile << (testCase.apis.find(Api::OpenCL) != testCase.apis.end() ? ":heavy_check_mark:" : ":x:") << '|';
-            outputFile << (testCase.apis.find(Api::SYCL) != testCase.apis.end() ? ":heavy_check_mark:" : ":x:") << '|';
-            outputFile << '\n';
+    for (const auto &location : locations) {
+        std::filesystem::path filePath(static_cast<const std::string &>(path));
+        if (location.size() > 0) {
+            filePath.append(location);
         }
-        outputFile << "\n\n\n";
+        filePath.append(static_cast<const std::string &>(fileName));
+        std::cerr << filePath.string() << ":" << std::endl;
+
+        FileHelper::FileOrConsole outputFileWrapper{filePath.string(), std::ios::out, std::cout};
+        std::ostream &outputFile = outputFileWrapper.get();
+        for (const auto &entry : benchmarks) {
+            const Benchmark &benchmark = entry.second;
+
+            if (benchmark.location != location) {
+                continue;
+            }
+            std::cerr << "  " << benchmark.baseName << std::endl;
+
+            outputFile << "# " << benchmark.baseName << '\n';
+            outputFile << benchmark.description << '\n';
+            outputFile << "| Test name | Description | Params | L0 | OCL | SYCL |\n";
+            outputFile << "|-----------|-------------|--------|----|-----|------|\n";
+            for (const auto &entry : benchmark.testCases) {
+                const TestCase &testCase = entry.second;
+
+                outputFile << testCase.name << '|';
+                outputFile << testCase.help << '|';
+                outputFile << "<ul>";
+                for (const auto &entry : testCase.arguments) {
+                    const TestCaseArgument &argument = entry.second;
+                    outputFile << "<li>--" << argument.name << " " << argument.help << "</li>";
+                }
+
+                outputFile << "</ul>|";
+                outputFile << (testCase.apis.find(Api::L0) != testCase.apis.end() ? ":heavy_check_mark:" : ":x:") << '|';
+                outputFile << (testCase.apis.find(Api::OpenCL) != testCase.apis.end() ? ":heavy_check_mark:" : ":x:") << '|';
+                outputFile << (testCase.apis.find(Api::SYCL) != testCase.apis.end() ? ":heavy_check_mark:" : ":x:") << '|';
+                outputFile << '\n';
+            }
+            outputFile << "\n\n\n";
+        }
     }
 
     std::cerr << "Done\n";

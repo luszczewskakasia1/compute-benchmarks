@@ -1,7 +1,7 @@
 #
 # INTEL CONFIDENTIAL
 #
-# Copyright (C) 2019-2021 Intel Corporation
+# Copyright (C) 2019-2022 Intel Corporation
 #
 # This software and the related documents are Intel copyrighted materials,
 # and your use of them is governed by the express license under which they were
@@ -21,7 +21,8 @@ endif()
 get_property(TARGETS_FOR_DOCS_GENERATION GLOBAL PROPERTY TARGETS_FOR_DOCS_GENERATION)
 set(TARGETS "")
 foreach(TGT ${TARGETS_FOR_DOCS_GENERATION})
-    string(APPEND TARGETS "{\"${TGT}\", \"$<TARGET_FILE:${TGT}>\"}, ")
+    get_property(_location GLOBAL PROPERTY ${TGT}_LOCATION)
+    string(APPEND TARGETS "{\"${_location}\", \"${TGT}\", \"$<TARGET_FILE:${TGT}>\"}, ")
 endforeach()
 
 # Setup executable target
@@ -30,6 +31,7 @@ file(GLOB SOURCES *.cpp *.h)
 add_executable(${TARGET_NAME} ${SOURCES})
 target_link_libraries(${TARGET_NAME} PRIVATE compute_benchmarks_framework)
 target_compile_definitions(${TARGET_NAME} PRIVATE TARGETS=${TARGETS})
+target_compile_definitions(${TARGET_NAME} PRIVATE OUTPUT_DIR=${OUTPUT_DIR})
 add_dependencies(${TARGET_NAME} ${TARGETS_FOR_DOCS_GENERATION})
 setup_vs_folders(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -44,5 +46,5 @@ add_custom_command(
     TARGET ${RUNNER_TARGET_NAME}
     WORKING_DIRECTORY "$<TARGET_FILE_DIR:${TARGET_NAME}>"
     POST_BUILD
-    COMMAND "$<TARGET_FILE:${TARGET_NAME}>" --path=${CMAKE_SOURCE_DIR}/TESTS.md
+    COMMAND "$<TARGET_FILE:${TARGET_NAME}>" --path=${CMAKE_SOURCE_DIR} --fileName=TESTS.md
 )
