@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -87,7 +87,7 @@ static TestResult run(const KernelSwitchLatencyArguments &arguments, Statistics 
             switchTime += std::chrono::nanoseconds(start - end);
         }
 
-        statistics.pushValue(switchTime / arguments.kernelCount, MeasurementUnit::Microseconds, MeasurementType::Gpu);
+        statistics.pushValue(switchTime / (arguments.kernelCount - 1), MeasurementUnit::Microseconds, MeasurementType::Gpu);
 
         for (auto j = 0u; j < arguments.kernelCount; j++) {
             ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvents[j]));

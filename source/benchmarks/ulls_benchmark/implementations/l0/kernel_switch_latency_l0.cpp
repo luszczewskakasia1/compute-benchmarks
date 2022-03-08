@@ -133,7 +133,7 @@ static TestResult run(const KernelSwitchLatencyArguments &arguments, Statistics 
                 switchTime += std::chrono::nanoseconds((laterKernelTimestamp.global.kernelStart - earlierKernelTimestamp.global.kernelEnd) * timerResolution);
             }
             statistics.pushValue(switchTime / arguments.kernelCount, MeasurementUnit::Microseconds, MeasurementType::Gpu);
-            for (auto j = 0u; j < arguments.kernelCount; j++) {
+            for (auto j = 0u; j < (arguments.kernelCount - 1); j++) {
                 ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(profilingEvents[j]));
             }
         }
@@ -166,7 +166,7 @@ static TestResult run(const KernelSwitchLatencyArguments &arguments, Statistics 
                 switchTime += std::chrono::nanoseconds((laterKernelTimestamp.global.kernelStart - earlierKernelTimestamp.global.kernelEnd) * timerResolution);
             }
             statistics.pushValue(switchTime / arguments.kernelCount, MeasurementUnit::Microseconds, MeasurementType::Gpu);
-            for (auto j = 0u; j < arguments.kernelCount; j++) {
+            for (auto j = 0u; j < (arguments.kernelCount - 1); j++) {
                 ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(profilingEvents[j]));
             }
         }
