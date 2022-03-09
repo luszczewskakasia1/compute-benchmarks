@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -21,6 +21,12 @@
 
 FileSystem::path WorkingDirectoryHelper::getExeLocation() {
     char buffer[4096];
-    FATAL_ERROR_IF_SYS_CALL_FAILED(readlink("/proc/self/exe", buffer, sizeof(buffer)), "retrieving .exe location");
+    auto retval = readlink("/proc/self/exe", buffer, sizeof(buffer));
+    FATAL_ERROR_IF_SYS_CALL_FAILED(retval, "retrieving .exe location");
+    if (retval < static_cast<int64_t>(sizeof(buffer))) {
+        buffer[retval] = 0;
+    } else {
+        FATAL_ERROR_IF_SYS_CALL_FAILED(-1, "path truncation while retrieving .exe location");
+    }
     return FileSystem::path{buffer};
 }
