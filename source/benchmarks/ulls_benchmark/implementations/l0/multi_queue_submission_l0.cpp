@@ -75,7 +75,7 @@ static TestResult run(const MultiQueueSubmissionArguments &arguments, Statistics
     std::vector<ze_command_list_handle_t> cmdLists(arguments.queueCount);
     std::vector<void *> buffers(arguments.queueCount);
     for (size_t i = 0; i < arguments.queueCount; i++) {
-        commandQueueDesc.index = i % computeQueuesCount;
+        commandQueueDesc.index = static_cast<uint32_t>(i % computeQueuesCount);
         queues[i] = levelzero.createQueue(levelzero.device, commandQueueDesc);
 
         ze_command_list_desc_t cmdListDesc{};
@@ -105,11 +105,11 @@ static TestResult run(const MultiQueueSubmissionArguments &arguments, Statistics
     // Benchmark
     for (auto i = 0u; i < arguments.iterations; i++) {
         timer.measureStart();
-        for (size_t i = 0; i < arguments.queueCount; i++) {
-            ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(queues[i], 1, &cmdLists[i], nullptr));
+        for (size_t j = 0; j < arguments.queueCount; j++) {
+            ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(queues[j], 1, &cmdLists[j], nullptr));
         }
-        for (size_t i = 0; i < arguments.queueCount; i++) {
-            ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(queues[i], std::numeric_limits<uint64_t>::max()));
+        for (size_t j = 0; j < arguments.queueCount; j++) {
+            ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(queues[j], std::numeric_limits<uint64_t>::max()));
         }
         timer.measureEnd();
         statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);

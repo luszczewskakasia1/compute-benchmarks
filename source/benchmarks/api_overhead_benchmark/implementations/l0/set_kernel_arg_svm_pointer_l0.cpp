@@ -84,8 +84,8 @@ static TestResult run(const SetKernelArgSvmPointerArguments &arguments, Statisti
     // Benchmark
     for (auto i = 0u; i < arguments.iterations; i++) {
         timer.measureStart();
-        for (auto i = 0u; i < arguments.allocationsCount; ++i) {
-            ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernels[i], 0, arguments.noIntelExtensions, &allocations[i]));
+        for (auto j = 0u; j < arguments.allocationsCount; ++j) {
+            ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernels[j], 0, arguments.noIntelExtensions, &allocations[j]));
         }
         timer.measureEnd();
         statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);

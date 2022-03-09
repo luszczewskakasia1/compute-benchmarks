@@ -62,7 +62,7 @@ static TestResult run(const ExecuteCommandListImmediateArguments &arguments, Sta
 
     // Configure kernel
     ASSERT_ZE_RESULT_SUCCESS(zeKernelSetGroupSize(kernel, 1u, 1u, 1u));
-    int kernelOperationsCount = arguments.kernelExecutionTime * 4;
+    int kernelOperationsCount = static_cast<int>(arguments.kernelExecutionTime * 4);
     ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernel, 0, sizeof(int), &kernelOperationsCount));
 
     // Create an immediate command list

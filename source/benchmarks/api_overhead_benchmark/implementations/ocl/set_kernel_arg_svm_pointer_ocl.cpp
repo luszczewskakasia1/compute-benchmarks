@@ -76,8 +76,8 @@ static TestResult run(const SetKernelArgSvmPointerArguments &arguments, Statisti
     // Benchmark
     for (auto i = 0u; i < arguments.iterations; i++) {
         timer.measureStart();
-        for (auto i = 0u; i < arguments.allocationsCount; i++) {
-            ASSERT_CL_SUCCESS(clSetKernelArgSVMPointer(kernels[i], 0, static_cast<cl_int *>(allocations[i].ptr)));
+        for (auto j = 0u; j < arguments.allocationsCount; j++) {
+            ASSERT_CL_SUCCESS(clSetKernelArgSVMPointer(kernels[j], 0, static_cast<cl_int *>(allocations[j].ptr)));
         }
         timer.measureEnd();
         statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);

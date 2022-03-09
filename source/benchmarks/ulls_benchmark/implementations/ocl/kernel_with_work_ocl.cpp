@@ -67,7 +67,7 @@ static TestResult run(const KernelWithWorkArguments &arguments, Statistics &stat
     // Benchmark
     for (auto i = 0u; i < arguments.iterations; i++) {
         if (arguments.usedIds == WorkItemIdUsage::AtomicPerWorkgroup) {
-            uint32_t workgroupCount = arguments.workgroupCount;
+            uint32_t workgroupCount = static_cast<uint32_t>(arguments.workgroupCount);
             clEnqueueWriteBuffer(opencl.commandQueue, buffer, true, 0u, 4u, &workgroupCount, 0u, nullptr, nullptr);
         }
 

@@ -89,14 +89,14 @@ static TestResult run(const SvmCopyArguments &arguments, Statistics &statistics)
     for (auto i = 0u; i < arguments.iterations; i++) {
         std::unique_lock lock(barrier);
         std::vector<std::unique_ptr<std::thread>> threads;
-        for (auto i = 0u; i < arguments.numberOfThreads; i++) {
+        for (auto j = 0u; j < arguments.numberOfThreads; j++) {
             threads.push_back(std::unique_ptr<std::thread>(
-                new std::thread(enqueueSvmCopy, commandQueues[i % commandQueues.size()], srcAllocs[i].ptr, dstAllocs[i].ptr, bufferForCopySize, &barrier, clEnqueueMemcpyINTEL)));
+                new std::thread(enqueueSvmCopy, commandQueues[j % commandQueues.size()], srcAllocs[j].ptr, dstAllocs[j].ptr, bufferForCopySize, &barrier, clEnqueueMemcpyINTEL)));
         }
         timer.measureStart();
         lock.unlock();
-        for (auto i = 0u; i < arguments.numberOfThreads; i++) {
-            threads[i]->join();
+        for (auto j = 0u; j < arguments.numberOfThreads; j++) {
+            threads[j]->join();
         }
         timer.measureEnd();
         statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);
