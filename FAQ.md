@@ -12,23 +12,18 @@ Yes.
 
 
 
-### Does it post the results online?
-No. It is safe to run on embargoed machines.
-
-
-
 ### What's the difference between memory_benchmark_ocl and memory_benchmark?
-Binaries named with *_ocl* and *_l0* suffixes such as *memory_benchmark_ocl* are single-API benchmarks, meaning they enable tests in only one API and do not load unnecessary libraries. On the other hand *memory_benchmark* loads both OpenCL and LevelZero libraries and runs tests in both APIs for convenience. This may introduce some additional overhead, so it's best to use single-API binaries for serious tests,
+Binaries named with *_ocl* and *_l0* suffixes, such as *memory_benchmark_ocl*, are single-API benchmarks, meaning they enable tests in only one API and do not load unnecessary libraries. On the other hand *memory_benchmark* loads both OpenCL and Level Zero libraries and runs tests in both APIs for convenience. This may introduce some additional overhead, so it's best to use single-API binaries for serious tests.
 
 
 
-### Does it work on the XXX GPU?
-Generally yes. Benchmarks are regularly run on multiple platforms, including (but not limited to) DG1, DG2, and ATS and have thus been proven to be functional. If you get any errors and crashes, it is very likely to be related to improper configuration or some fundamental flaws in the drivers. If your environment is confirmed to be correct and you still experience problems, please contact <maciej.dziuban@intel.com>.
+### Do they work on any GPU?
+Binaries have been designed to run on any platform support by the OpenCL and Level Zero drivers. If you get any errors or crashes, it is very likely to be related to improper configuration or some fundamental flaws in the drivers. If your environment is confirmed to be correct and you still experience problems, please file an issue.
 
 
 
 ### How does it work?
-ComputeBenchmarks is divided into multiple binaries. Every binary tests a specific aspect of the GPU and/or driver. Every binary defines a set of named test cases, which can have multiple parameters. By default, each test is run with a set of default parameters, but you can select custom values. The tests are based on OpenCL and LevelZero APIs. Some of them may use Intel-specific extensions.
+ComputeBenchmarks is divided into multiple binaries. Every binary tests a specific aspect of the GPU and/or driver. Every binary defines a set of named test cases, which can have multiple parameters. By default, each test is run with a set of default parameters, but you can select custom values. The tests are based on OpenCL and Level Zero APIs. Some of them may use Intel-specific extensions.
 
 
 
@@ -84,10 +79,10 @@ Every benchmark binary can be run with --help parameter, which provides a short 
 
 
 
-### Why does CMake tell me, that LevelZero/OpenCL installation was not found?
-No need to worry about it. CMake requires special config files, so it can discovoer installed libraries. Sometimes the files are not there, even if SDKs are installed correctly. For this reason the repository contains its own LevelZero SDK and OpenCL SDK (loader+headers), which makes it self-sufficient. If system-wide installation cannot be found, benchmarks are built using these SDKs and they are still functional.
+### Why does CMake tell me, that Level Zero/OpenCL installation was not found?
+No need to worry about it. CMake requires special config files, so it can discovoer installed libraries. Sometimes the files are not there, even if SDKs are installed correctly. For this reason the repository contains its own Level Zero SDK and OpenCL SDK (loader+headers), which makes it self-sufficient. If system-wide installation cannot be found, benchmarks are built using these SDKs and they are still functional.
 
 
 
 ### Why am I getting linker errors related to libze_loader.so?
-You probably cloned the repository on Windows and copied the files over to Linux. Because of that symbolic links pointing to the LevelZero loader break and they are interpreted as raw files. Recommended way is to clone and build the repository on the same system. Or, if you don't care about LevelZero tests, you can disable them with `-DBUILD_L0=OFF` CMake argument.
+You probably cloned the repository on Windows and copied the files over to Linux. Because of that symbolic links pointing to the Level Zero loader break and they are interpreted as raw files. Recommended way is to clone and build the repository on the same system. Or, if you don't care about LevelZero tests, you can disable them with `-DBUILD_L0=OFF` CMake argument.
