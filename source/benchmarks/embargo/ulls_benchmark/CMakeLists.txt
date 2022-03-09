@@ -13,7 +13,8 @@
 # implied warranties, other than those that are expressly stated in the License.
 #
 
-include(CMakeMacrosAddBenchmark.cmake)
-
-set(BENCHMARKS_SOURCE_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
-add_subdirectories()
+add_benchmark(ulls_benchmark_embargo ocl l0 all)
+set_target_properties(ulls_benchmark_embargo_l0 PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIR}/embargo")
+set_target_properties(ulls_benchmark_embargo_ocl PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIR}/embargo")
+set_property(GLOBAL PROPERTY ulls_benchmark_embargo_l0_LOCATION "embargo")
+set_property(GLOBAL PROPERTY ulls_benchmark_embargo_ocl_LOCATION "embargo")

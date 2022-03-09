@@ -18,11 +18,11 @@
 #include "framework/utility/file_helper.h"
 #include "framework/utility/timer.h"
 
-#include "definitions/empty_kernel.h"
+#include "definitions/empty_kernel_embargo.h"
 
 #include <gtest/gtest.h>
 
-static TestResult run(const EmptyKernelArguments &arguments, Statistics &statistics) {
+static TestResult run(const EmptyKernelEmbargoArguments &arguments, Statistics &statistics) {
     // Setup
     LevelZero levelzero;
     Timer timer;
@@ -80,4 +80,4 @@ static TestResult run(const EmptyKernelArguments &arguments, Statistics &statist
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<EmptyKernel> registerTestCase(run, Api::L0);
+static RegisterTestCaseImplementation<EmptyKernelEmbargo> registerTestCase(run, Api::L0);
