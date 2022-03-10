@@ -26,11 +26,11 @@ struct QueuePrioritiesArguments : TestCaseArgumentContainer {
     PositiveIntegerArgument sleepTime;
 
     QueuePrioritiesArguments()
-        : lowPriorityKernelTime(*this, "lowPriorityTime", "How long each work item is in low priority kernel"),
+        : lowPriorityKernelTime(*this, "lowTime", "How long each work item is in low priority kernel"),
           usePriorities(*this, "priorities", "Low priority command queue property is used"),
           workgroupCount(*this, "wgc", "Workgroup count of high priority kernel"),
-          highPriorityKernelTime(*this, "highPriorityTime", "How long each work item is in high priority kernel"),
-          sleepTime(*this, "sleepTime", "sleep time in us after low priority kernel flushed") {}
+          highPriorityKernelTime(*this, "highTime", "How long each work item is in high priority kernel"),
+          sleepTime(*this, "sleep", "sleep time in us after low priority kernel flushed") {}
 };
 
 struct QueuePriorities : TestCase<QueuePrioritiesArguments> {
