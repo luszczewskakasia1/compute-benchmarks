@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -20,6 +20,6 @@
 EXECUTE_AT_APP_INIT {
     const std::string name = "ulls_benchmark";
     const std::string description = "Ulls Benchmark is a set of tests aimed at measuring Ultra Low Latency Submission (ULLS) performance impact.";
-    const int testCaseColumnWidth = 67;
+    const int testCaseColumnWidth = 80;
     BenchmarkInfo::initialize(name, description, testCaseColumnWidth);
 };
