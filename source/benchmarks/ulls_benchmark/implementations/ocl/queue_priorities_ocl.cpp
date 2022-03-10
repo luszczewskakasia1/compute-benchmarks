@@ -103,7 +103,6 @@ static TestResult run(const QueuePrioritiesArguments &arguments, Statistics &sta
     size_t gwsHighPriority = arguments.workgroupCount * 64u;
     // Benchmark
     for (auto i = 0u; i < arguments.iterations; i++) {
-        //make sure that low priority kernel is running
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(lowPriorityQueue, lowPriorityKernel, 1, nullptr, &gwsLowPriority, &lws, 0, nullptr, nullptr));
         ASSERT_CL_SUCCESS(clFlush(lowPriorityQueue));
 
@@ -116,6 +115,8 @@ static TestResult run(const QueuePrioritiesArguments &arguments, Statistics &sta
         timer.measureEnd();
         ASSERT_CL_SUCCESS(retVal);
         statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);
+        ASSERT_CL_SUCCESS(clFinish(lowPriorityQueue));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     // Cleanup
