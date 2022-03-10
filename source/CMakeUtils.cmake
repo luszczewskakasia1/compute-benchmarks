@@ -13,7 +13,7 @@
 # implied warranties, other than those that are expressly stated in the License.
 #
 
-function(copy_kernels_to_bin_directory_of_target TARGET_NAME TARGET_KERNEL_OWNER)
+function(copy_kernels_to_bin_directory_of_target TARGET_NAME TARGET_KERNEL_OWNER TARGET_DIR)
     get_target_property(KERNELS ${TARGET_KERNEL_OWNER} KERNELS)
     if (KERNELS STREQUAL "KERNELS-NOTFOUND")
         return()
@@ -25,13 +25,9 @@ function(copy_kernels_to_bin_directory_of_target TARGET_NAME TARGET_KERNEL_OWNER
             POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy
             ${KERNEL}
-            $<TARGET_FILE_DIR:${TARGET_NAME}>/${KERNEL_NAME}
+            ${TARGET_DIR}/${KERNEL_NAME}
         )
     endforeach()
-endfunction()
-
-function(copy_kernels_to_bin_directory TARGET_NAME)
-    copy_kernels_to_bin_directory_of_target(${TARGET_NAME} ${TARGET_NAME})
 endfunction()
 
 function(setup_vs_folders TARGET_NAME BASE_DIR)

@@ -1,7 +1,7 @@
 #
 # INTEL CONFIDENTIAL
 #
-# Copyright (C) 2019-2021 Intel Corporation
+# Copyright (C) 2019-2022 Intel Corporation
 #
 # This software and the related documents are Intel copyrighted materials,
 # and your use of them is governed by the express license under which they were
@@ -25,7 +25,8 @@ function(add_workload TARGET_NAME API)
     # Add sources
     add_sources_to_benchmark(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
     add_kernels_to_benchmark(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/kernels)
-    copy_kernels_to_bin_directory(${TARGET_NAME})
+    get_target_property(KERNEL_OUTPUT_DIR ${TARGET_NAME} RUNTIME_OUTPUT_DIRECTORY)
+    copy_kernels_to_bin_directory_of_target(${TARGET_NAME} ${TARGET_NAME} ${KERNEL_OUTPUT_DIR})
 
     # Additional config
     setup_vs_folders(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR})

@@ -108,8 +108,14 @@ function (add_benchmark_for_api BASE_TARGET_NAME APPEND_API_TO_TARGET_NAME REGIS
         endforeach()
     endforeach()
 
-    # Ensure kernels reside inside benchmark's working directory
-    copy_kernels_to_bin_directory(${TARGET_NAME})
+    # Create kernel copy targets
+    set(COPY_KERNEL_TARGET_NAME "copy_kernel_files_${BASE_TARGET_NAME}")
+    if(NOT TARGET ${COPY_KERNEL_TARGET_NAME})
+        add_custom_target(${COPY_KERNEL_TARGET_NAME})
+        set(KERNEL_OUTPUT_DIR ${OUTPUT_DIR})
+        copy_kernels_to_bin_directory_of_target(${COPY_KERNEL_TARGET_NAME} ${TARGET_NAME} ${KERNEL_OUTPUT_DIR})
+    endif()
+    add_dependencies(${TARGET_NAME} ${COPY_KERNEL_TARGET_NAME})
 
     # Additional setup
     setup_vs_folders(${TARGET_NAME} ${BENCHMARKS_SOURCE_ROOT})
@@ -131,7 +137,8 @@ function(add_benchmark_dependency_on_workload BENCHMARK_BASE_NAME WORKLOAD API)
                 $<TARGET_FILE:${WORKLOAD}>
                 $<TARGET_FILE_DIR:${BENCHMARK}>/$<TARGET_FILE_NAME:${WORKLOAD}>
             )
-            copy_kernels_to_bin_directory_of_target(${BENCHMARK} ${WORKLOAD})
+            get_target_property(KERNEL_OUTPUT_DIR ${BENCHMARK} RUNTIME_OUTPUT_DIRECTORY)
+            copy_kernels_to_bin_directory_of_target(${BENCHMARK} ${WORKLOAD} ${KERNEL_OUTPUT_DIR})
         endif()
     endforeach()
 endfunction()
