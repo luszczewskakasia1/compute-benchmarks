@@ -2,7 +2,7 @@ components:
   infra:
     branch: master
     dest_dir: infra
-    revision: 4cd022427250af64ff8fd86709ce81df1e10ac60
+    revision: 4e163634a8bf26d3c86e1ba4171c1e5c0c7c99c4
     type: git
   clang-format:
     branch: clang-format
