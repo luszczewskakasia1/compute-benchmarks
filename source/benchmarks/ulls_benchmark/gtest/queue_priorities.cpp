@@ -43,8 +43,8 @@ INSTANTIATE_TEST_SUITE_P(
     QueuePrioritiesTest,
     ::testing::Combine(
         ::CommonGtestArgs::allApis(),
-        ::testing::Values(1, 10, 100, 1000, 10000),
+        ::testing::Values(1, 100, 1000),
         ::testing::Values(false, true),
-        ::testing::Values(1, 10, 100, 1000, 10000),
-        ::testing::Values(1, 10, 100, 1000, 10000),
+        ::testing::Values(1, 2048, 8192),
+        ::testing::Values(1, 100, 1000),
         ::testing::Values(1, 10000)));

@@ -46,9 +46,9 @@ static TestResult run(const QueuePrioritiesArguments &arguments, Statistics &sta
     ASSERT_CL_SUCCESS(retVal);
 
     //setup kernel time
-    cl_uint kernelTime = static_cast<cl_uint>(arguments.lowPriorityKernelTime);
+    cl_uint kernelTime = static_cast<cl_uint>(arguments.lowPriorityKernelTime) * 7u;
     ASSERT_CL_SUCCESS(clSetKernelArg(lowPriorityKernel, 0, sizeof(kernelTime), &kernelTime));
-    kernelTime = static_cast<cl_uint>(arguments.highPriorityKernelTime);
+    kernelTime = static_cast<cl_uint>(arguments.highPriorityKernelTime) * 7u;
     ASSERT_CL_SUCCESS(clSetKernelArg(highPriorityKernel, 0, sizeof(kernelTime), &kernelTime));
 
     cl_command_queue lowPriorityQueue;
@@ -97,6 +97,7 @@ static TestResult run(const QueuePrioritiesArguments &arguments, Statistics &sta
     ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(highPriorityQueue, highPriorityKernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
     ASSERT_CL_SUCCESS(clFinish(highPriorityQueue));
     ASSERT_CL_SUCCESS(retVal);
+    std::this_thread::sleep_for(std::chrono::milliseconds(arguments.sleepTime));
 
     //benchmark
     size_t gwsLowPriority = 64 * 1024 * 1024;
@@ -116,7 +117,7 @@ static TestResult run(const QueuePrioritiesArguments &arguments, Statistics &sta
         ASSERT_CL_SUCCESS(retVal);
         statistics.pushValue(timer.get(), MeasurementUnit::Microseconds, MeasurementType::Cpu);
         ASSERT_CL_SUCCESS(clFinish(lowPriorityQueue));
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(arguments.sleepTime));
     }
 
     // Cleanup
