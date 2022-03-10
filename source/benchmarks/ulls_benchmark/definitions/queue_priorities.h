@@ -19,14 +19,18 @@
 #include "framework/test_case/test_case.h"
 
 struct QueuePrioritiesArguments : TestCaseArgumentContainer {
-    PositiveIntegerArgument kernelTime;
+    PositiveIntegerArgument lowPriorityKernelTime;
     BooleanArgument usePriorities;
     PositiveIntegerArgument workgroupCount;
+    PositiveIntegerArgument highPriorityKernelTime;
+    PositiveIntegerArgument sleepTime;
 
     QueuePrioritiesArguments()
-        : kernelTime(*this, "kernelTime", "How long each work item is in low priority kernel"),
+        : lowPriorityKernelTime(*this, "lowPriorityTime", "How long each work item is in low priority kernel"),
           usePriorities(*this, "priorities", "Low priority command queue property is used"),
-          workgroupCount(*this, "wgc", "Workgroup count of high priority kernel") {}
+          workgroupCount(*this, "wgc", "Workgroup count of high priority kernel"),
+          highPriorityKernelTime(*this, "highPriorityTime", "How long each work item is in high priority kernel"),
+          sleepTime(*this, "sleepTime", "sleep time in us after low priority kernel flushed") {}
 };
 
 struct QueuePriorities : TestCase<QueuePrioritiesArguments> {

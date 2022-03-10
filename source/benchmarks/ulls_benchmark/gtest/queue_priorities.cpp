@@ -22,15 +22,17 @@
 
 static const inline RegisterTestCase<QueuePriorities> registerTestCase{};
 
-class QueuePrioritiesTest : public ::testing::TestWithParam<std::tuple<Api, size_t, bool, size_t>> {
+class QueuePrioritiesTest : public ::testing::TestWithParam<std::tuple<Api, size_t, bool, size_t, size_t, size_t>> {
 };
 
 TEST_P(QueuePrioritiesTest, Test) {
     QueuePrioritiesArguments args{};
     args.api = std::get<0>(GetParam());
-    args.kernelTime = std::get<1>(GetParam());
+    args.lowPriorityKernelTime = std::get<1>(GetParam());
     args.usePriorities = std::get<2>(GetParam());
     args.workgroupCount = std::get<3>(GetParam());
+    args.highPriorityKernelTime = std::get<4>(GetParam());
+    args.sleepTime = std::get<5>(GetParam());
 
     QueuePriorities test;
     test.run(args);
@@ -43,4 +45,6 @@ INSTANTIATE_TEST_SUITE_P(
         ::CommonGtestArgs::allApis(),
         ::testing::Values(1, 10, 100, 1000, 10000),
         ::testing::Values(false, true),
-        ::testing::Values(1, 10, 100, 1000, 10000)));
+        ::testing::Values(1, 10, 100, 1000, 10000),
+        ::testing::Values(1, 10, 100, 1000, 10000),
+        ::testing::Values(1, 10000)));
