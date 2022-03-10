@@ -86,10 +86,10 @@ static TestResult run(const QueuePrioritiesArguments &arguments, Statistics &sta
     size_t lws = 64u;
     // Warmup, kernel
     ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(lowPriorityQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
-    ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
+    ASSERT_CL_SUCCESS(clFinish(lowPriorityQueue));
     ASSERT_CL_SUCCESS(retVal);
     ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(highPriorityQueue, kernel, 1, nullptr, &gws, &lws, 0, nullptr, nullptr));
-    ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
+    ASSERT_CL_SUCCESS(clFinish(highPriorityQueue));
     ASSERT_CL_SUCCESS(retVal);
 
     //benchmark
