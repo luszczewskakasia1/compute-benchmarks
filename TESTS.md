@@ -95,6 +95,7 @@ WriteBufferRect|allocates an OpenCL buffer and measures rectangle write bandwidt
 Miscellaneous Benchmark is a set of tests measuring different simple compute scenarios.
 | Test name | Description | Params | L0 | OCL | SYCL |
 |-----------|-------------|--------|----|-----|------|
+KernelWithWork|measures time required to run a GPU kernel which assigns constant values to elements of a buffer. Each thread assigns one value. Benchmark checks the impact of kernel split.|<ul><li>--split How many times kernel is split)</li><li>--usedIds Which of the get_global_id() and get_local_id() calls will be used in the kernel (None or Global or Local or AtomicPerWkg)</li><li>--wgc Workgroup count</li><li>--wgs Workgroup size (aka local work size)</li></ul>|:x:|:heavy_check_mark:|:x:|
 Reduction|Performs a reduction operation on a buffer. Each thread performs atomic_add on one shared memory location.|<ul><li>--numberOfElements Number of elements that will be reduced</li></ul>|:x:|:heavy_check_mark:|:x:|
 Reduction2|Performs a reduction operation on a buffer. Each thread performs atomic_add on one shared memory location.|<ul><li>--numberOfElements Number of elements that will be reduced</li></ul>|:x:|:heavy_check_mark:|:x:|
 Reduction3|Performs a reduction operation on a buffer. Each thread performs atomic_add on one shared memory location.|<ul><li>--numberOfElements Number of elements that will be reduced</li></ul>|:x:|:heavy_check_mark:|:x:|
