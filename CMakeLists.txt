@@ -87,5 +87,15 @@ if(MSVC)
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 endif()
+
+# Compiler proxy for SYCL
+if(BUILD_SYCL)
+    find_package(SYCL)
+    if(SYCL_FOUND)
+        string(REPLACE "<CMAKE_CXX_COMPILER>" "${SYCL_PROXY} <CMAKE_CXX_COMPILER>" CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE}")
+        set(CMAKE_CXX_COMPILER_LAUNCHER "${SYCL_PROXY}")
+    endif()
+endif()
+
 add_subdirectory(source)
 set_directory_properties(PROPERTIES VS_STARTUP_PROJECT ulls_benchmark_ocl)

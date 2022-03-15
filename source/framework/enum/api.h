@@ -31,7 +31,7 @@ enum class Api {
     // Special values
     COUNT,
     FIRST = OpenCL,
-    LAST = L0,
+    LAST = SYCL,
     All = 0xffff,
 };
 

@@ -134,8 +134,8 @@ int main(int argc, char **argv) {
 
             outputFile << "# " << benchmark.baseName << '\n';
             outputFile << benchmark.description << '\n';
-            outputFile << "| Test name | Description | Params | L0 | OCL | SYCL |\n";
-            outputFile << "|-----------|-------------|--------|----|-----|------|\n";
+            outputFile << "| Test name | Description | Params | L0 | OCL |\n";
+            outputFile << "|-----------|-------------|--------|----|-----|\n";
             for (const auto &entry : benchmark.testCases) {
                 const TestCase &testCase = entry.second;
 
@@ -150,7 +150,6 @@ int main(int argc, char **argv) {
                 outputFile << "</ul>|";
                 outputFile << (testCase.apis.find(Api::L0) != testCase.apis.end() ? ":heavy_check_mark:" : ":x:") << '|';
                 outputFile << (testCase.apis.find(Api::OpenCL) != testCase.apis.end() ? ":heavy_check_mark:" : ":x:") << '|';
-                outputFile << (testCase.apis.find(Api::SYCL) != testCase.apis.end() ? ":heavy_check_mark:" : ":x:") << '|';
                 outputFile << '\n';
             }
             outputFile << "\n\n\n";

@@ -1,7 +1,9 @@
+#!/bin/env bash
+
 #
 # INTEL CONFIDENTIAL
 #
-# Copyright (C) 2019-2022 Intel Corporation
+# Copyright (C) 2022 Intel Corporation
 #
 # This software and the related documents are Intel copyrighted materials,
 # and your use of them is governed by the express license under which they were
@@ -13,11 +15,14 @@
 # implied warranties, other than those that are expressly stated in the License.
 #
 
-if (NOT BUILD_TOOLS)
-    return()
-endif()
+# substitute first argument with dpcpp
+# if the command line contains -fsycl,
+# otherwise run as is
 
-add_subdirectory(mutex_comparison)
-add_subdirectory(show_devices_ocl)
-add_subdirectory(show_devices_l0)
-add_subdirectory(show_devices_sycl)
+set -e
+
+if [[ " $@ " =~ .*\ -fsycl\ .* ]]; then
+    dpcpp "${@:2}"
+else
+    $@
+fi

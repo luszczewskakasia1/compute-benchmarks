@@ -13,11 +13,16 @@
 # implied warranties, other than those that are expressly stated in the License.
 #
 
-if (NOT BUILD_TOOLS)
+if (NOT BUILD_SYCL)
     return()
 endif()
 
-add_subdirectory(mutex_comparison)
-add_subdirectory(show_devices_ocl)
-add_subdirectory(show_devices_l0)
-add_subdirectory(show_devices_sycl)
+set(TARGET_NAME show_devices_sycl)
+add_executable(${TARGET_NAME} CMakeLists.txt)
+set_target_properties(${TARGET_NAME} PROPERTIES FOLDER tools)
+add_sources_to_benchmark(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(${TARGET_NAME} PRIVATE compute_benchmarks_framework_sycl)
+
+# Additional config
+setup_vs_folders(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
+setup_output_directory(${TARGET_NAME})

@@ -32,6 +32,28 @@ or:
 make memory_benchmark_ocl -j`nproc`
 ```
 
+### Building with SYCL support
+
+SYCL implementations of benchmarks will be built if the following conditions are met:
+
+* oneAPI is installed with support for DPC++;
+* the user has sourced the `setvars.sh` script prior to running CMake;
+* the CMake option `BUILD_SYCL` is set to `ON`;
+
+Note that building SYCL benchmarks is currently disabled on Windows because of a conflict between Visual C++ Runtime requirements of GoogleTest and DPC++. GoogleTest will not build if `/MD` (dynamically-linked runtime) is specified while DPC++ will produce an error if `/MT` (statically-linked runtime) is specified.
+
+#### Example
+
+```
+git clone https://github.com/intel-innersource/drivers.gpu.compute.benchmarks
+cd drivers.gpu.compute.benchmarks
+mkdir build
+cd build
+. /opt/intel/oneapi/setvars.sh
+cmake .. -DBUILD_SYCL=ON
+cmake --build . --config Release
+```
+
 ### Binary types
 Each benchmark suite can be built as a single-api binary or as a an all-api binary.
 - Single-api binaries are named like `ulls_benchmark_ocl` and do not load libraries from not used APIs. They are built by default and can be disabled by passing `-DBUILD_SINGLE_API_BINARIES=OFF` to CMake.

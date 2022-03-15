@@ -27,6 +27,7 @@ static TestResult run(const MatrixMultiplyArguments &arguments, Statistics &stat
     std::vector<int32_t> dataX(sizeInElements, 0);
     std::vector<int32_t> dataY(sizeInElements, 0);
     std::vector<int32_t> results(sizeInElements, 0);
+    std::vector<int32_t> resultsFromRun(sizeInElements, 0);
 
     const size_t gws[] = {arguments.numberOfElementsX, arguments.numberOfElementsY, arguments.numberOfElementsZ};
 
@@ -43,26 +44,41 @@ static TestResult run(const MatrixMultiplyArguments &arguments, Statistics &stat
         }
     }
 
-    sycl::default_selector device_selector;
-    sycl::queue queue(device_selector);
+    auto device = sycl::device{sycl::default_selector{}};
+    auto queueProperties = sycl::property_list{cl::sycl::property::queue::enable_profiling()};
+    sycl::queue queue(device, queueProperties);
     {
         sycl::buffer<int32_t, 3> dataXBuf(dataX.data(), sycl::range<3>{gws[0], gws[1], gws[2]});
         sycl::buffer<int32_t, 3> dataYBuf(dataY.data(), sycl::range<3>{gws[0], gws[1], gws[2]});
-        sycl::buffer<int32_t, 3> resultsBuf(results.data(), sycl::range<3>{gws[0], gws[1], gws[2]});
+        sycl::buffer<int32_t, 3> resultsBuf(resultsFromRun.data(), sycl::range<3>{gws[0], gws[1], gws[2]});
 
-        queue.submit(
-                 [&](sycl::handler &cgh) {
-                     auto dataXDev = dataXBuf.get_access<sycl::access_mode::read>(cgh);
-                     auto dataYDev = dataYBuf.get_access<sycl::access_mode::read>(cgh);
-                     auto resultsDev = resultsBuf.get_access<sycl::access_mode::discard_write>(cgh);
+        auto commandList = [&](sycl::handler &cgh) {
+            auto dataXDev = dataXBuf.get_access<sycl::access_mode::read>(cgh);
+            auto dataYDev = dataYBuf.get_access<sycl::access_mode::read>(cgh);
+            auto resultsDev = resultsBuf.get_access<sycl::access_mode::discard_write>(cgh);
 
-                     cgh.parallel_for<class MatrixMultiplyKernel>(
-                         sycl::nd_range<3>{sycl::range<3>{gws[0], gws[1], gws[2]}, sycl::range<3>{1u, 1u, 1u}},
-                         [=](sycl::nd_item<3> item) {
-                             resultsDev[item.get_offset()] = dataXDev[item.get_offset()] + dataYDev[item.get_offset()];
-                         });
-                 })
-            .wait();
+            cgh.parallel_for<class MatrixMultiplyKernel>(
+                sycl::range<3>{gws[0], gws[1], gws[2]},
+                [=](sycl::item<3> item) {
+                    resultsDev[item.get_id()] = dataXDev[item.get_id()] + dataYDev[item.get_id()];
+                });
+        };
+
+        // Warm-up
+        queue.submit(commandList).wait();
+
+        for (auto i = 0u; i < arguments.iterations; i++) {
+            auto profileEvent = queue.submit(commandList);
+            profileEvent.wait();
+            auto startTime = profileEvent.get_profiling_info<sycl::info::event_profiling::command_start>();
+            auto endTime = profileEvent.get_profiling_info<sycl::info::event_profiling::command_end>();
+            auto timeNs = endTime - startTime;
+
+            statistics.pushValue(std::chrono::nanoseconds{timeNs}, sizeInBytes * 3, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu, "bw");
+        }
+    }
+    if (!std::equal(std::begin(resultsFromRun), std::end(resultsFromRun), std::begin(results), std::end(results))) {
+        return TestResult::VerificationFail;
     }
 
     return TestResult::Success;
