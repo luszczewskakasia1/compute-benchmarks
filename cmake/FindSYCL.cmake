@@ -40,8 +40,7 @@ else()
     set(SYCL_CFLAGS "${SYCL_FLAGS}" CACHE STRING "SYCL Compiler Flags")
     set(SYCL_LFLAGS "${SYCL_CFLAGS} -lsycl" CACHE STRING "SYCL Linker Flags")
     set(SYCL_INCLUDE_DIR "${SYCL_INCLUDE_DIR}" CACHE PATH "SYCL Inlcude Directory")
-    
-    file(CHMOD "${CMAKE_SOURCE_DIR}/scripts/dpcpp-proxy.sh" PERMISSIONS OWNER_EXECUTE OWNER_READ OWNER_WRITE)
+
     set(SYCL_PROXY "${CMAKE_SOURCE_DIR}/scripts/dpcpp-proxy.sh" CACHE STRING "SYCL Compiler Proxy")
 endif()
 
