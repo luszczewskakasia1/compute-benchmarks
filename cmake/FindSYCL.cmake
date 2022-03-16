@@ -26,6 +26,9 @@ set(_CXX_COMPILER_ID ${CMAKE_CXX_COMPILER_ID})
 set(CMAKE_CXX_COMPILER "dpcpp")
 set(CMAKE_CXX_COMPILER_ID "IntelLLVM")
 
+set(SYCL_INCLUDE_DIR ${INTEL_COMPILER_ROOT}/linux/include)
+set(SYCL_LIBRARY_DIR ${INTEL_COMPILER_ROOT}/linux/lib)
+
 find_package(IntelDPCPP) 
 if(NOT ${IntelDPCPP_FOUND})
     message(WARNING "Intel DPCPP installation not found")
