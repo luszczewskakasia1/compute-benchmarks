@@ -25,7 +25,12 @@
 #include <thread>
 
 void enqueueSvmCopy(cl_command_queue queue, void *src, void *dst, size_t size, std::shared_mutex *barrier, pfn_clEnqueueMemcpyINTEL clEnqueueMemcpyINTEL) {
+    //warmup
+    clEnqueueMemcpyINTEL(queue, CL_FALSE, dst, src, size, 0, nullptr, nullptr);
+    clFinish(queue);
+
     std::shared_lock sharedLock(*barrier);
+    //benchmark
     clEnqueueMemcpyINTEL(queue, CL_FALSE, dst, src, size, 0, nullptr, nullptr);
     clFinish(queue);
 }
@@ -57,7 +62,7 @@ static TestResult run(const SvmCopyArguments &arguments, Statistics &statistics)
     }
 
     // Create buffers
-    const size_t bufferForCopySize = 1024 * 1024;
+    const size_t bufferForCopySize = 64 * 1024;
     std::vector<UsmHelperOcl::Alloc> srcAllocs;
     std::vector<UsmHelperOcl::Alloc> dstAllocs;
     for (auto i = 0u; i < arguments.numberOfThreads; i++) {
