@@ -24,5 +24,5 @@ set -e
 if [[ " $@ " =~ .*\ -fsycl\ .* ]]; then
     dpcpp "${@:2}"
 else
-    $@
+    "$@"
 fi
