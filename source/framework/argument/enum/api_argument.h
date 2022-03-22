@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -28,6 +28,6 @@ struct ApiArgument : EnumArgument<ApiArgument, Api> {
 
     const static inline std::string enumName = "api";
     const static inline EnumType invalidEnumValue = EnumType::Unknown;
-    const static inline EnumType enumValues[3] = {EnumType::OpenCL, EnumType::L0, EnumType::All};
-    const static inline std::string enumValuesNames[3] = {"ocl", "l0", "all"};
+    const static inline EnumType enumValues[4] = {EnumType::OpenCL, EnumType::L0, EnumType::SYCL, EnumType::All};
+    const static inline std::string enumValuesNames[4] = {"ocl", "l0", "sycl", "all"};
 };
