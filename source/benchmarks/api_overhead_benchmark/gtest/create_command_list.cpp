@@ -21,13 +21,14 @@
 
 static const inline RegisterTestCase<CreateCommandList> registerTestCase{};
 
-class CreateCommandListTest : public ::testing::TestWithParam<size_t> {
+class CreateCommandListTest : public ::testing::TestWithParam<std::tuple<size_t, bool>> {
 };
 
 TEST_P(CreateCommandListTest, Test) {
     CreateCommandListArguments args{};
     args.api = Api::L0;
-    args.cmdListCount = GetParam();
+    args.cmdListCount = std::get<0>(GetParam());
+    args.copyOnly = std::get<1>(GetParam());
     CreateCommandList test;
     test.run(args);
 }
@@ -35,4 +36,6 @@ TEST_P(CreateCommandListTest, Test) {
 INSTANTIATE_TEST_SUITE_P(
     CreateCommandListTest,
     CreateCommandListTest,
-    ::testing::Values(1, 10, 100, 1000));
+    ::testing::Combine(
+        ::testing::Values(1, 10, 100),
+        ::testing::Values(false, true)));

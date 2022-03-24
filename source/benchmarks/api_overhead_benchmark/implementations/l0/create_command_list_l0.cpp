@@ -23,7 +23,11 @@
 
 static TestResult run(const CreateCommandListArguments &arguments, Statistics &statistics) {
     // Setup
-    LevelZero levelzero;
+    QueueProperties queueProperties = QueueProperties::create().setForceBlitter(arguments.copyOnly).allowCreationFail();
+    LevelZero levelzero(queueProperties);
+    if (nullptr == levelzero.commandQueue) {
+        return TestResult::DeviceNotCapable;
+    }
     Timer timer;
 
     // Warmup

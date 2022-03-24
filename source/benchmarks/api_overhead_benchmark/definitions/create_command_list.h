@@ -20,9 +20,11 @@
 
 struct CreateCommandListArguments : TestCaseArgumentContainer {
     PositiveIntegerArgument cmdListCount;
+    BooleanArgument copyOnly;
 
     CreateCommandListArguments()
-        : cmdListCount(*this, "CmdListCount", "Number of cmdlists to create") {}
+        : cmdListCount(*this, "CmdListCount", "Number of cmdlists to create"),
+          copyOnly(*this, "CopyOnly", "Create copy only cmdlist") {}
 };
 
 struct CreateCommandList : TestCase<CreateCommandListArguments> {

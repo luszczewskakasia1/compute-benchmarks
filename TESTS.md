@@ -3,7 +3,7 @@ Api Overhead Benchmark is a set of tests aimed at measuring CPU-side execution d
 | Test name | Description | Params | L0 | OCL |
 |-----------|-------------|--------|----|-----|
 AppendLaunchKernel|measures time spent in zeCommandListAppendLaunchKernel on CPU.|<ul><li>--event Pass output event to the enqueue call (0 or 1)</li><li>--wgc Workgroup count</li><li>--wgs Workgroup size, pass 0 to make the driver calculate it during enqueue</li></ul>|:heavy_check_mark:|:x:|
-CreateCommandList|measures time spent in zeCommandListCreate on CPU.|<ul><li>--CmdListCount Number of cmdlists to create</li></ul>|:heavy_check_mark:|:x:|
+CreateCommandList|measures time spent in zeCommandListCreate on CPU.|<ul><li>--CmdListCount Number of cmdlists to create</li><li>--CopyOnly Create copy only cmdlist (0 or 1)</li></ul>|:heavy_check_mark:|:x:|
 CreateCommandListImmediate|measures time spent in zeCommandListCreateImmediate on CPU.|<ul><li>--CmdListCount Number of cmdlists to create</li></ul>|:heavy_check_mark:|:x:|
 DestroyCommandList|measures time spent in zeCommandListDestroy on CPU.|<ul><li>--CmdListCount Number of cmdlists to destroy</li></ul>|:heavy_check_mark:|:x:|
 DestroyCommandListImmediate|measures time spent in zeCommandListDestroy on CPU, for immediate cmdlist.|<ul><li>--CmdListCount Number of immediate cmdlists to create</li></ul>|:heavy_check_mark:|:x:|
