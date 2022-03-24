@@ -22,7 +22,13 @@
 #include "data_types.h"
 #include "helpers.h"
 
+#if __has_include(<filesystem>)
 #include <filesystem>
+namespace FileSystem = std::filesystem;
+#else
+#include <experimental/filesystem>
+namespace FileSystem = std::experimental::filesystem;
+#endif
 
 int main(int argc, char **argv) {
     // Parse command-line arguments
@@ -115,7 +121,7 @@ int main(int argc, char **argv) {
     // Generate Markdown code (with embedded HTML)
     std::cerr << "Outputting documentation in Markdown format\n";
     for (const auto &location : locations) {
-        std::filesystem::path filePath(static_cast<const std::string &>(path));
+        FileSystem::path filePath(static_cast<const std::string &>(path));
         if (location.size() > 0) {
             filePath.append(location);
         }

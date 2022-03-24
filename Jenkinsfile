@@ -19,6 +19,6 @@
  */
 
 buildConfig = [
-	'master-build': ['gcc8', 'gcc9', 'gcc10'],
-	'master-gate': ['gcc8', 'gcc9', 'gcc10'],
+	'master-build': ['gcc7', 'gcc8', 'gcc9', 'gcc10'],
+	'master-gate': ['gcc7', 'gcc8', 'gcc9', 'gcc10'],
 ]
