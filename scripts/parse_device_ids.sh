@@ -32,8 +32,6 @@ declare -A order=(
     [Dg2]=15
     [Mtl]=16
     [Pvc]=17
-    [Elg]=18
-    [Lnl]=19
 )
 
 function add_device_index() (
