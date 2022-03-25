@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -18,4 +18,3 @@
 #define CL_TARGET_OPENCL_VERSION 220
 #include <CL/cl.h>
 #include <CL/intel/cl_ext_private.h>
-#include <CL/intel/embargo/cl_ext_private_internal.h>

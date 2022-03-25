@@ -30,7 +30,6 @@ declare -A order=(
     [Tgllp]=13
     [Xehp]=14
     [Dg2]=15
-    [Mtl]=16
     [Pvc]=17
 )
 

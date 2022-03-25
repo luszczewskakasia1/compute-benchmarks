@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -29,15 +29,7 @@ class QueueFamiliesHelper {
         cl_uint propertiesCount;
     };
 
-    static inline std::unique_ptr<PropertiesForSelectingQueue> getPropertiesForSelectingEngine(cl_device_id device, Engine engine, bool useLegacy) {
-        if (useLegacy) {
-            return getPropertiesForSelectingEngineLegacy(engine);
-        } else {
-            return getPropertiesForSelectingEngineNew(device, engine);
-        }
-    }
-
-    static inline std::unique_ptr<PropertiesForSelectingQueue> getPropertiesForSelectingEngineNew(cl_device_id device, Engine engine) {
+    static inline std::unique_ptr<PropertiesForSelectingQueue> getPropertiesForSelectingEngine(cl_device_id device, Engine engine) {
         const EngineGroup engineGroup = EngineHelper::getEngineGroup(engine);
         const size_t engineIndex = EngineHelper::getEngineIndexWithinGroup(engine);
 
@@ -59,38 +51,6 @@ class QueueFamiliesHelper {
             return result;
         }
         return nullptr;
-    }
-
-    static inline std::unique_ptr<PropertiesForSelectingQueue> getPropertiesForSelectingEngineLegacy(Engine engine) {
-        cl_queue_properties selectionProperty{};
-        switch (engine) {
-        case Engine::Rcs:
-            selectionProperty = CL_QUEUE_FAMILY_TYPE_RCS_DEPRECATED_INTEL;
-            break;
-        case Engine::Ccs0:
-            selectionProperty = CL_QUEUE_FAMILY_TYPE_CCS0_DEPRECATED_INTEL;
-            break;
-        case Engine::Ccs1:
-            selectionProperty = CL_QUEUE_FAMILY_TYPE_CCS1_DEPRECATED_INTEL;
-            break;
-        case Engine::Ccs2:
-            selectionProperty = CL_QUEUE_FAMILY_TYPE_CCS2_DEPRECATED_INTEL;
-            break;
-        case Engine::Ccs3:
-            selectionProperty = CL_QUEUE_FAMILY_TYPE_CCS3_DEPRECATED_INTEL;
-            break;
-        case Engine::Bcs:
-            selectionProperty = CL_QUEUE_FAMILY_TYPE_BCS_DEPRECATED_INTEL;
-            break;
-        default:
-            return nullptr;
-        }
-
-        auto result = std::make_unique<PropertiesForSelectingQueue>();
-        result->properties[0] = CL_QUEUE_FAMILY_DEPRECATED_INTEL;
-        result->properties[1] = selectionProperty;
-        result->propertiesCount = 2;
-        return result;
     }
 
     static bool validateCapability(cl_command_queue queue, cl_command_queue_capabilities_intel capability) {

@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -13,10 +13,6 @@
  * implied warranties, other than those that are expressly stated in the License.
  */
 
-// Sync this file with device IDs from shared/source/dll/devices/ in NEO directory and update version below.
-// It is recommended to use scripts/parse_device_ids.sh script for that
-// Last synced with: ci-neo-020535
-
 // clang-format off
 #ifdef INTEL_GEN
     INTEL_GEN(Unknown)
@@ -27,7 +23,6 @@
     INTEL_GEN(XeHpCore)
     INTEL_GEN(Gen12_7)
     INTEL_GEN(Gen12_8)
-    INTEL_GEN(Gen12_9)
 #endif
 
 #ifdef INTEL_PRODUCT
@@ -54,12 +49,8 @@
     INTEL_PRODUCT(Xehp,     XeHpCore)
 
     INTEL_PRODUCT(Dg2,      Gen12_7)
-    INTEL_PRODUCT(Mtl,      Gen12_7)
 
     INTEL_PRODUCT(Pvc,      Gen12_8)
-
-    INTEL_PRODUCT(Elg,  Gen12_9)
-    INTEL_PRODUCT(Lnl,  Gen12_9)
 #endif
 
 #ifdef INTEL_PRODUCT_ID
@@ -259,7 +250,6 @@
     INTEL_PRODUCT_ID(0x4F88, Dg2)
     INTEL_PRODUCT_ID(0x56C0, Dg2)
     INTEL_PRODUCT_ID(0x56C1, Dg2)
-    INTEL_PRODUCT_ID(0x7D40, Mtl)
     INTEL_PRODUCT_ID(0x0BD0, Pvc)
     INTEL_PRODUCT_ID(0x0BD5, Pvc)
     INTEL_PRODUCT_ID(0x0BD6, Pvc)
@@ -268,7 +258,5 @@
     INTEL_PRODUCT_ID(0x0BE0, Pvc)
     INTEL_PRODUCT_ID(0x0BE1, Pvc)
     INTEL_PRODUCT_ID(0x0BE5, Pvc)
-    INTEL_PRODUCT_ID(0xE201, Elg)
-    INTEL_PRODUCT_ID(0x6480, Lnl)
 #endif
 // clang-format on

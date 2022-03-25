@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -27,7 +27,6 @@ struct QueueProperties {
     bool requireCreationSuccess = true;
     bool profiling = false;
     Engine selectedEngine = Engine::Unknown;
-    bool useLegacyEngineSelection = false;
     int ooq = -1;
     DeviceSelection deviceSelection = DeviceSelection::Unknown;
 
@@ -48,11 +47,6 @@ struct QueueProperties {
 
     QueueProperties &setForceEngine(Engine engine) {
         this->selectedEngine = engine;
-        return *this;
-    }
-
-    QueueProperties &setUseLegacyEngineSelection(bool useLegacy) {
-        this->useLegacyEngineSelection = useLegacy;
         return *this;
     }
 
@@ -88,7 +82,7 @@ struct QueueProperties {
             properties[1] |= CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
         }
         if (this->selectedEngine != Engine::Unknown) {
-            const auto propertiesForBlitter = QueueFamiliesHelper::getPropertiesForSelectingEngine(device, this->selectedEngine, this->useLegacyEngineSelection);
+            const auto propertiesForBlitter = QueueFamiliesHelper::getPropertiesForSelectingEngine(device, this->selectedEngine);
             if (propertiesForBlitter == nullptr) {
                 return false;
             }

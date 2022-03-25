@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -97,24 +97,10 @@ cl_command_queue Opencl::createQueue(QueueProperties queueProperties) {
     cl_int retVal{};
     cl_command_queue queue{};
     cl_queue_properties properties[maxPropertiesCount] = {};
-    const bool needsQueueSelection = queueProperties.selectedEngine != Engine::Unknown;
-
-    // Force legacy path, if the new path is not supported
-    if (needsQueueSelection && !getExtensions().isCommandQueueFamiliesSupported()) {
-        queueProperties.setUseLegacyEngineSelection(true);
-    }
 
     // Create queue
     if (queueProperties.fillQueueProperties(deviceForQueue, properties, maxPropertiesCount)) {
         queue = clCreateCommandQueueWithProperties(this->context, deviceForQueue, properties, &retVal);
-    }
-
-    // If family selection with cl_intel_queue_families failed, try the legacy path
-    if (queue == nullptr && needsQueueSelection && !queueProperties.useLegacyEngineSelection) {
-        queueProperties.setUseLegacyEngineSelection(true);
-        if (queueProperties.fillQueueProperties(deviceForQueue, properties, maxPropertiesCount)) {
-            queue = clCreateCommandQueueWithProperties(this->context, deviceForQueue, properties, &retVal);
-        }
     }
 
     if (queueProperties.requireCreationSuccess) {

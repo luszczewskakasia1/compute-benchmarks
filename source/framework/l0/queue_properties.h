@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -52,7 +52,7 @@ struct QueueProperties {
     }
 
     QueueProperties &setDeviceSelection(DeviceSelection newValue) {
-        FATAL_ERROR_IF(DeviceSelectionHelper::hasHost(newValue), "Canno create queue on host device");
+        FATAL_ERROR_IF(DeviceSelectionHelper::hasHost(newValue), "Cannot create queue on host device");
         FATAL_ERROR_UNLESS(DeviceSelectionHelper::hasSingleDevice(newValue), "Queue can be created only on a single device");
         this->deviceSelection = newValue;
         return *this;

@@ -7,6 +7,7 @@
 
 #pragma once
 #include "CL/cl.h"
+
 #include <CL/cl_ext.h>
 
 /**********************************
@@ -224,8 +225,16 @@ typedef cl_uint cl_resource_barrier_type;
 #define CL_RESOURCE_BARRIER_TYPE_DISCARD 0x3 // DISCARD
 
 typedef cl_uint cl_resource_memory_scope;
-#define CL_MEMORY_SCOPE_DEVICE 0x0 // INCLUDES CROSS-TILE
+#define CL_MEMORY_SCOPE_DEVICE 0x0          // INCLUDES CROSS-TILE
 #define CL_MEMORY_SCOPE_ALL_SVM_DEVICES 0x1 // CL_MEMORY_SCOPE_DEVICE + CROSS-DEVICE
+
+/************************************************
+*   cl_intel_mem_compression_hints extension    *
+*************************************************/
+#define CL_MEM_COMPRESSED_HINT_INTEL (1u << 21)
+#define CL_MEM_UNCOMPRESSED_HINT_INTEL (1u << 22)
+
+#define CL_MEM_DEVICE_ID_INTEL 0x10011
 
 #pragma pack(push, 1)
 typedef struct _cl_resource_barrier_descriptor_intel {

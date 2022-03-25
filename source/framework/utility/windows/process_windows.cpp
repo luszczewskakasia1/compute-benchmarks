@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -215,7 +215,7 @@ const std::string &Process::getStdout() {
 }
 
 const std::string &Process::getMeasurements() {
-    return getStdout(); // TODO: we should be creating a separate pipe. Refer to Linux implementation.
+    return getStdout();
 }
 
 void Process::synchronizationSignal() {
