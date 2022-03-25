@@ -46,11 +46,12 @@ static TestResult run(const MatrixMultiplyArguments &arguments, Statistics &stat
 
     auto device = sycl::device{sycl::default_selector{}};
     auto queueProperties = sycl::property_list{cl::sycl::property::queue::enable_profiling()};
+    const size_t totalElements = gws[0] * gws[1] * gws[2];
     sycl::queue queue(device, queueProperties);
     {
-        sycl::buffer<int32_t, 3> dataXBuf(dataX.data(), sycl::range<3>{gws[0], gws[1], gws[2]});
-        sycl::buffer<int32_t, 3> dataYBuf(dataY.data(), sycl::range<3>{gws[0], gws[1], gws[2]});
-        sycl::buffer<int32_t, 3> resultsBuf(resultsFromRun.data(), sycl::range<3>{gws[0], gws[1], gws[2]});
+        sycl::buffer<int32_t, 1> dataXBuf(dataX.data(), sycl::range<1>{totalElements});
+        sycl::buffer<int32_t, 1> dataYBuf(dataY.data(), sycl::range<1>{totalElements});
+        sycl::buffer<int32_t, 1> resultsBuf(resultsFromRun.data(), sycl::range<1>{totalElements});
 
         auto commandList = [&](sycl::handler &cgh) {
             auto dataXDev = dataXBuf.get_access<sycl::access_mode::read>(cgh);
@@ -58,8 +59,8 @@ static TestResult run(const MatrixMultiplyArguments &arguments, Statistics &stat
             auto resultsDev = resultsBuf.get_access<sycl::access_mode::discard_write>(cgh);
 
             cgh.parallel_for<class MatrixMultiplyKernel>(
-                sycl::range<3>{gws[0], gws[1], gws[2]},
-                [=](sycl::item<3> item) {
+                sycl::range<1>{totalElements},
+                [=](sycl::item<1> item) {
                     resultsDev[item.get_id()] = dataXDev[item.get_id()] + dataYDev[item.get_id()];
                 });
         };
