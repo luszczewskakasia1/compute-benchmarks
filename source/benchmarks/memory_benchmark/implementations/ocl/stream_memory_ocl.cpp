@@ -36,9 +36,9 @@ static TestResult run(const StreamMemoryArguments &arguments, Statistics &statis
     Timer timer;
     bool useDoubles = opencl.getExtensions().areDoublesSupported();
 
-    const size_t elementSize = useDoubles ? 8u : 4u;
+    size_t elementSize = useDoubles ? 8u : 4u;
     const size_t fillValue = 313u;
-    const int32_t scalarValue = -999;
+    const int64_t scalarValue = -999;
     const bool printBuildInfo = true;
 
     // Create kernel-specific buffers
@@ -58,6 +58,7 @@ static TestResult run(const StreamMemoryArguments &arguments, Statistics &statis
         break;
     case StreamMemoryType::Stream_3BytesRGBtoY:
     case StreamMemoryType::Stream_3BytesAlignedRGBtoY:
+        elementSize = 4u;
         buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, bufferSize, nullptr, &retVal);
         bufferSizes[buffersCount] = bufferSize / reduction;
         buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, bufferSize / reduction, nullptr, &retVal);
@@ -107,7 +108,8 @@ static TestResult run(const StreamMemoryArguments &arguments, Statistics &statis
         ASSERT_CL_SUCCESS(clEnqueueFillBuffer(opencl.commandQueue, buffers[i], &fillValue, sizeof(fillValue), 0, bufferSizes[i], 0, nullptr, nullptr));
         ASSERT_CL_SUCCESS(clSetKernelArg(kernel, static_cast<cl_uint>(i), sizeof(buffers[i]), &buffers[i]))
     }
-    ASSERT_CL_SUCCESS(clSetKernelArg(kernel, static_cast<cl_uint>(buffersCount), sizeof(scalarValue), &scalarValue));
+
+    ASSERT_CL_SUCCESS(clSetKernelArg(kernel, static_cast<cl_uint>(buffersCount), elementSize, &scalarValue));
 
     // Query preferred work group size
     size_t preferredWorkGroupSizeMultiple = {};
