@@ -45,7 +45,7 @@ Note that building SYCL benchmarks is currently only supported on Linux.
 #### Example
 
 ```
-git clone https://github.com/intel-innersource/drivers.gpu.compute.benchmarks
+git clone --recurse-submodules https://github.com/drivers.gpu.compute.benchmarks
 cd drivers.gpu.compute.benchmarks
 mkdir build
 cd build
