@@ -22,8 +22,6 @@
 
 #include <gtest/gtest.h>
 
-#define PROVIDE_PROFLING_DETAILS 0
-
 static TestResult run(const KernelSwitchLatencyArguments &arguments, Statistics &statistics) {
     // Setup
     QueueProperties queueProperties = QueueProperties::create().setProfiling(true);
