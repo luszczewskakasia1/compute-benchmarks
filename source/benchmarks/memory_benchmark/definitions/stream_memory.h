@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -24,11 +24,13 @@ struct StreamMemoryArguments : TestCaseArgumentContainer {
     StreamMemoryTypeArgument type;
     ByteSizeArgument size;
     BooleanArgument useEvents;
+    BooleanArgument l0UseImmediateCommandLists;
 
     StreamMemoryArguments()
         : type(*this, "type", "Memory streaming type"),
           size(*this, "size", "Size of the memory to stream. Must be divisible by datatype size."),
-          useEvents(*this, "useEvents", CommonHelpMessage::useEvents()) {}
+          useEvents(*this, "useEvents", CommonHelpMessage::useEvents()),
+          l0UseImmediateCommandLists(*this, "l0UseImmediateCommandLists", "Use immediate command lists in Level Zero implementation") {}
 };
 
 struct StreamMemory : TestCase<StreamMemoryArguments> {

@@ -29,6 +29,10 @@
 using namespace MemoryConstants;
 
 static TestResult run(const StreamMemoryArguments &arguments, Statistics &statistics) {
+    if (arguments.l0UseImmediateCommandLists == true) {
+        return TestResult::ApiNotCapable;
+    }
+
     // Setup
     cl_int retVal = {};
     QueueProperties queueProperties = QueueProperties::create().setProfiling(true).setOoq(0);

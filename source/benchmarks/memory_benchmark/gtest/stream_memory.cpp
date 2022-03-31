@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -23,7 +23,7 @@
 
 static const inline RegisterTestCase<StreamMemory> registerTestCase{};
 
-class StreamMemoryTest : public ::testing::TestWithParam<std::tuple<Api, StreamMemoryType, size_t, bool>> {
+class StreamMemoryTest : public ::testing::TestWithParam<std::tuple<Api, StreamMemoryType, size_t, bool, bool>> {
 };
 
 TEST_P(StreamMemoryTest, Test) {
@@ -32,6 +32,7 @@ TEST_P(StreamMemoryTest, Test) {
     args.type = std::get<1>(GetParam());
     args.size = std::get<2>(GetParam());
     args.useEvents = std::get<3>(GetParam());
+    args.l0UseImmediateCommandLists = std::get<4>(GetParam());
 
     StreamMemory test;
     test.run(args);
@@ -45,4 +46,5 @@ INSTANTIATE_TEST_SUITE_P(
         ::CommonGtestArgs::allApis(),
         ::testing::ValuesIn(StreamMemoryTypeArgument::enumValues),
         ::testing::Values(1 * megaByte, 8 * megaByte, 16 * megaByte, 32 * megaByte, 64 * megaByte, 128 * megaByte, 256 * megaByte, 512 * megaByte, 1 * gigaByte),
+        ::testing::Values(false, true),
         ::testing::Values(false, true)));
