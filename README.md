@@ -16,7 +16,7 @@ Answers to frequently asked questions and common problems can be found in [FAQ.m
 ### Run CMake and compile
 Build the benchmark as any other CMake project. Example command sequence:
 ```
-git clone https://github.com/intel-innersource/drivers.gpu.compute.benchmarks
+//clone repo
 cd drivers.gpu.compute.benchmarks
 mkdir build
 cd build
@@ -40,7 +40,7 @@ SYCL implementations of benchmarks will be built if the following conditions are
 * the user has sourced the `setvars.sh` script prior to running CMake;
 * the CMake option `BUILD_SYCL` is set to `ON`;
 
-Note that building SYCL benchmarks is currently disabled on Windows because of a conflict between Visual C++ Runtime requirements of GoogleTest and DPC++. GoogleTest will not build if `/MD` (dynamically-linked runtime) is specified while DPC++ will produce an error if `/MT` (statically-linked runtime) is specified.
+Note that building SYCL benchmarks is currently only supported on Linux.
 
 #### Example
 
