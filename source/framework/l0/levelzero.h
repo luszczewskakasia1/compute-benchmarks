@@ -87,6 +87,13 @@ struct LevelZero {
         EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetProperties(deviceHandle, &deviceProperties));
         return deviceProperties;
     }
+    ze_device_compute_properties_t getDeviceComputeProperties() const { return getDeviceComputeProperties(this->device); }
+    ze_device_compute_properties_t getDeviceComputeProperties(DeviceSelection deviceSelection) const { return getDeviceComputeProperties(getDevice(deviceSelection)); }
+    ze_device_compute_properties_t getDeviceComputeProperties(ze_device_handle_t deviceHandle) const {
+        ze_device_compute_properties_t deviceComputeProperties{ZE_STRUCTURE_TYPE_DEVICE_COMPUTE_PROPERTIES};
+        EXPECT_ZE_RESULT_SUCCESS(zeDeviceGetComputeProperties(deviceHandle, &deviceComputeProperties));
+        return deviceComputeProperties;
+    }
     uint64_t getTimerResoultion(DeviceSelection deviceSelection) const { return getDeviceProperties(deviceSelection).timerResolution; }
     uint64_t getTimerResoultion(ze_device_handle_t deviceHandle) const { return getDeviceProperties(deviceHandle).timerResolution; }
 

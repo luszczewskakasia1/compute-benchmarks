@@ -111,11 +111,8 @@ static TestResult run(const StreamMemoryArguments &arguments, Statistics &statis
     // Create kernel
     ASSERT_ZE_RESULT_SUCCESS(zeKernelCreate(module, &kernelDesc, &kernel));
 
-    // Query preferred group size
-    ze_kernel_preferred_group_size_properties_t kernelPreferredGroupSizeProperties = {ZE_STRUCTURE_TYPE_KERNEL_PREFERRED_GROUP_SIZE_PROPERTIES};
-    ze_kernel_properties_t kernelProperties = {ZE_STRUCTURE_TYPE_KERNEL_PROPERTIES, &kernelPreferredGroupSizeProperties};
-    ASSERT_ZE_RESULT_SUCCESS(zeKernelGetProperties(kernel, &kernelProperties));
-    const uint32_t groupSizeX = kernelPreferredGroupSizeProperties.preferredMultiple;
+    // Query maximum group size
+    const uint32_t groupSizeX = levelzero.getDeviceComputeProperties().maxGroupSizeX;
 
     // Configure kernel group size
     ASSERT_ZE_RESULT_SUCCESS(zeKernelSetGroupSize(kernel, groupSizeX, 1u, 1u));
