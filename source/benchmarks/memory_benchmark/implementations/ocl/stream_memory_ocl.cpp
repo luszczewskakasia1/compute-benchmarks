@@ -111,13 +111,13 @@ static TestResult run(const StreamMemoryArguments &arguments, Statistics &statis
 
     ASSERT_CL_SUCCESS(clSetKernelArg(kernel, static_cast<cl_uint>(buffersCount), elementSize, &scalarValue));
 
-    // Query preferred work group size
-    size_t preferredWorkGroupSizeMultiple = {};
-    clGetKernelWorkGroupInfo(kernel, opencl.device, CL_KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE, sizeof(preferredWorkGroupSizeMultiple), &preferredWorkGroupSizeMultiple, nullptr);
+    // Query max workgroup size
+    size_t maxWorkgroupSize = {};
+    clGetDeviceInfo(opencl.device, CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(maxWorkgroupSize), &maxWorkgroupSize, nullptr);
 
     // Warm up
     const size_t globalWorkSize = arguments.size / elementSize;
-    const size_t localWorkSize = preferredWorkGroupSizeMultiple;
+    const size_t localWorkSize = maxWorkgroupSize;
     ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(opencl.commandQueue, kernel, 1, nullptr, &globalWorkSize, &localWorkSize, 0, nullptr, nullptr));
     ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
 
