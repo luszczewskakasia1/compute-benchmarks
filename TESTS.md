@@ -21,6 +21,7 @@ FlushTime|measures time spent in clEnqueueNDRangeKernel on CPU.|<ul><li>--event 
 KernelSetArgumentValueImmediate|measures time spent in zeKernelSetArgumentValue for immediate arguments on CPU.|<ul><li>--argSize Kernel argument size in bytes</li></ul>|:heavy_check_mark:|:x:|
 LifecycleCommandList|measures time spent in zeCommandListCreate + Close + Execute on CPU.|<ul><li>--CmdListCount Number of cmdlists to create</li><li>--CopyOnly Create copy only cmdlist (0 or 1)</li></ul>|:heavy_check_mark:|:x:|
 SetKernelArgSvmPointer|measures time spent in clSetKernelArgSVMPointer on CPU.|<ul><li>--allocationSize Size of svm allocations, in bytes</li><li>--allocationsCount Number of allocations</li><li>--reallocate Allocations will be freed and allocated again between setKernelArgs (0 or 1)</li></ul>|:heavy_check_mark:|:heavy_check_mark:|
+UsmMemoryAllocation|measures time spent in USM memory allocation APIs.|<ul><li>--size Size to allocate</li><li>--type Type of memory being allocated (Device or Host or Shared)</li></ul>|:heavy_check_mark:|:x:|
 
 
 

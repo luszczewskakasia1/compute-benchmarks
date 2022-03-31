@@ -1,0 +1,33 @@
+/*
+ * INTEL CONFIDENTIAL
+ *
+ * Copyright (C) 2022 Intel Corporation
+ *
+ * This software and the related documents are Intel copyrighted materials,
+ * and your use of them is governed by the express license under which they were
+ * provided to you ("License"). Unless the License provides otherwise,
+ * you may not use, modify, copy, publish, distribute, disclose or transmit this
+ * software or the related documents without Intel's prior written permission.
+ *
+ * This software and the related documents are provided as is, with no express or
+ * implied warranties, other than those that are expressly stated in the License.
+ */
+
+#pragma once
+
+#include "framework/argument/abstract/enum_argument.h"
+#include "framework/enum/usm_runtime_memory_placement.h"
+
+struct UsmRuntimeMemoryPlacementArgument : EnumArgument<UsmRuntimeMemoryPlacementArgument, UsmRuntimeMemoryPlacement> {
+    using EnumArgument::EnumArgument;
+    ThisType &operator=(EnumType newValue) {
+        this->value = newValue;
+        markAsParsed();
+        return *this;
+    }
+
+    const static inline std::string enumName = "memory placement";
+    const static inline EnumType invalidEnumValue = EnumType::Unknown;
+    const static inline EnumType enumValues[3] = {EnumType::Device, EnumType::Host, EnumType::Shared};
+    const static inline std::string enumValuesNames[3] = {"Device", "Host", "Shared"};
+};

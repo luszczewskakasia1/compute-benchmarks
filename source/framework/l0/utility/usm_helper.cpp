@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -38,6 +38,24 @@ ze_result_t allocate(UsmMemoryPlacement placement, LevelZero &levelZero, size_t 
     default:
         FATAL_ERROR("Unknown placement");
     }
+}
+
+ze_result_t allocate(UsmRuntimeMemoryPlacement runtimePlacement, LevelZero &levelZero, size_t size, void **buffer) {
+    UsmMemoryPlacement placement{};
+    switch (runtimePlacement) {
+    case UsmRuntimeMemoryPlacement::Device:
+        placement = UsmMemoryPlacement::Device;
+        break;
+    case UsmRuntimeMemoryPlacement::Host:
+        placement = UsmMemoryPlacement::Host;
+        break;
+    case UsmRuntimeMemoryPlacement::Shared:
+        placement = UsmMemoryPlacement::Shared;
+        break;
+    default:
+        FATAL_ERROR("Unknown placement");
+    }
+    return allocate(placement, levelZero, size, buffer);
 }
 
 ze_result_t deallocate(UsmMemoryPlacement placement, LevelZero &levelZero, void *buffer) {

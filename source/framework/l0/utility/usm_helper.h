@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -17,11 +17,14 @@
 
 #include "framework/enum/device_selection.h"
 #include "framework/enum/usm_memory_placement.h"
+#include "framework/enum/usm_runtime_memory_placement.h"
 #include "framework/l0/levelzero.h"
 
 namespace L0::UsmHelper {
 
 ze_result_t allocate(UsmMemoryPlacement placement, LevelZero &levelZero, size_t size, void **buffer);
+
+ze_result_t allocate(UsmRuntimeMemoryPlacement runtimePlacement, LevelZero &levelZero, size_t size, void **buffer);
 
 ze_result_t deallocate(UsmMemoryPlacement placement, LevelZero &levelZero, void *buffer);
 
