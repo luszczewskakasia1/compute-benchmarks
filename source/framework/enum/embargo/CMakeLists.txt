@@ -1,7 +1,7 @@
 #
 # INTEL CONFIDENTIAL
 #
-# Copyright (C) 2019-2022 Intel Corporation
+# Copyright (C) 2022 Intel Corporation
 #
 # This software and the related documents are Intel copyrighted materials,
 # and your use of them is governed by the express license under which they were
@@ -15,4 +15,3 @@
 
 file(GLOB SOURCES *.cpp *.h)
 target_sources(${TARGET_NAME} PRIVATE ${SOURCES})
-add_subdirectories()

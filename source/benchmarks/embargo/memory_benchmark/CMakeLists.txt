@@ -13,6 +13,8 @@
 # implied warranties, other than those that are expressly stated in the License.
 #
 
-file(GLOB SOURCES *.cpp *.h)
-target_sources(${TARGET_NAME} PRIVATE ${SOURCES})
-add_subdirectories()
+add_benchmark(memory_benchmark_embargo ocl l0 sycl all)
+set_target_properties(memory_benchmark_embargo_l0 PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIR}/embargo")
+set_target_properties(memory_benchmark_embargo_ocl PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIR}/embargo")
+set_property(GLOBAL PROPERTY memory_benchmark_embargo_l0_LOCATION "embargo")
+set_property(GLOBAL PROPERTY memory_benchmark_embargo_ocl_LOCATION "embargo")

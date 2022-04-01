@@ -19,10 +19,8 @@
 
 #include <string>
 
-enum class StreamMemoryType {
+enum class StreamMemoryEmbargoType {
     Unknown,
-    Read,
-    Write,
-    Scale,
-    Triad,
+    Stream_3BytesRGBtoY,
+    Stream_3BytesAlignedRGBtoY,
 };

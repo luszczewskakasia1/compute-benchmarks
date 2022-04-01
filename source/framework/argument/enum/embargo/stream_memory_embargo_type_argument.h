@@ -16,9 +16,9 @@
 #pragma once
 
 #include "framework/argument/abstract/enum_argument.h"
-#include "framework/enum/stream_memory_type.h"
+#include "framework/enum/embargo/stream_memory_embargo_type.h"
 
-struct StreamMemoryTypeArgument : EnumArgument<StreamMemoryTypeArgument, StreamMemoryType> {
+struct StreamMemoryEmbargoTypeArgument : EnumArgument<StreamMemoryEmbargoTypeArgument, StreamMemoryEmbargoType> {
     using EnumArgument::EnumArgument;
     ThisType &operator=(EnumType newValue) {
         this->value = newValue;
@@ -26,8 +26,8 @@ struct StreamMemoryTypeArgument : EnumArgument<StreamMemoryTypeArgument, StreamM
         return *this;
     }
 
-    const static inline std::string enumName = "stream memory type";
+    const static inline std::string enumName = "stream memory embargo type";
     const static inline EnumType invalidEnumValue = EnumType::Unknown;
-    const static inline EnumType enumValues[] = {EnumType::Read, EnumType::Write, EnumType::Scale, EnumType::Triad};
-    const static inline std::string enumValuesNames[] = {"Read", "Write", "Scale", "Triad"};
+    const static inline EnumType enumValues[] = {EnumType::Stream_3BytesRGBtoY, EnumType::Stream_3BytesAlignedRGBtoY};
+    const static inline std::string enumValuesNames[] = {"stream_3bytesRGBtoY", "stream_3BytesAlignedRGBtoY"};
 };

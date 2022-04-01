@@ -13,16 +13,13 @@
  * implied warranties, other than those that are expressly stated in the License.
  */
 
-#pragma once
+#include "framework/benchmark_info.h"
 
-#include "framework/utility/error.h"
+#include "framework/utility/execute_at_app_init.h"
 
-#include <string>
-
-enum class StreamMemoryType {
-    Unknown,
-    Read,
-    Write,
-    Scale,
-    Triad,
+EXECUTE_AT_APP_INIT {
+    const std::string name = "memory_benchmark_embargo";
+    const std::string description = "Memory Benchmark is a set of tests aimed at measuring bandwidth of memory transfers.";
+    const int testCaseColumnWidth = 126;
+    BenchmarkInfo::initialize(name, description, testCaseColumnWidth);
 };

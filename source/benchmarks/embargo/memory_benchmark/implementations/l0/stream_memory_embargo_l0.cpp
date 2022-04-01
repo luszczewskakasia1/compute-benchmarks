@@ -19,13 +19,13 @@
 #include "framework/utility/memory_constants.h"
 #include "framework/utility/timer.h"
 
-#include "definitions/stream_memory.h"
+#include "definitions/stream_memory_embargo.h"
 
 #include <gtest/gtest.h>
 
 using namespace MemoryConstants;
 
-static TestResult run(const StreamMemoryArguments &arguments, Statistics &statistics) {
+static TestResult run(const StreamMemoryEmbargoArguments &arguments, Statistics &statistics) {
     // Setup
     QueueProperties queueProperties = QueueProperties::create();
     ContextProperties contextProperties = ContextProperties::create();
@@ -70,27 +70,18 @@ static TestResult run(const StreamMemoryArguments &arguments, Statistics &statis
 
     const ze_device_mem_alloc_desc_t deviceAllocationDesc{ZE_STRUCTURE_TYPE_DEVICE_MEM_ALLOC_DESC};
     ze_kernel_desc_t kernelDesc{ZE_STRUCTURE_TYPE_KERNEL_DESC};
+    const size_t reduction = 4;
     switch (arguments.type) {
-    case StreamMemoryType::Read:
-        kernelDesc.pKernelName = "read";
+    case StreamMemoryEmbargoType::Stream_3BytesRGBtoY:
+    case StreamMemoryEmbargoType::Stream_3BytesAlignedRGBtoY:
         ASSERT_ZE_RESULT_SUCCESS(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, bufferSize, 0, levelzero.device, &buffers[buffersCount++]));
-        bufferSizes[buffersCount] = 16u;
-        ASSERT_ZE_RESULT_SUCCESS(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, 16u, 0, levelzero.device, &buffers[buffersCount++]));
-        break;
-    case StreamMemoryType::Write:
-        kernelDesc.pKernelName = "write";
-        ASSERT_ZE_RESULT_SUCCESS(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, bufferSize, 0, levelzero.device, &buffers[buffersCount++]));
-        break;
-    case StreamMemoryType::Scale:
-        kernelDesc.pKernelName = "scale";
-        ASSERT_ZE_RESULT_SUCCESS(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, bufferSize, 0, levelzero.device, &buffers[buffersCount++]));
-        ASSERT_ZE_RESULT_SUCCESS(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, bufferSize, 0, levelzero.device, &buffers[buffersCount++]));
-        break;
-    case StreamMemoryType::Triad:
-        kernelDesc.pKernelName = "triad";
-        ASSERT_ZE_RESULT_SUCCESS(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, bufferSize, 0, levelzero.device, &buffers[buffersCount++]));
-        ASSERT_ZE_RESULT_SUCCESS(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, bufferSize, 0, levelzero.device, &buffers[buffersCount++]));
-        ASSERT_ZE_RESULT_SUCCESS(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, bufferSize, 0, levelzero.device, &buffers[buffersCount++]));
+        bufferSizes[buffersCount] = bufferSize / reduction;
+        ASSERT_ZE_RESULT_SUCCESS(zeMemAllocDevice(levelzero.context, &deviceAllocationDesc, bufferSize / reduction, 0, levelzero.device, &buffers[buffersCount++]));
+        if (arguments.type == StreamMemoryEmbargoType::Stream_3BytesRGBtoY) {
+            kernelDesc.pKernelName = "stream_3bytesRGBtoY";
+        } else {
+            kernelDesc.pKernelName = "stream_3BytesAlignedRGBtoY";
+        }
         break;
     default:
         FATAL_ERROR("Unknown StreamMemoryType");
@@ -175,11 +166,9 @@ static TestResult run(const StreamMemoryArguments &arguments, Statistics &statis
 
         size_t tranfserSize = arguments.size;
         switch (arguments.type) {
-        case StreamMemoryType::Scale:
-            tranfserSize *= 2;
-            break;
-        case StreamMemoryType::Triad:
-            tranfserSize *= 3;
+        case StreamMemoryEmbargoType::Stream_3BytesRGBtoY:
+        case StreamMemoryEmbargoType::Stream_3BytesAlignedRGBtoY:
+            tranfserSize = (tranfserSize / reduction) + (3 * tranfserSize / 4); // 3B Read + 1B Write
             break;
         default:
             break;
@@ -211,4 +200,4 @@ static TestResult run(const StreamMemoryArguments &arguments, Statistics &statis
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<StreamMemory> registerTestCase(run, Api::L0);
+static RegisterTestCaseImplementation<StreamMemoryEmbargo> registerTestCase(run, Api::L0);

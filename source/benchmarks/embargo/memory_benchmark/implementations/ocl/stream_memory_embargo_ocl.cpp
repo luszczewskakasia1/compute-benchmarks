@@ -22,13 +22,13 @@
 #include "framework/utility/memory_constants.h"
 #include "framework/utility/timer.h"
 
-#include "definitions/stream_memory.h"
+#include "definitions/stream_memory_embargo.h"
 
 #include <gtest/gtest.h>
 
 using namespace MemoryConstants;
 
-static TestResult run(const StreamMemoryArguments &arguments, Statistics &statistics) {
+static TestResult run(const StreamMemoryEmbargoArguments &arguments, Statistics &statistics) {
     if (arguments.l0UseImmediateCommandLists == true) {
         return TestResult::ApiNotCapable;
     }
@@ -52,27 +52,19 @@ static TestResult run(const StreamMemoryArguments &arguments, Statistics &statis
     size_t buffersCount = {};
     size_t bufferSizes[3] = {bufferSize, bufferSize, bufferSize};
 
+    const size_t reduction = 4;
     switch (arguments.type) {
-    case StreamMemoryType::Read:
-        kernelName = "read";
+    case StreamMemoryEmbargoType::Stream_3BytesRGBtoY:
+    case StreamMemoryEmbargoType::Stream_3BytesAlignedRGBtoY:
+        elementSize = 4u;
         buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, bufferSize, nullptr, &retVal);
-        bufferSizes[buffersCount] = 16u;
-        buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, 16u, nullptr, &retVal);
-        break;
-    case StreamMemoryType::Write:
-        kernelName = "write";
-        buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, bufferSize, nullptr, &retVal);
-        break;
-    case StreamMemoryType::Scale:
-        kernelName = "scale";
-        buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, bufferSize, nullptr, &retVal);
-        buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, bufferSize, nullptr, &retVal);
-        break;
-    case StreamMemoryType::Triad:
-        kernelName = "triad";
-        buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, bufferSize, nullptr, &retVal);
-        buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, bufferSize, nullptr, &retVal);
-        buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, bufferSize, nullptr, &retVal);
+        bufferSizes[buffersCount] = bufferSize / reduction;
+        buffers[buffersCount++] = clCreateBuffer(opencl.context, CL_MEM_READ_WRITE, bufferSize / reduction, nullptr, &retVal);
+        if (arguments.type == StreamMemoryEmbargoType::Stream_3BytesRGBtoY) {
+            kernelName = "stream_3bytesRGBtoY";
+        } else {
+            kernelName = "stream_3BytesAlignedRGBtoY";
+        }
         break;
     default:
         FATAL_ERROR("Unknown StreamMemoryType");
@@ -123,11 +115,9 @@ static TestResult run(const StreamMemoryArguments &arguments, Statistics &statis
 
         size_t tranfserSize = arguments.size;
         switch (arguments.type) {
-        case StreamMemoryType::Scale:
-            tranfserSize *= 2;
-            break;
-        case StreamMemoryType::Triad:
-            tranfserSize *= 3;
+        case StreamMemoryEmbargoType::Stream_3BytesRGBtoY:
+        case StreamMemoryEmbargoType::Stream_3BytesAlignedRGBtoY:
+            tranfserSize = (tranfserSize / reduction) + (3 * tranfserSize / 4); // 3B Read + 1B Write
             break;
         default:
             break;
@@ -153,4 +143,4 @@ static TestResult run(const StreamMemoryArguments &arguments, Statistics &statis
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<StreamMemory> registerTestCase(run, Api::OpenCL);
+static RegisterTestCaseImplementation<StreamMemoryEmbargo> registerTestCase(run, Api::OpenCL);
