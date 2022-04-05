@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -15,17 +15,31 @@
 
 #pragma once
 #include <chrono>
+#include <cstdio>
+#include <framework/configuration.h>
 
 class Timer {
   public:
+    Timer() {
+        if (Configuration::get().markTimers) {
+            markTimers = true;
+        }
+    }
     using Clock = std::chrono::high_resolution_clock;
 
     void measureStart() {
+        if (this->markTimers) {
+            printf("\n Timer START \n");
+        }
+
         startTime = Clock::now();
     }
 
     void measureEnd() {
         endTime = Clock::now();
+        if (this->markTimers) {
+            printf("\n Timer END \n");
+        }
     }
 
     Clock::duration get() const {
@@ -33,6 +47,7 @@ class Timer {
     }
 
   private:
+    bool markTimers = false;
     Clock::time_point startTime;
     Clock::time_point endTime;
 };

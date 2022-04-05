@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021 Intel Corporation
+ * Copyright (C) 2021-2022 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -45,7 +45,8 @@ Configuration::Configuration()
       dumpErrorsImmediately(*this, "dumpErrorsImmediately", "print errors to stdout immediately after they happen, not at the end of the run"),
       argFilter(*this, "argFilter", "filter tests by their arguments"),
       testFilter(*this, "testFilter", "filter tests by their names"),
-      returnSubmissionTimeInsteadOfWorkloadTime(*this, "forceSubmissionProfiling", "Overrides profiling to return submission time instead of workload time") {
+      returnSubmissionTimeInsteadOfWorkloadTime(*this, "forceSubmissionProfiling", "Overrides profiling to return submission time instead of workload time"),
+      markTimers(*this, "markTimers", "Provides prints around Timer Start & End") {
 
     // Diagnostic params
     help = false;
