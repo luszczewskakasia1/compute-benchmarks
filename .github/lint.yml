@@ -37,6 +37,7 @@ lint:
             - \.m$
             - \.h.in$
             - \.rc.in$
+            - ^Jenkinsfile$
           comment_begin: "/*"
           comment_end: >1
             */
