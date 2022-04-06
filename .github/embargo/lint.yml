@@ -1,0 +1,111 @@
+lint:
+  clang-format:
+    included:
+      - \.cpp$
+      - \.h$
+      - \.inl$
+      - \.hpp$
+    excluded:
+      - third_party/
+      - scripts/
+
+  cmake-format:
+    disabled: true
+
+  copyright:
+    excluded:
+      - third_party/
+    confidential_header:
+      valids:
+        - .*embargo.*
+      contents: |
+        {comment_begin}
+        {comment_char} INTEL CONFIDENTIAL
+        {comment_char}
+        {comment_char} Copyright (C) %s Intel Corporation
+        {comment_char}
+        {comment_char} This software and the related documents are Intel copyrighted materials,
+        {comment_char} and your use of them is governed by the express license under which they were
+        {comment_char} provided to you ("License"). Unless the License provides otherwise,
+        {comment_char} you may not use, modify, copy, publish, distribute, disclose or transmit this
+        {comment_char} software or the related documents without Intel's prior written permission.
+        {comment_char}
+        {comment_char} This software and the related documents are provided as is, with no express or
+        {comment_char} implied warranties, other than those that are expressly stated in the License.
+        {comment_end}
+      year_pattern: (\d+)(-\d+)?
+      file_types:
+        cpp:
+          includes:
+            - \.cpp$
+            - \.h$
+            - \.inl$
+            - \.hpp$
+            - \.cl$
+            - \.m$
+            - \.h.in$
+            - \.rc.in$
+          comment_begin: "/*"
+          comment_end: >1
+            */
+          comment_char: " *"
+        bash:
+          includes:
+            - CMakeLists.txt$
+            - \.cmake$
+            - \.py$
+            - \.sh$
+          comment_begin: "#"
+          comment_char: "#"
+        bat:
+          includes:
+            - \.bat$
+            - \.cmd$
+          comment_begin: "REM"
+          comment_char: "REM"
+    mit_header:
+      contents: |-
+        {comment_begin}
+        {comment_char} Copyright (C) %s Intel Corporation
+        {comment_char}
+        {comment_char} SPDX-License-Identifier: MIT
+        {comment_char}
+        {comment_end}
+      year_pattern: (\d+)(-\d+)?
+      year_constraints:
+        _default: 2022
+      file_types:
+        cpp:
+          includes:
+            - \.cpp$
+            - \.h$
+            - \.inl$
+            - \.hpp$
+            - \.cl$
+            - \.m$
+            - \.h.in$
+            - \.rc.in$
+          comment_begin: "/*"
+          comment_end: >1
+            */
+          comment_char: " *"
+        bash:
+          includes:
+            - CMakeLists.txt$
+            - \.cmake$
+            - \.py$
+            - \.sh$
+          comment_begin: "#"
+          comment_char: "#"
+        bat:
+          includes:
+            - \.bat$
+            - \.cmd$
+          comment_begin: "REM"
+          comment_char: "REM"
+
+  ults-needed:
+    disabled: true
+
+  binary_files:
+    disabled: true

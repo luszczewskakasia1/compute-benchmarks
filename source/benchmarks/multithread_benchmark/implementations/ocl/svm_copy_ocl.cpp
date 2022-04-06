@@ -1,16 +1,8 @@
 /*
- * INTEL CONFIDENTIAL
- *
  * Copyright (C) 2022 Intel Corporation
  *
- * This software and the related documents are Intel copyrighted materials,
- * and your use of them is governed by the express license under which they were
- * provided to you ("License"). Unless the License provides otherwise,
- * you may not use, modify, copy, publish, distribute, disclose or transmit this
- * software or the related documents without Intel's prior written permission.
+ * SPDX-License-Identifier: MIT
  *
- * This software and the related documents are provided as is, with no express or
- * implied warranties, other than those that are expressly stated in the License.
  */
 
 #include "framework/ocl/opencl.h"
@@ -25,12 +17,12 @@
 #include <thread>
 
 void enqueueSvmCopy(cl_command_queue queue, void *src, void *dst, size_t size, std::shared_mutex *barrier, pfn_clEnqueueMemcpyINTEL clEnqueueMemcpyINTEL) {
-    //warmup
+    // warmup
     clEnqueueMemcpyINTEL(queue, CL_FALSE, dst, src, size, 0, nullptr, nullptr);
     clFinish(queue);
 
     std::shared_lock sharedLock(*barrier);
-    //benchmark
+    // benchmark
     clEnqueueMemcpyINTEL(queue, CL_FALSE, dst, src, size, 0, nullptr, nullptr);
     clFinish(queue);
 }
@@ -48,7 +40,7 @@ static TestResult run(const SvmCopyArguments &arguments, Statistics &statistics)
     std::vector<cl_command_queue> commandQueues;
     QueueProperties queueProperties = QueueProperties::create();
     for (auto i = 0u; i < arguments.numberOfThreads; i++) {
-        //Try to use engines BCS1 to BCS8
+        // Try to use engines BCS1 to BCS8
         Engine copyEngine = EngineHelper::getBlitterEngineFromIndex((i + 1) % 9);
         queueProperties.setForceEngine(copyEngine);
         cl_command_queue queue = opencl.createQueue(queueProperties);

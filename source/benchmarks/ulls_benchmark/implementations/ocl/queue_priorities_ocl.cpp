@@ -1,16 +1,8 @@
 /*
- * INTEL CONFIDENTIAL
+ * Copyright (C) 2022 Intel Corporation
  *
- * Copyright (C) 2021-2022 Intel Corporation
+ * SPDX-License-Identifier: MIT
  *
- * This software and the related documents are Intel copyrighted materials,
- * and your use of them is governed by the express license under which they were
- * provided to you ("License"). Unless the License provides otherwise,
- * you may not use, modify, copy, publish, distribute, disclose or transmit this
- * software or the related documents without Intel's prior written permission.
- *
- * This software and the related documents are provided as is, with no express or
- * implied warranties, other than those that are expressly stated in the License.
  */
 
 #include "framework/ocl/opencl.h"
@@ -45,7 +37,7 @@ static TestResult run(const QueuePrioritiesArguments &arguments, Statistics &sta
     cl_kernel highPriorityKernel = clCreateKernel(program, "eat_time", &retVal);
     ASSERT_CL_SUCCESS(retVal);
 
-    //setup kernel time
+    // setup kernel time
     cl_uint kernelTime = static_cast<cl_uint>(arguments.lowPriorityKernelTime) * 7u;
     ASSERT_CL_SUCCESS(clSetKernelArg(lowPriorityKernel, 0, sizeof(kernelTime), &kernelTime));
     kernelTime = static_cast<cl_uint>(arguments.highPriorityKernelTime) * 7u;
@@ -87,7 +79,7 @@ static TestResult run(const QueuePrioritiesArguments &arguments, Statistics &sta
         ASSERT_CL_SUCCESS(retVal);
     }
 
-    //warmup
+    // warmup
     size_t gws = 64u;
     size_t lws = 64u;
     // Warmup, kernel
@@ -99,7 +91,7 @@ static TestResult run(const QueuePrioritiesArguments &arguments, Statistics &sta
     ASSERT_CL_SUCCESS(retVal);
     std::this_thread::sleep_for(std::chrono::milliseconds(arguments.sleepTime));
 
-    //benchmark
+    // benchmark
     size_t gwsLowPriority = 64 * 1024 * 1024;
     size_t gwsHighPriority = arguments.workgroupCount * 64u;
     // Benchmark
@@ -109,7 +101,7 @@ static TestResult run(const QueuePrioritiesArguments &arguments, Statistics &sta
 
         std::this_thread::sleep_for(std::chrono::milliseconds(arguments.sleepTime));
 
-        //now submit high priority kernel
+        // now submit high priority kernel
         timer.measureStart();
         ASSERT_CL_SUCCESS(clEnqueueNDRangeKernel(highPriorityQueue, highPriorityKernel, 1, nullptr, &gwsHighPriority, &lws, 0, nullptr, nullptr));
         ASSERT_CL_SUCCESS(clFinish(highPriorityQueue));

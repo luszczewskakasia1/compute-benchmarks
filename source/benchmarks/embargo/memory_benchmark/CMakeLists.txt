@@ -11,7 +11,7 @@
 #
 # This software and the related documents are provided as is, with no express or
 # implied warranties, other than those that are expressly stated in the License.
-#
+
 
 add_benchmark(memory_benchmark_embargo ocl l0 sycl all)
 set_target_properties(memory_benchmark_embargo_l0 PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIR}/embargo")

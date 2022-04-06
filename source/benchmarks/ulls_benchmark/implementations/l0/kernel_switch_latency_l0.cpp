@@ -1,16 +1,8 @@
 /*
- * INTEL CONFIDENTIAL
- *
  * Copyright (C) 2022 Intel Corporation
  *
- * This software and the related documents are Intel copyrighted materials,
- * and your use of them is governed by the express license under which they were
- * provided to you ("License"). Unless the License provides otherwise,
- * you may not use, modify, copy, publish, distribute, disclose or transmit this
- * software or the related documents without Intel's prior written permission.
+ * SPDX-License-Identifier: MIT
  *
- * This software and the related documents are provided as is, with no express or
- * implied warranties, other than those that are expressly stated in the License.
  */
 
 #include "framework/l0/levelzero.h"
@@ -87,7 +79,7 @@ static TestResult run(const KernelSwitchLatencyArguments &arguments, Statistics 
     }
 
     if (arguments.flushBetweenEnqueues) {
-        //warmup
+        // warmup
         std::vector<ze_command_list_handle_t> cmdLists;
 
         for (uint32_t i = 0u; i < arguments.kernelCount; i++) {
@@ -117,7 +109,7 @@ static TestResult run(const KernelSwitchLatencyArguments &arguments, Statistics 
             ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(profilingEvents[j]));
         }
 
-        //benchmark
+        // benchmark
         for (auto iteartion = 0u; iteartion < arguments.iterations; iteartion++) {
             for (uint32_t j = 0u; j < arguments.kernelCount; j++) {
                 ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdLists[j], nullptr));
