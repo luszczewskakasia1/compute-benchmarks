@@ -10,9 +10,6 @@
 #if defined(__cplusplus)
 #pragma once
 #endif
-#if !defined(_ZEX_API_H)
-#pragma message("warning: this file is not intended to be included directly")
-#endif
 
 #if defined(__cplusplus)
 extern "C" {
