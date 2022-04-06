@@ -16,8 +16,8 @@ Answers to frequently asked questions and common problems can be found in [FAQ.m
 ### Run CMake and compile
 Build the benchmark as any other CMake project. Example command sequence:
 ```
-//clone repo
-cd drivers.gpu.compute.benchmarks
+git clone --recurse-submodules https://github.com/intel/compute-benchmarks
+cd compute-benchmarks
 mkdir build
 cd build
 cmake ..
@@ -45,8 +45,8 @@ Note that building SYCL benchmarks is currently only supported on Linux.
 #### Example
 
 ```
-git clone --recurse-submodules https://github.com/drivers.gpu.compute.benchmarks
-cd drivers.gpu.compute.benchmarks
+git clone --recurse-submodules https://github.com/intel/compute-benchmarks
+cd compute-benchmarks
 mkdir build
 cd build
 . /opt/intel/oneapi/setvars.sh
