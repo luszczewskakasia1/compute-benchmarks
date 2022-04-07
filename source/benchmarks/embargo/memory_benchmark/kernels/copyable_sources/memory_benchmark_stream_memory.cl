@@ -13,7 +13,6 @@
  * implied warranties, other than those that are expressly stated in the License.
  */
 
-
 // #pragma OPENCL EXTENSION cl_khr_fp64 : enable
 
 __kernel void read(const __global STREAM_TYPE *restrict x, __global STREAM_TYPE *restrict dummyOutput, STREAM_TYPE scalar) {

@@ -47,8 +47,7 @@ lint:
             - \.rc.in$
             - ^Jenkinsfile$
           comment_begin: "/*"
-          comment_end: >1
-            */
+          comment_end: " */"
           comment_char: " *"
         bash:
           includes:
