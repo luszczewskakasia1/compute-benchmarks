@@ -27,4 +27,3 @@ __kernel void slm_alloc_size(__global int *outBuffer, __local int *slm, int doWr
         outBuffer[get_global_id(0)] = sum;
     }
 }
-
