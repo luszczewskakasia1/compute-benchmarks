@@ -12,7 +12,6 @@
 # This software and the related documents are provided as is, with no express or
 # implied warranties, other than those that are expressly stated in the License.
 
-
 git config --global http.proxy http://proxy-dmz.intel.com:911
 git config --global https.proxy http://proxy-dmz.intel.com:912
 export http_proxy="http://proxy-dmz.intel.com:911/"
