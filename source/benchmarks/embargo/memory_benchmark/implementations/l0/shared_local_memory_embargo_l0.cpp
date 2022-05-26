@@ -46,7 +46,7 @@ static TestResult run(const SharedLocalMemoryEmbargoArguments &arguments, Statis
     const size_t fillValue = 0;
     const size_t bufferSize = 1024 * kiloByte;
     const uint32_t gws = static_cast<uint32_t>(bufferSize / 4);
-    const uint64_t timerResolution = levelzero.getTimerResoultion(levelzero.device);
+    const uint64_t timerResolution = levelzero.getTimerResolution(levelzero.device);
 
     // Create module
     const char *kernelFile = "shared_local_memory.spv";
