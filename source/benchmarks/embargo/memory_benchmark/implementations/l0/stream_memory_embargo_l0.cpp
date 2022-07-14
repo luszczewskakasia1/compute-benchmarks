@@ -164,11 +164,11 @@ static TestResult run(const StreamMemoryEmbargoArguments &arguments, Statistics 
         }
         timer.measureEnd();
 
-        size_t tranfserSize = arguments.size;
+        size_t transferSize = arguments.size;
         switch (arguments.type) {
         case StreamMemoryEmbargoType::Stream_3BytesRGBtoY:
         case StreamMemoryEmbargoType::Stream_3BytesAlignedRGBtoY:
-            tranfserSize = (tranfserSize / reduction) + (3 * tranfserSize / 4); // 3B Read + 1B Write
+            transferSize = (transferSize / reduction) + (3 * transferSize / 4); // 3B Read + 1B Write
             break;
         default:
             break;
@@ -179,9 +179,9 @@ static TestResult run(const StreamMemoryEmbargoArguments &arguments, Statistics 
             ASSERT_ZE_RESULT_SUCCESS(zeEventQueryKernelTimestamp(event, &timestampResult));
             auto commandTime = std::chrono::nanoseconds(timestampResult.global.kernelEnd - timestampResult.global.kernelStart);
             commandTime *= timerResolution;
-            statistics.pushValue(commandTime, tranfserSize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu);
+            statistics.pushValue(commandTime, transferSize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu);
         } else {
-            statistics.pushValue(timer.get(), tranfserSize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Cpu);
+            statistics.pushValue(timer.get(), transferSize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Cpu);
         }
         ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(event));
     }

@@ -113,11 +113,11 @@ static TestResult run(const StreamMemoryEmbargoArguments &arguments, Statistics 
         ASSERT_CL_SUCCESS(clFinish(opencl.commandQueue));
         timer.measureEnd();
 
-        size_t tranfserSize = arguments.size;
+        size_t transferSize = arguments.size;
         switch (arguments.type) {
         case StreamMemoryEmbargoType::Stream_3BytesRGBtoY:
         case StreamMemoryEmbargoType::Stream_3BytesAlignedRGBtoY:
-            tranfserSize = (tranfserSize / reduction) + (3 * tranfserSize / 4); // 3B Read + 1B Write
+            transferSize = (transferSize / reduction) + (3 * transferSize / 4); // 3B Read + 1B Write
             break;
         default:
             break;
@@ -128,9 +128,9 @@ static TestResult run(const StreamMemoryEmbargoArguments &arguments, Statistics 
             ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
             ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
 
-            statistics.pushValue(std::chrono::nanoseconds(timeNs), tranfserSize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu);
+            statistics.pushValue(std::chrono::nanoseconds(timeNs), transferSize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu);
         } else {
-            statistics.pushValue(timer.get(), tranfserSize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Cpu);
+            statistics.pushValue(timer.get(), transferSize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Cpu);
         }
     }
 
