@@ -86,19 +86,20 @@ static TestResult run(const SharedLocalMemoryEmbargoArguments &arguments, Statis
     // Create event
     ze_event_pool_handle_t eventPool{};
     ze_event_handle_t event{};
-    ze_event_pool_desc_t eventPoolDesc{ZE_STRUCTURE_TYPE_EVENT_POOL_DESC};
-    eventPoolDesc.flags = ZE_EVENT_POOL_FLAG_KERNEL_TIMESTAMP | ZE_EVENT_POOL_FLAG_HOST_VISIBLE;
-    eventPoolDesc.count = 1;
-    ASSERT_ZE_RESULT_SUCCESS(zeEventPoolCreate(levelzero.context, &eventPoolDesc, 1, &levelzero.commandQueueDevice, &eventPool));
-    ze_event_desc_t eventDesc{ZE_STRUCTURE_TYPE_EVENT_DESC};
-    eventDesc.index = 0;
-    eventDesc.signal = ZE_EVENT_SCOPE_FLAG_DEVICE;
-    eventDesc.wait = ZE_EVENT_SCOPE_FLAG_HOST;
-    ASSERT_ZE_RESULT_SUCCESS(zeEventCreate(eventPool, &eventDesc, &event));
-
+    if (arguments.useEvents) {
+        ze_event_pool_desc_t eventPoolDesc{ZE_STRUCTURE_TYPE_EVENT_POOL_DESC};
+        eventPoolDesc.flags = ZE_EVENT_POOL_FLAG_KERNEL_TIMESTAMP | ZE_EVENT_POOL_FLAG_HOST_VISIBLE;
+        eventPoolDesc.count = 1;
+        ASSERT_ZE_RESULT_SUCCESS(zeEventPoolCreate(levelzero.context, &eventPoolDesc, 1, &levelzero.commandQueueDevice, &eventPool));
+        ze_event_desc_t eventDesc{ZE_STRUCTURE_TYPE_EVENT_DESC};
+        eventDesc.index = 0;
+        eventDesc.signal = ZE_EVENT_SCOPE_FLAG_DEVICE;
+        eventDesc.wait = ZE_EVENT_SCOPE_FLAG_HOST;
+        ASSERT_ZE_RESULT_SUCCESS(zeEventCreate(eventPool, &eventDesc, &event));
+    }
     // Enqueue filling of the buffer and set kernel arguments
     const uint32_t doWrite = 0;
-    ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendMemoryFill(cmdList, buffer, &fillValue, sizeof(fillValue), bufferSize, event, 0, nullptr));
+    ASSERT_ZE_RESULT_SUCCESS(zeCommandListAppendMemoryFill(cmdList, buffer, &fillValue, sizeof(fillValue), bufferSize, nullptr, 0, nullptr));
     ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernel, 0, sizeof(buffer), &buffer));
     ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernel, 1, arguments.slmSize, nullptr));
     ASSERT_ZE_RESULT_SUCCESS(zeKernelSetArgumentValue(kernel, 2, sizeof(doWrite), &doWrite));
@@ -115,7 +116,9 @@ static TestResult run(const SharedLocalMemoryEmbargoArguments &arguments, Statis
     // Warmup
     ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueExecuteCommandLists(levelzero.commandQueue, 1, &cmdList, nullptr));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandQueueSynchronize(levelzero.commandQueue, std::numeric_limits<uint64_t>::max()));
-
+    if (arguments.useEvents) {
+        ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(event));
+    }
     // Benchmark
     for (auto i = 0u; i < arguments.iterations; i++) {
         // Launch kernel
@@ -130,15 +133,17 @@ static TestResult run(const SharedLocalMemoryEmbargoArguments &arguments, Statis
             auto commandTime = std::chrono::nanoseconds(timestampResult.global.kernelEnd - timestampResult.global.kernelStart);
             commandTime *= timerResolution;
             statistics.pushValue(commandTime, bufferSize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu);
+            ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(event));
         } else {
             statistics.pushValue(timer.get(), bufferSize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Cpu);
         }
-        ASSERT_ZE_RESULT_SUCCESS(zeEventHostReset(event));
     }
 
     // Cleanup
-    ASSERT_ZE_RESULT_SUCCESS(zeEventDestroy(event));
-    ASSERT_ZE_RESULT_SUCCESS(zeEventPoolDestroy(eventPool));
+    if (arguments.useEvents) {
+        ASSERT_ZE_RESULT_SUCCESS(zeEventDestroy(event));
+        ASSERT_ZE_RESULT_SUCCESS(zeEventPoolDestroy(eventPool));
+    }
     ASSERT_ZE_RESULT_SUCCESS(zeMemFree(levelzero.context, buffer));
     ASSERT_ZE_RESULT_SUCCESS(zeCommandListDestroy(cmdList));
     ASSERT_ZE_RESULT_SUCCESS(zeKernelDestroy(kernel));
