@@ -100,7 +100,7 @@ class Stream3BytesAlignedRGBToYBenchmark : public StreamMemoryEmbargoBenchmark {
 
 static TestResult run(const StreamMemoryEmbargoArguments &arguments, Statistics &statistics) {
     auto device = sycl::device{sycl::default_selector{}};
-    auto queueProperties = sycl::property_list{cl::sycl::property::queue::enable_profiling()};
+    auto queueProperties = sycl::property_list{sycl::property::queue::enable_profiling()};
     sycl::queue queue(device, queueProperties);
 
     Timer timer;
