@@ -54,9 +54,9 @@ static TestResult run(const SharedLocalMemoryEmbargoArguments &arguments, Statis
         if (result != TestResult::Success && printBuildInfo) {
             size_t numBytes = 0;
             retVal |= clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, 0, NULL, &numBytes);
-            auto buffer = std::make_unique<char[]>(numBytes);
-            retVal |= clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, numBytes, buffer.get(), &numBytes);
-            std::cout << buffer.get() << std::endl;
+            auto bytes = std::make_unique<char[]>(numBytes);
+            retVal |= clGetProgramBuildInfo(program, opencl.device, CL_PROGRAM_BUILD_LOG, numBytes, bytes.get(), &numBytes);
+            std::cout << bytes.get() << std::endl;
         }
         return result;
     }
