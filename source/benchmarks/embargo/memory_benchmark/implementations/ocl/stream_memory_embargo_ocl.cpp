@@ -29,6 +29,13 @@
 using namespace MemoryConstants;
 
 static TestResult run(const StreamMemoryEmbargoArguments &arguments, Statistics &statistics) {
+    MeasurementFields typeSelector(MeasurementUnit::GigabytesPerSecond, arguments.useEvents ? MeasurementType::Gpu : MeasurementType::Cpu);
+
+    if (isNoopRun()) {
+        statistics.pushUnitAndType(typeSelector.getUnit(), typeSelector.getType());
+        return TestResult::Nooped;
+    }
+
     if (arguments.l0UseImmediateCommandLists == true) {
         return TestResult::ApiNotCapable;
     }
@@ -128,9 +135,9 @@ static TestResult run(const StreamMemoryEmbargoArguments &arguments, Statistics 
             ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
             ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
 
-            statistics.pushValue(std::chrono::nanoseconds(timeNs), transferSize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu);
+            statistics.pushValue(std::chrono::nanoseconds(timeNs), transferSize, typeSelector.getUnit(), typeSelector.getType());
         } else {
-            statistics.pushValue(timer.get(), transferSize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Cpu);
+            statistics.pushValue(timer.get(), transferSize, typeSelector.getUnit(), typeSelector.getType());
         }
     }
 

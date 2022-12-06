@@ -29,6 +29,12 @@
 using namespace MemoryConstants;
 
 static TestResult run(const SharedLocalMemoryEmbargoArguments &arguments, Statistics &statistics) {
+    MeasurementFields typeSelector(MeasurementUnit::GigabytesPerSecond, arguments.useEvents ? MeasurementType::Gpu : MeasurementType::Cpu);
+
+    if (isNoopRun()) {
+        statistics.pushUnitAndType(typeSelector.getUnit(), typeSelector.getType());
+        return TestResult::Nooped;
+    }
 
     // Setup
     cl_int retVal = {};
@@ -89,9 +95,9 @@ static TestResult run(const SharedLocalMemoryEmbargoArguments &arguments, Statis
             ASSERT_CL_SUCCESS(ProfilingHelper::getEventDurationInNanoseconds(profilingEvent, timeNs));
             ASSERT_CL_SUCCESS(clReleaseEvent(profilingEvent));
 
-            statistics.pushValue(std::chrono::nanoseconds(timeNs), bufferSize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Gpu);
+            statistics.pushValue(std::chrono::nanoseconds(timeNs), bufferSize, typeSelector.getUnit(), typeSelector.getType());
         } else {
-            statistics.pushValue(timer.get(), bufferSize, MeasurementUnit::GigabytesPerSecond, MeasurementType::Cpu);
+            statistics.pushValue(timer.get(), bufferSize, typeSelector.getUnit(), typeSelector.getType());
         }
     }
 
