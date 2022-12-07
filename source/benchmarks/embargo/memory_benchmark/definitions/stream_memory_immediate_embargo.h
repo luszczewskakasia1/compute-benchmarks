@@ -20,27 +20,27 @@
 #include "framework/argument/enum/embargo/stream_memory_embargo_type_argument.h"
 #include "framework/test_case/test_case.h"
 
-struct StreamMemoryEmbargoArguments : TestCaseArgumentContainer {
+struct StreamMemoryImmediateEmbargoArguments : TestCaseArgumentContainer {
     StreamMemoryEmbargoTypeArgument type;
     ByteSizeArgument size;
     BooleanArgument useEvents;
 
-    StreamMemoryEmbargoArguments()
+    StreamMemoryImmediateEmbargoArguments()
         : type(*this, "type", "Memory streaming type"),
           size(*this, "size", "Size of the memory to stream. Must be divisible by datatype size."),
           useEvents(*this, "useEvents", CommonHelpMessage::useEvents()) {}
 };
 
-struct StreamMemoryEmbargo : TestCase<StreamMemoryEmbargoArguments> {
-    using TestCase<StreamMemoryEmbargoArguments>::TestCase;
+struct StreamMemoryImmediateEmbargo : TestCase<StreamMemoryImmediateEmbargoArguments> {
+    using TestCase<StreamMemoryImmediateEmbargoArguments>::TestCase;
 
     std::string getTestCaseName() const override {
-        return "StreamMemoryEmbargo";
+        return "StreamMemoryImmediateEmbargo";
     }
 
     std::string getHelp() const override {
-        return "Streams memory inside of kernel in a fashion described by 'type'. Copy means one "
-               "memory location is read from and the second one is written to. Triad means two "
+        return "Streams memory inside of kernel in a fashion described by 'type' using immediate command list. "
+               "Copy means one memory location is read from and the second one is written to. Triad means two "
                "buffers are read and one is written to. In read and write memory is only read or "
                "written to.";
     }

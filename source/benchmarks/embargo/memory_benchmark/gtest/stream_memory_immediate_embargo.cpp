@@ -13,7 +13,7 @@
  * implied warranties, other than those that are expressly stated in the License.
  */
 
-#include "definitions/stream_memory_embargo.h"
+#include "definitions/stream_memory_immediate_embargo.h"
 
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/common_gtest_args.h"
@@ -21,26 +21,26 @@
 
 #include <gtest/gtest.h>
 
-static const inline RegisterTestCase<StreamMemoryEmbargo> registerTestCase{};
+static const inline RegisterTestCase<StreamMemoryImmediateEmbargo> registerTestCase{};
 
-class StreamMemoryEmbargoTest : public ::testing::TestWithParam<std::tuple<Api, StreamMemoryEmbargoType, size_t, bool>> {
+class StreamMemoryImmediateEmbargoTest : public ::testing::TestWithParam<std::tuple<Api, StreamMemoryEmbargoType, size_t, bool>> {
 };
 
-TEST_P(StreamMemoryEmbargoTest, Test) {
-    StreamMemoryEmbargoArguments args;
+TEST_P(StreamMemoryImmediateEmbargoTest, Test) {
+    StreamMemoryImmediateEmbargoArguments args;
     args.api = std::get<0>(GetParam());
     args.type = std::get<1>(GetParam());
     args.size = std::get<2>(GetParam());
     args.useEvents = std::get<3>(GetParam());
 
-    StreamMemoryEmbargo test;
+    StreamMemoryImmediateEmbargo test;
     test.run(args);
 }
 
 using namespace MemoryConstants;
 INSTANTIATE_TEST_SUITE_P(
-    StreamMemoryEmbargoTest,
-    StreamMemoryEmbargoTest,
+    StreamMemoryImmediateEmbargoTest,
+    StreamMemoryImmediateEmbargoTest,
     ::testing::Combine(
         ::CommonGtestArgs::allApis(),
         ::testing::ValuesIn(StreamMemoryEmbargoTypeArgument::enumValues),

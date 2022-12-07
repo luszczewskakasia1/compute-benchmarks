@@ -36,10 +36,6 @@ static TestResult run(const StreamMemoryEmbargoArguments &arguments, Statistics 
         return TestResult::Nooped;
     }
 
-    if (arguments.l0UseImmediateCommandLists == true) {
-        return TestResult::ApiNotCapable;
-    }
-
     // Setup
     cl_int retVal = {};
     QueueProperties queueProperties = QueueProperties::create().setProfiling(true).setOoq(0);
