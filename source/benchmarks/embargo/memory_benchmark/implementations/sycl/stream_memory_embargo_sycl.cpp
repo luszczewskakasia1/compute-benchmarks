@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2022 Intel Corporation
+ * Copyright (C) 2022-2023 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -106,12 +106,10 @@ static TestResult run(const StreamMemoryEmbargoArguments &arguments, Statistics 
         return TestResult::Nooped;
     }
 
-    auto device = sycl::device{sycl::default_selector{}};
-    auto queueProperties = sycl::property_list{sycl::property::queue::enable_profiling()};
-    sycl::queue queue(device, queueProperties);
+    Sycl sycl{sycl::property::queue::enable_profiling{}};
 
     Timer timer;
-    bool useDoubles = device.has(sycl::aspect::fp64);
+    bool useDoubles = sycl.device.has(sycl::aspect::fp64);
 
     const size_t elementSize = useDoubles ? sizeof(double) : sizeof(float);
     const size_t fillValue = 313u;
@@ -130,13 +128,13 @@ static TestResult run(const StreamMemoryEmbargoArguments &arguments, Statistics 
     }
 
     // Warm-up
-    auto event = benchmark->run(queue);
+    auto event = benchmark->run(sycl.queue);
     event.wait();
 
     // Benchmark
     for (auto i = 0u; i < arguments.iterations; i++) {
         timer.measureStart();
-        auto event = benchmark->run(queue);
+        auto event = benchmark->run(sycl.queue);
         event.wait();
         timer.measureEnd();
         if (arguments.useEvents) {
