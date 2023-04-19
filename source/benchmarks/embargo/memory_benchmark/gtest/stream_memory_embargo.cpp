@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021-2022 Intel Corporation
+ * Copyright (C) 2021-2023 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -21,7 +21,7 @@
 
 #include <gtest/gtest.h>
 
-static const inline RegisterTestCase<StreamMemoryEmbargo> registerTestCase{};
+[[maybe_unused]] static const inline RegisterTestCase<StreamMemoryEmbargo> registerTestCase{};
 
 class StreamMemoryEmbargoTest : public ::testing::TestWithParam<std::tuple<Api, StreamMemoryEmbargoType, size_t, bool>> {
 };

@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2022 Intel Corporation
+ * Copyright (C) 2022-2023 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -21,7 +21,7 @@
 
 #include <gtest/gtest.h>
 
-static const inline RegisterTestCase<SharedLocalMemoryEmbargo> registerTestCase{};
+[[maybe_unused]] static const inline RegisterTestCase<SharedLocalMemoryEmbargo> registerTestCase{};
 
 class SharedLocalMemoryEmbargoTest : public ::testing::TestWithParam<std::tuple<Api, size_t, bool>> {
 };

@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021-2022 Intel Corporation
+ * Copyright (C) 2021-2023 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -20,7 +20,7 @@
 
 #include <gtest/gtest.h>
 
-static const inline RegisterTestCase<EmptyKernelEmbargo> registerTestCase{};
+[[maybe_unused]] static const inline RegisterTestCase<EmptyKernelEmbargo> registerTestCase{};
 
 class EmptyKernelEmbargoSubmissionTest : public ::testing::TestWithParam<std::tuple<Api, size_t, size_t>> {
 };

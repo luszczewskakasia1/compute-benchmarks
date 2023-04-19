@@ -109,11 +109,7 @@ static TestResult run(const StreamMemoryEmbargoArguments &arguments, Statistics 
     Sycl sycl{sycl::property::queue::enable_profiling{}};
 
     Timer timer;
-    bool useDoubles = sycl.device.has(sycl::aspect::fp64);
-
-    const size_t elementSize = useDoubles ? sizeof(double) : sizeof(float);
     const size_t fillValue = 313u;
-    const int32_t scalarValue = -999;
 
     std::unique_ptr<StreamMemoryEmbargoBenchmark> benchmark = {};
     switch (arguments.type) {
@@ -149,4 +145,4 @@ static TestResult run(const StreamMemoryEmbargoArguments &arguments, Statistics 
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<StreamMemoryEmbargo> registerTestCase(run, Api::SYCL);
+[[maybe_unused]] static RegisterTestCaseImplementation<StreamMemoryEmbargo> registerTestCase(run, Api::SYCL);

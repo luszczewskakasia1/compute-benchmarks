@@ -1,7 +1,7 @@
 #
 # INTEL CONFIDENTIAL
 #
-# Copyright (C) 2019-2022 Intel Corporation
+# Copyright (C) 2019-2023 Intel Corporation
 #
 # This software and the related documents are Intel copyrighted materials,
 # and your use of them is governed by the express license under which they were
@@ -13,7 +13,11 @@
 # implied warranties, other than those that are expressly stated in the License.
 
 add_benchmark(memory_benchmark_embargo ocl l0 sycl all)
-set_target_properties(memory_benchmark_embargo_l0 PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIR}/embargo")
-set_target_properties(memory_benchmark_embargo_ocl PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIR}/embargo")
-set_property(GLOBAL PROPERTY memory_benchmark_embargo_l0_LOCATION "embargo")
-set_property(GLOBAL PROPERTY memory_benchmark_embargo_ocl_LOCATION "embargo")
+
+get_property(ALL_APIS GLOBAL PROPERTY APIS)
+foreach(API ${ALL_APIS})
+    set(TARGET_NAME "memory_benchmark_embargo_${API}")
+    set(TARGET_LOCATION "memory_benchmark_embargo_${API}_LOCATION")
+    set_target_properties(${TARGET_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIR}/embargo")
+    set_property(GLOBAL PROPERTY ${TARGET_LOCATION} "embargo")
+endforeach()
