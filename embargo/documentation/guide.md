@@ -40,7 +40,7 @@ The concurrent execution may only happen across different indexes, but it is not
 
 ` There is no guarantee that command lists submitted to command queues with different indices will execute concurrently, only a possibility that they might execute concurrently. `
 
-Which means that layers build on top of Level Zero that share the same indexes needs to be very careful with their submission to make sure they do not block the engine from other users.
+Which means that layers build on top of Level Zero that use the same indexes needs to be very careful with their submission to make sure they do not block the engine from other users.
 
 ### Deadlock samples (1) - blocking engine on host signaled event
 
@@ -79,13 +79,18 @@ zeCommandListAppendLaunchKernel(cmdList2, kernel2, &groupCount, nullptr, 0, null
 zeEventHostSignal(event);
 ```
 
-Until event is signaled from the host, kernel2 will not be able to run.
+Until event is signaled from the host, kernel2 will not be able to run, cmdList2 is synchronous so every append operation
+on it waits until it is completed. This is new command lists without any dependencies, but it is using the same engine
+that is currently occupied by dependency for kernel which is not resolved. So this API sequence would stall endlessly on append
+for kernel2 and the code will never reach to zeEventHostSignal(event).
 
 **The same applies to command queues scenarios.**
 
 Recommendations:
-Avoid signaling events from the host.
-Avoid submitting work that is dependent on host signaled events.
+1. Avoid signaling events from the host.
+2. Avoid submitting work that is dependent on host signaled events.
+3. When work is dependent on task that execute on the host, submit the command list when host task is done, without programming the wait on
+event at all.
 
 
 ### Deadlock samples (2) - blocking engine via circular multi engine dependencies
