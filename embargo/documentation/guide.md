@@ -1,3 +1,4 @@
+
 # Compute usage guide
 Contact: michal.mrozek@intel.com
 
@@ -27,20 +28,23 @@ The Level Zero implementation also is allowed to share the same physical hardwar
 
 `Multiple command queues created for the same command queue group on the same context, may also share the same physical hardware context.`
 
-It means that independent user queues, that utilizes the same physical hardware queue instance, may be executed within single Hardware context.
+It means that independent user queues, that utilize the same physical hardware queue instance, may be executed within single Hardware context.
 What it also means is that if one queue blocks given hardware engine from execution, then other users of this engine will not be able to make forward progress.
 
 Level Zero also specifies what happens when multiple queues use the same index:
 
 ` Command queues that share the same index launch sequentially but may execute concurrently. `
 
-The concurrent execution may only happen across different indexes, but it is not guaranteed:
+It means that there is no guarantee of concurrency for submission to the same index and each launch is serialized.
+
+The concurrent launch may only happen across different indexes, but again it is not guaranteed:
 
 ` Command queues that do not share the same index may launch and execute concurrently. `
 
 ` There is no guarantee that command lists submitted to command queues with different indices will execute concurrently, only a possibility that they might execute concurrently. `
 
-Which means that layers build on top of Level Zero that use the same indexes needs to be very careful with their submission to make sure they do not block the engine from other users.
+Which means that layers built on top of Level Zero that use the same indexes needs to be very careful with their submission to make sure they do not block the engine from other users.
+Due to sequential nature of each launch on the same index, it is possible to block the engine until all commands within launch are done.
 
 ### Deadlock samples (1) - blocking engine on host signaled event
 
@@ -104,6 +108,10 @@ We have 2 users, the are both doing the same sequence with in order lists/queues
 4. do computation on the compute engine
 
 All above operations must be executed in specific order.
+
+Here is also a picture illustrating this scenario:
+![Deadlock sample](images/deadlock_scenario.png)
+
 This may be implemented by creating 2 command lists containing following recorded commands:
 
 ```c++
@@ -125,7 +133,7 @@ Situation is not problematic if there is nothing else running on those engines, 
 Let's consider that within a process sharing single Level Zero driver instance, 2 non related upper level libraries do above situation.
 It may happen that between one library submission there is another library submission, so those submissions that targets the same engines starts to interleave between each other.
 
-For simplicitly let's consider that they do the same scenario
+For simplicity let's consider that they do the same scenario
 Workload 1 does
 
 copy on bcs (event1a) -> compute on ccs  (event2a) -> copy on bcs (event3a) -> copy on ccs (event4a) 
@@ -166,7 +174,6 @@ zeCommandListAppendMemoryCopy(bcsCommandListA, wait on event2a, signal event3a);
 which creates following execution sequence
 
 
-
 ```c++
 CCS engine
 1. wait on event1a, signal event2a
@@ -182,6 +189,9 @@ BCS engine
 4. wait on event2a, signal event3a
 
 ```
+Which is illustrated by this picture:
+![Deadlock full dependencies](images/deadlock_full_dependency.png)
+
 
 Let's now look at BCS engine.
 In the second step it waits on event2b, this is synchronization points to until this happens engine is blocked.
@@ -193,9 +203,14 @@ event1b, event3a and event1a
 But event1a is signaled in step #3 of BCS submission, so after operation #2 is done.
 This creates a deadlock because operation #2 on BCS engine block operation #3 which would further unblock it.
 
+This simplified picture shows this as well:
+![Deadlock simplified](images/deadlock_simplified.png)
+
 **How to avoid it ?**
 
 Some rules to follow that helps to avoid deadlocks:
-1. Avoid circular dependencies in command list, break command lists into smaller ones to break the circle
+1. Do not submit circular dependencies in command list, break command lists into smaller ones to break the circle
 2. Submit command lists in proper order, avoid submitting command list that doesn't have all dependencies submitted
+3. Commands submitted to the GPU can only use (input) events that will be signaled by other already-submitted commands.
+
 
