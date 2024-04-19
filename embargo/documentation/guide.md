@@ -213,4 +213,102 @@ Some rules to follow that helps to avoid deadlocks:
 2. Submit command lists in proper order, avoid submitting command list that doesn't have all dependencies submitted
 3. Commands submitted to the GPU can only use (input) events that will be signaled by other already-submitted commands.
 
+**Applying rules to resolve deadlock**
 
+Let's try to apply rules on sample above to see how deadlock is resolved.
+If we look at the initial programming:
+
+```c++
+CCS engine
+
+zeCommandListAppendLaunchKernel(ccsCommandListA, wait on event1a, signal event2a);
+zeCommandListAppendLaunchKernel(ccsCommandListA, wait on event3a, signal event4a);
+zeCommandListAppendLaunchKernel(ccsCommandListB, wait on event1b, signal event2b);
+zeCommandListAppendLaunchKernel(ccsCommandListB, wait on event3b, signal event4b);
+
+BCS engine
+
+zeCommandListAppendMemoryCopy(bcsCommandListB, no wait events, signal event1b);
+zeCommandListAppendMemoryCopy(bcsCommandListB, wait on event2b, signal event3b);
+zeCommandListAppendMemoryCopy(bcsCommandListA, no wait events, signal event1a);
+zeCommandListAppendMemoryCopy(bcsCommandListA, wait on event2a, signal event3a);
+
+```
+
+We can see that there is a circular dependency between BCS and CCS for second kernel in each command list.
+So First thing that we do is to split those command list into smaller ones:
+
+```c++
+
+CCS engine
+zeCommandListAppendLaunchKernel(ccsCommandListA, wait on event1a, signal event2a);
+zeCommandListAppendLaunchKernel(ccsCommandList2A, wait on event3a, signal event4a);
+zeCommandListAppendLaunchKernel(ccsCommandListB, wait on event1b, signal event2b);
+zeCommandListAppendLaunchKernel(ccsCommandList2B, wait on event3b, signal event4b);
+
+BCS engine
+
+zeCommandListAppendMemoryCopy(bcsCommandListB, no wait events, signal event1b);
+zeCommandListAppendMemoryCopy(bcsCommandListB, wait on event2b, signal event3b);
+zeCommandListAppendMemoryCopy(bcsCommandListA, no wait events, signal event1a);
+zeCommandListAppendMemoryCopy(bcsCommandListA, wait on event2a, signal event3a);
+
+```
+
+BCS command list doesn't have circular dependencies so they don't need to be modified.
+Now let's look at the initial submission order:
+
+```c++
+zeCommandQueueExecuteCommandLists(computeCommandQueueA, 1, &ccsCommandListA, nullptr);
+zeCommandQueueExecuteCommandLists(computeCommandQueueB, 1, &ccsCommandListB, nullptr);
+zeCommandQueueExecuteCommandLists(copyCommandQueueB, 1, &bcsCommandListB, nullptr);
+zeCommandQueueExecuteCommandLists(copyCommandQueueA, 1, &bcsCommandListA, nullptr);
+```
+
+Initially we were submitting command lists in order that was not respecting dependencies.
+CCS submission were done earlier then BCS submissions, even though they were dependent on those.
+
+Let's change the order of submission to respect dependencies:
+
+```c++
+//submit to BCS first as CCS is dependent on BCS
+zeCommandQueueExecuteCommandLists(copyCommandQueueB, 1, &bcsCommandListB, nullptr);
+zeCommandQueueExecuteCommandLists(copyCommandQueueA, 1, &bcsCommandListA, nullptr);
+//now submit to CCS
+zeCommandQueueExecuteCommandLists(computeCommandQueueA, 1, &ccsCommandListA, nullptr);
+zeCommandQueueExecuteCommandLists(computeCommandQueueB, 1, &ccsCommandListB, nullptr);
+zeCommandQueueExecuteCommandLists(computeCommandQueue2A, 1, &ccsCommandListA, nullptr);
+zeCommandQueueExecuteCommandLists(computeCommandQueue2B, 1, &ccsCommandListB, nullptr);
+```
+
+But here we have another problem, we are submitting to BCS command list that is dependent on CCS command list.
+So we may run into the same problem as before, but this time it is not a circular dependency, but a dependency on not yet submitted command list.
+In order to fix that, we need to split BCS command list into 2 command lists, one that is dependent on CCS and one that is not:
+
+```c++
+zeCommandListAppendMemoryCopy(bcsCommandListB, no wait events, signal event1b);
+zeCommandListAppendMemoryCopy(bcsCommandList2B, wait on event2b, signal event3b);
+zeCommandListAppendMemoryCopy(bcsCommandListA, no wait events, signal event1a);
+zeCommandListAppendMemoryCopy(bcsCommandList2A, wait on event2a, signal event3a);
+```
+
+which finally generates following submission sequence:
+
+```c++
+//submit to BCS first as CCS is dependent on BCS
+zeCommandQueueExecuteCommandLists(copyCommandQueueB, 1, &bcsCommandListB, nullptr);
+zeCommandQueueExecuteCommandLists(copyCommandQueueA, 1, &bcsCommandListA, nullptr);
+//now submit to CCS
+zeCommandQueueExecuteCommandLists(computeCommandQueueA, 1, &ccsCommandListA, nullptr);
+zeCommandQueueExecuteCommandLists(computeCommandQueueB, 1, &ccsCommandListB, nullptr);
+//now submit to BCS what was dependent on CCS
+zeCommandQueueExecuteCommandLists(copyCommandQueue2B, 1, &bcsCommandListB, nullptr);
+zeCommandQueueExecuteCommandLists(copyCommandQueue2A, 1, &bcsCommandListA, nullptr);
+//and finally submit to CCS what was dependent on second BCS submission
+zeCommandQueueExecuteCommandLists(computeCommandQueue2A, 1, &ccsCommandListA, nullptr);
+zeCommandQueueExecuteCommandLists(computeCommandQueue2B, 1, &ccsCommandListB, nullptr);
+```
+
+Now no matter how those command lists submissions are interleaved, there is no circular dependencies between them, so there is no deadlock.
+Here is sample picture illustrating this:
+![Rules applied](images/rules_applied.png)
