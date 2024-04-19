@@ -28,7 +28,7 @@ The Level Zero implementation also is allowed to share the same physical hardwar
 
 `Multiple command queues created for the same command queue group on the same context, may also share the same physical hardware context.`
 
-It means that independent user queues, that utilize the same physical hardware queue instance, may be executed within single Hardware context.
+It means that independent user queues, which utilize the same physical hardware queue instance, may be executed within single Hardware context.
 What it also means is that if one queue blocks given hardware engine from execution, then other users of this engine will not be able to make forward progress.
 
 Level Zero also specifies what happens when multiple queues use the same index:
@@ -59,14 +59,14 @@ cmdQueueDesc.ordinal = 0;
 cmdQueueDesc.index = 0;
 zeCommandListCreateImmediate(context, device, &cmdQueueDesc, &cmdList);
 
-//create non signaled event
+//create non-signaled event
 zeEventCreate(eventPool, &eventDesc, &event);
 //pass event as dependency for kernel submission via immediate command list
 zeCommandListAppendLaunchKernel(cmdList, kernel, &groupCount, nullptr, 1, &event);
 ```
 
-Until event is signaled, the physical engine doing the execution of above code is blocked on non signaled dependency.
-There may be completely new immediate command list created using the same engine and it will not be able to execute kernel without any dependencies
+Until event is signaled, the physical engine doing the execution of above code is blocked on non-signaled dependency.
+There may be completely new immediate command list created using the same engine and it will not be able to execute kernel without any dependencies.
 
 ```c++
 //create immediate command list with index and ordinal set to 0
@@ -99,13 +99,13 @@ event at all.
 
 ### Deadlock samples (2) - blocking engine via circular multi engine dependencies
 
-Let's look at following use case.
-We have 2 users, the are both doing the same sequence with in order lists/queues:
+Let us look at following use case.
+We have 2 users, they are both doing the same sequence within order lists/queues:
 
-1. copy data from host to device using copy engine
-2. do computation on the compute engine
-3. copy data from device to host 
-4. do computation on the compute engine
+1. copy data from host to device using copy engine.
+2. do computation on the compute engine.
+3. copy data from device to host.
+4. do computation on the compute engine.
 
 All above operations must be executed in specific order.
 
@@ -129,11 +129,11 @@ Which are further submitted to 2 queues (one doing compute operations and one do
 zeCommandQueueExecuteCommandLists(computeCommandQueueA, 1, &ccsCommandListA, nullptr);
 zeCommandQueueExecuteCommandLists(copyCommandQueueA, 1, &bcsCommandListA, nullptr);
 ```
-Situation is not problematic if there is nothing else running on those engines, but as soon as there is resource contention problems may arise.
-Let's consider that within a process sharing single Level Zero driver instance, 2 non related upper level libraries do above situation.
+Situation is not problematic if there is nothing else running on those engines, but as soon as there are resource contention problems may arise.
+Let's consider that within a process sharing single Level Zero driver instance, 2 non-related upper level libraries do above situation.
 It may happen that between one library submission there is another library submission, so those submissions that targets the same engines starts to interleave between each other.
 
-For simplicity let's consider that they do the same scenario
+For simplicity let us consider that they do the same scenario
 Workload 1 does
 
 copy on bcs (event1a) -> compute on ccs  (event2a) -> copy on bcs (event3a) -> copy on ccs (event4a) 
@@ -152,7 +152,7 @@ zeCommandQueueExecuteCommandLists(copyCommandQueueB, 1, &bcsCommandListB, nullpt
 zeCommandQueueExecuteCommandLists(copyCommandQueueA, 1, &bcsCommandListA, nullptr);
 ```
 
-Which generates following traffic on each engine
+Which generates following traffic on each engine:
 
 ```c++
 CCS engine
@@ -171,7 +171,7 @@ zeCommandListAppendMemoryCopy(bcsCommandListA, wait on event2a, signal event3a);
 
 ```
 
-which creates following execution sequence
+which creates following execution sequence:
 
 
 ```c++
@@ -193,7 +193,7 @@ Which is illustrated by this picture:
 ![Deadlock full dependencies](images/deadlock_full_dependency.png)
 
 
-Let's now look at BCS engine.
+Let us now look at BCS engine.
 In the second step it waits on event2b, this is synchronization points to until this happens engine is blocked.
 
 event2b will be signaled by step #3 of CCS command list, which depends on signaling of following events:
@@ -206,11 +206,11 @@ This creates a deadlock because operation #2 on BCS engine block operation #3 wh
 This simplified picture shows this as well:
 ![Deadlock simplified](images/deadlock_simplified.png)
 
-**How to avoid it ?**
+**How to avoid it?**
 
 Some rules to follow that helps to avoid deadlocks:
-1. Do not submit circular dependencies in command list, break command lists into smaller ones to break the circle
-2. Submit command lists in proper order, avoid submitting command list that doesn't have all dependencies submitted
+1. Do not submit circular dependencies in command list, break command lists into smaller ones to break the circle.
+2. Submit command lists in proper order, avoid submitting command list that doesn't have all dependencies submitted.
 3. Commands submitted to the GPU can only use (input) events that will be signaled by other already-submitted commands.
 
 **Applying rules to resolve deadlock**
@@ -236,7 +236,7 @@ zeCommandListAppendMemoryCopy(bcsCommandListA, wait on event2a, signal event3a);
 ```
 
 We can see that there is a circular dependency between BCS and CCS for second kernel in each command list.
-So First thing that we do is to split those command list into smaller ones:
+So, first thing that we do is to split those command list into smaller ones:
 
 ```c++
 
@@ -255,7 +255,7 @@ zeCommandListAppendMemoryCopy(bcsCommandListA, wait on event2a, signal event3a);
 
 ```
 
-BCS command list doesn't have circular dependencies so they don't need to be modified.
+BCS command list doesn't have circular dependencies, so they don't need to be modified.
 Now let's look at the initial submission order:
 
 ```c++
@@ -266,7 +266,7 @@ zeCommandQueueExecuteCommandLists(copyCommandQueueA, 1, &bcsCommandListA, nullpt
 ```
 
 Initially we were submitting command lists in order that was not respecting dependencies.
-CCS submission were done earlier then BCS submissions, even though they were dependent on those.
+CCS submissions were done earlier then BCS submissions, even though they were dependent on those.
 
 Let's change the order of submission to respect dependencies:
 
@@ -282,7 +282,7 @@ zeCommandQueueExecuteCommandLists(computeCommandQueue2B, 1, &ccsCommandListB, nu
 ```
 
 But here we have another problem, we are submitting to BCS command list that is dependent on CCS command list.
-So we may run into the same problem as before, but this time it is not a circular dependency, but a dependency on not yet submitted command list.
+So, we may run into the same problem as before, but this time it is not a circular dependency, but a dependency on not yet submitted command list.
 In order to fix that, we need to split BCS command list into 2 command lists, one that is dependent on CCS and one that is not:
 
 ```c++
