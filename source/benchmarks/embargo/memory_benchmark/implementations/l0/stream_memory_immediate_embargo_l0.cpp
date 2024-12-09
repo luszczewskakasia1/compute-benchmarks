@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2022 Intel Corporation
+ * Copyright (C) 2022-2024 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -122,7 +122,7 @@ static TestResult run(const StreamMemoryImmediateEmbargoArguments &arguments, St
     ASSERT_ZE_RESULT_SUCCESS(zeEventPoolCreate(levelzero.context, &eventPoolDesc, 1, &levelzero.commandQueueDevice, &eventPool));
     ze_event_desc_t eventDesc{ZE_STRUCTURE_TYPE_EVENT_DESC};
     eventDesc.index = 0;
-    eventDesc.signal = ZE_EVENT_SCOPE_FLAG_DEVICE;
+    eventDesc.signal = ZE_EVENT_SCOPE_FLAG_HOST;
     eventDesc.wait = ZE_EVENT_SCOPE_FLAG_HOST;
     ASSERT_ZE_RESULT_SUCCESS(zeEventCreate(eventPool, &eventDesc, &event));
 
