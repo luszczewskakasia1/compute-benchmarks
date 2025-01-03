@@ -1,0 +1,202 @@
+#
+# INTEL CONFIDENTIAL
+#
+# Copyright (C) 2025 Intel Corporation
+#
+# This software and the related documents are Intel copyrighted materials,
+# and your use of them is governed by the express license under which they were
+# provided to you ("License"). Unless the License provides otherwise,
+# you may not use, modify, copy, publish, distribute, disclose or transmit this
+# software or the related documents without Intel's prior written permission.
+#
+# This software and the related documents are provided as is, with no express or
+# implied warranties, other than those that are expressly stated in the License.
+
+import logging
+from pathlib import Path
+import argparse
+import typing
+import re
+import os
+import subprocess
+import csv
+import sys
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+formatter = logging.Formatter(f"{Path(__file__).name} - %(levelname)s - %(message)s")
+logger.addHandler(logging.StreamHandler(sys.stdout))
+logger.handlers[0].setFormatter(formatter)
+
+
+def execute(cmd: typing.List[str]) -> subprocess.CompletedProcess:
+    logger.debug("Executing command: %s", " ".join(cmd))
+    try:
+        process = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=15)
+    except subprocess.CalledProcessError as error:
+        logger.error("Error while executing command: %s", error)
+        logger.debug("Output: %s", (error.stdout, error.stderr))
+        sys.exit(1)
+    return process
+
+
+class BenchmarkData:
+    def __init__(self, path: Path):
+        self.workload_path: Path = path
+        self.command_lines: typing.List[str] = self.get_command_lines()
+
+    @staticmethod
+    def get_args_from_parsed_text(cmd_row: str) -> str:
+        group = re.match(r"^(.*)\[.*\[", cmd_row)
+        if group:
+            args = group.group(1).strip()
+            return args
+        logger.error("Error while parsing command line: %s", cmd_row)
+        raise Exception("Error while parsing command line")
+
+    def get_command_lines(self) -> typing.List[str]:
+        cases: typing.Set[str] = set()
+        output = execute([str(self.workload_path.resolve()), "--noop", "--csv", "--noHeaders", "--noColumnNames"])
+        csv_with_class = csv.reader(output.stdout.decode("utf-8").splitlines())
+
+        output = execute(
+            [
+                str(self.workload_path.resolve()),
+                "--noop",
+                "--csv",
+                "--noHeaders",
+                "--noColumnNames",
+                "--dumpCommandLines",
+            ]
+        )
+        csv_with_cmds = csv.reader(output.stdout.decode("utf-8").splitlines())
+        for row1, row2 in zip(csv_with_class, csv_with_cmds):
+            if "NO_IMPLEMENT" in row1[0]:
+                logger.info("Skipping case %s due to NO_IMPLEMENT", row2[0])
+                continue
+            if "NO_SUPPORT (API)" in row1[0]:
+                logger.info("Skipping case %s due to NO_SUPPORT (API)", row2[0])
+                continue
+            if "INVALID_ARGS" in row2[0]:
+                logger.error("Test issue: INVALID_ARGS in workload: %s", self.workload_path.name)
+                sys.exit(1)
+            case_args = BenchmarkData.get_args_from_parsed_text(row2[0])
+            binary_name = self.workload_path.stem
+            # Support for `BUILD_ALL_API_BINARIES` option
+            api_arg_match = re.match(r".*--api=(\w+).*", case_args)
+            if api_arg_match:
+                api_arg = api_arg_match.group(1)
+                if f"_{api_arg}" not in binary_name:
+                    binary_name = f"{binary_name}_{api_arg}"
+            logger.debug("%s %s", binary_name, case_args)
+            cases.add(f"{binary_name} {case_args}")
+        logger.debug("Detected cases %s", cases)
+        return list(cases)
+
+
+class Collector:
+    def __init__(self, args):
+        self.binaries_path: Path = args.binaries_path
+
+    @staticmethod
+    def is_binary_exception(file: Path) -> bool:
+        return (
+            any(file.name.endswith(ext) for ext in [".spv", ".cl", ".txt", ".pdb", ".ilk"])
+            or file.is_dir()
+            or "workload" in file.name
+            or any(
+                file.name.startswith(prefix)
+                for prefix in ["mutex_comparison", "clflush_comparison", "show_devices", "run_tests_with_cal"]
+            )
+            or not os.access(file, os.X_OK)
+        )
+
+    def collect(self) -> typing.List[BenchmarkData]:
+        logger.info("Start detecting workloads in %s", self.binaries_path)
+        binaries_paths = []
+        for path in self.binaries_path.rglob("*"):
+            if not Collector.is_binary_exception(path):
+                binaries_paths.append(BenchmarkData(path))
+        logger.info("Detected binaries: %s", len(binaries_paths))
+        return binaries_paths
+
+
+def main(args=None) -> None:
+    if args is None:
+        args = process_command_line()
+    collector = Collector(args)
+    workloads = collector.collect()
+    add_workloads_to_csv(workloads, args.test_content_csv_path, regenerate=args.regenerate)
+
+
+def add_workloads_to_csv(
+    workloads: typing.List[BenchmarkData], test_content_csv_path: Path, regenerate: bool = False
+) -> None:
+    # Read the CSV file to check if the command already exists
+    class CommandCheck:
+        def __init__(self, command_line: str, presi_enabled: str, postsi_enabled: str):
+            self.command_line = command_line
+            self.presi_enabled = presi_enabled
+            self.postsi_enabled = postsi_enabled
+
+    command_lines: typing.List[CommandCheck] = []
+    if not test_content_csv_path.exists():
+        raise FileNotFoundError(f"File {test_content_csv_path.resolve()} not found. Please specify correct file.")
+
+    if not regenerate:
+        with open(test_content_csv_path, mode="r", newline="", encoding="utf-8") as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                command_lines.append(CommandCheck(row["command_line"], row["presi_enabled"], row["postsi_enabled"]))
+
+    for workload in workloads:
+        for workload_command_line in workload.command_lines:
+            if any(workload_command_line == csv_command_check.command_line for csv_command_check in command_lines):
+                continue
+            logger.info("Adding new command line: %s", workload_command_line)
+            command_lines.append(CommandCheck(workload_command_line, False, True))
+    command_lines.sort(key=lambda x: x.command_line)
+
+    with open(test_content_csv_path, mode="w", newline="", encoding="utf-8") as file:
+        fieldnames = ["command_line", "presi_enabled", "postsi_enabled"]
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        if file.tell() == 0:
+            writer.writeheader()
+        for command in command_lines:
+            writer.writerow(
+                {
+                    "command_line": command.command_line,
+                    "presi_enabled": command.presi_enabled,
+                    "postsi_enabled": command.postsi_enabled,
+                }
+            )
+
+
+def process_command_line() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    setup_parser(parser)
+    return parser.parse_args()
+
+
+def setup_parser(root_parser: argparse.ArgumentParser) -> None:
+    root_parser.add_argument(
+        "--binaries_path",
+        type=Path,
+        default=Path("./build/bin"),
+        help="Path to package with binaries",
+    )
+    root_parser.add_argument(
+        "--test_content_csv_path",
+        type=Path,
+        default=Path("./source/tools/embargo/test_content/test_content.csv"),
+        help="Path to csv with test content",
+    )
+    root_parser.add_argument(
+        "--regenerate",
+        action="store_true",
+        help="Regenerate whole test content having presi content disabled and postsi content enabled by default",
+    )
+
+
+if __name__ == "__main__":
+    main()
