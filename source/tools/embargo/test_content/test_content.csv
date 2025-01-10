@@ -36,11 +36,11 @@ api_overhead_benchmark_l0 --test=CreateCommandListImmediate --api=l0 --CmdListCo
 api_overhead_benchmark_l0 --test=CreateCommandListImmediate --api=l0 --CmdListCount=1000 --ioq=0,False,True
 api_overhead_benchmark_l0 --test=CreateCommandListImmediate --api=l0 --CmdListCount=1000 --ioq=1,False,True
 api_overhead_benchmark_l0 --test=DestroyCommandList --api=l0 --CmdListCount=100,False,True
-api_overhead_benchmark_l0 --test=DestroyCommandList --api=l0 --CmdListCount=1000,False,True
+api_overhead_benchmark_l0 --test=DestroyCommandList --api=l0 --CmdListCount=1000,True,True
 api_overhead_benchmark_l0 --test=DestroyCommandListImmediate --api=l0 --CmdListCount=100 --ioq=0,False,True
 api_overhead_benchmark_l0 --test=DestroyCommandListImmediate --api=l0 --CmdListCount=100 --ioq=1,False,True
-api_overhead_benchmark_l0 --test=DestroyCommandListImmediate --api=l0 --CmdListCount=1000 --ioq=0,False,True
-api_overhead_benchmark_l0 --test=DestroyCommandListImmediate --api=l0 --CmdListCount=1000 --ioq=1,False,True
+api_overhead_benchmark_l0 --test=DestroyCommandListImmediate --api=l0 --CmdListCount=1000 --ioq=0,True,True
+api_overhead_benchmark_l0 --test=DestroyCommandListImmediate --api=l0 --CmdListCount=1000 --ioq=1,True,True
 api_overhead_benchmark_l0 --test=DriverGet --api=l0 --getDriverCount=0,False,True
 api_overhead_benchmark_l0 --test=DriverGet --api=l0 --getDriverCount=1,False,True
 api_overhead_benchmark_l0 --test=DriverGetApiVersion --api=l0,False,True
@@ -90,7 +90,7 @@ api_overhead_benchmark_l0 --test=EventCreation --api=l0 --useProfiling=1 --hostV
 api_overhead_benchmark_l0 --test=EventCreation --api=l0 --useProfiling=1 --hostVisible=0 --signal=none --wait=none --eventCount=100,False,True
 api_overhead_benchmark_l0 --test=EventCreation --api=l0 --useProfiling=1 --hostVisible=0 --signal=none --wait=subdevice --eventCount=100,False,True
 api_overhead_benchmark_l0 --test=EventCreation --api=l0 --useProfiling=1 --hostVisible=0 --signal=subdevice --wait=device --eventCount=100,False,True
-api_overhead_benchmark_l0 --test=EventCreation --api=l0 --useProfiling=1 --hostVisible=0 --signal=subdevice --wait=host --eventCount=100,False,True
+api_overhead_benchmark_l0 --test=EventCreation --api=l0 --useProfiling=1 --hostVisible=0 --signal=subdevice --wait=host --eventCount=100,True,True
 api_overhead_benchmark_l0 --test=EventCreation --api=l0 --useProfiling=1 --hostVisible=0 --signal=subdevice --wait=none --eventCount=100,False,True
 api_overhead_benchmark_l0 --test=EventCreation --api=l0 --useProfiling=1 --hostVisible=0 --signal=subdevice --wait=subdevice --eventCount=100,False,True
 api_overhead_benchmark_l0 --test=EventCreation --api=l0 --useProfiling=1 --hostVisible=1 --signal=device --wait=device --eventCount=100,False,True
@@ -234,7 +234,7 @@ api_overhead_benchmark_l0 --test=ExecImmediate --api=l0 --Profiling=1 --CallsCou
 api_overhead_benchmark_l0 --test=ExecImmediate --api=l0 --Profiling=1 --CallsCount=10 --MeasureCompletion=1 --BarrierSynchro=1 --KernelExecTime=1 --EventSync=0 --ioq=0,False,True
 api_overhead_benchmark_l0 --test=ExecImmediate --api=l0 --Profiling=1 --CallsCount=10 --MeasureCompletion=1 --BarrierSynchro=1 --KernelExecTime=1 --EventSync=0 --ioq=1,False,True
 api_overhead_benchmark_l0 --test=ExecImmediate --api=l0 --Profiling=1 --CallsCount=10 --MeasureCompletion=1 --BarrierSynchro=1 --KernelExecTime=1 --EventSync=1 --ioq=0,False,True
-api_overhead_benchmark_l0 --test=ExecImmediate --api=l0 --Profiling=1 --CallsCount=10 --MeasureCompletion=1 --BarrierSynchro=1 --KernelExecTime=1 --EventSync=1 --ioq=1,False,True
+api_overhead_benchmark_l0 --test=ExecImmediate --api=l0 --Profiling=1 --CallsCount=10 --MeasureCompletion=1 --BarrierSynchro=1 --KernelExecTime=1 --EventSync=1 --ioq=1,True,True
 api_overhead_benchmark_l0 --test=ExecImmediate --api=l0 --Profiling=1 --CallsCount=10 --MeasureCompletion=1 --BarrierSynchro=1 --KernelExecTime=100 --EventSync=0 --ioq=0,False,True
 api_overhead_benchmark_l0 --test=ExecImmediate --api=l0 --Profiling=1 --CallsCount=10 --MeasureCompletion=1 --BarrierSynchro=1 --KernelExecTime=100 --EventSync=0 --ioq=1,False,True
 api_overhead_benchmark_l0 --test=ExecImmediate --api=l0 --Profiling=1 --CallsCount=10 --MeasureCompletion=1 --BarrierSynchro=1 --KernelExecTime=100 --EventSync=1 --ioq=0,False,True
@@ -322,7 +322,7 @@ api_overhead_benchmark_l0 --test=ExecImmediateMultiKernel --api=l0 --CallsCount=
 api_overhead_benchmark_l0 --test=ExecImmediateMultiKernel --api=l0 --CallsCount=16 --ExecTime=1 --Barrier=0 --BeforeBarrierCnt=2 --AfterBarrierCnt=2 --ioq=0,False,True
 api_overhead_benchmark_l0 --test=ExecImmediateMultiKernel --api=l0 --CallsCount=16 --ExecTime=1 --Barrier=0 --BeforeBarrierCnt=2 --AfterBarrierCnt=2 --ioq=1,False,True
 api_overhead_benchmark_l0 --test=ExecImmediateMultiKernel --api=l0 --CallsCount=16 --ExecTime=1 --Barrier=1 --BeforeBarrierCnt=2 --AfterBarrierCnt=2 --ioq=0,False,True
-api_overhead_benchmark_l0 --test=ExecImmediateMultiKernel --api=l0 --CallsCount=16 --ExecTime=1 --Barrier=1 --BeforeBarrierCnt=2 --AfterBarrierCnt=2 --ioq=1,False,True
+api_overhead_benchmark_l0 --test=ExecImmediateMultiKernel --api=l0 --CallsCount=16 --ExecTime=1 --Barrier=1 --BeforeBarrierCnt=2 --AfterBarrierCnt=2 --ioq=1,True,True
 api_overhead_benchmark_l0 --test=ExecImmediateMultiKernel --api=l0 --CallsCount=16 --ExecTime=100 --Barrier=0 --BeforeBarrierCnt=2 --AfterBarrierCnt=2 --ioq=0,False,True
 api_overhead_benchmark_l0 --test=ExecImmediateMultiKernel --api=l0 --CallsCount=16 --ExecTime=100 --Barrier=0 --BeforeBarrierCnt=2 --AfterBarrierCnt=2 --ioq=1,False,True
 api_overhead_benchmark_l0 --test=ExecImmediateMultiKernel --api=l0 --CallsCount=16 --ExecTime=100 --Barrier=1 --BeforeBarrierCnt=2 --AfterBarrierCnt=2 --ioq=0,False,True
@@ -336,18 +336,18 @@ api_overhead_benchmark_l0 --test=ExecImmediateMultiKernel --api=l0 --CallsCount=
 api_overhead_benchmark_l0 --test=ExecImmediateMultiKernel --api=l0 --CallsCount=4 --ExecTime=100 --Barrier=1 --BeforeBarrierCnt=2 --AfterBarrierCnt=2 --ioq=0,False,True
 api_overhead_benchmark_l0 --test=ExecImmediateMultiKernel --api=l0 --CallsCount=4 --ExecTime=100 --Barrier=1 --BeforeBarrierCnt=2 --AfterBarrierCnt=2 --ioq=1,False,True
 api_overhead_benchmark_l0 --test=ExecuteCommandList --api=l0 --UseFence=0 --measureCompletionTime=0,False,True
-api_overhead_benchmark_l0 --test=ExecuteCommandList --api=l0 --UseFence=1 --measureCompletionTime=1,False,True
+api_overhead_benchmark_l0 --test=ExecuteCommandList --api=l0 --UseFence=1 --measureCompletionTime=1,True,True
 api_overhead_benchmark_l0 --test=ExecuteCommandListForCopyEngine --api=l0 --UseFence=0 --measureCompletionTime=0,False,True
 api_overhead_benchmark_l0 --test=ExecuteCommandListForCopyEngine --api=l0 --UseFence=0 --measureCompletionTime=1,False,True
 api_overhead_benchmark_l0 --test=ExecuteCommandListForCopyEngine --api=l0 --UseFence=1 --measureCompletionTime=0,False,True
 api_overhead_benchmark_l0 --test=ExecuteCommandListForCopyEngine --api=l0 --UseFence=1 --measureCompletionTime=1,False,True
 api_overhead_benchmark_l0 --test=ExecuteCommandListWithFenceCreate --api=l0,False,True
 api_overhead_benchmark_l0 --test=ExecuteCommandListWithFenceDestroy --api=l0,False,True
-api_overhead_benchmark_l0 --test=ExecuteCommandListWithFenceUsage --api=l0,False,True
+api_overhead_benchmark_l0 --test=ExecuteCommandListWithFenceUsage --api=l0,True,True
 api_overhead_benchmark_l0 --test=ExecuteCommandListWithIndirectAccess --api=l0 --AmountOfIndirectAllocations=10 --AllocateMemory=0,False,True
 api_overhead_benchmark_l0 --test=ExecuteCommandListWithIndirectAccess --api=l0 --AmountOfIndirectAllocations=10 --AllocateMemory=1,False,True
 api_overhead_benchmark_l0 --test=ExecuteCommandListWithIndirectAccess --api=l0 --AmountOfIndirectAllocations=100 --AllocateMemory=0,False,True
-api_overhead_benchmark_l0 --test=ExecuteCommandListWithIndirectAccess --api=l0 --AmountOfIndirectAllocations=100 --AllocateMemory=1,False,True
+api_overhead_benchmark_l0 --test=ExecuteCommandListWithIndirectAccess --api=l0 --AmountOfIndirectAllocations=100 --AllocateMemory=1,True,True
 api_overhead_benchmark_l0 --test=ExecuteCommandListWithIndirectAccess --api=l0 --AmountOfIndirectAllocations=1000 --AllocateMemory=0,False,True
 api_overhead_benchmark_l0 --test=ExecuteCommandListWithIndirectAccess --api=l0 --AmountOfIndirectAllocations=1000 --AllocateMemory=1,False,True
 api_overhead_benchmark_l0 --test=ExecuteCommandListWithIndirectArguments --api=l0 --AmountOfIndirectAllocations=0 --placement=Host,False,True
@@ -355,7 +355,7 @@ api_overhead_benchmark_l0 --test=ExecuteCommandListWithIndirectArguments --api=l
 api_overhead_benchmark_l0 --test=ExecuteCommandListWithIndirectArguments --api=l0 --AmountOfIndirectAllocations=10 --placement=Host,False,True
 api_overhead_benchmark_l0 --test=ExecuteCommandListWithIndirectArguments --api=l0 --AmountOfIndirectAllocations=10 --placement=Shared,False,True
 api_overhead_benchmark_l0 --test=ExecuteCommandListWithIndirectArguments --api=l0 --AmountOfIndirectAllocations=100 --placement=Host,False,True
-api_overhead_benchmark_l0 --test=ExecuteCommandListWithIndirectArguments --api=l0 --AmountOfIndirectAllocations=100 --placement=Shared,False,True
+api_overhead_benchmark_l0 --test=ExecuteCommandListWithIndirectArguments --api=l0 --AmountOfIndirectAllocations=100 --placement=Shared,True,True
 api_overhead_benchmark_l0 --test=ExecuteCommandListWithIndirectArguments --api=l0 --AmountOfIndirectAllocations=1000 --placement=Host,False,True
 api_overhead_benchmark_l0 --test=ExecuteCommandListWithIndirectArguments --api=l0 --AmountOfIndirectAllocations=1000 --placement=Shared,False,True
 api_overhead_benchmark_l0 --test=ExecuteRegularCommandListWithImmediate --api=l0 --event=0 --useProfiling=0 --measureCompletionTime=0 --ioq=0 --ctrBasedEvents=0 --waitEvent=0,False,True
@@ -403,7 +403,7 @@ api_overhead_benchmark_l0 --test=GetMemoryPropertiesWithOffsetedPointer --api=l0
 api_overhead_benchmark_l0 --test=GetMemoryPropertiesWithOffsetedPointer --api=l0 --AmountOfUsmAllocations=100,False,True
 api_overhead_benchmark_l0 --test=GetMemoryPropertiesWithOffsetedPointer --api=l0 --AmountOfUsmAllocations=1000,False,True
 api_overhead_benchmark_l0 --test=KernelSetArgumentValueImmediate --api=l0 --argSize=1024 --differentValues=0,False,True
-api_overhead_benchmark_l0 --test=KernelSetArgumentValueImmediate --api=l0 --argSize=1024 --differentValues=1,False,True
+api_overhead_benchmark_l0 --test=KernelSetArgumentValueImmediate --api=l0 --argSize=1024 --differentValues=1,True,True
 api_overhead_benchmark_l0 --test=KernelSetArgumentValueImmediate --api=l0 --argSize=2048 --differentValues=0,False,True
 api_overhead_benchmark_l0 --test=KernelSetArgumentValueImmediate --api=l0 --argSize=2048 --differentValues=1,False,True
 api_overhead_benchmark_l0 --test=KernelSetArgumentValueImmediate --api=l0 --argSize=256 --differentValues=0,False,True
@@ -418,7 +418,7 @@ api_overhead_benchmark_l0 --test=LifecycleCommandList --api=l0 --CmdListCount=1 
 api_overhead_benchmark_l0 --test=LifecycleCommandList --api=l0 --CmdListCount=1 --CopyOnly=1,False,True
 api_overhead_benchmark_l0 --test=LifecycleCommandList --api=l0 --CmdListCount=10 --CopyOnly=0,False,True
 api_overhead_benchmark_l0 --test=LifecycleCommandList --api=l0 --CmdListCount=10 --CopyOnly=1,False,True
-api_overhead_benchmark_l0 --test=LifecycleCommandList --api=l0 --CmdListCount=100 --CopyOnly=0,False,True
+api_overhead_benchmark_l0 --test=LifecycleCommandList --api=l0 --CmdListCount=100 --CopyOnly=0,True,True
 api_overhead_benchmark_l0 --test=LifecycleCommandList --api=l0 --CmdListCount=100 --CopyOnly=1,False,True
 api_overhead_benchmark_l0 --test=MemGetIpcHandle --api=l0 --src=Device --AmountOfUsmAllocations=1,False,True
 api_overhead_benchmark_l0 --test=MemGetIpcHandle --api=l0 --src=Device --AmountOfUsmAllocations=10,False,True
@@ -493,7 +493,7 @@ api_overhead_benchmark_l0 --test=ResetCommandList --api=l0 --sourcePlacement=non
 api_overhead_benchmark_l0 --test=ResetCommandList --api=l0 --sourcePlacement=non-USM --size=4 --CopyOnly=0,False,True
 api_overhead_benchmark_l0 --test=ResetCommandList --api=l0 --sourcePlacement=non-USM --size=4 --CopyOnly=1,False,True
 api_overhead_benchmark_l0 --test=SetKernelArgSvmPointer --api=l0 --allocationsCount=100 --reallocate=0 --allocationSize=1024,False,True
-api_overhead_benchmark_l0 --test=SetKernelArgSvmPointer --api=l0 --allocationsCount=100 --reallocate=1 --allocationSize=1024,False,True
+api_overhead_benchmark_l0 --test=SetKernelArgSvmPointer --api=l0 --allocationsCount=100 --reallocate=1 --allocationSize=1024,True,True
 api_overhead_benchmark_l0 --test=SetKernelGroupSize --api=l0 --asymmetricLocalWorkSize=0,False,True
 api_overhead_benchmark_l0 --test=SetKernelGroupSize --api=l0 --asymmetricLocalWorkSize=1,False,True
 api_overhead_benchmark_l0 --test=SubmitKernel --api=l0 --Profiling=0 --Ioq=0 --DiscardEvents=0 --NumKernels=10 --KernelExecTime=1 --MeasureCompletion=0,False,True
@@ -574,7 +574,7 @@ api_overhead_benchmark_l0 --test=UsmMemoryAllocation --api=l0 --type=Shared --si
 api_overhead_benchmark_l0 --test=UsmMemoryAllocation --api=l0 --type=Shared --size=4KB --measureMode=Both,False,True
 api_overhead_benchmark_l0 --test=UsmMemoryAllocation --api=l0 --type=Shared --size=4KB --measureMode=Free,False,True
 api_overhead_benchmark_l0 --test=UsmMemoryAllocation --api=l0 --type=Shared --size=4MB --measureMode=Allocate,False,True
-api_overhead_benchmark_l0 --test=UsmMemoryAllocation --api=l0 --type=Shared --size=4MB --measureMode=Both,False,True
+api_overhead_benchmark_l0 --test=UsmMemoryAllocation --api=l0 --type=Shared --size=4MB --measureMode=Both,True,True
 api_overhead_benchmark_l0 --test=UsmMemoryAllocation --api=l0 --type=Shared --size=4MB --measureMode=Free,False,True
 api_overhead_benchmark_l0 --test=UsmMemoryAllocation --api=l0 --type=Shared --size=512 --measureMode=Allocate,False,True
 api_overhead_benchmark_l0 --test=UsmMemoryAllocation --api=l0 --type=Shared --size=512 --measureMode=Both,False,True
@@ -678,7 +678,7 @@ api_overhead_benchmark_ocl --test=EnqueueNdrNullLws --api=ocl --gws=1000 --ooq=0
 api_overhead_benchmark_ocl --test=EnqueueNdrNullLws --api=ocl --gws=1000 --ooq=1 --profiling=0 --event=0,False,True
 api_overhead_benchmark_ocl --test=EnqueueNdrNullLws --api=ocl --gws=1000 --ooq=1 --profiling=0 --event=1,False,True
 api_overhead_benchmark_ocl --test=EnqueueNdrNullLws --api=ocl --gws=1000 --ooq=1 --profiling=1 --event=0,False,True
-api_overhead_benchmark_ocl --test=EnqueueNdrNullLws --api=ocl --gws=1000 --ooq=1 --profiling=1 --event=1,False,True
+api_overhead_benchmark_ocl --test=EnqueueNdrNullLws --api=ocl --gws=1000 --ooq=1 --profiling=1 --event=1,True,True
 api_overhead_benchmark_ocl --test=EnqueueNdrTime --api=ocl --wgc=1 --wgs=1 --ooq=0 --profiling=0 --event=0,False,True
 api_overhead_benchmark_ocl --test=EnqueueNdrTime --api=ocl --wgc=1 --wgs=1 --ooq=0 --profiling=0 --event=1,False,True
 api_overhead_benchmark_ocl --test=EnqueueNdrTime --api=ocl --wgc=1 --wgs=1 --ooq=0 --profiling=1 --event=0,False,True
@@ -718,7 +718,7 @@ api_overhead_benchmark_ocl --test=EnqueueNdrTime --api=ocl --wgc=100 --wgs=256 -
 api_overhead_benchmark_ocl --test=EnqueueNdrTime --api=ocl --wgc=100 --wgs=256 --ooq=1 --profiling=0 --event=0,False,True
 api_overhead_benchmark_ocl --test=EnqueueNdrTime --api=ocl --wgc=100 --wgs=256 --ooq=1 --profiling=0 --event=1,False,True
 api_overhead_benchmark_ocl --test=EnqueueNdrTime --api=ocl --wgc=100 --wgs=256 --ooq=1 --profiling=1 --event=0,False,True
-api_overhead_benchmark_ocl --test=EnqueueNdrTime --api=ocl --wgc=100 --wgs=256 --ooq=1 --profiling=1 --event=1,False,True
+api_overhead_benchmark_ocl --test=EnqueueNdrTime --api=ocl --wgc=100 --wgs=256 --ooq=1 --profiling=1 --event=1,True,True
 api_overhead_benchmark_ocl --test=EnqueueNdrTime --api=ocl --wgc=100 --wgs=32 --ooq=0 --profiling=0 --event=0,False,True
 api_overhead_benchmark_ocl --test=EnqueueNdrTime --api=ocl --wgc=100 --wgs=32 --ooq=0 --profiling=0 --event=1,False,True
 api_overhead_benchmark_ocl --test=EnqueueNdrTime --api=ocl --wgc=100 --wgs=32 --ooq=0 --profiling=1 --event=0,False,True
@@ -776,7 +776,7 @@ api_overhead_benchmark_ocl --test=FlushTime --api=ocl --wgc=100 --wgs=1 --ooq=0 
 api_overhead_benchmark_ocl --test=FlushTime --api=ocl --wgc=100 --wgs=1 --ooq=1 --event=0 --flushCount=100,False,True
 api_overhead_benchmark_ocl --test=FlushTime --api=ocl --wgc=100 --wgs=1 --ooq=1 --event=1 --flushCount=100,False,True
 api_overhead_benchmark_ocl --test=FlushTime --api=ocl --wgc=100 --wgs=256 --ooq=0 --event=0 --flushCount=100,False,True
-api_overhead_benchmark_ocl --test=FlushTime --api=ocl --wgc=100 --wgs=256 --ooq=0 --event=1 --flushCount=100,False,True
+api_overhead_benchmark_ocl --test=FlushTime --api=ocl --wgc=100 --wgs=256 --ooq=0 --event=1 --flushCount=100,True,True
 api_overhead_benchmark_ocl --test=FlushTime --api=ocl --wgc=100 --wgs=256 --ooq=1 --event=0 --flushCount=100,False,True
 api_overhead_benchmark_ocl --test=FlushTime --api=ocl --wgc=100 --wgs=256 --ooq=1 --event=1 --flushCount=100,False,True
 api_overhead_benchmark_ocl --test=FlushTime --api=ocl --wgc=100 --wgs=32 --ooq=0 --event=0 --flushCount=100,False,True
@@ -824,7 +824,7 @@ api_overhead_benchmark_ocl --test=MultiArgumentKernelTime --api=ocl --argumentCo
 api_overhead_benchmark_ocl --test=MultiArgumentKernelTime --api=ocl --argumentCount=8 --measureSetArg=1 --ids=0 --count=1 --exec=0 --lws=32 --groupCount=8,False,True
 api_overhead_benchmark_ocl --test=MultiArgumentKernelTime --api=ocl --argumentCount=8 --measureSetArg=1 --ids=1 --count=1 --exec=0 --lws=32 --groupCount=8,False,True
 api_overhead_benchmark_ocl --test=SetKernelArgSvmPointer --api=ocl --allocationsCount=100 --reallocate=0 --allocationSize=1024,False,True
-api_overhead_benchmark_ocl --test=SetKernelArgSvmPointer --api=ocl --allocationsCount=100 --reallocate=1 --allocationSize=1024,False,True
+api_overhead_benchmark_ocl --test=SetKernelArgSvmPointer --api=ocl --allocationsCount=100 --reallocate=1 --allocationSize=1024,True,True
 api_overhead_benchmark_ocl --test=SubmitKernel --api=ocl --Profiling=0 --Ioq=0 --DiscardEvents=0 --NumKernels=10 --KernelExecTime=1 --MeasureCompletion=0,False,True
 api_overhead_benchmark_ocl --test=SubmitKernel --api=ocl --Profiling=0 --Ioq=0 --DiscardEvents=0 --NumKernels=10 --KernelExecTime=1 --MeasureCompletion=1,False,True
 api_overhead_benchmark_ocl --test=SubmitKernel --api=ocl --Profiling=0 --Ioq=0 --DiscardEvents=1 --NumKernels=10 --KernelExecTime=1 --MeasureCompletion=0,False,True
@@ -840,7 +840,7 @@ atomic_benchmark_ocl --test=OneAtomic --api=ocl --type=Float --op=Min --wgc=32 -
 atomic_benchmark_ocl --test=OneAtomic --api=ocl --type=Float --op=Xchg --wgc=32 --wgs=64 --useEvents=1,False,True
 atomic_benchmark_ocl --test=OneAtomic --api=ocl --type=Int32 --op=Add --wgc=32 --wgs=64 --useEvents=1,False,True
 atomic_benchmark_ocl --test=OneAtomic --api=ocl --type=Int32 --op=And --wgc=32 --wgs=64 --useEvents=1,False,True
-atomic_benchmark_ocl --test=OneAtomic --api=ocl --type=Int32 --op=Inc --wgc=32 --wgs=64 --useEvents=1,False,True
+atomic_benchmark_ocl --test=OneAtomic --api=ocl --type=Int32 --op=Inc --wgc=32 --wgs=64 --useEvents=1,True,True
 atomic_benchmark_ocl --test=OneAtomic --api=ocl --type=Int32 --op=Min --wgc=32 --wgs=64 --useEvents=1,False,True
 atomic_benchmark_ocl --test=OneAtomic --api=ocl --type=Int32 --op=Xchg --wgc=32 --wgs=64 --useEvents=1,False,True
 atomic_benchmark_ocl --test=OneAtomicExplicit --api=ocl --type=Float --op=Add --scope=Device --order=acq_rel --wgc=32 --wgs=64 --useEvents=1,False,True
@@ -1177,8 +1177,8 @@ atomic_benchmark_ocl --test=SeparateAtomics --api=ocl --type=Int32 --op=Add --at
 atomic_benchmark_ocl --test=SeparateAtomics --api=ocl --type=Int32 --op=Add --atomicsPerCacheline=4 --wgc=32 --wgs=64 --useEvents=1,False,True
 atomic_benchmark_ocl --test=SeparateAtomics --api=ocl --type=Int32 --op=And --atomicsPerCacheline=1 --wgc=32 --wgs=64 --useEvents=1,False,True
 atomic_benchmark_ocl --test=SeparateAtomics --api=ocl --type=Int32 --op=And --atomicsPerCacheline=4 --wgc=32 --wgs=64 --useEvents=1,False,True
-atomic_benchmark_ocl --test=SeparateAtomics --api=ocl --type=Int32 --op=Inc --atomicsPerCacheline=1 --wgc=32 --wgs=64 --useEvents=1,False,True
-atomic_benchmark_ocl --test=SeparateAtomics --api=ocl --type=Int32 --op=Inc --atomicsPerCacheline=4 --wgc=32 --wgs=64 --useEvents=1,False,True
+atomic_benchmark_ocl --test=SeparateAtomics --api=ocl --type=Int32 --op=Inc --atomicsPerCacheline=1 --wgc=32 --wgs=64 --useEvents=1,True,True
+atomic_benchmark_ocl --test=SeparateAtomics --api=ocl --type=Int32 --op=Inc --atomicsPerCacheline=4 --wgc=32 --wgs=64 --useEvents=1,True,True
 atomic_benchmark_ocl --test=SeparateAtomics --api=ocl --type=Int32 --op=Min --atomicsPerCacheline=1 --wgc=32 --wgs=64 --useEvents=1,False,True
 atomic_benchmark_ocl --test=SeparateAtomics --api=ocl --type=Int32 --op=Min --atomicsPerCacheline=4 --wgc=32 --wgs=64 --useEvents=1,False,True
 atomic_benchmark_ocl --test=SeparateAtomics --api=ocl --type=Int32 --op=Xchg --atomicsPerCacheline=1 --wgc=32 --wgs=64 --useEvents=1,False,True
@@ -1288,12 +1288,12 @@ atomic_benchmark_ocl --test=SeparateAtomicsExplicit --api=ocl --type=Int32 --op=
 atomic_benchmark_ocl --test=SeparateAtomicsExplicit --api=ocl --type=Int32 --op=Add --atomicsPerCacheline=1 --scope=Device --order=relaxed --wgc=32 --wgs=64 --useEvents=1,False,True
 atomic_benchmark_ocl --test=SeparateAtomicsExplicit --api=ocl --type=Int32 --op=Add --atomicsPerCacheline=1 --scope=Device --order=release --wgc=32 --wgs=64 --useEvents=1,False,True
 atomic_benchmark_ocl --test=SeparateAtomicsExplicit --api=ocl --type=Int32 --op=Add --atomicsPerCacheline=1 --scope=Device --order=seq_cst --wgc=32 --wgs=64 --useEvents=1,False,True
-atomic_benchmark_ocl --test=SeparateAtomicsExplicit --api=ocl --type=Int32 --op=Add --atomicsPerCacheline=1 --scope=Workgroup --order=acq_rel --wgc=32 --wgs=64 --useEvents=1,False,True
+atomic_benchmark_ocl --test=SeparateAtomicsExplicit --api=ocl --type=Int32 --op=Add --atomicsPerCacheline=1 --scope=Workgroup --order=acq_rel --wgc=32 --wgs=64 --useEvents=1,True,True
 atomic_benchmark_ocl --test=SeparateAtomicsExplicit --api=ocl --type=Int32 --op=Add --atomicsPerCacheline=1 --scope=Workgroup --order=acquire --wgc=32 --wgs=64 --useEvents=1,False,True
 atomic_benchmark_ocl --test=SeparateAtomicsExplicit --api=ocl --type=Int32 --op=Add --atomicsPerCacheline=1 --scope=Workgroup --order=relaxed --wgc=32 --wgs=64 --useEvents=1,False,True
 atomic_benchmark_ocl --test=SeparateAtomicsExplicit --api=ocl --type=Int32 --op=Add --atomicsPerCacheline=1 --scope=Workgroup --order=release --wgc=32 --wgs=64 --useEvents=1,False,True
-atomic_benchmark_ocl --test=SeparateAtomicsExplicit --api=ocl --type=Int32 --op=Add --atomicsPerCacheline=1 --scope=Workgroup --order=seq_cst --wgc=32 --wgs=64 --useEvents=1,False,True
-atomic_benchmark_ocl --test=SeparateAtomicsExplicit --api=ocl --type=Int32 --op=Add --atomicsPerCacheline=4 --scope=Device --order=acq_rel --wgc=32 --wgs=64 --useEvents=1,False,True
+atomic_benchmark_ocl --test=SeparateAtomicsExplicit --api=ocl --type=Int32 --op=Add --atomicsPerCacheline=1 --scope=Workgroup --order=seq_cst --wgc=32 --wgs=64 --useEvents=1,True,True
+atomic_benchmark_ocl --test=SeparateAtomicsExplicit --api=ocl --type=Int32 --op=Add --atomicsPerCacheline=4 --scope=Device --order=acq_rel --wgc=32 --wgs=64 --useEvents=1,True,True
 atomic_benchmark_ocl --test=SeparateAtomicsExplicit --api=ocl --type=Int32 --op=Add --atomicsPerCacheline=4 --scope=Device --order=acquire --wgc=32 --wgs=64 --useEvents=1,False,True
 atomic_benchmark_ocl --test=SeparateAtomicsExplicit --api=ocl --type=Int32 --op=Add --atomicsPerCacheline=4 --scope=Device --order=relaxed --wgc=32 --wgs=64 --useEvents=1,False,True
 atomic_benchmark_ocl --test=SeparateAtomicsExplicit --api=ocl --type=Int32 --op=Add --atomicsPerCacheline=4 --scope=Device --order=release --wgc=32 --wgs=64 --useEvents=1,False,True
@@ -1394,7 +1394,7 @@ emu_benchmark_ocl --test=Int64Div --api=ocl --wgc=128 --wgs=64 --useEvents=1,Fal
 eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Float --op=Add --wgc=1 --wgs=1 --useEvents=1 --mixGrf=0,False,True
 eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Float --op=Add --wgc=1 --wgs=256 --useEvents=1 --mixGrf=0,False,True
 eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Float --op=Add --wgc=2048 --wgs=1 --useEvents=1 --mixGrf=0,False,True
-eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Float --op=Add --wgc=32 --wgs=64 --useEvents=1 --mixGrf=0,False,True
+eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Float --op=Add --wgc=32 --wgs=64 --useEvents=1 --mixGrf=0,True,True
 eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Float --op=Add --wgc=64 --wgs=32 --useEvents=1 --mixGrf=0,False,True
 eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Float --op=Add --wgc=8 --wgs=256 --useEvents=1 --mixGrf=0,False,True
 eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Float --op=And --wgc=1 --wgs=1 --useEvents=1 --mixGrf=0,False,True
@@ -1466,7 +1466,7 @@ eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=Add --wgc=8 
 eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=And --wgc=1 --wgs=1 --useEvents=1 --mixGrf=0,False,True
 eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=And --wgc=1 --wgs=256 --useEvents=1 --mixGrf=0,False,True
 eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=And --wgc=2048 --wgs=1 --useEvents=1 --mixGrf=0,False,True
-eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=And --wgc=32 --wgs=64 --useEvents=1 --mixGrf=0,False,True
+eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=And --wgc=32 --wgs=64 --useEvents=1 --mixGrf=0,True,True
 eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=And --wgc=64 --wgs=32 --useEvents=1 --mixGrf=0,False,True
 eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=And --wgc=8 --wgs=256 --useEvents=1 --mixGrf=0,False,True
 eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=Dec --wgc=1 --wgs=1 --useEvents=1 --mixGrf=0,False,True
@@ -1490,7 +1490,7 @@ eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=Inc --wgc=8 
 eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=Max --wgc=1 --wgs=1 --useEvents=1 --mixGrf=0,False,True
 eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=Max --wgc=1 --wgs=256 --useEvents=1 --mixGrf=0,False,True
 eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=Max --wgc=2048 --wgs=1 --useEvents=1 --mixGrf=0,False,True
-eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=Max --wgc=32 --wgs=64 --useEvents=1 --mixGrf=0,False,True
+eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=Max --wgc=32 --wgs=64 --useEvents=1 --mixGrf=0,True,True
 eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=Max --wgc=64 --wgs=32 --useEvents=1 --mixGrf=0,False,True
 eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=Max --wgc=8 --wgs=256 --useEvents=1 --mixGrf=0,False,True
 eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=Min --wgc=1 --wgs=1 --useEvents=1 --mixGrf=0,False,True
@@ -1502,7 +1502,7 @@ eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=Min --wgc=8 
 eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=Modulo --wgc=1 --wgs=1 --useEvents=1 --mixGrf=0,False,True
 eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=Modulo --wgc=1 --wgs=256 --useEvents=1 --mixGrf=0,False,True
 eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=Modulo --wgc=2048 --wgs=1 --useEvents=1 --mixGrf=0,False,True
-eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=Modulo --wgc=32 --wgs=64 --useEvents=1 --mixGrf=0,False,True
+eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=Modulo --wgc=32 --wgs=64 --useEvents=1 --mixGrf=0,True,True
 eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=Modulo --wgc=64 --wgs=32 --useEvents=1 --mixGrf=0,False,True
 eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=Modulo --wgc=8 --wgs=256 --useEvents=1 --mixGrf=0,False,True
 eu_benchmark_ocl --test=DoMathOperation --api=ocl --type=Int32 --op=Or --wgc=1 --wgs=1 --useEvents=1 --mixGrf=0,False,True
@@ -1529,8 +1529,8 @@ eu_benchmark_ocl --test=ReadAfterAtomicWrite --api=ocl --wgs=128 --atomic=1 --sh
 eu_benchmark_ocl --test=ReadAfterAtomicWrite --api=ocl --wgs=128 --atomic=1 --shuffleRead=1 --useEvents=1,False,True
 eu_benchmark_ocl --test=ReadAfterAtomicWrite --api=ocl --wgs=256 --atomic=0 --shuffleRead=0 --useEvents=1,False,True
 eu_benchmark_ocl --test=ReadAfterAtomicWrite --api=ocl --wgs=256 --atomic=0 --shuffleRead=1 --useEvents=1,False,True
-eu_benchmark_ocl --test=ReadAfterAtomicWrite --api=ocl --wgs=256 --atomic=1 --shuffleRead=0 --useEvents=1,False,True
-eu_benchmark_ocl --test=ReadAfterAtomicWrite --api=ocl --wgs=256 --atomic=1 --shuffleRead=1 --useEvents=1,False,True
+eu_benchmark_ocl --test=ReadAfterAtomicWrite --api=ocl --wgs=256 --atomic=1 --shuffleRead=0 --useEvents=1,True,True
+eu_benchmark_ocl --test=ReadAfterAtomicWrite --api=ocl --wgs=256 --atomic=1 --shuffleRead=1 --useEvents=1,True,True
 eu_benchmark_ocl --test=ReadAfterAtomicWrite --api=ocl --wgs=512 --atomic=0 --shuffleRead=0 --useEvents=1,False,True
 eu_benchmark_ocl --test=ReadAfterAtomicWrite --api=ocl --wgs=512 --atomic=0 --shuffleRead=1 --useEvents=1,False,True
 eu_benchmark_ocl --test=ReadAfterAtomicWrite --api=ocl --wgs=512 --atomic=1 --shuffleRead=0 --useEvents=1,False,True
@@ -1581,8 +1581,8 @@ gpu_cmds_benchmark_l0 --test=BarrierBetweenKernels --api=l0 --bytes=16 --onlyRea
 gpu_cmds_benchmark_l0 --test=BarrierBetweenKernels --api=l0 --bytes=16 --onlyReads=1 --remoteAccess=1 --memoryType=Host,False,True
 gpu_cmds_benchmark_l0 --test=BarrierBetweenKernels --api=l0 --bytes=16384 --onlyReads=0 --remoteAccess=0 --memoryType=Device,False,True
 gpu_cmds_benchmark_l0 --test=BarrierBetweenKernels --api=l0 --bytes=16384 --onlyReads=0 --remoteAccess=0 --memoryType=Host,False,True
-gpu_cmds_benchmark_l0 --test=BarrierBetweenKernels --api=l0 --bytes=16384 --onlyReads=0 --remoteAccess=1 --memoryType=Device,False,True
-gpu_cmds_benchmark_l0 --test=BarrierBetweenKernels --api=l0 --bytes=16384 --onlyReads=0 --remoteAccess=1 --memoryType=Host,False,True
+gpu_cmds_benchmark_l0 --test=BarrierBetweenKernels --api=l0 --bytes=16384 --onlyReads=0 --remoteAccess=1 --memoryType=Device,True,True
+gpu_cmds_benchmark_l0 --test=BarrierBetweenKernels --api=l0 --bytes=16384 --onlyReads=0 --remoteAccess=1 --memoryType=Host,True,True
 gpu_cmds_benchmark_l0 --test=BarrierBetweenKernels --api=l0 --bytes=16384 --onlyReads=1 --remoteAccess=0 --memoryType=Device,False,True
 gpu_cmds_benchmark_l0 --test=BarrierBetweenKernels --api=l0 --bytes=16384 --onlyReads=1 --remoteAccess=0 --memoryType=Host,False,True
 gpu_cmds_benchmark_l0 --test=BarrierBetweenKernels --api=l0 --bytes=16384 --onlyReads=1 --remoteAccess=1 --memoryType=Device,False,True
@@ -1724,16 +1724,17 @@ gpu_cmds_benchmark_l0 --test=BarrierBetweenKernels --api=l0 --bytes=8388608 --on
 gpu_cmds_benchmark_l0 --test=BarrierBetweenKernels --api=l0 --bytes=8388608 --onlyReads=1 --remoteAccess=1 --memoryType=Device,False,True
 gpu_cmds_benchmark_l0 --test=BarrierBetweenKernels --api=l0 --bytes=8388608 --onlyReads=1 --remoteAccess=1 --memoryType=Host,False,True
 gpu_cmds_benchmark_l0 --test=CopyWithEvent --api=l0 --measuredCmds=500 --hostSignalEvent=0 --devWaitEvent=0 --timestampEvent=0,False,True
-gpu_cmds_benchmark_l0 --test=CopyWithEvent --api=l0 --measuredCmds=500 --hostSignalEvent=0 --devWaitEvent=0 --timestampEvent=1,False,True
-gpu_cmds_benchmark_l0 --test=CopyWithEvent --api=l0 --measuredCmds=500 --hostSignalEvent=0 --devWaitEvent=1 --timestampEvent=0,False,True
+gpu_cmds_benchmark_l0 --test=CopyWithEvent --api=l0 --measuredCmds=500 --hostSignalEvent=0 --devWaitEvent=0 --timestampEvent=1,True,True
+gpu_cmds_benchmark_l0 --test=CopyWithEvent --api=l0 --measuredCmds=500 --hostSignalEvent=0 --devWaitEvent=1 --timestampEvent=0,True,True
 gpu_cmds_benchmark_l0 --test=CopyWithEvent --api=l0 --measuredCmds=500 --hostSignalEvent=0 --devWaitEvent=1 --timestampEvent=1,False,True
-gpu_cmds_benchmark_l0 --test=CopyWithEvent --api=l0 --measuredCmds=500 --hostSignalEvent=1 --devWaitEvent=0 --timestampEvent=0,False,True
+gpu_cmds_benchmark_l0 --test=CopyWithEvent --api=l0 --measuredCmds=500 --hostSignalEvent=1 --devWaitEvent=0 --timestampEvent=0,True,True
 gpu_cmds_benchmark_l0 --test=CopyWithEvent --api=l0 --measuredCmds=500 --hostSignalEvent=1 --devWaitEvent=0 --timestampEvent=1,False,True
 gpu_cmds_benchmark_l0 --test=CopyWithEvent --api=l0 --measuredCmds=500 --hostSignalEvent=1 --devWaitEvent=1 --timestampEvent=0,False,True
-gpu_cmds_benchmark_l0 --test=CopyWithEvent --api=l0 --measuredCmds=500 --hostSignalEvent=1 --devWaitEvent=1 --timestampEvent=1,False,True
+gpu_cmds_benchmark_l0 --test=CopyWithEvent --api=l0 --measuredCmds=500 --hostSignalEvent=1 --devWaitEvent=1 --timestampEvent=1,True,True
 gpu_cmds_benchmark_l0 --test=EmptyKernel --api=l0 --measuredCommands=500 --wgc=1 --wgs=1,False,True
 gpu_cmds_benchmark_l0 --test=EmptyKernel --api=l0 --measuredCommands=500 --wgc=1 --wgs=256,False,True
 gpu_cmds_benchmark_l0 --test=EmptyKernel --api=l0 --measuredCommands=500 --wgc=1 --wgs=32,False,True
+gpu_cmds_benchmark_l0 --test=EmptyKernel --api=l0 --measuredCommands=500 --wgc=100 --wgs=256,True,True
 gpu_cmds_benchmark_l0 --test=EmptyKernel --api=l0 --measuredCommands=500 --wgc=1000 --wgs=1,False,True
 gpu_cmds_benchmark_l0 --test=EmptyKernel --api=l0 --measuredCommands=500 --wgc=1000 --wgs=256,False,True
 gpu_cmds_benchmark_l0 --test=EmptyKernel --api=l0 --measuredCommands=500 --wgc=1000 --wgs=32,False,True
@@ -1741,7 +1742,7 @@ gpu_cmds_benchmark_l0 --test=EmptyKernel --api=l0 --measuredCommands=500 --wgc=1
 gpu_cmds_benchmark_l0 --test=EmptyKernel --api=l0 --measuredCommands=500 --wgc=10000 --wgs=256,False,True
 gpu_cmds_benchmark_l0 --test=EmptyKernel --api=l0 --measuredCommands=500 --wgc=10000 --wgs=32,False,True
 gpu_cmds_benchmark_l0 --test=EventCtxtSwitchLatency --api=l0 --measuredCommands=1000 --firstEngine=CCS0 --secondEngine=BCS,False,True
-gpu_cmds_benchmark_l0 --test=EventCtxtSwitchLatency --api=l0 --measuredCommands=500 --firstEngine=CCS0 --secondEngine=BCS,False,True
+gpu_cmds_benchmark_l0 --test=EventCtxtSwitchLatency --api=l0 --measuredCommands=500 --firstEngine=CCS0 --secondEngine=BCS,True,True
 gpu_cmds_benchmark_l0 --test=KernelWithEvent --api=l0 --measuredCmds=500 --wgc=1 --wgs=1 --hostSignalEvent=0 --devWaitEvent=0 --timestampEvent=0,False,True
 gpu_cmds_benchmark_l0 --test=KernelWithEvent --api=l0 --measuredCmds=500 --wgc=1 --wgs=1 --hostSignalEvent=0 --devWaitEvent=0 --timestampEvent=1,False,True
 gpu_cmds_benchmark_l0 --test=KernelWithEvent --api=l0 --measuredCmds=500 --wgc=1 --wgs=1 --hostSignalEvent=0 --devWaitEvent=1 --timestampEvent=0,False,True
@@ -1769,6 +1770,7 @@ gpu_cmds_benchmark_l0 --test=KernelWithEvent --api=l0 --measuredCmds=500 --wgc=1
 gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=Global --measuredCommands=500 --wgc=1 --wgs=1,False,True
 gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=Global --measuredCommands=500 --wgc=1 --wgs=256,False,True
 gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=Global --measuredCommands=500 --wgc=1 --wgs=32,False,True
+gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=Global --measuredCommands=500 --wgc=100 --wgs=16,True,True
 gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=Global --measuredCommands=500 --wgc=1000 --wgs=1,False,True
 gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=Global --measuredCommands=500 --wgc=1000 --wgs=256,False,True
 gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=Global --measuredCommands=500 --wgc=1000 --wgs=32,False,True
@@ -1777,6 +1779,7 @@ gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=Global --measured
 gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=Global --measuredCommands=500 --wgc=10000 --wgs=32,False,True
 gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=Local --measuredCommands=500 --wgc=1 --wgs=1,False,True
 gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=Local --measuredCommands=500 --wgc=1 --wgs=256,False,True
+gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=Local --measuredCommands=500 --wgc=100 --wgs=16,True,True
 gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=Local --measuredCommands=500 --wgc=1 --wgs=32,False,True
 gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=Local --measuredCommands=500 --wgc=1000 --wgs=1,False,True
 gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=Local --measuredCommands=500 --wgc=1000 --wgs=256,False,True
@@ -1787,6 +1790,7 @@ gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=Local --measuredC
 gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=None --measuredCommands=500 --wgc=1 --wgs=1,False,True
 gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=None --measuredCommands=500 --wgc=1 --wgs=256,False,True
 gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=None --measuredCommands=500 --wgc=1 --wgs=32,False,True
+gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=None --measuredCommands=500 --wgc=100 --wgs=16,True,True
 gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=None --measuredCommands=500 --wgc=1000 --wgs=1,False,True
 gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=None --measuredCommands=500 --wgc=1000 --wgs=256,False,True
 gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=None --measuredCommands=500 --wgc=1000 --wgs=32,False,True
@@ -1794,13 +1798,13 @@ gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=None --measuredCo
 gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=None --measuredCommands=500 --wgc=10000 --wgs=256,False,True
 gpu_cmds_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=None --measuredCommands=500 --wgc=10000 --wgs=32,False,True
 gpu_cmds_benchmark_l0 --test=WaitOnEventCold --api=l0 --measuredCommands=1000,False,True
-gpu_cmds_benchmark_l0 --test=WaitOnEventCold --api=l0 --measuredCommands=500,False,True
+gpu_cmds_benchmark_l0 --test=WaitOnEventCold --api=l0 --measuredCommands=500,True,True
 gpu_cmds_benchmark_l0 --test=WaitOnEventFromWalker --api=l0 --measuredCommands=1000,False,True
-gpu_cmds_benchmark_l0 --test=WaitOnEventFromWalker --api=l0 --measuredCommands=500,False,True
+gpu_cmds_benchmark_l0 --test=WaitOnEventFromWalker --api=l0 --measuredCommands=500,True,True
 gpu_cmds_benchmark_l0 --test=WaitOnEventHot --api=l0 --measuredCommands=1000,False,True
-gpu_cmds_benchmark_l0 --test=WaitOnEventHot --api=l0 --measuredCommands=500,False,True
+gpu_cmds_benchmark_l0 --test=WaitOnEventHot --api=l0 --measuredCommands=500,True,True
 gpu_cmds_benchmark_l0 --test=WriteTimestamp --api=l0 --measuredCommands=1000,False,True
-gpu_cmds_benchmark_l0 --test=WriteTimestamp --api=l0 --measuredCommands=500,False,True
+gpu_cmds_benchmark_l0 --test=WriteTimestamp --api=l0 --measuredCommands=500,True,True
 memory_benchmark_embargo_l0 --test=SharedLocalMemoryEmbargo --api=l0 --slmSize=16KB --useEvents=0,False,True
 memory_benchmark_embargo_l0 --test=SharedLocalMemoryEmbargo --api=l0 --slmSize=16KB --useEvents=1,False,True
 memory_benchmark_embargo_l0 --test=SharedLocalMemoryEmbargo --api=l0 --slmSize=1KB --useEvents=0,False,True
@@ -2657,7 +2661,7 @@ memory_benchmark_ocl --test=CopyBuffer --api=ocl --size=1 --contents=Zeros --com
 memory_benchmark_ocl --test=CopyBuffer --api=ocl --size=128MB --contents=Zeros --compressedSource=0 --compressedDestination=0 --useEvents=1,False,True
 memory_benchmark_ocl --test=CopyBuffer --api=ocl --size=128MB --contents=Zeros --compressedSource=0 --compressedDestination=1 --useEvents=1,False,True
 memory_benchmark_ocl --test=CopyBuffer --api=ocl --size=128MB --contents=Zeros --compressedSource=1 --compressedDestination=0 --useEvents=1,False,True
-memory_benchmark_ocl --test=CopyBuffer --api=ocl --size=128MB --contents=Zeros --compressedSource=1 --compressedDestination=1 --useEvents=1,False,True
+memory_benchmark_ocl --test=CopyBuffer --api=ocl --size=128MB --contents=Zeros --compressedSource=1 --compressedDestination=1 --useEvents=1,True,True
 memory_benchmark_ocl --test=CopyBuffer --api=ocl --size=512MB --contents=Zeros --compressedSource=0 --compressedDestination=0 --useEvents=1,False,True
 memory_benchmark_ocl --test=CopyBuffer --api=ocl --size=512MB --contents=Zeros --compressedSource=0 --compressedDestination=1 --useEvents=1,False,True
 memory_benchmark_ocl --test=CopyBuffer --api=ocl --size=512MB --contents=Zeros --compressedSource=1 --compressedDestination=0 --useEvents=1,False,True
@@ -2694,7 +2698,7 @@ memory_benchmark_ocl --test=CopyBufferToImage --api=ocl --region=512:512:64 --sr
 memory_benchmark_ocl --test=CopyBufferToImage --api=ocl --region=512:512:64 --src=Host --size=512MB --forceBlitter=0 --useEvents=1,False,True
 memory_benchmark_ocl --test=CopyBufferToImage --api=ocl --region=8192:1:1 --src=Device --size=512MB --forceBlitter=0 --useEvents=1,False,True
 memory_benchmark_ocl --test=CopyBufferToImage --api=ocl --region=8192:1:1 --src=Host --size=512MB --forceBlitter=0 --useEvents=1,False,True
-memory_benchmark_ocl --test=CopyEntireImage --api=ocl --size=16384:1:1 --forceBlitter=0 --useEvents=1,False,True
+memory_benchmark_ocl --test=CopyEntireImage --api=ocl --size=16384:1:1 --forceBlitter=0 --useEvents=1,True,True
 memory_benchmark_ocl --test=CopyEntireImage --api=ocl --size=256:512:1 --forceBlitter=0 --useEvents=1,False,True
 memory_benchmark_ocl --test=CopyEntireImage --api=ocl --size=512:512:1 --forceBlitter=0 --useEvents=1,False,True
 memory_benchmark_ocl --test=CopyEntireImage --api=ocl --size=512:512:2 --forceBlitter=0 --useEvents=1,False,True
@@ -2729,7 +2733,7 @@ memory_benchmark_ocl --test=FillBuffer --api=ocl --size=128MB --contents=Zeros -
 memory_benchmark_ocl --test=FillBuffer --api=ocl --size=128MB --contents=Zeros --patternSize=16 --compressed=0 --forceBlitter=1 --useEvents=1,False,True
 memory_benchmark_ocl --test=FillBuffer --api=ocl --size=128MB --contents=Zeros --patternSize=16 --compressed=1 --forceBlitter=0 --useEvents=1,False,True
 memory_benchmark_ocl --test=FillBuffer --api=ocl --size=128MB --contents=Zeros --patternSize=16 --compressed=1 --forceBlitter=1 --useEvents=1,False,True
-memory_benchmark_ocl --test=FillBuffer --api=ocl --size=512MB --contents=Zeros --patternSize=1 --compressed=0 --forceBlitter=0 --useEvents=1,False,True
+memory_benchmark_ocl --test=FillBuffer --api=ocl --size=512MB --contents=Zeros --patternSize=1 --compressed=0 --forceBlitter=0 --useEvents=1,True,True
 memory_benchmark_ocl --test=FillBuffer --api=ocl --size=512MB --contents=Zeros --patternSize=1 --compressed=0 --forceBlitter=1 --useEvents=1,False,True
 memory_benchmark_ocl --test=FillBuffer --api=ocl --size=512MB --contents=Zeros --patternSize=1 --compressed=1 --forceBlitter=0 --useEvents=1,False,True
 memory_benchmark_ocl --test=FillBuffer --api=ocl --size=512MB --contents=Zeros --patternSize=1 --compressed=1 --forceBlitter=1 --useEvents=1,False,True
@@ -2806,7 +2810,7 @@ memory_benchmark_ocl --test=FullRemoteAccessMemory --api=ocl --type=Read --size=
 memory_benchmark_ocl --test=FullRemoteAccessMemory --api=ocl --type=Read --size=1GB --elementSize=8 --useEvents=1 --workItems=8192 --blockAccess=0,False,True
 memory_benchmark_ocl --test=FullRemoteAccessMemory --api=ocl --type=Read --size=1GB --elementSize=8 --useEvents=1 --workItems=8192 --blockAccess=1,False,True
 memory_benchmark_ocl --test=FullRemoteAccessMemory --api=ocl --type=Write --size=1GB --elementSize=1 --useEvents=1 --workItems=1024 --blockAccess=0,False,True
-memory_benchmark_ocl --test=FullRemoteAccessMemory --api=ocl --type=Write --size=1GB --elementSize=1 --useEvents=1 --workItems=1024 --blockAccess=1,False,True
+memory_benchmark_ocl --test=FullRemoteAccessMemory --api=ocl --type=Write --size=1GB --elementSize=1 --useEvents=1 --workItems=1024 --blockAccess=1,True,True
 memory_benchmark_ocl --test=FullRemoteAccessMemory --api=ocl --type=Write --size=1GB --elementSize=1 --useEvents=1 --workItems=131072 --blockAccess=0,False,True
 memory_benchmark_ocl --test=FullRemoteAccessMemory --api=ocl --type=Write --size=1GB --elementSize=1 --useEvents=1 --workItems=131072 --blockAccess=1,False,True
 memory_benchmark_ocl --test=FullRemoteAccessMemory --api=ocl --type=Write --size=1GB --elementSize=1 --useEvents=1 --workItems=16384 --blockAccess=0,False,True
@@ -3335,7 +3339,7 @@ memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Read --size=1MB --useE
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Read --size=1MB --useEvents=0 --contents=Random --memoryPlacement=Host --multiplier=1,False,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Read --size=1MB --useEvents=0 --contents=Zeros --memoryPlacement=Device --multiplier=1,False,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Read --size=1MB --useEvents=0 --contents=Zeros --memoryPlacement=Host --multiplier=1,False,True
-memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Read --size=1MB --useEvents=1 --contents=Random --memoryPlacement=Device --multiplier=1,False,True
+memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Read --size=1MB --useEvents=1 --contents=Random --memoryPlacement=Device --multiplier=1,True,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Read --size=1MB --useEvents=1 --contents=Random --memoryPlacement=Host --multiplier=1,False,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Read --size=1MB --useEvents=1 --contents=Zeros --memoryPlacement=Device --multiplier=1,False,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Read --size=1MB --useEvents=1 --contents=Zeros --memoryPlacement=Host --multiplier=1,False,True
@@ -3351,10 +3355,10 @@ memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Read --size=512MB --us
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Read --size=512MB --useEvents=0 --contents=Random --memoryPlacement=Host --multiplier=1,False,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Read --size=512MB --useEvents=0 --contents=Zeros --memoryPlacement=Device --multiplier=1,False,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Read --size=512MB --useEvents=0 --contents=Zeros --memoryPlacement=Host --multiplier=1,False,True
-memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Read --size=512MB --useEvents=1 --contents=Random --memoryPlacement=Device --multiplier=1,False,True
-memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Read --size=512MB --useEvents=1 --contents=Random --memoryPlacement=Host --multiplier=1,False,True
-memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Read --size=512MB --useEvents=1 --contents=Zeros --memoryPlacement=Device --multiplier=1,False,True
-memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Read --size=512MB --useEvents=1 --contents=Zeros --memoryPlacement=Host --multiplier=1,False,True
+memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Read --size=512MB --useEvents=1 --contents=Random --memoryPlacement=Device --multiplier=1,True,True
+memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Read --size=512MB --useEvents=1 --contents=Random --memoryPlacement=Host --multiplier=1,True,True
+memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Read --size=512MB --useEvents=1 --contents=Zeros --memoryPlacement=Device --multiplier=1,True,True
+memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Read --size=512MB --useEvents=1 --contents=Zeros --memoryPlacement=Host --multiplier=1,True,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Read --size=8MB --useEvents=0 --contents=Random --memoryPlacement=Device --multiplier=1,False,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Read --size=8MB --useEvents=0 --contents=Random --memoryPlacement=Host --multiplier=1,False,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Read --size=8MB --useEvents=0 --contents=Zeros --memoryPlacement=Device --multiplier=1,False,True
@@ -3399,10 +3403,10 @@ memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Scale --size=512MB --u
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Scale --size=512MB --useEvents=0 --contents=Random --memoryPlacement=Host --multiplier=1,False,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Scale --size=512MB --useEvents=0 --contents=Zeros --memoryPlacement=Device --multiplier=1,False,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Scale --size=512MB --useEvents=0 --contents=Zeros --memoryPlacement=Host --multiplier=1,False,True
-memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Scale --size=512MB --useEvents=1 --contents=Random --memoryPlacement=Device --multiplier=1,False,True
-memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Scale --size=512MB --useEvents=1 --contents=Random --memoryPlacement=Host --multiplier=1,False,True
-memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Scale --size=512MB --useEvents=1 --contents=Zeros --memoryPlacement=Device --multiplier=1,False,True
-memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Scale --size=512MB --useEvents=1 --contents=Zeros --memoryPlacement=Host --multiplier=1,False,True
+memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Scale --size=512MB --useEvents=1 --contents=Random --memoryPlacement=Device --multiplier=1,True,True
+memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Scale --size=512MB --useEvents=1 --contents=Random --memoryPlacement=Host --multiplier=1,True,True
+memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Scale --size=512MB --useEvents=1 --contents=Zeros --memoryPlacement=Device --multiplier=1,True,True
+memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Scale --size=512MB --useEvents=1 --contents=Zeros --memoryPlacement=Host --multiplier=1,True,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Scale --size=8MB --useEvents=0 --contents=Random --memoryPlacement=Device --multiplier=1,False,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Scale --size=8MB --useEvents=0 --contents=Random --memoryPlacement=Host --multiplier=1,False,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Scale --size=8MB --useEvents=0 --contents=Zeros --memoryPlacement=Device --multiplier=1,False,True
@@ -3447,10 +3451,10 @@ memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Triad --size=512MB --u
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Triad --size=512MB --useEvents=0 --contents=Random --memoryPlacement=Host --multiplier=1,False,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Triad --size=512MB --useEvents=0 --contents=Zeros --memoryPlacement=Device --multiplier=1,False,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Triad --size=512MB --useEvents=0 --contents=Zeros --memoryPlacement=Host --multiplier=1,False,True
-memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Triad --size=512MB --useEvents=1 --contents=Random --memoryPlacement=Device --multiplier=1,False,True
-memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Triad --size=512MB --useEvents=1 --contents=Random --memoryPlacement=Host --multiplier=1,False,True
-memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Triad --size=512MB --useEvents=1 --contents=Zeros --memoryPlacement=Device --multiplier=1,False,True
-memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Triad --size=512MB --useEvents=1 --contents=Zeros --memoryPlacement=Host --multiplier=1,False,True
+memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Triad --size=512MB --useEvents=1 --contents=Random --memoryPlacement=Device --multiplier=1,True,True
+memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Triad --size=512MB --useEvents=1 --contents=Random --memoryPlacement=Host --multiplier=1,True,True
+memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Triad --size=512MB --useEvents=1 --contents=Zeros --memoryPlacement=Device --multiplier=1,True,True
+memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Triad --size=512MB --useEvents=1 --contents=Zeros --memoryPlacement=Host --multiplier=1,True,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Triad --size=8MB --useEvents=0 --contents=Random --memoryPlacement=Device --multiplier=1,False,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Triad --size=8MB --useEvents=0 --contents=Random --memoryPlacement=Host --multiplier=1,False,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Triad --size=8MB --useEvents=0 --contents=Zeros --memoryPlacement=Device --multiplier=1,False,True
@@ -3495,10 +3499,10 @@ memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Write --size=512MB --u
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Write --size=512MB --useEvents=0 --contents=Random --memoryPlacement=Host --multiplier=1,False,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Write --size=512MB --useEvents=0 --contents=Zeros --memoryPlacement=Device --multiplier=1,False,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Write --size=512MB --useEvents=0 --contents=Zeros --memoryPlacement=Host --multiplier=1,False,True
-memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Write --size=512MB --useEvents=1 --contents=Random --memoryPlacement=Device --multiplier=1,False,True
-memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Write --size=512MB --useEvents=1 --contents=Random --memoryPlacement=Host --multiplier=1,False,True
-memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Write --size=512MB --useEvents=1 --contents=Zeros --memoryPlacement=Device --multiplier=1,False,True
-memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Write --size=512MB --useEvents=1 --contents=Zeros --memoryPlacement=Host --multiplier=1,False,True
+memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Write --size=512MB --useEvents=1 --contents=Random --memoryPlacement=Device --multiplier=1,True,True
+memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Write --size=512MB --useEvents=1 --contents=Random --memoryPlacement=Host --multiplier=1,True,True
+memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Write --size=512MB --useEvents=1 --contents=Zeros --memoryPlacement=Device --multiplier=1,True,True
+memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Write --size=512MB --useEvents=1 --contents=Zeros --memoryPlacement=Host --multiplier=1,True,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Write --size=8MB --useEvents=0 --contents=Random --memoryPlacement=Device --multiplier=1,False,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Write --size=8MB --useEvents=0 --contents=Random --memoryPlacement=Host --multiplier=1,False,True
 memory_benchmark_ocl --test=StreamMemory --api=ocl --type=Write --size=8MB --useEvents=0 --contents=Zeros --memoryPlacement=Device --multiplier=1,False,True
@@ -4115,19 +4119,19 @@ multithread_benchmark_l0 --test=ImmediateCommandListSubmission --api=l0 --number
 multithread_benchmark_l0 --test=ImmediateCommandListSubmission --api=l0 --numberOfThreads=8 --threadsPerEngine=8,False,True
 multithread_benchmark_l0 --test=SvmCopy --api=l0 --numberOfThreads=1,False,True
 multithread_benchmark_l0 --test=SvmCopy --api=l0 --numberOfThreads=16,False,True
-multithread_benchmark_l0 --test=SvmCopy --api=l0 --numberOfThreads=2,False,True
+multithread_benchmark_l0 --test=SvmCopy --api=l0 --numberOfThreads=2,True,True
 multithread_benchmark_l0 --test=SvmCopy --api=l0 --numberOfThreads=4,False,True
 multithread_benchmark_l0 --test=SvmCopy --api=l0 --numberOfThreads=8,False,True
 multithread_benchmark_ocl --test=SvmCopy --api=ocl --numberOfThreads=1,False,True
 multithread_benchmark_ocl --test=SvmCopy --api=ocl --numberOfThreads=16,False,True
-multithread_benchmark_ocl --test=SvmCopy --api=ocl --numberOfThreads=2,False,True
+multithread_benchmark_ocl --test=SvmCopy --api=ocl --numberOfThreads=2,True,True
 multithread_benchmark_ocl --test=SvmCopy --api=ocl --numberOfThreads=4,False,True
 multithread_benchmark_ocl --test=SvmCopy --api=ocl --numberOfThreads=8,False,True
 multitile_memory_benchmark_l0 --test=UsmBidirectionalCopy --api=l0 --size=512MB --write=0 --forceBlitter=0,False,True
-multitile_memory_benchmark_l0 --test=UsmBidirectionalCopy --api=l0 --size=512MB --write=0 --forceBlitter=1,False,True
+multitile_memory_benchmark_l0 --test=UsmBidirectionalCopy --api=l0 --size=512MB --write=0 --forceBlitter=1,True,True
 multitile_memory_benchmark_l0 --test=UsmBidirectionalCopy --api=l0 --size=512MB --write=1 --forceBlitter=0,False,True
 multitile_memory_benchmark_l0 --test=UsmBidirectionalCopy --api=l0 --size=512MB --write=1 --forceBlitter=1,False,True
-multitile_memory_benchmark_l0 --test=UsmCopy --api=l0 --context=Root --queue=Root --src=Host --dst=Host --size=512MB --forceBlitter=0 --useEvents=1,False,True
+multitile_memory_benchmark_l0 --test=UsmCopy --api=l0 --context=Root --queue=Root --src=Host --dst=Host --size=512MB --forceBlitter=0 --useEvents=1,True,True
 multitile_memory_benchmark_l0 --test=UsmCopy --api=l0 --context=Root --queue=Root --src=Host --dst=Host --size=512MB --forceBlitter=1 --useEvents=1,False,True
 multitile_memory_benchmark_l0 --test=UsmCopy --api=l0 --context=Root --queue=Root --src=Host --dst=Host:Root --size=512MB --forceBlitter=0 --useEvents=1,False,True
 multitile_memory_benchmark_l0 --test=UsmCopy --api=l0 --context=Root --queue=Root --src=Host --dst=Host:Root --size=512MB --forceBlitter=1 --useEvents=1,False,True
@@ -4575,7 +4579,7 @@ multitile_memory_benchmark_l0 --test=UsmCopy --api=l0 --context=Tile1 --queue=Ti
 multitile_memory_benchmark_l0 --test=UsmCopy --api=l0 --context=Tile1 --queue=Tile1 --src=Tile1 --dst=Host:Tile1 --size=512MB --forceBlitter=1 --useEvents=1,False,True
 multitile_memory_benchmark_l0 --test=UsmCopy --api=l0 --context=Tile1 --queue=Tile1 --src=Tile1 --dst=Tile1 --size=512MB --forceBlitter=0 --useEvents=1,False,True
 multitile_memory_benchmark_l0 --test=UsmCopy --api=l0 --context=Tile1 --queue=Tile1 --src=Tile1 --dst=Tile1 --size=512MB --forceBlitter=1 --useEvents=1,False,True
-multitile_memory_benchmark_l0 --test=UsmCopyImmediate --api=l0 --context=Root --queue=Root --src=Host --dst=Host --size=512MB --forceBlitter=0 --useEvents=1,False,True
+multitile_memory_benchmark_l0 --test=UsmCopyImmediate --api=l0 --context=Root --queue=Root --src=Host --dst=Host --size=512MB --forceBlitter=0 --useEvents=1,True,True
 multitile_memory_benchmark_l0 --test=UsmCopyImmediate --api=l0 --context=Root --queue=Root --src=Host --dst=Host --size=512MB --forceBlitter=1 --useEvents=1,False,True
 multitile_memory_benchmark_l0 --test=UsmCopyImmediate --api=l0 --context=Root --queue=Root --src=Host --dst=Host:Root --size=512MB --forceBlitter=0 --useEvents=1,False,True
 multitile_memory_benchmark_l0 --test=UsmCopyImmediate --api=l0 --context=Root --queue=Root --src=Host --dst=Host:Root --size=512MB --forceBlitter=1 --useEvents=1,False,True
@@ -5023,7 +5027,7 @@ multitile_memory_benchmark_l0 --test=UsmCopyImmediate --api=l0 --context=Tile1 -
 multitile_memory_benchmark_l0 --test=UsmCopyImmediate --api=l0 --context=Tile1 --queue=Tile1 --src=Tile1 --dst=Host:Tile1 --size=512MB --forceBlitter=1 --useEvents=1,False,True
 multitile_memory_benchmark_l0 --test=UsmCopyImmediate --api=l0 --context=Tile1 --queue=Tile1 --src=Tile1 --dst=Tile1 --size=512MB --forceBlitter=0 --useEvents=1,False,True
 multitile_memory_benchmark_l0 --test=UsmCopyImmediate --api=l0 --context=Tile1 --queue=Tile1 --src=Tile1 --dst=Tile1 --size=512MB --forceBlitter=1 --useEvents=1,False,True
-multitile_memory_benchmark_l0 --test=UsmCopyKernel --api=l0 --context=Root --queue=Root --src=Host --dst=Host --size=512MB --useEvents=1,False,True
+multitile_memory_benchmark_l0 --test=UsmCopyKernel --api=l0 --context=Root --queue=Root --src=Host --dst=Host --size=512MB --useEvents=1,True,True
 multitile_memory_benchmark_l0 --test=UsmCopyKernel --api=l0 --context=Root --queue=Root --src=Host --dst=Host:Root --size=512MB --useEvents=1,False,True
 multitile_memory_benchmark_l0 --test=UsmCopyKernel --api=l0 --context=Root --queue=Root --src=Host --dst=Root --size=512MB --useEvents=1,False,True
 multitile_memory_benchmark_l0 --test=UsmCopyKernel --api=l0 --context=Root --queue=Root --src=Host:Root --dst=Host --size=512MB --useEvents=1,False,True
@@ -5247,7 +5251,7 @@ multitile_memory_benchmark_l0 --test=UsmCopyKernel --api=l0 --context=Tile1 --qu
 multitile_memory_benchmark_l0 --test=UsmCopyKernel --api=l0 --context=Tile1 --queue=Tile1 --src=Tile1 --dst=Host --size=512MB --useEvents=1,False,True
 multitile_memory_benchmark_l0 --test=UsmCopyKernel --api=l0 --context=Tile1 --queue=Tile1 --src=Tile1 --dst=Host:Tile1 --size=512MB --useEvents=1,False,True
 multitile_memory_benchmark_l0 --test=UsmCopyKernel --api=l0 --context=Tile1 --queue=Tile1 --src=Tile1 --dst=Tile1 --size=512MB --useEvents=1,False,True
-multitile_memory_benchmark_l0 --test=UsmFill --api=l0 --context=Root --queue=Root --memory=Host --size=512MB --patternSize=1 --forceBlitter=0 --useEvents=1,False,True
+multitile_memory_benchmark_l0 --test=UsmFill --api=l0 --context=Root --queue=Root --memory=Host --size=512MB --patternSize=1 --forceBlitter=0 --useEvents=1,True,True
 multitile_memory_benchmark_l0 --test=UsmFill --api=l0 --context=Root --queue=Root --memory=Host --size=512MB --patternSize=1 --forceBlitter=1 --useEvents=1,False,True
 multitile_memory_benchmark_l0 --test=UsmFill --api=l0 --context=Root --queue=Root --memory=Host --size=512MB --patternSize=128 --forceBlitter=0 --useEvents=1,False,True
 multitile_memory_benchmark_l0 --test=UsmFill --api=l0 --context=Root --queue=Root --memory=Host --size=512MB --patternSize=128 --forceBlitter=1 --useEvents=1,False,True
@@ -5407,7 +5411,7 @@ multitile_memory_benchmark_l0 --test=UsmFill --api=l0 --context=Tile1 --queue=Ti
 multitile_memory_benchmark_l0 --test=UsmFill --api=l0 --context=Tile1 --queue=Tile1 --memory=Tile1 --size=512MB --patternSize=1 --forceBlitter=1 --useEvents=1,False,True
 multitile_memory_benchmark_l0 --test=UsmFill --api=l0 --context=Tile1 --queue=Tile1 --memory=Tile1 --size=512MB --patternSize=128 --forceBlitter=0 --useEvents=1,False,True
 multitile_memory_benchmark_l0 --test=UsmFill --api=l0 --context=Tile1 --queue=Tile1 --memory=Tile1 --size=512MB --patternSize=128 --forceBlitter=1 --useEvents=1,False,True
-multitile_memory_benchmark_l0 --test=UsmSharedMigrateCpu --api=l0 --context=Root --memory=Host:Root --size=128MB --accessAllBytes=0,False,True
+multitile_memory_benchmark_l0 --test=UsmSharedMigrateCpu --api=l0 --context=Root --memory=Host:Root --size=128MB --accessAllBytes=0,True,True
 multitile_memory_benchmark_l0 --test=UsmSharedMigrateCpu --api=l0 --context=Root --memory=Host:Root --size=128MB --accessAllBytes=1,False,True
 multitile_memory_benchmark_l0 --test=UsmSharedMigrateCpu --api=l0 --context=Root --memory=Host:Root --size=512MB --accessAllBytes=0,False,True
 multitile_memory_benchmark_l0 --test=UsmSharedMigrateCpu --api=l0 --context=Root --memory=Host:Root --size=512MB --accessAllBytes=1,False,True
@@ -5455,7 +5459,7 @@ multitile_memory_benchmark_l0 --test=UsmSharedMigrateGpu --api=l0 --context=Tile
 multitile_memory_benchmark_l0 --test=UsmSharedMigrateGpu --api=l0 --context=Tile0:Tile1 --memory=Host:Tile1 --size=512MB,False,True
 multitile_memory_benchmark_l0 --test=UsmSharedMigrateGpu --api=l0 --context=Tile1 --memory=Host:Tile1 --size=128MB,False,True
 multitile_memory_benchmark_l0 --test=UsmSharedMigrateGpu --api=l0 --context=Tile1 --memory=Host:Tile1 --size=512MB,False,True
-multitile_memory_benchmark_ocl --test=CopyBuffer --api=ocl --context=Root --queue=Root --src=Root --dst=Root --size=128MB --srcCompressed=0 --dstCompressed=0 --useEvents=1,False,True
+multitile_memory_benchmark_ocl --test=CopyBuffer --api=ocl --context=Root --queue=Root --src=Root --dst=Root --size=128MB --srcCompressed=0 --dstCompressed=0 --useEvents=1,True,True
 multitile_memory_benchmark_ocl --test=CopyBuffer --api=ocl --context=Root --queue=Root --src=Root --dst=Root --size=128MB --srcCompressed=0 --dstCompressed=1 --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=CopyBuffer --api=ocl --context=Root --queue=Root --src=Root --dst=Root --size=128MB --srcCompressed=1 --dstCompressed=0 --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=CopyBuffer --api=ocl --context=Root --queue=Root --src=Root --dst=Root --size=128MB --srcCompressed=1 --dstCompressed=1 --useEvents=1,False,True
@@ -5759,7 +5763,7 @@ multitile_memory_benchmark_ocl --test=CopyBuffer --api=ocl --context=Tile1 --que
 multitile_memory_benchmark_ocl --test=CopyBuffer --api=ocl --context=Tile1 --queue=Tile1 --src=Tile1 --dst=Tile1 --size=512MB --srcCompressed=0 --dstCompressed=1 --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=CopyBuffer --api=ocl --context=Tile1 --queue=Tile1 --src=Tile1 --dst=Tile1 --size=512MB --srcCompressed=1 --dstCompressed=0 --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=CopyBuffer --api=ocl --context=Tile1 --queue=Tile1 --src=Tile1 --dst=Tile1 --size=512MB --srcCompressed=1 --dstCompressed=1 --useEvents=1,False,True
-multitile_memory_benchmark_ocl --test=FillBuffer --api=ocl --context=Root --queue=Root --memory=Root --size=128MB --patternSize=1 --compressed=0 --forceBlitter=1 --useEvents=1,False,True
+multitile_memory_benchmark_ocl --test=FillBuffer --api=ocl --context=Root --queue=Root --memory=Root --size=128MB --patternSize=1 --compressed=0 --forceBlitter=1 --useEvents=1,True,True
 multitile_memory_benchmark_ocl --test=FillBuffer --api=ocl --context=Root --queue=Root --memory=Root --size=128MB --patternSize=1 --compressed=1 --forceBlitter=1 --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=FillBuffer --api=ocl --context=Root --queue=Root --memory=Root --size=128MB --patternSize=128 --compressed=0 --forceBlitter=1 --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=FillBuffer --api=ocl --context=Root --queue=Root --memory=Root --size=128MB --patternSize=128 --compressed=1 --forceBlitter=1 --useEvents=1,False,True
@@ -5953,7 +5957,7 @@ multitile_memory_benchmark_ocl --test=FillBuffer --api=ocl --context=Tile1 --que
 multitile_memory_benchmark_ocl --test=FillBuffer --api=ocl --context=Tile1 --queue=Tile1 --memory=Tile1 --size=512MB --patternSize=16 --compressed=1 --forceBlitter=1 --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=ReadBuffer --api=ocl --context=Root --queue=Root --memory=Root --size=128MB --compressed=0 --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=ReadBuffer --api=ocl --context=Root --queue=Root --memory=Root --size=128MB --compressed=1 --useEvents=1,False,True
-multitile_memory_benchmark_ocl --test=ReadBuffer --api=ocl --context=Root --queue=Root --memory=Root --size=512MB --compressed=0 --useEvents=1,False,True
+multitile_memory_benchmark_ocl --test=ReadBuffer --api=ocl --context=Root --queue=Root --memory=Root --size=512MB --compressed=0 --useEvents=1,True,True
 multitile_memory_benchmark_ocl --test=ReadBuffer --api=ocl --context=Root --queue=Root --memory=Root --size=512MB --compressed=1 --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=ReadBuffer --api=ocl --context=Root:Tile0:Tile1 --queue=Root --memory=Root --size=128MB --compressed=0 --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=ReadBuffer --api=ocl --context=Root:Tile0:Tile1 --queue=Root --memory=Root --size=128MB --compressed=1 --useEvents=1,False,True
@@ -6015,7 +6019,7 @@ multitile_memory_benchmark_ocl --test=ReadBuffer --api=ocl --context=Tile1 --que
 multitile_memory_benchmark_ocl --test=ReadBuffer --api=ocl --context=Tile1 --queue=Tile1 --memory=Tile1 --size=128MB --compressed=1 --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=ReadBuffer --api=ocl --context=Tile1 --queue=Tile1 --memory=Tile1 --size=512MB --compressed=0 --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=ReadBuffer --api=ocl --context=Tile1 --queue=Tile1 --memory=Tile1 --size=512MB --compressed=1 --useEvents=1,False,True
-multitile_memory_benchmark_ocl --test=UsmCopy --api=ocl --context=Root --queue=Root --src=Host --dst=Host --size=512MB --forceBlitter=0 --useEvents=1,False,True
+multitile_memory_benchmark_ocl --test=UsmCopy --api=ocl --context=Root --queue=Root --src=Host --dst=Host --size=512MB --forceBlitter=0 --useEvents=1,True,True
 multitile_memory_benchmark_ocl --test=UsmCopy --api=ocl --context=Root --queue=Root --src=Host --dst=Host --size=512MB --forceBlitter=1 --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=UsmCopy --api=ocl --context=Root --queue=Root --src=Host --dst=Host:Root --size=512MB --forceBlitter=0 --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=UsmCopy --api=ocl --context=Root --queue=Root --src=Host --dst=Host:Root --size=512MB --forceBlitter=1 --useEvents=1,False,True
@@ -6463,7 +6467,7 @@ multitile_memory_benchmark_ocl --test=UsmCopy --api=ocl --context=Tile1 --queue=
 multitile_memory_benchmark_ocl --test=UsmCopy --api=ocl --context=Tile1 --queue=Tile1 --src=Tile1 --dst=Host:Tile1 --size=512MB --forceBlitter=1 --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=UsmCopy --api=ocl --context=Tile1 --queue=Tile1 --src=Tile1 --dst=Tile1 --size=512MB --forceBlitter=0 --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=UsmCopy --api=ocl --context=Tile1 --queue=Tile1 --src=Tile1 --dst=Tile1 --size=512MB --forceBlitter=1 --useEvents=1,False,True
-multitile_memory_benchmark_ocl --test=UsmCopyKernel --api=ocl --context=Root --queue=Root --src=Host --dst=Host --size=512MB --useEvents=1,False,True
+multitile_memory_benchmark_ocl --test=UsmCopyKernel --api=ocl --context=Root --queue=Root --src=Host --dst=Host --size=512MB --useEvents=1,True,True
 multitile_memory_benchmark_ocl --test=UsmCopyKernel --api=ocl --context=Root --queue=Root --src=Host --dst=Host:Root --size=512MB --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=UsmCopyKernel --api=ocl --context=Root --queue=Root --src=Host --dst=Root --size=512MB --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=UsmCopyKernel --api=ocl --context=Root --queue=Root --src=Host:Root --dst=Host --size=512MB --useEvents=1,False,True
@@ -6687,7 +6691,7 @@ multitile_memory_benchmark_ocl --test=UsmCopyKernel --api=ocl --context=Tile1 --
 multitile_memory_benchmark_ocl --test=UsmCopyKernel --api=ocl --context=Tile1 --queue=Tile1 --src=Tile1 --dst=Host --size=512MB --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=UsmCopyKernel --api=ocl --context=Tile1 --queue=Tile1 --src=Tile1 --dst=Host:Tile1 --size=512MB --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=UsmCopyKernel --api=ocl --context=Tile1 --queue=Tile1 --src=Tile1 --dst=Tile1 --size=512MB --useEvents=1,False,True
-multitile_memory_benchmark_ocl --test=UsmFill --api=ocl --context=Root --queue=Root --memory=Host --size=512MB --patternSize=1 --forceBlitter=0 --useEvents=1,False,True
+multitile_memory_benchmark_ocl --test=UsmFill --api=ocl --context=Root --queue=Root --memory=Host --size=512MB --patternSize=1 --forceBlitter=0 --useEvents=1,True,True
 multitile_memory_benchmark_ocl --test=UsmFill --api=ocl --context=Root --queue=Root --memory=Host --size=512MB --patternSize=1 --forceBlitter=1 --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=UsmFill --api=ocl --context=Root --queue=Root --memory=Host --size=512MB --patternSize=128 --forceBlitter=0 --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=UsmFill --api=ocl --context=Root --queue=Root --memory=Host --size=512MB --patternSize=128 --forceBlitter=1 --useEvents=1,False,True
@@ -6847,7 +6851,7 @@ multitile_memory_benchmark_ocl --test=UsmFill --api=ocl --context=Tile1 --queue=
 multitile_memory_benchmark_ocl --test=UsmFill --api=ocl --context=Tile1 --queue=Tile1 --memory=Tile1 --size=512MB --patternSize=1 --forceBlitter=1 --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=UsmFill --api=ocl --context=Tile1 --queue=Tile1 --memory=Tile1 --size=512MB --patternSize=128 --forceBlitter=0 --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=UsmFill --api=ocl --context=Tile1 --queue=Tile1 --memory=Tile1 --size=512MB --patternSize=128 --forceBlitter=1 --useEvents=1,False,True
-multitile_memory_benchmark_ocl --test=UsmSharedMigrateCpu --api=ocl --context=Root --memory=Host:Root --size=128MB --accessAllBytes=0,False,True
+multitile_memory_benchmark_ocl --test=UsmSharedMigrateCpu --api=ocl --context=Root --memory=Host:Root --size=128MB --accessAllBytes=0,True,True
 multitile_memory_benchmark_ocl --test=UsmSharedMigrateCpu --api=ocl --context=Root --memory=Host:Root --size=128MB --accessAllBytes=1,False,True
 multitile_memory_benchmark_ocl --test=UsmSharedMigrateCpu --api=ocl --context=Root --memory=Host:Root --size=512MB --accessAllBytes=0,False,True
 multitile_memory_benchmark_ocl --test=UsmSharedMigrateCpu --api=ocl --context=Root --memory=Host:Root --size=512MB --accessAllBytes=1,False,True
@@ -6895,7 +6899,7 @@ multitile_memory_benchmark_ocl --test=UsmSharedMigrateGpu --api=ocl --context=Ti
 multitile_memory_benchmark_ocl --test=UsmSharedMigrateGpu --api=ocl --context=Tile0:Tile1 --memory=Host:Tile1 --size=512MB,False,True
 multitile_memory_benchmark_ocl --test=UsmSharedMigrateGpu --api=ocl --context=Tile1 --memory=Host:Tile1 --size=128MB,False,True
 multitile_memory_benchmark_ocl --test=UsmSharedMigrateGpu --api=ocl --context=Tile1 --memory=Host:Tile1 --size=512MB,False,True
-multitile_memory_benchmark_ocl --test=WriteBuffer --api=ocl --context=Root --queue=Root --memory=Root --size=128MB --compressed=0 --useEvents=1,False,True
+multitile_memory_benchmark_ocl --test=WriteBuffer --api=ocl --context=Root --queue=Root --memory=Root --size=128MB --compressed=0 --useEvents=1,True,True
 multitile_memory_benchmark_ocl --test=WriteBuffer --api=ocl --context=Root --queue=Root --memory=Root --size=128MB --compressed=1 --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=WriteBuffer --api=ocl --context=Root --queue=Root --memory=Root --size=512MB --compressed=0 --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=WriteBuffer --api=ocl --context=Root --queue=Root --memory=Root --size=512MB --compressed=1 --useEvents=1,False,True
@@ -6959,7 +6963,7 @@ multitile_memory_benchmark_ocl --test=WriteBuffer --api=ocl --context=Tile1 --qu
 multitile_memory_benchmark_ocl --test=WriteBuffer --api=ocl --context=Tile1 --queue=Tile1 --memory=Tile1 --size=128MB --compressed=1 --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=WriteBuffer --api=ocl --context=Tile1 --queue=Tile1 --memory=Tile1 --size=512MB --compressed=0 --useEvents=1,False,True
 multitile_memory_benchmark_ocl --test=WriteBuffer --api=ocl --context=Tile1 --queue=Tile1 --memory=Tile1 --size=512MB --compressed=1 --useEvents=1,False,True
-p2p_benchmark_l0 --test=UsmCopyMultipleBlits --api=l0 --srcDeviceId=0 --dstDeviceId=1 --size=512MB --blitters=000000001,False,True
+p2p_benchmark_l0 --test=UsmCopyMultipleBlits --api=l0 --srcDeviceId=0 --dstDeviceId=1 --size=512MB --blitters=000000001,True,True
 p2p_benchmark_l0 --test=UsmCopyMultipleBlits --api=l0 --srcDeviceId=0 --dstDeviceId=1 --size=512MB --blitters=000000010,False,True
 p2p_benchmark_l0 --test=UsmCopyMultipleBlits --api=l0 --srcDeviceId=0 --dstDeviceId=1 --size=512MB --blitters=000000110,False,True
 p2p_benchmark_l0 --test=UsmCopyMultipleBlits --api=l0 --srcDeviceId=0 --dstDeviceId=1 --size=512MB --blitters=111111111,False,True
@@ -6967,7 +6971,7 @@ p2p_benchmark_l0 --test=UsmCopyMultipleBlits --api=l0 --srcDeviceId=1 --dstDevic
 p2p_benchmark_l0 --test=UsmCopyMultipleBlits --api=l0 --srcDeviceId=1 --dstDeviceId=0 --size=512MB --blitters=000000010,False,True
 p2p_benchmark_l0 --test=UsmCopyMultipleBlits --api=l0 --srcDeviceId=1 --dstDeviceId=0 --size=512MB --blitters=000000110,False,True
 p2p_benchmark_l0 --test=UsmCopyMultipleBlits --api=l0 --srcDeviceId=1 --dstDeviceId=0 --size=512MB --blitters=111111111,False,True
-p2p_benchmark_l0 --test=UsmEUCopy --api=l0 --srcDeviceId=0 --dstDeviceId=1 --size=512MB --contents=Random --useEvents=0 --reuseCmdList=0,False,True
+p2p_benchmark_l0 --test=UsmEUCopy --api=l0 --srcDeviceId=0 --dstDeviceId=1 --size=512MB --contents=Random --useEvents=0 --reuseCmdList=0,True,True
 p2p_benchmark_l0 --test=UsmEUCopy --api=l0 --srcDeviceId=0 --dstDeviceId=1 --size=512MB --contents=Random --useEvents=0 --reuseCmdList=1,False,True
 p2p_benchmark_l0 --test=UsmEUCopy --api=l0 --srcDeviceId=0 --dstDeviceId=1 --size=512MB --contents=Random --useEvents=1 --reuseCmdList=0,False,True
 p2p_benchmark_l0 --test=UsmEUCopy --api=l0 --srcDeviceId=0 --dstDeviceId=1 --size=512MB --contents=Random --useEvents=1 --reuseCmdList=1,False,True
@@ -7051,18 +7055,18 @@ ulls_benchmark_l0 --test=EmptyKernelImmediate --api=l0 --wgc=10000 --wgs=256 --U
 ulls_benchmark_l0 --test=EmptyKernelImmediate --api=l0 --wgc=10000 --wgs=256 --UseEventForHostSync=1,False,True
 ulls_benchmark_l0 --test=EmptyKernelImmediate --api=l0 --wgc=10000 --wgs=32 --UseEventForHostSync=0,False,True
 ulls_benchmark_l0 --test=EmptyKernelImmediate --api=l0 --wgc=10000 --wgs=32 --UseEventForHostSync=1,False,True
-ulls_benchmark_l0 --test=KernelSwitch --api=l0 --count=8 --kernelTime=200 --barrier=0 --hostVisible=0 --ioq=0 --ctrBasedEvents=0,False,True
+ulls_benchmark_l0 --test=KernelSwitch --api=l0 --count=8 --kernelTime=200 --barrier=0 --hostVisible=0 --ioq=0 --ctrBasedEvents=0,True,True
 ulls_benchmark_l0 --test=KernelSwitch --api=l0 --count=8 --kernelTime=200 --barrier=0 --hostVisible=0 --ioq=0 --ctrBasedEvents=1,False,True
-ulls_benchmark_l0 --test=KernelSwitch --api=l0 --count=8 --kernelTime=200 --barrier=0 --hostVisible=0 --ioq=1 --ctrBasedEvents=0,False,True
-ulls_benchmark_l0 --test=KernelSwitch --api=l0 --count=8 --kernelTime=200 --barrier=0 --hostVisible=0 --ioq=1 --ctrBasedEvents=1,False,True
-ulls_benchmark_l0 --test=KernelSwitch --api=l0 --count=8 --kernelTime=200 --barrier=0 --hostVisible=1 --ioq=0 --ctrBasedEvents=0,False,True
+ulls_benchmark_l0 --test=KernelSwitch --api=l0 --count=8 --kernelTime=200 --barrier=0 --hostVisible=0 --ioq=1 --ctrBasedEvents=0,True,True
+ulls_benchmark_l0 --test=KernelSwitch --api=l0 --count=8 --kernelTime=200 --barrier=0 --hostVisible=0 --ioq=1 --ctrBasedEvents=1,True,True
+ulls_benchmark_l0 --test=KernelSwitch --api=l0 --count=8 --kernelTime=200 --barrier=0 --hostVisible=1 --ioq=0 --ctrBasedEvents=0,True,True
 ulls_benchmark_l0 --test=KernelSwitch --api=l0 --count=8 --kernelTime=200 --barrier=0 --hostVisible=1 --ioq=0 --ctrBasedEvents=1,False,True
-ulls_benchmark_l0 --test=KernelSwitch --api=l0 --count=8 --kernelTime=200 --barrier=0 --hostVisible=1 --ioq=1 --ctrBasedEvents=0,False,True
-ulls_benchmark_l0 --test=KernelSwitch --api=l0 --count=8 --kernelTime=200 --barrier=0 --hostVisible=1 --ioq=1 --ctrBasedEvents=1,False,True
-ulls_benchmark_l0 --test=KernelSwitch --api=l0 --count=8 --kernelTime=200 --barrier=1 --hostVisible=0 --ioq=0 --ctrBasedEvents=0,False,True
+ulls_benchmark_l0 --test=KernelSwitch --api=l0 --count=8 --kernelTime=200 --barrier=0 --hostVisible=1 --ioq=1 --ctrBasedEvents=0,True,True
+ulls_benchmark_l0 --test=KernelSwitch --api=l0 --count=8 --kernelTime=200 --barrier=0 --hostVisible=1 --ioq=1 --ctrBasedEvents=1,True,True
+ulls_benchmark_l0 --test=KernelSwitch --api=l0 --count=8 --kernelTime=200 --barrier=1 --hostVisible=0 --ioq=0 --ctrBasedEvents=0,True,True
 ulls_benchmark_l0 --test=KernelSwitch --api=l0 --count=8 --kernelTime=200 --barrier=1 --hostVisible=0 --ioq=0 --ctrBasedEvents=1,False,True
-ulls_benchmark_l0 --test=KernelSwitch --api=l0 --count=8 --kernelTime=200 --barrier=1 --hostVisible=0 --ioq=1 --ctrBasedEvents=0,False,True
-ulls_benchmark_l0 --test=KernelSwitch --api=l0 --count=8 --kernelTime=200 --barrier=1 --hostVisible=0 --ioq=1 --ctrBasedEvents=1,False,True
+ulls_benchmark_l0 --test=KernelSwitch --api=l0 --count=8 --kernelTime=200 --barrier=1 --hostVisible=0 --ioq=1 --ctrBasedEvents=0,True,True
+ulls_benchmark_l0 --test=KernelSwitch --api=l0 --count=8 --kernelTime=200 --barrier=1 --hostVisible=0 --ioq=1 --ctrBasedEvents=1,True,True
 ulls_benchmark_l0 --test=KernelSwitch --api=l0 --count=8 --kernelTime=200 --barrier=1 --hostVisible=1 --ioq=0 --ctrBasedEvents=0,False,True
 ulls_benchmark_l0 --test=KernelSwitch --api=l0 --count=8 --kernelTime=200 --barrier=1 --hostVisible=1 --ioq=0 --ctrBasedEvents=1,False,True
 ulls_benchmark_l0 --test=KernelSwitch --api=l0 --count=8 --kernelTime=200 --barrier=1 --hostVisible=1 --ioq=1 --ctrBasedEvents=0,False,True
@@ -7109,7 +7113,7 @@ ulls_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=Local --wgc=1000 --wg
 ulls_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=Local --wgc=1000 --wgs=32,False,True
 ulls_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=Local --wgc=10000 --wgs=1,False,True
 ulls_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=Local --wgc=10000 --wgs=256,False,True
-ulls_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=Local --wgc=10000 --wgs=32,False,True
+ulls_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=Local --wgc=10000 --wgs=32,True,True
 ulls_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=None --wgc=1 --wgs=1,False,True
 ulls_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=None --wgc=1 --wgs=256,False,True
 ulls_benchmark_l0 --test=KernelWithWork --api=l0 --usedIds=None --wgc=1 --wgs=32,False,True
@@ -7194,7 +7198,9 @@ ulls_benchmark_l0 --test=KernelWithWorkImmediate --api=l0 --usedIds=None --wgc=1
 ulls_benchmark_l0 --test=KernelWithWorkPeriodic --api=l0 --timeBetweenSubmissions=1 --numSubmissions=2,False,True
 ulls_benchmark_l0 --test=KernelWithWorkPeriodic --api=l0 --timeBetweenSubmissions=5000 --numSubmissions=2,False,True
 ulls_benchmark_l0 --test=MultiKernelExecution --api=l0 --count=100 --wkgSizes=32 --wkgCount=32 --delay=1 --inOrderOverOOO=0 --profiling=0,False,True
-ulls_benchmark_l0 --test=MultiKernelExecution --api=l0 --count=100 --wkgSizes=32 --wkgCount=32 --delay=1 --inOrderOverOOO=0 --profiling=1,False,True
+ulls_benchmark_l0 --test=MultiKernelExecution --api=l0 --count=10 --wkgSizes=32 --wkgCount=32 --delay=1 --inOrderOverOOO=0 --profiling=1,True,True
+ulls_benchmark_l0 --test=MultiKernelExecution --api=l0 --count=100 --wkgSizes=32 --wkgCount=32 --delay=1 --inOrderOverOOO=0 --profiling=1,True,True
+ulls_benchmark_l0 --test=MultiKernelExecution --api=l0 --count=500 --wkgSizes=32 --wkgCount=32 --delay=1 --inOrderOverOOO=0 --profiling=1,True,True
 ulls_benchmark_l0 --test=MultiQueueSubmission --api=l0 --queueCount=2 --wgc=1 --wgs=1024,False,True
 ulls_benchmark_l0 --test=MultiQueueSubmission --api=l0 --queueCount=2 --wgc=1 --wgs=32,False,True
 ulls_benchmark_l0 --test=MultiQueueSubmission --api=l0 --queueCount=2 --wgc=1000 --wgs=1024,False,True
@@ -7215,7 +7221,7 @@ ulls_benchmark_l0 --test=MultipleImmediateWithDependencies --api=l0 --cmdlistCou
 ulls_benchmark_l0 --test=MultipleImmediateWithDependencies --api=l0 --cmdlistCount=4 --UseEventForHostSync=1,False,True
 ulls_benchmark_l0 --test=MultipleImmediateWithDependencies --api=l0 --cmdlistCount=8 --UseEventForHostSync=0,False,True
 ulls_benchmark_l0 --test=MultipleImmediateWithDependencies --api=l0 --cmdlistCount=8 --UseEventForHostSync=1,False,True
-ulls_benchmark_l0 --test=NewResourcesSubmissionDevice --api=l0 --size=1,False,True
+ulls_benchmark_l0 --test=NewResourcesSubmissionDevice --api=l0 --size=1,True,True
 ulls_benchmark_l0 --test=NewResourcesSubmissionDevice --api=l0 --size=16MB,False,True
 ulls_benchmark_l0 --test=NewResourcesSubmissionDevice --api=l0 --size=1GB,False,True
 ulls_benchmark_l0 --test=NewResourcesSubmissionDevice --api=l0 --size=1MB,False,True
@@ -7239,7 +7245,9 @@ ulls_benchmark_l0 --test=NewResourcesWithGpuAccess --api=l0 --size=256MB,False,T
 ulls_benchmark_l0 --test=NewResourcesWithGpuAccess --api=l0 --size=512KB,False,True
 ulls_benchmark_l0 --test=NewResourcesWithGpuAccess --api=l0 --size=64KB,False,True
 ulls_benchmark_l0 --test=NewResourcesWithGpuAccess --api=l0 --size=64MB,False,True
-ulls_benchmark_l0 --test=QueueSwitch --api=l0 --kernelTime=10 --switchCount=1,False,True
+ulls_benchmark_l0 --test=QueueSwitch --api=l0 --kernelTime=10 --switchCount=1,True,True
+ulls_benchmark_l0 --test=QueueSwitch --api=l0 --kernelTime=10 --switchCount=10,True,True
+ulls_benchmark_l0 --test=QueueSwitch --api=l0 --kernelTime=10 --switchCount=100,True,True
 ulls_benchmark_l0 --test=RoundTripSubmission --api=l0,False,True
 ulls_benchmark_l0 --test=UsmSharedFirstCpuAccess --api=l0 --initialPlacement=Any --size=128MB,False,True
 ulls_benchmark_l0 --test=UsmSharedFirstCpuAccess --api=l0 --initialPlacement=Any --size=64MB,False,True
@@ -7317,7 +7325,7 @@ ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=Global --wgc=1 --wg
 ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=Global --wgc=1 --wgs=256,False,True
 ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=Global --wgc=1 --wgs=32,False,True
 ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=Global --wgc=1000 --wgs=1,False,True
-ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=Global --wgc=1000 --wgs=256,False,True
+ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=Global --wgc=1000 --wgs=256,True,True
 ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=Global --wgc=1000 --wgs=32,False,True
 ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=Global --wgc=10000 --wgs=1,False,True
 ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=Global --wgc=10000 --wgs=256,False,True
@@ -7326,7 +7334,7 @@ ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=Local --wgc=1 --wgs
 ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=Local --wgc=1 --wgs=256,False,True
 ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=Local --wgc=1 --wgs=32,False,True
 ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=Local --wgc=1000 --wgs=1,False,True
-ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=Local --wgc=1000 --wgs=256,False,True
+ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=Local --wgc=1000 --wgs=256,True,True
 ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=Local --wgc=1000 --wgs=32,False,True
 ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=Local --wgc=10000 --wgs=1,False,True
 ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=Local --wgc=10000 --wgs=256,False,True
@@ -7335,7 +7343,7 @@ ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=None --wgc=1 --wgs=
 ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=None --wgc=1 --wgs=256,False,True
 ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=None --wgc=1 --wgs=32,False,True
 ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=None --wgc=1000 --wgs=1,False,True
-ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=None --wgc=1000 --wgs=256,False,True
+ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=None --wgc=1000 --wgs=256,True,True
 ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=None --wgc=1000 --wgs=32,False,True
 ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=None --wgc=10000 --wgs=1,False,True
 ulls_benchmark_ocl --test=KernelWithWork --api=ocl --usedIds=None --wgc=10000 --wgs=256,False,True
@@ -7412,6 +7420,7 @@ ulls_benchmark_ocl --test=QueuePriorities --api=ocl --lowTime=10 --priorities=1 
 ulls_benchmark_ocl --test=QueuePriorities --api=ocl --lowTime=10 --priorities=1 --wgc=2048 --highTime=1 --sleep=6,False,True
 ulls_benchmark_ocl --test=QueuePriorities --api=ocl --lowTime=10 --priorities=1 --wgc=2048 --highTime=10 --sleep=1,False,True
 ulls_benchmark_ocl --test=QueuePriorities --api=ocl --lowTime=10 --priorities=1 --wgc=2048 --highTime=10 --sleep=6,False,True
+ulls_benchmark_ocl --test=QueuePriorities --api=ocl --lowTime=1000 --priorities=1 --wgc=1 --highTime=1 --sleep=1,True,True
 ulls_benchmark_ocl --test=ResourceReassign --api=ocl --queueCount=1,False,True
 ulls_benchmark_ocl --test=ResourceReassign --api=ocl --queueCount=2,False,True
 ulls_benchmark_ocl --test=RoundTripSubmission --api=ocl,False,True
