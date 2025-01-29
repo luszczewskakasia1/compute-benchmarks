@@ -1648,6 +1648,7 @@ gpu_cmds_benchmark_l0 --test=BarrierBetweenKernels --api=l0 --bytes=4 --onlyRead
 gpu_cmds_benchmark_l0 --test=BarrierBetweenKernels --api=l0 --bytes=4 --onlyReads=0 --remoteAccess=1 --memoryType=Device,False,True
 gpu_cmds_benchmark_l0 --test=BarrierBetweenKernels --api=l0 --bytes=4 --onlyReads=0 --remoteAccess=1 --memoryType=Host,False,True
 gpu_cmds_benchmark_l0 --test=BarrierBetweenKernels --api=l0 --bytes=4 --onlyReads=1 --remoteAccess=0 --memoryType=Device,False,True
+gpu_cmds_benchmark_l0 --test=BarrierBetweenKernels --api=l0 --bytes=4 --onlyReads=1 --remoteAccess=0 --memoryType=Device --barrierCount=10,True,True
 gpu_cmds_benchmark_l0 --test=BarrierBetweenKernels --api=l0 --bytes=4 --onlyReads=1 --remoteAccess=0 --memoryType=Host,False,True
 gpu_cmds_benchmark_l0 --test=BarrierBetweenKernels --api=l0 --bytes=4 --onlyReads=1 --remoteAccess=1 --memoryType=Device,False,True
 gpu_cmds_benchmark_l0 --test=BarrierBetweenKernels --api=l0 --bytes=4 --onlyReads=1 --remoteAccess=1 --memoryType=Host,False,True
