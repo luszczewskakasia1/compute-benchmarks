@@ -41,7 +41,8 @@ def execute(cmd: typing.List[str]) -> subprocess.CompletedProcess:
 
 
 class BenchmarkData:
-    def __init__(self, path: Path):
+    def __init__(self, path: Path, limited_content: bool):
+        self.limited_content = limited_content
         self.workload_path: Path = path
         self.command_lines: typing.List[str] = self.get_command_lines()
 
@@ -59,16 +60,17 @@ class BenchmarkData:
         output = execute([str(self.workload_path.resolve()), "--noop", "--csv", "--noHeaders", "--noColumnNames"])
         csv_with_class = csv.reader(output.stdout.decode("utf-8").splitlines())
 
-        output = execute(
-            [
-                str(self.workload_path.resolve()),
-                "--noop",
-                "--csv",
-                "--noHeaders",
-                "--noColumnNames",
-                "--dumpCommandLines",
-            ]
-        )
+        cmd_line = [
+            str(self.workload_path.resolve()),
+            "--noop",
+            "--csv",
+            "--noHeaders",
+            "--noColumnNames",
+            "--dumpCommandLines",
+        ]
+        if self.limited_content:
+            cmd_line.append("--allowLimitedTests")
+        output = execute(cmd_line)
         csv_with_cmds = csv.reader(output.stdout.decode("utf-8").splitlines())
         for row1, row2 in zip(csv_with_class, csv_with_cmds):
             if "NO_IMPLEMENT" in row1[0]:
@@ -97,6 +99,7 @@ class BenchmarkData:
 class Collector:
     def __init__(self, args):
         self.binaries_path: Path = args.binaries_path
+        self.limited_content = args.limited
 
     @staticmethod
     def is_binary_exception(file: Path) -> bool:
@@ -112,12 +115,13 @@ class Collector:
         )
 
     def collect(self) -> typing.List[BenchmarkData]:
-        logger.info("Start detecting workloads in %s", self.binaries_path)
+        limited_content_str = "limited" if self.limited_content else "default"
+        logger.info("Validating %s content's noop command lines in %s", limited_content_str, self.binaries_path)
         binaries_paths = []
         for path in self.binaries_path.rglob("*"):
             if not Collector.is_binary_exception(path):
-                binaries_paths.append(BenchmarkData(path))
-        logger.info("Detected binaries: %s", len(binaries_paths))
+                binaries_paths.append(BenchmarkData(path, self.limited_content))
+        logger.info("Validated binaries: %s", len(binaries_paths))
         return binaries_paths
 
 
@@ -126,50 +130,36 @@ def main(args=None) -> None:
         args = process_command_line()
     collector = Collector(args)
     workloads = collector.collect()
-    add_workloads_to_csv(workloads, args.test_content_csv_path, regenerate=args.regenerate)
+    if args.generate_csv:
+        add_workloads_to_csv(workloads, args.output_path, args.limited)
 
 
-def add_workloads_to_csv(
-    workloads: typing.List[BenchmarkData], test_content_csv_path: Path, regenerate: bool = False
-) -> None:
-    # Read the CSV file to check if the command already exists
+def add_workloads_to_csv(workloads: typing.List[BenchmarkData], output_path: Path, limited_content: bool) -> None:
     class CommandCheck:
-        def __init__(self, command_line: str, presi_enabled: str, postsi_enabled: str):
+        def __init__(self, command_line: str):
             self.command_line = command_line
-            self.presi_enabled = presi_enabled
-            self.postsi_enabled = postsi_enabled
 
     command_lines: typing.List[CommandCheck] = []
-    if not test_content_csv_path.exists():
-        raise FileNotFoundError(f"File {test_content_csv_path.resolve()} not found. Please specify correct file.")
-
-    if not regenerate:
-        with open(test_content_csv_path, mode="r", newline="", encoding="utf-8") as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                command_lines.append(CommandCheck(row["command_line"], row["presi_enabled"], row["postsi_enabled"]))
+    if not output_path.exists():
+        output_path.mkdir(parents=True, exist_ok=True)
+    csv_postfix = "presi" if limited_content else "postsi"
+    test_content_csv_path = output_path / f"test_content_{csv_postfix}.csv"
 
     for workload in workloads:
         for workload_command_line in workload.command_lines:
             if any(workload_command_line == csv_command_check.command_line for csv_command_check in command_lines):
                 continue
             logger.info("Adding new command line: %s", workload_command_line)
-            command_lines.append(CommandCheck(workload_command_line, False, True))
+            command_lines.append(CommandCheck(workload_command_line))
     command_lines.sort(key=lambda x: x.command_line)
 
     with open(test_content_csv_path, mode="w", newline="", encoding="utf-8") as file:
-        fieldnames = ["command_line", "presi_enabled", "postsi_enabled"]
+        fieldnames = ["command_line"]
         writer = csv.DictWriter(file, fieldnames=fieldnames)
         if file.tell() == 0:
             writer.writeheader()
         for command in command_lines:
-            writer.writerow(
-                {
-                    "command_line": command.command_line,
-                    "presi_enabled": command.presi_enabled,
-                    "postsi_enabled": command.postsi_enabled,
-                }
-            )
+            writer.writerow({"command_line": command.command_line})
 
 
 def process_command_line() -> argparse.Namespace:
@@ -186,15 +176,20 @@ def setup_parser(root_parser: argparse.ArgumentParser) -> None:
         help="Path to package with binaries",
     )
     root_parser.add_argument(
-        "--test_content_csv_path",
+        "--output_path",
         type=Path,
-        default=Path("./source/tools/embargo/test_content/test_content.csv"),
+        default=Path("./source/tools/embargo/test_content/"),
         help="Path to csv with test content",
     )
     root_parser.add_argument(
-        "--regenerate",
+        "--limited",
         action="store_true",
-        help="Regenerate whole test content having presi content disabled and postsi content enabled by default",
+        help="Presi limited content",
+    )
+    root_parser.add_argument(
+        "--generate_csv",
+        action="store_true",
+        help="Generate CSV with test content",
     )
 
 
