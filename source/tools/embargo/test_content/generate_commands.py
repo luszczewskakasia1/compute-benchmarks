@@ -100,6 +100,13 @@ class Collector:
     def __init__(self, args):
         self.binaries_path: Path = args.binaries_path
         self.limited_content = args.limited
+        self.benchmark_list = None
+        if args.benchmark_list:
+            self.benchmark_list = []
+            for item in args.benchmark_list.split(";"):
+                benchmark_name = item.strip()
+                if item.strip():
+                    self.benchmark_list.append(benchmark_name)
 
     @staticmethod
     def is_binary_exception(file: Path) -> bool:
@@ -119,7 +126,11 @@ class Collector:
         logger.info("Validating %s content's noop command lines in %s", limited_content_str, self.binaries_path)
         binaries_paths = []
         for path in self.binaries_path.rglob("*"):
-            if not Collector.is_binary_exception(path):
+            if self.benchmark_list:
+                if path.name in self.benchmark_list:
+                    binaries_paths.append(BenchmarkData(path, self.limited_content))
+                    continue
+            elif not Collector.is_binary_exception(path):
                 binaries_paths.append(BenchmarkData(path, self.limited_content))
         logger.info("Validated binaries: %s", len(binaries_paths))
         return binaries_paths
@@ -180,6 +191,12 @@ def setup_parser(root_parser: argparse.ArgumentParser) -> None:
         type=Path,
         default=Path("./source/tools/embargo/test_content/"),
         help="Path to csv with test content",
+    )
+    root_parser.add_argument(
+        "--benchmark_list",
+        type=str,
+        default=None,
+        help="Instead doing an implicit discovery, provide a list of binaries",
     )
     root_parser.add_argument(
         "--limited",

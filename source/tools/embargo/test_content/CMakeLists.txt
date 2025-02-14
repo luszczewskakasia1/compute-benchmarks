@@ -12,7 +12,11 @@
 # This software and the related documents are provided as is, with no express or
 # implied warranties, other than those that are expressly stated in the License.
 
-option(GENERATE_TEST_CONTENT "test content noop validation" ON)
+benchmark_option(GENERATE_TEST_CONTENT "test content noop validation" ON)
+
+if (MSVC)
+    set(GENERATE_TEST_CONTENT OFF)
+endif()
 
 if (NOT GENERATE_TEST_CONTENT)
     return()
@@ -35,6 +39,7 @@ add_custom_command(
             --output_path "${CMAKE_CURRENT_SOURCE_DIR}" 
             --binaries_path ${OUTPUT_DIR}
             --limited
+            --benchmark_list "${BENCHMARK_LIST}"
     VERBATIM
 )
 
@@ -45,5 +50,6 @@ add_custom_command(
     COMMAND ${Python3_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/generate_commands.py" 
             --output_path "${CMAKE_CURRENT_SOURCE_DIR}" 
             --binaries_path ${OUTPUT_DIR}
+            --benchmark_list "${BENCHMARK_LIST}"
     VERBATIM
 )
