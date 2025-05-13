@@ -1,7 +1,7 @@
 #
 # INTEL CONFIDENTIAL
 #
-# Copyright (C) 2019-2024 Intel Corporation
+# Copyright (C) 2019-2025 Intel Corporation
 #
 # This software and the related documents are Intel copyrighted materials,
 # and your use of them is governed by the express license under which they were
@@ -12,7 +12,7 @@
 # This software and the related documents are provided as is, with no express or
 # implied warranties, other than those that are expressly stated in the License.
 
-add_benchmark(memory_benchmark_embargo ocl l0 sycl all)
+add_benchmark(memory_benchmark_embargo ocl l0 sycl syclpreview all)
 
 get_property(ALL_APIS GLOBAL PROPERTY APIS)
 foreach(API ${ALL_APIS})
