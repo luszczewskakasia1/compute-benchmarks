@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2022-2023 Intel Corporation
+ * Copyright (C) 2022-2025 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -44,3 +44,11 @@ INSTANTIATE_TEST_SUITE_P(
         ::CommonGtestArgs::allApis(),
         ::testing::Values(1 * kiloByte, 2 * kiloByte, 4 * kiloByte, 8 * kiloByte, 16 * kiloByte, 32 * kiloByte, 64 * kiloByte),
         ::testing::Values(false, true)));
+
+INSTANTIATE_TEST_SUITE_P(
+    SharedLocalMemoryEmbargoTestLIMITED,
+    SharedLocalMemoryEmbargoTest,
+    ::testing::Combine(
+        ::testing::Values(Api::L0, Api::OpenCL),
+        ::testing::Values(64 * kiloByte),
+        ::testing::Values(true)));

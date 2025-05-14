@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2021-2023 Intel Corporation
+ * Copyright (C) 2021-2025 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -46,3 +46,12 @@ INSTANTIATE_TEST_SUITE_P(
         ::testing::ValuesIn(StreamMemoryEmbargoTypeArgument::enumValues),
         ::testing::Values(1 * megaByte, 8 * megaByte, 16 * megaByte, 32 * megaByte, 64 * megaByte, 128 * megaByte, 256 * megaByte, 512 * megaByte, 1 * gigaByte),
         ::testing::Values(false, true)));
+
+INSTANTIATE_TEST_SUITE_P(
+    StreamMemoryImmediateEmbargoTestLIMITED,
+    StreamMemoryImmediateEmbargoTest,
+    ::testing::Combine(
+        ::testing::Values(Api::L0),
+        ::testing::Values(StreamMemoryEmbargoType::Stream_3BytesAlignedRGBtoY),
+        ::testing::Values(1 * gigaByte),
+        ::testing::Values(true)));
