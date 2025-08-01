@@ -12,14 +12,18 @@
 # This software and the related documents are provided as is, with no express or
 # implied warranties, other than those that are expressly stated in the License.
 
-add_benchmark(memory_benchmark_embargo ocl l0 sycl syclpreview all)
-
-get_property(ALL_APIS GLOBAL PROPERTY APIS)
-foreach(API ${ALL_APIS})
-    # UR not supported yet
-    if("${API}" STREQUAL "ur")
-        continue()
+set(MEMORY_BENCHMARK_SUPPORTED_APIS ocl l0)
+if(BUILD_SYCL)
+    if(SYCL_FOUND)
+        list(APPEND MEMORY_BENCHMARK_SUPPORTED_APIS sycl syclpreview)
+    else()
+        message(STATUS "SYCL not found thus memory_benchmark_embargo_sycl* will not be built")
     endif()
+endif()
+
+add_benchmark(memory_benchmark_embargo ${MEMORY_BENCHMARK_SUPPORTED_APIS})
+
+foreach(API ${MEMORY_BENCHMARK_SUPPORTED_APIS})
     set(TARGET_NAME "memory_benchmark_embargo_${API}")
     set(TARGET_LOCATION "memory_benchmark_embargo_${API}_LOCATION")
     set_target_properties(${TARGET_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIR}/embargo")

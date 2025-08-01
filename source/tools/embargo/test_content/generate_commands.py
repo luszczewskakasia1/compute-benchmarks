@@ -80,7 +80,7 @@ class BenchmarkData:
                 logger.info("Skipping case %s due to NO_SUPPORT (API)", row2[0])
                 continue
             if "INVALID_ARGS" in row2[0]:
-                logger.error("Test issue: INVALID_ARGS in workload: %s", self.workload_path.name)
+                logger.error("Test issue: INVALID_ARGS in workload: %s cmd: %s", self.workload_path.name, " ".join(cmd_line))
                 sys.exit(1)
             case_args = BenchmarkData.get_args_from_parsed_text(row2[0])
             binary_name = self.workload_path.stem
