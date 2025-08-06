@@ -1,7 +1,7 @@
 #
 # INTEL CONFIDENTIAL
 #
-# Copyright (C) 2019-2022 Intel Corporation
+# Copyright (C) 2019-2025 Intel Corporation
 #
 # This software and the related documents are Intel copyrighted materials,
 # and your use of them is governed by the express license under which they were
@@ -13,7 +13,13 @@
 # implied warranties, other than those that are expressly stated in the License.
 
 add_benchmark(ulls_benchmark_embargo ocl l0 all)
-set_target_properties(ulls_benchmark_embargo_l0 PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIR}/embargo")
-set_target_properties(ulls_benchmark_embargo_ocl PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIR}/embargo")
+
+if(BUILD_L0)
+    set_target_properties(ulls_benchmark_embargo_l0 PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIR}/embargo")
+endif()
+if(BUILD_OCL)
+    set_target_properties(ulls_benchmark_embargo_ocl PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIR}/embargo")
+endif()
+
 set_property(GLOBAL PROPERTY ulls_benchmark_embargo_l0_LOCATION "embargo")
 set_property(GLOBAL PROPERTY ulls_benchmark_embargo_ocl_LOCATION "embargo")
