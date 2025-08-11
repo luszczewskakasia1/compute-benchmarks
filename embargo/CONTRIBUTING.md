@@ -25,13 +25,14 @@ It is structured into two sections:
 
 - [1. Contribution process overview](#contribution-overview)
   - [1.1 Branch choice](#branch-choice)
-  - [1.2 PR creation](#pr-creation)
-  - [1.3 Commit message](#commit-message)
-  - [1.4 Multi-commit PRs](#multi-commit)
-  - [1.5 Certificate of origin](#certificate)
-  - [1.6 Copyright headers](#copyright-headers)
-  - [1.7 PR verification and code review](#pr-verification)
-  - [1.8 PR disposition](#pr-disposition)
+  - [1.2 Workspace setup](#workspace-setup)
+  - [1.3 PR creation](#pr-creation)
+  - [1.4 Commit message](#commit-message)
+  - [1.5 Multi-commit PRs](#multi-commit)
+  - [1.6 Certificate of origin](#certificate)
+  - [1.7 Copyright headers](#copyright-headers)
+  - [1.8 PR verification and code review](#pr-verification)
+  - [1.9 PR disposition](#pr-disposition)
 - [2. Contributing to Compute Benchmarks](#benchmarks-contributing)
   - [2.1 Adding new benchmarks](#adding-new-benchmark)
   - [2.2 Generating documentation](#benchmarks-docs)
@@ -68,9 +69,31 @@ While all of the mentioned scenarios are allowed, it is recommended to open PRs 
 When introducing or modifying embargo content - please pay most attention to avoid leaking IP to the open-source repository - not only in the source code but also in the commit message!
 Please learn more at [master and embargo commit message](#master-embargo-commit-message).
 
-### 1.2 PR creation <a id="pr-creation"></a>
+### 1.2 Workspace setup <a id="workspace-setup"></a>
 
-Compute Benchmarks project uses `devtool` to streamline the development process. To get started with `devtool`, refer to the [Devtool Setup Guide](https://1source.intel.com/docs/getting_started/environment_setup#user-environment-configuration-automatic-devtool). From this point forward, `devtool` will be referred to as `dt`.
+Compute Benchmarks project uses `devtool` (abbreviated as `dt`) with the `gfx` and `gfx-go` extensions to streamline the development process.
+
+To get started with `devtool`, refer to the [Devtool Setup Guide](https://1source.intel.com/docs/getting_started/environment_setup#user-environment-configuration-automatic-devtool).
+
+To enable `gfx` and `gfx-go` extensions, run following commands:
+```
+dt extensions enable gfx
+dt extensions enable gfx-go
+```
+
+To download Compute Benchmarks repository using `dt`:
+```
+dt init workspace compute-benchmarks
+```
+
+Remember to keep dt and extensions up-to-date by running:
+```
+dt update
+```
+
+For more examples of `dt` usage, please refer to the [Working with GitHub](https://gpusw-docs.intel.com/services/scm/working_with_github/) page.
+
+### 1.3 PR creation <a id="pr-creation"></a>
 
 To create a PR using `dt`, the following procedure can be used:
 ```
@@ -79,9 +102,8 @@ git add
 git commit
 dt pr create
 ```
-For additional examples of `dt` usage, please refer to the [Working with GitHub](https://gpusw-docs.intel.com/services/scm/working_with_github/) page.
 
-### 1.3 Commit message <a id="commit-message"></a>
+### 1.4 Commit message <a id="commit-message"></a>
 
 To make project history more readable a specific structure for the commit message is required:
 
@@ -121,7 +143,10 @@ Signed-off-by: Example Author example.author@intel.com
 
 Always double-check to ensure your master commit message is properly set afterwards.
 
-### 1.4 Multi-commit PRs <a id="multi-commit"></a>
+### 1.5 Multi-commit PRs <a id="multi-commit"></a>
+
+#### Important!
+Do not use force push to update your PR. Please follow this guide instead.
 
 Compute Benchmarks repository allows creating multi-commit PRs. In such cases, Compute Benchmarks uses a squash-and-merge strategy, where the squash commit will use the title and body of the last non-merge and non-revert commit in the PR.
 
@@ -138,7 +163,7 @@ To update the PR title and/or description without changing the diff:
 git commit -s --allow-empty --reuse-message HEAD --edit
 ```
 
-### 1.5 Certificate of origin <a id="certificate"></a>
+### 1.6 Certificate of origin <a id="certificate"></a>
 
 To establish a clear contribution chain of trust
 [signed-off-by language](https://developercertificate.org/) is used.
@@ -149,7 +174,7 @@ The signature can be added to the commit message by passing short-option `-s` to
 git commit -s
 ```
 
-### 1.6 Copyright headers <a id="copyright-headers"></a>
+### 1.7 Copyright headers <a id="copyright-headers"></a>
 
 Embargo files must include [the Intel copyright header](LICENSE) at the top.
 Open-source files must include [the MIT copyright header](../LICENSE) at the top.
@@ -171,7 +196,7 @@ Copyright (C) 2023-2025 Intel Corporation
 The above rule applies the same way to files containing the MIT header (when contributing to the master branch).
 When open-sourcing files, `dt` will automatically replace the Intel copyright header with the MIT one.
 
-### 1.7 PR verification and code review <a id="pr-verification"></a>
+### 1.8 PR verification and code review <a id="pr-verification"></a>
 
 Before submitting a PR, use `clang-format` to properly format the code. You can use:
   - [Visual Studio extension](https://marketplace.visualstudio.com/items?itemName=LLVMExtensions.ClangFormat).
@@ -179,7 +204,7 @@ Before submitting a PR, use `clang-format` to properly format the code. You can 
   - Script for formatting all files - [Windows](scripts/run_clang-format_on_all_files.cmd)/[Linux](scripts/run_clang-format_on_all_files.sh)
 
 After PR is submitted:
-- [neo-infra-verify](https://neo-jenkins.igk.intel.com/jenkins/view/Benchmarks/job/benchmarks-verify/) will be triggered to execute all automated checks. In case `verify` result is `failed` - automated mail notification with failure analysis summary will be sent to you.  
+- [benchmarks-verify](https://neo-jenkins.igk.intel.com/jenkins/view/Benchmarks/job/benchmarks-verify/) will be triggered to execute all automated checks. In case `verify` result is `failed` - automated mail notification with failure analysis summary will be sent to you.  
 IMPORTANT! Before re-triggering a failed `verify` build, visit [this Wiki article](https://wiki.ith.intel.com/pages/viewinfo.action?pageId=4160489664).
 - [cherry-pick](https://neo-jenkins.igk.intel.com/jenkins/job/benchmarks-cherry-pick/) will be triggered to create counterpart PR against embargo or master branch. It will be labeled as `empty` for `embargo-only` PRs.
 - [spectral scan](https://wiki.ith.intel.com/display/public/ASC/Secrets+Scanning) will scan the diff for any security threats, such as secret leaks.
@@ -192,7 +217,7 @@ Additionally, for PRs targeting the `master` branch.
 
 Once all checks are completed, a final step called [gating](https://neo-jenkins.igk.intel.com/jenkins/view/Benchmarks/job/benchmarks-manifest-gate/) will be triggered. Your PR will be merged once it completes successfully.
 
-### 1.8 PR disposition <a id="pr-disposition"></a>
+### 1.9 PR disposition <a id="pr-disposition"></a>
 
 We reserve, upon conclusion of the code review, the right to do one of the following:
 1. Merge the PR as submitted.
