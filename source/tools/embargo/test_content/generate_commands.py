@@ -57,11 +57,12 @@ class BenchmarkData:
 
     def get_command_lines(self) -> typing.List[str]:
         cases: typing.Set[str] = set()
-        output = execute([str(self.workload_path.resolve()), "--noop", "--csv", "--noHeaders", "--noColumnNames"])
+        output = execute([str(self.workload_path.resolve()),"--sleepFor=0", "--noop", "--csv", "--noHeaders", "--noColumnNames"])
         csv_with_class = csv.reader(output.stdout.decode("utf-8").splitlines())
 
         cmd_line = [
             str(self.workload_path.resolve()),
+            "--sleepFor=0",
             "--noop",
             "--csv",
             "--noHeaders",
