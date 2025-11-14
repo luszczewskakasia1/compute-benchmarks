@@ -12,10 +12,6 @@
 # This software and the related documents are provided as is, with no express or
 # implied warranties, other than those that are expressly stated in the License.
 
-if (NOT DEFINED BUILD_CUDA)
-    set(BUILD_CUDA OFF)
-endif()
-
-if (BUILD_CUDA)
-    set(BUILD_OPT ON)
-endif()
+macro(add_custom_benchmark_options)
+    benchmark_option(BUILD_CUDA OFF)
+endmacro()

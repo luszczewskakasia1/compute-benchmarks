@@ -12,7 +12,7 @@
 # This software and the related documents are provided as is, with no express or
 # implied warranties, other than those that are expressly stated in the License.
 
-if(NOT BUILD_OPT)
+if(NOT BUILD_CUDA)
     return()
 endif()
 
@@ -21,14 +21,14 @@ set(CUDA_FOUND FALSE CACHE BOOL "" FORCE)
 include(CheckLanguage)
 check_language(CUDA)
 if(NOT CMAKE_CUDA_COMPILER)
-    message(WARNING "Missing CUDA compiler. OPT backend will not be built.")
+    message(WARNING "Missing CUDA compiler. CUDA backend will not be built.")
     return()
 endif()
 enable_language(CUDA)
 
 find_package(CUDAToolkit REQUIRED)
 if(NOT CUDAToolkit_FOUND)
-    message(WARNING "Missing CUDA Toolkit. OPT backend will not be built.")
+    message(WARNING "Missing CUDA Toolkit. CUDA backend will not be built.")
     return()
 endif()
 
