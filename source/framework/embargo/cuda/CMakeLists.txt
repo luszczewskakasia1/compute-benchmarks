@@ -32,9 +32,6 @@ if(NOT CUDAToolkit_FOUND)
     return()
 endif()
 
-# Get sources
-include(${CMAKE_MODULE_PATH}/embargo/BuildCudaKernels.cmake)
-
 file(GLOB_RECURSE SOURCES *.cpp *.h)
 
 # Define target
@@ -51,6 +48,9 @@ add_subdirectories()
 setup_vs_folders(${TARGET_NAME} ${CMAKE_CURRENT_SOURCE_DIR})
 setup_warning_options(${TARGET_NAME})
 setup_output_directory(${TARGET_NAME})
+
+# Get sources
+include(${CMAKE_MODULE_PATH}/embargo/BuildCudaKernels.cmake)
 
 set(CUDA_FOUND TRUE CACHE BOOL "" FORCE)
 set_property(GLOBAL APPEND PROPERTY APIS ${API_NAME})

@@ -44,24 +44,22 @@ foreach(KERNEL_CU_FILE ${KERNEL_CU_FILES})
     foreach(KERNEL_FILE ${KERNEL_CU_FILE})
         configure_file("${KERNEL_FILE}" "${OUTPUT_DIR}" COPYONLY)
     endforeach()
-    
+
     add_custom_command(
         OUTPUT ${FATBIN_OUTPUT}
-        COMMAND ${CMAKE_CUDA_COMPILER} ${INCLUDES} ${ALL_CCFLAGS} -Wno-deprecated-gpu-targets  ${GENCODE_FLAGS} -o ${FATBIN_OUTPUT} -fatbin ${KERNEL_CU_FILE}
+        COMMAND ${CMAKE_CUDA_COMPILER} ${INCLUDES} ${ALL_CCFLAGS} -Wno-deprecated-gpu-targets ${GENCODE_FLAGS} --fatbin -o ${FATBIN_OUTPUT} ${KERNEL_CU_FILE}
         DEPENDS ${KERNEL_CU_FILE}
         COMMENT "Building CUDA fatbin: ${KERNEL_NAME}.fatbin"
         VERBATIM
     )
-    
+
     list(APPEND ALL_FATBIN_OUTPUTS ${FATBIN_OUTPUT})
 endforeach()
 
-add_custom_target(generate_all_fatbins ALL
+set(CUDA_TARGET_NAME "cuda_kernels")
+add_custom_target(${CUDA_TARGET_NAME} ALL
     DEPENDS ${ALL_FATBIN_OUTPUTS}
-    COMMENT "Generating all CUDA fatbin files"
+    COMMENT "Generating CUDA fatbin files"
 )
 
-add_custom_target(cuda_kernels ALL
-    DEPENDS ${ALL_FATBIN_OUTPUTS}
-    COMMENT "Generating all CUDA fatbin files"
-)
+add_dependencies(${TARGET_NAME} ${CUDA_TARGET_NAME})
