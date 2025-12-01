@@ -13,8 +13,5 @@
 # implied warranties, other than those that are expressly stated in the License.
 
 if(BUILD_CUDA AND CUDA_FOUND)
-    get_filename_component(PARENT_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/.." ABSOLUTE)
-    set(CMAKE_CURRENT_SOURCE_DIR "${PARENT_SOURCE_DIR}")
-    set(BENCHMARK_API_SPECIFIC_SUBDIRECTORY "embargo")
     add_benchmark(ulls_benchmark cuda)
 endif()
