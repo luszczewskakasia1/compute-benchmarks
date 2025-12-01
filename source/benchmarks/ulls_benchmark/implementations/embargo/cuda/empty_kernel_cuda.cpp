@@ -42,14 +42,14 @@ static TestResult run(const EmptyKernelArguments &arguments, Statistics &statist
     void *kernelFunction = cuda.loadKernel("ulls_benchmark_empty_kernel.fatbin", "emptyKernel");
 
     // Warmup
-    cuda.launchKernel(kernelFunction, gridSize, blockSize);
+    cuda.launchKernel(kernelFunction, gridSize, blockSize, nullptr);
     cuda.synchronize();
 
     // Benchmark
     for (auto i = 0u; i < arguments.iterations; i++) {
         timer.measureStart();
 
-        cuda.launchKernel(kernelFunction, gridSize, blockSize);
+        cuda.launchKernel(kernelFunction, gridSize, blockSize, nullptr);
         cuda.synchronize();
 
         timer.measureEnd();
