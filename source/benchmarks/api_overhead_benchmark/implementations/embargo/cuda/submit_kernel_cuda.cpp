@@ -13,7 +13,6 @@
  * implied warranties, other than those that are expressly stated in the License.
  */
 
-#include "framework/additional/embargo/additional_configuration.h"
 #include "framework/embargo/cuda/cuda.h"
 #include "framework/embargo/cuda/utility/error.h"
 #include "framework/test_case/register_test_case.h"
@@ -36,7 +35,7 @@ static TestResult run(const SubmitKernelArguments &arguments, Statistics &statis
     }
 
     // Setup
-    Cuda cuda(Configuration::get().additionalConfiguration.cudaApiType);
+    Cuda cuda;
     Timer timer;
 
     CUstream_st *stream = cuda.streamCreate();

@@ -18,11 +18,11 @@
 #include "framework/test_case/register_test_case.h"
 #include "framework/utility/timer.h"
 
-#include "definitions/empty_kernel.h"
+#include "definitions/kernel_with_work.h"
 
 #include <gtest/gtest.h>
 
-static TestResult run(const EmptyKernelArguments &arguments, Statistics &statistics) {
+static TestResult run(const KernelWithWorkArguments &arguments, Statistics &statistics) {
     MeasurementFields typeSelector(MeasurementUnit::Microseconds, MeasurementType::Cpu);
 
     if (isNoopRun()) {
@@ -34,28 +34,44 @@ static TestResult run(const EmptyKernelArguments &arguments, Statistics &statist
     Cuda cuda;
     Timer timer;
 
+    // Create output buffer
+    const auto bufferSize = sizeof(uint32_t) * arguments.workgroupCount * arguments.workgroupSize * 2;
+    void *outputBuffer = cuda.memAlloc(bufferSize);
+
     // Create kernel
     dim3 blockSize(static_cast<unsigned int>(arguments.workgroupSize), 1, 1);
     dim3 gridSize(static_cast<unsigned int>(arguments.workgroupCount), 1, 1);
 
-    void *kernelFunction = cuda.loadKernel("ulls_benchmark_empty_kernel.fatbin", "emptyKernel");
+    void *kernelFunction = cuda.loadKernel(selectKernel(arguments.usedIds, "fatbin"), "write_one");
+    void *kernelArgs[] = {&outputBuffer};
 
     // Warmup
-    cuda.launchKernel(kernelFunction, gridSize, blockSize, nullptr);
+    cuda.launchKernel(kernelFunction, gridSize, blockSize, kernelArgs);
     cuda.synchronize();
 
     // Benchmark
     for (auto i = 0u; i < arguments.iterations; i++) {
+        if (arguments.usedIds == WorkItemIdUsage::AtomicPerWorkgroup) {
+            uint32_t workgroupCount = static_cast<uint32_t>(arguments.workgroupCount);
+            cuda.memcpy(outputBuffer, &workgroupCount, sizeof(uint32_t), MemcpyDirection::HostToDevice);
+        }
         timer.measureStart();
-
-        cuda.launchKernel(kernelFunction, gridSize, blockSize, nullptr);
+        cuda.launchKernel(kernelFunction, gridSize, blockSize, kernelArgs);
         cuda.synchronize();
-
         timer.measureEnd();
         statistics.pushValue(timer.get(), typeSelector.getUnit(), typeSelector.getType());
+        if (arguments.usedIds == WorkItemIdUsage::AtomicPerWorkgroup) {
+            uint32_t returnedValue[2] = {0u, 0u};
+            cuda.memcpy(returnedValue, outputBuffer, sizeof(uint32_t) * 2, MemcpyDirection::DeviceToHost);
+            EXPECT_EQ(0u, returnedValue[0]);
+            EXPECT_EQ(1337u, returnedValue[1]);
+        }
     }
+
+    // Cleanup
+    cuda.memFree(outputBuffer);
 
     return TestResult::Success;
 }
 
-static RegisterTestCaseImplementation<EmptyKernel> registerTestCase(run, Api::OPT);
+static RegisterTestCaseImplementation<KernelWithWork> registerTestCase(run, Api::OPT);

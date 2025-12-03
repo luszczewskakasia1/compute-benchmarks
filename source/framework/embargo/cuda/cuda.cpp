@@ -20,6 +20,8 @@
 
 namespace CUDA {
 
+Cuda::Cuda() : Cuda(Configuration::get().additionalConfiguration.cudaApiType) {}
+
 Cuda::Cuda(CudaApiType type) : apiType(type) {
     if (apiType == CudaApiType::Runtime) {
         EXPECT_CUDA_RUNTIME_RESULT_SUCCESS(cudaSetDevice(deviceId));
@@ -188,4 +190,45 @@ void Cuda::eventRecord(CUevent_st *event, CUstream_st *stream) {
     }
 }
 
+void *Cuda::memAlloc(size_t size) {
+    if (apiType == CudaApiType::Runtime) {
+        void *buffer = nullptr;
+        EXPECT_CUDA_RUNTIME_RESULT_SUCCESS(cudaMalloc(&buffer, size));
+        return buffer;
+    } else {
+        CUdeviceptr devicePtr;
+        EXPECT_CUDA_DRIVER_RESULT_SUCCESS(cuMemAlloc(&devicePtr, size));
+        return reinterpret_cast<void *>(devicePtr);
+    }
+}
+
+void Cuda::memFree(void *ptr) {
+    if (apiType == CudaApiType::Runtime) {
+        EXPECT_CUDA_RUNTIME_RESULT_SUCCESS(cudaFree(ptr));
+    } else {
+        EXPECT_CUDA_DRIVER_RESULT_SUCCESS(cuMemFree(reinterpret_cast<CUdeviceptr>(ptr)));
+    }
+}
+
+void Cuda::memcpy(void *dst, const void *src, size_t size, MemcpyDirection direction) {
+    if (apiType == CudaApiType::Runtime) {
+        EXPECT_CUDA_RUNTIME_RESULT_SUCCESS(cudaMemcpy(dst, src, size, static_cast<cudaMemcpyKind>(direction)));
+    } else {
+        switch (direction) {
+        case MemcpyDirection::HostToDevice:
+            EXPECT_CUDA_DRIVER_RESULT_SUCCESS(cuMemcpyHtoD(reinterpret_cast<CUdeviceptr>(dst), src, size));
+            break;
+        case MemcpyDirection::DeviceToHost:
+            EXPECT_CUDA_DRIVER_RESULT_SUCCESS(cuMemcpyDtoH(dst, reinterpret_cast<CUdeviceptr>(const_cast<void *>(src)), size));
+            break;
+        case MemcpyDirection::DeviceToDevice:
+            EXPECT_CUDA_DRIVER_RESULT_SUCCESS(cuMemcpyDtoD(reinterpret_cast<CUdeviceptr>(dst), reinterpret_cast<CUdeviceptr>(const_cast<void *>(src)), size));
+            break;
+        case MemcpyDirection::HostToHost:
+        case MemcpyDirection::Default:
+            EXPECT_CUDA_DRIVER_RESULT_SUCCESS(cuMemcpy(reinterpret_cast<CUdeviceptr>(dst), reinterpret_cast<CUdeviceptr>(const_cast<void *>(src)), size));
+            break;
+        }
+    }
+}
 } // namespace CUDA

@@ -15,12 +15,14 @@
 
 #pragma once
 
+#include "framework/additional/embargo/additional_configuration.h"
 #include "framework/embargo/cuda/utility/error.h"
 #include "framework/enum/embargo/cuda_api_embargo_type.h"
 #include "framework/utility/error.h"
 
 #include <cuda.h>
 #include <cuda_runtime.h>
+#include <framework/configuration.h>
 #include <string>
 
 namespace CUDA {
@@ -35,9 +37,18 @@ struct EventFlags {
     bool interprocess = false;
 };
 
+enum class MemcpyDirection {
+    HostToHost = cudaMemcpyHostToHost,
+    HostToDevice = cudaMemcpyHostToDevice,
+    DeviceToHost = cudaMemcpyDeviceToHost,
+    DeviceToDevice = cudaMemcpyDeviceToDevice,
+    Default = cudaMemcpyDefault
+};
+
 class Cuda {
   public:
-    Cuda(CudaApiType type = CudaApiType::Runtime);
+    Cuda();
+    Cuda(CudaApiType type);
     ~Cuda();
 
     void synchronize() const;
@@ -56,6 +67,11 @@ class Cuda {
     CUevent_st *createEvent(const EventFlags &flags);
     void eventDestroy(CUevent_st *event);
     void eventRecord(CUevent_st *event, CUstream_st *stream);
+
+    void *memAlloc(size_t size);
+    void memFree(void *ptr);
+
+    void memcpy(void *dst, const void *src, size_t size, MemcpyDirection direction);
 
   private:
     CudaApiType apiType;
