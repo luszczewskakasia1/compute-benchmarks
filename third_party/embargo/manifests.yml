@@ -4,7 +4,7 @@ components:
     clone_depth: 1
     dest_dir: validation_tools
     repository: https://github.com/intel-innersource/drivers.gpu.validation.compute-toolbox.git
-    revision: 9c3a4661611b02323f1a3aa93d58d2e2800b56cb
+    revision: b24febf52c8d96028249a4bbfe4d993de726b309
     type: git
 include:
   -  ../manifests.yml
