@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2025 Intel Corporation
+ * Copyright (C) 2025-2026 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -45,6 +45,12 @@ enum class MemcpyDirection {
     Default = cudaMemcpyDefault
 };
 
+enum class StreamCaptureMode {
+    Global = cudaStreamCaptureModeGlobal,
+    ThreadLocal = cudaStreamCaptureModeThreadLocal,
+    Relaxed = cudaStreamCaptureModeThreadLocal
+};
+
 class Cuda {
   public:
     Cuda();
@@ -67,6 +73,21 @@ class Cuda {
     CUevent_st *createEvent(const EventFlags &flags);
     void eventDestroy(CUevent_st *event);
     void eventRecord(CUevent_st *event, CUstream_st *stream);
+    void eventRecordWithFlags(CUevent_st *event, CUstream_st *stream, bool recordExternal);
+    void eventSynchronize(CUevent_st *event);
+    uint64_t getEventDurationInNanoseconds(CUevent_st *start, CUevent_st *stop) const;
+
+    CUgraph_st *graphCreate();
+    void graphDestroy(CUgraph_st *graph);
+    CUgraphExec_st *graphInstantiate(CUgraph_st *graph);
+    void graphExecDestroy(CUgraphExec_st *graphExec);
+    void graphLaunch(CUgraphExec_st *graphExec, CUstream_st *stream);
+    CUgraphNode_st *graphAddKernelNode(CUgraph_st *graph, CUgraphNode_st **dependencies, size_t numDependencies, void *function, dim3 gridSize, dim3 blockSize, void **args);
+    void graphAddDependencies(CUgraph_st *graph, CUgraphNode_st *from, CUgraphNode_st *to, const CUgraphEdgeData_st *edgeData, const size_t numEdges);
+
+    void streamBeginCapture(CUstream_st *stream);
+    void streamBeginCapture(CUstream_st *stream, enum StreamCaptureMode mode);
+    CUgraph_st *streamEndCapture(CUstream_st *stream);
 
     void *memAlloc(size_t size);
     void memFree(void *ptr);
