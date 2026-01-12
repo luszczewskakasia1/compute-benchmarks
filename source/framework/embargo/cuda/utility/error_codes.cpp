@@ -51,6 +51,8 @@ const char *cudaErrorToString(cudaError_t retVal) {
         return "cudaErrorLaunchOutOfResources";
     case cudaErrorIllegalAddress:
         return "cudaErrorIllegalAddress";
+    case cudaErrorNotSupported:
+        return "cudaErrorNotSupported";
     default:
         return "Unknown CUDA error";
     }
@@ -88,6 +90,8 @@ const char *cudaErrorToString(CUresult retVal) {
         return "CUDA_ERROR_LAUNCH_TIMEOUT";
     case CUDA_ERROR_ILLEGAL_ADDRESS:
         return "CUDA_ERROR_ILLEGAL_ADDRESS";
+    case CUDA_ERROR_NOT_SUPPORTED:
+        return "CUDA_ERROR_NOT_SUPPORTED";
     default:
         return "Unknown CUDA error";
     }

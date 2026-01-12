@@ -21,11 +21,14 @@ namespace CUDA {
 
 static void printDeviceInfo() {
     int deviceCount = 0;
-    cudaGetDeviceCount(&deviceCount);
+    cudaError_t result = cudaGetDeviceCount(&deviceCount);
 
     if (deviceCount == 0) {
-        std::cout << "CUDA devices: NONE" << std::endl
-                  << std::endl;
+        std::cout << "CUDA devices: NONE" << std::endl;
+        if (result != cudaSuccess) {
+            std::cout << "CUDA device information cannot be retrieved: " << static_cast<int>(result) << " - " << cudaErrorToString(result) << std::endl;
+        }
+        std::cout << std::endl;
         return;
     }
 
