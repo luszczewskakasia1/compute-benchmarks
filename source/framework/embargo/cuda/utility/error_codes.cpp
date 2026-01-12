@@ -1,7 +1,7 @@
 /*
  * INTEL CONFIDENTIAL
  *
- * Copyright (C) 2025 Intel Corporation
+ * Copyright (C) 2025-2026 Intel Corporation
  *
  * This software and the related documents are Intel copyrighted materials,
  * and your use of them is governed by the express license under which they were
@@ -16,7 +16,44 @@
 #include "error_codes.h"
 
 const char *cudaErrorToString(cudaError_t retVal) {
-    return cudaGetErrorString(retVal);
+    switch (retVal) {
+    case cudaSuccess:
+        return "cudaSuccess";
+    case cudaErrorInvalidValue:
+        return "cudaErrorInvalidValue";
+    case cudaErrorMemoryAllocation:
+        return "cudaErrorMemoryAllocation";
+    case cudaErrorInitializationError:
+        return "cudaErrorInitializationError";
+    case cudaErrorCudartUnloading:
+        return "cudaErrorCudartUnloading";
+    case cudaErrorProfilerDisabled:
+        return "cudaErrorProfilerDisabled";
+    case cudaErrorInvalidConfiguration:
+        return "cudaErrorInvalidConfiguration";
+    case cudaErrorInvalidSymbol:
+        return "cudaErrorInvalidSymbol";
+    case cudaErrorInvalidDevicePointer:
+        return "cudaErrorInvalidDevicePointer";
+    case cudaErrorInvalidMemcpyDirection:
+        return "cudaErrorInvalidMemcpyDirection";
+    case cudaErrorInsufficientDriver:
+        return "cudaErrorInsufficientDriver";
+    case cudaErrorNoDevice:
+        return "cudaErrorNoDevice";
+    case cudaErrorInvalidDevice:
+        return "cudaErrorInvalidDevice";
+    case cudaErrorLaunchFailure:
+        return "cudaErrorLaunchFailure";
+    case cudaErrorLaunchTimeout:
+        return "cudaErrorLaunchTimeout";
+    case cudaErrorLaunchOutOfResources:
+        return "cudaErrorLaunchOutOfResources";
+    case cudaErrorIllegalAddress:
+        return "cudaErrorIllegalAddress";
+    default:
+        return "Unknown CUDA error";
+    }
 }
 
 const char *cudaErrorToString(CUresult retVal) {
@@ -45,6 +82,12 @@ const char *cudaErrorToString(CUresult retVal) {
         return "CUDA_ERROR_INVALID_IMAGE";
     case CUDA_ERROR_NO_BINARY_FOR_GPU:
         return "CUDA_ERROR_NO_BINARY_FOR_GPU";
+    case CUDA_ERROR_LAUNCH_OUT_OF_RESOURCES:
+        return "CUDA_ERROR_LAUNCH_OUT_OF_RESOURCES";
+    case CUDA_ERROR_LAUNCH_TIMEOUT:
+        return "CUDA_ERROR_LAUNCH_TIMEOUT";
+    case CUDA_ERROR_ILLEGAL_ADDRESS:
+        return "CUDA_ERROR_ILLEGAL_ADDRESS";
     default:
         return "Unknown CUDA error";
     }

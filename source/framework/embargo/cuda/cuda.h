@@ -58,7 +58,7 @@ class Cuda {
     ~Cuda();
 
     void synchronize() const;
-    void *loadKernel(const std::string &fatbinFile, const std::string &kernelName);
+    void *loadKernel(const std::string &kernelPath, const std::string &kernelName);
     void launchKernel(void *function, dim3 gridSize, dim3 blockSize, void **args);
     void launchKernel(void *function, dim3 gridSize, dim3 blockSize, CUstream_st *stream, void **args);
 

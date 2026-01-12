@@ -1,7 +1,7 @@
 #
 # INTEL CONFIDENTIAL
 #
-# Copyright (C) 2025 Intel Corporation
+# Copyright (C) 2025-2026 Intel Corporation
 #
 # This software and the related documents are Intel copyrighted materials,
 # and your use of them is governed by the express license under which they were
@@ -13,5 +13,11 @@
 # implied warranties, other than those that are expressly stated in the License.
 
 macro(add_custom_benchmark_options)
-    benchmark_option(BUILD_CUDA OFF)
+    benchmark_option(BUILD_CUDA ON)
+    benchmark_option(USE_SYSTEM_CUDA ON)
+
+    if (NOT BUILD_CUDA)
+        set(BUILD_ALL_API_BINARIES OFF)
+        set(BUILD_ALL_API_BINARIES_COMMENT "(Disabled due to not all APIs being enabled)")
+    endif()
 endmacro()

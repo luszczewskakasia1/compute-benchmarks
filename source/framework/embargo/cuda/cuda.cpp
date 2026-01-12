@@ -15,6 +15,8 @@
 
 #include "cuda.h"
 
+#include "framework/utility/file_helper.h"
+
 #include <fstream>
 #include <vector>
 
@@ -23,14 +25,21 @@ namespace CUDA {
 Cuda::Cuda() : Cuda(Configuration::get().additionalConfiguration.cudaApiType) {}
 
 Cuda::Cuda(CudaApiType type) : apiType(type) {
+    int deviceCount = 0;
+    CUDA_RUNTIME_RESULT_SUCCESS_OR_ERROR(cudaGetDeviceCount(&deviceCount));
+
+    if (deviceCount == 0) {
+        FATAL_ERROR("No CUDA devices found on the system.");
+    }
+
     if (apiType == CudaApiType::Runtime) {
-        EXPECT_CUDA_RUNTIME_RESULT_SUCCESS(cudaSetDevice(deviceId));
+        CUDA_RUNTIME_RESULT_SUCCESS_OR_ERROR(cudaSetDevice(deviceId));
     } else {
-        EXPECT_CUDA_DRIVER_RESULT_SUCCESS(cuInit(0));
-        EXPECT_CUDA_DRIVER_RESULT_SUCCESS(cuDeviceGet(&device, 0));
+        CUDA_DRIVER_RESULT_SUCCESS_OR_ERROR(cuInit(0));
+        CUDA_DRIVER_RESULT_SUCCESS_OR_ERROR(cuDeviceGet(&device, deviceId));
 
         CUctxCreateParams params = {};
-        EXPECT_CUDA_DRIVER_RESULT_SUCCESS(cuCtxCreate(&context, &params, 0, device));
+        CUDA_DRIVER_RESULT_SUCCESS_OR_ERROR(cuCtxCreate(&context, &params, 0, device));
     }
 }
 
@@ -49,28 +58,14 @@ Cuda::~Cuda() {
     }
 }
 
-void *Cuda::loadKernel(const std::string &fatbinFileName, const std::string &kernelName) {
-    std::string foundPath;
-    const std::vector<std::string> searchPaths = {
-        fatbinFileName,
-        "./" + fatbinFileName,
-        "../" + fatbinFileName,
-        "../../" + fatbinFileName,
-    };
-
-    for (const auto &path : searchPaths) {
-        std::ifstream file(path, std::ios::binary);
-        if (file.good()) {
-            foundPath = path;
-            break;
-        }
-    }
-    if (foundPath.empty()) {
-        FATAL_ERROR("Could not find fatbin file: " + fatbinFileName);
+void *Cuda::loadKernel(const std::string &kernelPath, const std::string &kernelName) {
+    const std::vector<uint8_t> kernelSource = FileHelper::loadTextFile(kernelPath);
+    if (kernelSource.empty()) {
+        FATAL_ERROR("Could not read kernel source file: " + kernelPath);
     }
 
     cudaKernel_t kernel;
-    EXPECT_CUDA_RUNTIME_RESULT_SUCCESS(cudaLibraryLoadFromFile(&library, foundPath.c_str(), nullptr, nullptr, 0, nullptr, nullptr, 0));
+    EXPECT_CUDA_RUNTIME_RESULT_SUCCESS(cudaLibraryLoadData(&library, kernelSource.data(), nullptr, nullptr, 0, nullptr, nullptr, 0));
     EXPECT_CUDA_RUNTIME_RESULT_SUCCESS(cudaLibraryGetKernel(&kernel, library, kernelName.c_str()));
     return reinterpret_cast<void *>(kernel);
 }
