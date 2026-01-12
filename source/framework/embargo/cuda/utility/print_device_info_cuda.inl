@@ -21,7 +21,7 @@ namespace CUDA {
 
 static void printDeviceInfo() {
     int deviceCount = 0;
-    EXPECT_CUDA_RUNTIME_RESULT_SUCCESS(cudaGetDeviceCount(&deviceCount));
+    cudaGetDeviceCount(&deviceCount);
 
     if (deviceCount == 0) {
         std::cout << "CUDA devices: NONE" << std::endl
@@ -49,7 +49,7 @@ static void printDeviceInfo() {
 
 static void printAvailableDevices() {
     int deviceCount = 0;
-    EXPECT_CUDA_RUNTIME_RESULT_SUCCESS(cudaGetDeviceCount(&deviceCount));
+    cudaGetDeviceCount(&deviceCount);
 
     if (deviceCount == 0) {
         std::cout << "CUDA devices: NONE" << std::endl
