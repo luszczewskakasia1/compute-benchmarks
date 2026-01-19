@@ -26,7 +26,7 @@ L0Context::~L0Context() {
     }
 }
 
-TestResult create_kernel(LevelZero &l0,
+TestResult Kernel::create_kernel(LevelZero &l0,
                          const std::string &kernelFileName,
                          const std::string &kernelName,
                          ze_kernel_handle_t &kernel,
@@ -49,4 +49,36 @@ TestResult create_kernel(LevelZero &l0,
     kernelDesc.pKernelName = kernelName.c_str();
     ASSERT_ZE_RESULT_SUCCESS(zeKernelCreate(module, &kernelDesc, &kernel));
     return TestResult::Success;
+}
+
+Kernel::Kernel(LevelZero &l0, 
+                const std::string &kernelFileName,
+                const std::string &kernelName) {
+
+    TestResult result = create_kernel(l0, kernelFileName, kernelName, kernel, module);
+    
+    if (result == TestResult::KernelNotFound) {
+        throw std::runtime_error("Kernel file not found: " + kernelFileName);
+    } else if (result != TestResult::Success) {
+        throw std::runtime_error("Failed to create kernel");
+    }
+}
+
+Kernel::~Kernel() {
+    if (kernel) zeKernelDestroy(kernel);
+    if (module) zeModuleDestroy(module);
+}
+
+// jeszcze nie wiem co to
+ze_kernel_handle_t Kernel::get() const {
+    return kernel;
+}
+
+// Wrapper dla kompatybilności wstecznej
+TestResult create_kernel(LevelZero &l0,
+                         const std::string &kernelFileName,
+                         const std::string &kernelName,
+                         ze_kernel_handle_t &kernel,
+                         ze_module_handle_t &module) {
+    return Kernel::create_kernel(l0, kernelFileName, kernelName, kernel, module);
 }

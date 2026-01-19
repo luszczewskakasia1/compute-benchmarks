@@ -18,6 +18,7 @@
 
 #include <level_zero/ze_api.h>
 
+// to później nie będzie potrzebne i zamiast tego będzie Kernel
 class L0Context {
   public:
     LevelZero l0;
@@ -26,6 +27,28 @@ class L0Context {
 
     L0Context();
     ~L0Context();
+};
+
+// Kernel - deklaracja klasy
+class Kernel {
+private:
+    ze_kernel_handle_t kernel{};
+    ze_module_handle_t module{};
+
+public:
+    Kernel(LevelZero &l0, const std::string &kernelFileName, const std::string &kernelName);
+    ~Kernel();
+
+    ze_kernel_handle_t get() const;
+
+    static TestResult create_kernel(LevelZero &l0,
+                                    const std::string &kernelFileName,
+                                    const std::string &kernelName,
+                                    ze_kernel_handle_t &kernel,
+                                    ze_module_handle_t &module);
+
+    Kernel(const Kernel &) = delete;
+    Kernel &operator=(const Kernel &) = delete;
 };
 
 TestResult create_kernel(LevelZero &l0,
